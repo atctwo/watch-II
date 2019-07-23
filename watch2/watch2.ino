@@ -221,7 +221,7 @@ void drawTopThing()
     oled.setTextColor(WHITE);
     oled.setTextSize(1);
     oled.setFont(&SourceSansPro_Regular6pt7b);
-    oled.print("watch II yeooooo");
+    oled.print("watch II");
 
     //oled.printf(" %d ", preferences.getBool("timeout", true));
 
