@@ -1,0 +1,6 @@
+(1) Time
+    During active mode operation, functions from TimeLib.h are used to conveniently handle the time.  These functions operate on an internal
+    measure of time kept by the library, and don't touch the measure of time maintained by the ESP32.  This measure can be operated on using
+    standard POSIX time functions from time.h and sys/time.h.  To ensure that the time is kept while sleeping, the time kept by TimeLib.h is
+    used to set the time kept by the ESP32.  When the device goes to sleep, the ESP32 time is set to the TimeLib.h time, and when the device
+    is woken up, the TimeLib.h time is set to the ESP32 time.  I know it's unneccessarily complicated, but shut up.
