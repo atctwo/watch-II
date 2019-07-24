@@ -75,7 +75,7 @@ struct settingsMenuData {
 
 
 // system function prototypes
-
+//preferences.getInt("themecolour", default_themecolour)
 void    drawTopThing();
 int     registerState(std::string stateName, std::string stateIcon, const std::function<void()>& stateFunc);
 bool    registerIcon(std::string iconName, std::vector<unsigned short int> icon);
@@ -84,6 +84,7 @@ void    switchState(int newState, int variant = 0, int dim_pause_thing = 10, int
 void    deepSleep(int pause_thing=10);
 void    drawMenu(int x, int y, int width, int height, std::vector<String> items, int selected, int colour);
 void    drawSettingsMenu(int x, int y, int width, int height, std::vector<settingsMenuData> items, int selected, int colour);
+void    colour888(uint16_t colour, float *r, float *g, float *b);
 void    HSVtoRGB( float *r, float *g, float *b, float h, float s, float v );
 bool    getHeatMapColor(float value, float *red, float *green, float *blue);
 double  ReadVoltage(byte pin);

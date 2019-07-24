@@ -21,16 +21,62 @@ void registerSystemStates()
     // state 0
     registerState("Initial State", "init", [](){
 
-        //clear screen
-        oled.fillScreen(0);
+        //if variant is 0, this state just switches to state 1 (watch face) without
+        //doing much.  if the down button is held, this state switches to variant 1,
+        //which will allow the user to wipe their settings
 
-        //dim screen
-        uint8_t contrast = 0x00;
-        oled.sendCommand(0xC7, &contrast, 1);
+        static bool selected_option = false;
 
-        //switch state
-        switchState(1);
-        //state = 1;
+        if (states[state].variant == 0)
+        {
+            //clear screen
+            oled.fillScreen(0);
+
+            //dim screen
+            uint8_t contrast = 0x00;
+            oled.sendCommand(0xC7, &contrast, 1);
+        }
+        else if (states[state].variant == 1)
+        {
+            //settings clear mode
+            if (!state_init)
+            {
+                oled.setCursor(0,10);
+                oled.setFont(&SourceSansPro_Regular6pt7b);
+                oled.setTextColor(WHITE);
+                oled.print("Do you want to clear\nall saved settings?");
+            }
+
+            if (dpad_up_active() || dpad_down_active())
+            {
+                selected_option = !selected_option;
+            }
+
+            if (dpad_any_active() || !state_init)
+            {
+                drawMenu(2, 37, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 37, {"No", "Yes"}, selected_option, RED);
+            }
+
+            if (dpad_enter_active())
+            {
+                if (selected_option == 1) preferences.clear();
+                switchState(1);
+            }
+        }
+
+        //check down button for settings clearing thing
+        if (states[state].variant == 0)
+        {
+            if (digitalRead(dpad_down))
+            {
+                switchState(state, 1);
+            }
+            else
+            {
+                //switch state
+                switchState(1);
+            }
+        }
     });
 
     //state 1
@@ -261,8 +307,9 @@ void registerSystemStates()
 
                 if (selected_menu_icon == it)
                 {
-                    oled.drawRect(icon_xpos-1, icon_ypos-1, icon_size+1, icon_size+1, BLUE);
+                    oled.drawRect(icon_xpos-1, icon_ypos-1, icon_size+1, icon_size+1, themecolour);
                     oled.setCursor(2, 94);
+                    oled.setTextColor(WHITE);
                     oled.print(stateinfo.stateName.c_str());
                 }
                 else oled.drawRect(icon_xpos-1, icon_ypos-1, icon_size+1, icon_size+1, BLACK);
@@ -295,7 +342,7 @@ void registerSystemStates()
     //state 3
     registerState("Settings", "settings", [](){
 
-        static std::vector<String> panels = {"Time and Date", "Timeout", "About"};
+        static std::vector<String> panels = {"Time and Date", "Timeout", "Colour", "About"};
         static int selected_panel = 0;
         static int last_selected_time = 0;
 
@@ -332,7 +379,7 @@ void registerSystemStates()
                 {
                     // draw menu
                     oled.setFont(&SourceSansPro_Regular6pt7b);
-                    drawMenu(2, 12, SCREEN_WIDTH-4, SCREEN_HEIGHT-12, panels, selected_panel, BLUE);
+                    drawMenu(2, 12, SCREEN_WIDTH-4, SCREEN_HEIGHT-12, panels, selected_panel, themecolour);
                 }
                 if (dpad_enter_active())
                 {
@@ -404,7 +451,7 @@ void registerSystemStates()
                         sprintf(text_aaaa, "%02d", temp_time[i]);
                         oled.getTextBounds(String(text_aaaa), oled.getCursorX(), oled.getCursorY(), &x1, &y1, &w, &h);
                         oled.fillRect(x1 - time_element_padding, y1 - time_element_padding, w + (2 * time_element_padding) + 10, h + (2 * time_element_padding), BLACK);
-                        if (selected_time == i) oled.drawRoundRect(x1 - time_element_padding, y1 - time_element_padding, w + (2 * time_element_padding), h + (2 * time_element_padding), radius, BLUE);
+                        if (selected_time == i) oled.drawRoundRect(x1 - time_element_padding, y1 - time_element_padding, w + (2 * time_element_padding), h + (2 * time_element_padding), radius, themecolour);
                         //oled.fillRect(x1, y1, w, h, BLACK);
                         oled.printf("%02s", text_aaaa);
 
@@ -494,15 +541,19 @@ void registerSystemStates()
                 {
                     oled.setFont(&SourceSansPro_Regular6pt7b);
                     oled.setTextColor(WHITE);
-                    drawSettingsMenu(0, 12, SCREEN_WIDTH, SCREEN_HEIGHT - 12, timeout_data, selected_timeout, BLUE);
+                    drawSettingsMenu(0, 12, SCREEN_WIDTH, SCREEN_HEIGHT - 12, timeout_data, selected_timeout, themecolour);
                 }
 
                 if (dpad_enter_active())
                 {
                     // store settings
-                    preferences.putBool("timeout", timeout_data[0].setting_value);
-                    preferences.putInt("short_timeout", timeout_data[1].setting_value);
-                    preferences.putInt("long_timeout", timeout_data[2].setting_value);
+                    timeout = timeout_data[0].setting_value;
+                    short_timeout = timeout_data[1].setting_value;
+                    long_timeout = timeout_data[2].setting_value;
+
+                    preferences.putBool("timeout", timeout);
+                    preferences.putInt("short_timeout", short_timeout);
+                    preferences.putInt("long_timeout", long_timeout);
 
                     // go back to settings menu
                     switchState(state, 0);
@@ -510,7 +561,117 @@ void registerSystemStates()
 
                 break;
 
-            case 3: //about
+            case 3: //colour
+
+                static std::vector<settingsMenuData> colour_data;
+                static int selected_colour = 0;
+                static int last_themecolour = themecolour;
+
+                if (!state_init)
+                {
+                    float r=0, g=0, b=0;
+                    colour888(themecolour, &r, &g, &b);
+
+                    colour_data.clear();
+                    colour_data.push_back( (struct settingsMenuData){
+                        "Trans Mode",
+                        preferences.getBool("trans_mode", false),
+                        {"Off", "On"},
+                        24
+                    } );
+                    colour_data.push_back( (struct settingsMenuData){
+                        "Theme colour R",
+                        r,
+                        {},
+                        24
+                    } );
+                    colour_data.push_back( (struct settingsMenuData){
+                        "Theme colour G",
+                        g,
+                        {},
+                        24
+                    } );
+                    colour_data.push_back( (struct settingsMenuData){
+                        "Theme colour B",
+                        b,
+                        {},
+                        24
+                    } );
+                }
+
+                if (dpad_left_active())
+                {
+                    int& setting_value = colour_data[selected_colour].setting_value;
+                    if (selected_colour == 1 || selected_colour == 2 || selected_colour == 3)
+                    {
+                        setting_value--;
+                        if (setting_value < 0) setting_value = 255;
+                    }
+                    else if (selected_colour == 0)
+                    {
+                        setting_value = !setting_value;
+                    }
+
+                    // calculate themecolour
+                    themecolour = oled.color565(colour_data[1].setting_value,
+                                                    colour_data[2].setting_value,
+                                                    colour_data[3].setting_value);
+
+                }
+
+                if (dpad_right_active())
+                {
+                    int& setting_value = colour_data[selected_colour].setting_value;
+                    if (selected_colour == 1 || selected_colour == 2 || selected_colour == 3)
+                    {
+                        setting_value++;
+                        if (setting_value > 255) setting_value = 0;
+                    }
+                    else if (selected_colour == 0)
+                    {
+                        setting_value = !setting_value;
+                    }
+
+                    // calculate themecolour
+                    themecolour = oled.color565(colour_data[1].setting_value,
+                                                    colour_data[2].setting_value,
+                                                    colour_data[3].setting_value);
+                }
+
+                if (dpad_down_active())
+                {
+                    selected_colour++;
+                    if (selected_colour > colour_data.size() - 1) selected_colour = 0;
+                }
+
+                if (dpad_up_active())
+                {
+                    selected_colour--;
+                    if (selected_colour < 0 ) selected_colour = colour_data.size() - 1;
+                }
+
+                if (dpad_any_active() || !state_init)
+                {
+                    oled.setFont(&SourceSansPro_Regular6pt7b);
+                    oled.setTextColor(WHITE);
+                    drawSettingsMenu(0, 12, SCREEN_WIDTH, SCREEN_HEIGHT - 12, colour_data, selected_colour, themecolour);
+                }
+
+                if (dpad_enter_active())
+                {
+                    // store settings
+                    trans_mode = colour_data[0].setting_value;
+
+                    preferences.putBool("trans_mode", trans_mode);
+                    preferences.putInt("themecolour", themecolour);
+
+                    // go back to settings menu
+                    switchState(state, 0);
+                }
+
+                break;
+
+            case 4: //about
 
                 static int yoffset = 0;
                 const int about_height = 200;
@@ -528,32 +689,32 @@ void registerSystemStates()
 
                     canvas_about->print("watch II, version " + String(WATCH_VER) + "\nmade by alice (atctwo)\n\n");
                     canvas_about->print("Compile date and time:\n  ");
-                    canvas_about->setTextColor(BLUE);
+                    canvas_about->setTextColor(themecolour);
                     canvas_about->print(String(__DATE__) + " " + String(__TIME__) + "\n");
 
                     canvas_about->setTextColor(WHITE);
                     canvas_about->print("Chip Revision: ");
-                    canvas_about->setTextColor(BLUE);
+                    canvas_about->setTextColor(themecolour);
                     canvas_about->print(String(ESP.getChipRevision()) + "\n");
 
                     canvas_about->setTextColor(WHITE);
                     canvas_about->print("CPU Frequency: ");
-                    canvas_about->setTextColor(BLUE);
+                    canvas_about->setTextColor(themecolour);
                     canvas_about->print( String(ESP.getCpuFreqMHz()) + " MHz" );
 
                     canvas_about->setTextColor(WHITE);
                     canvas_about->print("Sketch Size: ");
-                    canvas_about->setTextColor(BLUE);
+                    canvas_about->setTextColor(themecolour);
                     canvas_about->print( String(ESP.getSketchSize()) + " B\n");
 
                     canvas_about->setTextColor(WHITE);
                     canvas_about->print("Flash Size: ");
-                    canvas_about->setTextColor(BLUE);
+                    canvas_about->setTextColor(themecolour);
                     canvas_about->print( String(ESP.getFlashChipSize()) + " B\n" );
 
                     canvas_about->setTextColor(WHITE);
                     canvas_about->print("MAC Address: \n  ");
-                    canvas_about->setTextColor(BLUE);
+                    canvas_about->setTextColor(themecolour);
                     canvas_about->printf("%04X",(uint16_t)(chipid>>32));//print High 2 bytes
 	                canvas_about->printf("%08X",(uint32_t)chipid);//print Low 4bytes.
 

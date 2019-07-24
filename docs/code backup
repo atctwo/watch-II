@@ -1,0 +1,195 @@
+// state 0
+registerState("Initial State", "init", [](){
+
+    //if variant is 0, this state just switches to state 1 (watch face) without
+    //doing much.  if the down button is held, this state switches to variant 1,
+    //which will allow the user to wipe their settings
+
+    static bool selected_option = false;
+
+    if (states[state].variant == 0)
+    {
+        //clear screen
+        oled.fillScreen(0);
+
+        //dim screen
+        uint8_t contrast = 0x00;
+        oled.sendCommand(0xC7, &contrast, 1);
+    }
+    else if (states[state].variant == 1)
+    {
+        //settings clear mode
+        if (!state_init)
+        {
+            oled.setCursor(0,10);
+            oled.setFont(&SourceSansPro_Regular6pt7b);
+            oled.setTextColor(WHITE);
+            oled.print("Do you want to clear\nall saved settings?");
+        }
+
+        if (dpad_up_active() || dpad_down_active())
+        {
+            selected_option = !selected_option;
+        }
+
+        if (dpad_any_active() || !state_init)
+        {
+            drawMenu(2, 37, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 37, {"No", "Yes"}, selected_option, RED);
+        }
+
+        if (dpad_enter_active())
+        {
+            if (selected_option == 1) preferences.clear();
+            switchState(1);
+        }
+    }
+
+    //check down button for settings clearing thing
+    if (states[state].variant == 0)
+    {
+        if (digitalRead(dpad_down))
+        {
+            switchState(state, 1);
+        }
+        else
+        {
+            //switch state
+            switchState(1);
+        }
+    }
+});
+
+
+
+
+
+
+
+
+// adapted from https://stackoverflow.com/a/9069480/9195285
+void colour888(uint16_t colour, float *r, float *g, float *b)
+{
+    uint16_t red   = (colour & 0xf800) >> 11;
+    uint16_t green = (colour & 0x07e0) >> 5;
+    uint16_t blue  = (colour & 0x001f);
+
+    *r = ( red   * 255 ) / 31;
+    *g = ( green * 255 ) / 63;
+    *b = ( blue  * 255 ) / 31;
+}
+
+
+
+
+
+
+
+
+
+case 3: //colour
+
+    static std::vector<settingsMenuData> colour_data;
+    static int selected_colour = 0;
+    static int last_themecolour = themecolour;
+
+    if (!state_init)
+    {
+        float r=0, g=0, b=0;
+        //colour888(themecolour, &r, &g, &b);
+
+        colour_data.clear();
+        colour_data.push_back( (struct settingsMenuData){
+            "Trans Mode",
+            preferences.getBool("trans_mode", false),
+            {"Off", "On"},
+            24
+        } );
+        colour_data.push_back( (struct settingsMenuData){
+            "Theme colour R",
+            r,
+            {},
+            24
+        } );
+        colour_data.push_back( (struct settingsMenuData){
+            "Theme colour G",
+            g,
+            {},
+            24
+        } );
+        colour_data.push_back( (struct settingsMenuData){
+            "Theme colour B",
+            b,
+            {},
+            24
+        } );
+    }
+
+    if (dpad_left_active())
+    {
+        int& setting_value = colour_data[selected_colour].setting_value;
+        if (selected_colour == 1 || selected_colour == 2 || selected_colour == 3)
+        {
+            setting_value--;
+            if (setting_value < 0) setting_value = 255;
+        }
+        else if (selected_colour == 0)
+        {
+            setting_value = !setting_value;
+        }
+
+        // calculate themecolour
+        themecolour = oled.color565(colour_data[1].setting_value,
+                                        colour_data[2].setting_value,
+                                        colour_data[3].setting_value);
+
+    }
+
+    if (dpad_right_active())
+    {
+        int& setting_value = colour_data[selected_colour].setting_value;
+        if (selected_colour == 1 || selected_colour == 2 || selected_colour == 3)
+        {
+            setting_value++;
+            if (setting_value > 255) setting_value = 0;
+        }
+        else if (selected_colour == 0)
+        {
+            setting_value = !setting_value;
+        }
+
+        // calculate themecolour
+        themecolour = oled.color565(colour_data[1].setting_value,
+                                        colour_data[2].setting_value,
+                                        colour_data[3].setting_value);
+    }
+
+    if (dpad_down_active())
+    {
+        selected_colour++;
+        if (selected_colour > colour_data.size() - 1) selected_colour = 0;
+    }
+
+    if (dpad_up_active())
+    {
+        selected_colour--;
+        if (selected_colour < 0 ) selected_colour = colour_data.size() - 1;
+    }
+
+    if (dpad_any_active() || !state_init)
+    {
+        oled.setFont(&SourceSansPro_Regular6pt7b);
+        oled.setTextColor(WHITE);
+        drawSettingsMenu(0, 12, SCREEN_WIDTH, SCREEN_HEIGHT - 12, colour_data, selected_colour, themecolour);
+    }
+
+    if (dpad_enter_active())
+    {
+        // store settings
+        preferences.putBool("trans_mode", colour_data[0].setting_value);
+        preferences.putInt("themecolour", themecolour);
+
+        // go back to settings menu
+        switchState(state, 0);
+    }
+
+    break;

@@ -122,6 +122,11 @@ void setup() {
 
     //set up preferences
     preferences.begin("watch2", false); //open watch II preferences in RW mode
+    timeout = preferences.getBool("timeout", false);
+    short_timeout = preferences.getInt("short_timeout", 5000);
+    long_timeout = preferences.getInt("long_timeout", 30000);
+    themecolour = preferences.getInt("themecolour", 0x001F);
+    trans_mode = preferences.getBool("trans_mode", false);
 
     //set up buttons
     btn_dpad_up.begin();
@@ -133,9 +138,9 @@ void setup() {
     //set up time
     timeval tv;
     gettimeofday(&tv, 
-# 133 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 3 4
+# 138 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 3 4
                      __null
-# 133 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
+# 138 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
                          );
     setTime(tv.tv_sec);
 
@@ -186,24 +191,24 @@ void loop() {
     if (btn_dpad_enter.isReleased()) dpad_enter_lock = false;
 
     //handle timeouts
-    if (preferences.getBool("timeout", true))
+    if (timeout && (state != 0))
     {
         if (state == 1)
         {
-            if (btn_dpad_up.releasedFor(preferences.getInt("short_timeout", 5000)) &&
-                btn_dpad_down.releasedFor(preferences.getInt("short_timeout", 5000)) &&
-                btn_dpad_left.releasedFor(preferences.getInt("short_timeout", 5000)) &&
-                btn_dpad_right.releasedFor(preferences.getInt("short_timeout", 5000)) &&
-                btn_dpad_enter.releasedFor(preferences.getInt("short_timeout", 5000)))
+            if (btn_dpad_up.releasedFor(short_timeout) &&
+                btn_dpad_down.releasedFor(short_timeout) &&
+                btn_dpad_left.releasedFor(short_timeout) &&
+                btn_dpad_right.releasedFor(short_timeout) &&
+                btn_dpad_enter.releasedFor(short_timeout))
                 deepSleep(31);
         }
         else
         {
-            if (btn_dpad_up.releasedFor(preferences.getInt("long_timeout", 30000)) &&
-                btn_dpad_down.releasedFor(preferences.getInt("long_timeout", 30000)) &&
-                btn_dpad_left.releasedFor(preferences.getInt("long_timeout", 30000)) &&
-                btn_dpad_right.releasedFor(preferences.getInt("long_timeout", 30000)) &&
-                btn_dpad_enter.releasedFor(preferences.getInt("long_timeout", 30000)))
+            if (btn_dpad_up.releasedFor(long_timeout) &&
+                btn_dpad_down.releasedFor(long_timeout) &&
+                btn_dpad_left.releasedFor(long_timeout) &&
+                btn_dpad_right.releasedFor(long_timeout) &&
+                btn_dpad_enter.releasedFor(long_timeout))
                 deepSleep(31);
         }
     }
@@ -222,14 +227,14 @@ void drawTopThing()
     static double batteryPercentage = 0;
     static int last_battery_reading = millis() - 1000;
 
-    oled.drawFastHLine(0, 10, 128, 0x001F);
+    oled.drawFastHLine(0, 10, 128, themecolour);
     oled.setCursor(1,8);
     oled.setTextColor(0xFFFF);
     oled.setTextSize(1);
     oled.setFont(&SourceSansPro_Regular6pt7b);
     oled.print("watch II");
 
-    oled.printf(" %d ", preferences.getBool("timeout", true));
+    //oled.printf(" %d ", preferences.getBool("timeout", true));
 
     if ( millis() - last_battery_reading > 1000)
     {
@@ -316,6 +321,8 @@ void deepSleep(int pause_thing)
 
     //save selected_state
     selected_state = selected_menu_icon->first;
+    state = 0;
+    state_init = 0;
 
     //set time
     timeval tv{
@@ -324,9 +331,9 @@ void deepSleep(int pause_thing)
     };
 
     settimeofday(&tv, 
-# 320 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 3 4
+# 327 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 3 4
                      __null
-# 320 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
+# 327 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
                          );
 
     //configure deep sleep
@@ -359,7 +366,7 @@ void drawMenu(int x, int y, int width, int height, std::vector<String> items, in
         {
             oled.fillRoundRect(x, y, width, h + (2 * padding), radius, 0x0000);
             oled.drawRoundRect(x, y, width, h + (2 * padding), radius, colour);
-            oled.setTextColor(0x001F);
+            oled.setTextColor(colour);
         }
         //oled.setCursor(x1, y1);
         oled.print(item);
@@ -455,7 +462,7 @@ void Adafruit_GFX::drawRainbowBitmap(int16_t x, int16_t y,
     for(int16_t j=0; j<h; j++, y++) {
         for(int16_t i=0; i<w; i++ ) {
             float R, G, B;
-            if (!preferences.getBool("trans_mode", false)) HSVtoRGB(&R, &G, &B, fmodf(((((float) i) * colour_parts) + phase_difference), (float)360.0), 1.0, 1.0);
+            if (!trans_mode) HSVtoRGB(&R, &G, &B, fmodf(((((float) i) * colour_parts) + phase_difference), (float)360.0), 1.0, 1.0);
             else getHeatMapColor(fmod(((float)i/(float)w) + (phase_difference/360.0), (float)1.0), &R, &G, &B);
             if(i & 7) byte <<= 1;
             else byte = (*(const unsigned char *)(&bitmap[j * byteWidth + i / 8]));
@@ -465,6 +472,17 @@ void Adafruit_GFX::drawRainbowBitmap(int16_t x, int16_t y,
     endWrite();
 }
 
+// adapted from https://stackoverflow.com/a/9069480/9195285
+void colour888(uint16_t colour, float *r, float *g, float *b)
+{
+    uint16_t red = (colour & 0xf800) >> 11;
+    uint16_t green = (colour & 0x07e0) >> 5;
+    uint16_t blue = (colour & 0x001f);
+
+    *r = ( red * 255 ) / 31;
+    *g = ( green * 255 ) / 63;
+    *b = ( blue * 255 ) / 31;
+}
 
 // from https://www.cs.rit.edu/~ncs/color/t_convert.html#RGB%20to%20HSV%20&%20HSV%20to%20RGB
 void HSVtoRGB( float *r, float *g, float *b, float h, float s, float v )
