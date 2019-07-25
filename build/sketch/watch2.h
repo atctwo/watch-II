@@ -53,7 +53,7 @@
                                         //fine for the ESP32.
                                         //Calculator definitions
 #define CALC_CELL_WIDTH   25//27 for 4 chrs
-#define CALC_CELL_HEIGHT  12                                        
+#define CALC_CELL_HEIGHT  12
 
 // struct definitions
 
@@ -63,6 +63,7 @@ struct stateMeta {
     std::string             stateIcon;
     std::function<void()>   stateFunc;
     int                     variant;
+    bool                    hidden;
 };
 
 // data for entries in settings menus
@@ -79,7 +80,7 @@ struct settingsMenuData {
 // system function prototypes
 //preferences.getInt("themecolour", default_themecolour)
 void    drawTopThing();
-int     registerState(std::string stateName, std::string stateIcon, const std::function<void()>& stateFunc);
+int     registerState(std::string stateName, std::string stateIcon, const std::function<void()>& stateFunc, bool hidden = false);
 bool    registerIcon(std::string iconName, std::vector<unsigned short int> icon);
 void    dimScreen(bool direction, int pause_thing);
 void    switchState(int newState, int variant = 0, int dim_pause_thing = 10, int bright_pause_thing = 10);

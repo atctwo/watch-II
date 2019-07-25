@@ -154,7 +154,20 @@ void setup() {
     //set up states
     registerSystemStates();
     registerUtilStates();
-    if (boot_count == 0) selected_menu_icon = states.begin();
+    if (boot_count == 0)
+    {
+        //set selected menu icon to first non-hidden state
+        selected_menu_icon = states.begin();
+        while(1)
+        {
+            if (selected_menu_icon->second.hidden)
+            {
+                //check next state
+                std::advance(selected_menu_icon, 1);
+            }
+            else break;
+        }
+    }
     else selected_menu_icon = states.find(selected_state);
 
     //finish up
@@ -245,13 +258,14 @@ void drawTopThing()
     }
 }
 
-int registerState(std::string stateName, std::string stateIcon, const std::function<void()>& stateFunc)
+int registerState(std::string stateName, std::string stateIcon, const std::function<void()>& stateFunc, bool hidden)
 {
     stateMeta meta = {
         stateName,
         stateIcon,
         stateFunc,
-        0
+        0,
+        hidden
     };
 
     states.insert( { states.size() - 1, meta } );

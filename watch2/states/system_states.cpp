@@ -16,7 +16,7 @@ void registerSystemStates()
         oled.drawRGBBitmap(0, 29, coolcrab, 128, 55);
         if (dpad_any_active()) switchState(0);
 
-    });
+    }, true);
 
     // state 0
     registerState("Initial State", "init", [](){
@@ -77,7 +77,7 @@ void registerSystemStates()
                 switchState(1);
             }
         }
-    });
+    }, true);
 
     //state 1
     registerState("Watch Face", "watch", [](){
@@ -231,14 +231,22 @@ void registerSystemStates()
                 selected_menu_icon = states.end();
                 digitalWrite(12, HIGH);
             }
-            selected_menu_icon--;
+            while(1)
+            {
+                selected_menu_icon--;
+                if (!selected_menu_icon->second.hidden) break;
+            }
         }
 
         if (dpad_right_active())
         {
-            selected_menu_icon++;
-            if (selected_menu_icon == states.end())
-            selected_menu_icon = states.begin();
+            while(1)
+            {
+                selected_menu_icon++;
+                if (selected_menu_icon == states.end())
+                selected_menu_icon = states.begin();
+                if (!selected_menu_icon->second.hidden) break;
+            }
         }
 
         if (dpad_up_active())
@@ -261,8 +269,15 @@ void registerSystemStates()
             for (int i=0; i < loop_limit; i++)
             {
                 if (selected_menu_icon == states.begin())
-                selected_menu_icon = states.end();
-                selected_menu_icon--;
+                {
+                    selected_menu_icon = states.end();
+                    digitalWrite(12, HIGH);
+                }
+                while(1)
+                {
+                    selected_menu_icon--;
+                    if (!selected_menu_icon->second.hidden) break;
+                }
             }
         }
 
@@ -285,9 +300,13 @@ void registerSystemStates()
 
             for (int i=0; i < loop_limit; i++)
             {
-                selected_menu_icon++;
-                if (selected_menu_icon == states.end())
-                selected_menu_icon = states.begin();
+                while(1)
+                {
+                    selected_menu_icon++;
+                    if (selected_menu_icon == states.end())
+                    selected_menu_icon = states.begin();
+                    if (!selected_menu_icon->second.hidden) break;
+                }
             }
         }
 
@@ -302,31 +321,34 @@ void registerSystemStates()
             for (std::map<int, stateMeta>::iterator it = states.begin(); it != states.end(); it++)
             {
                 stateMeta stateinfo = it->second;
-                oled.drawRGBBitmap(icon_xpos, icon_ypos, icons[stateinfo.stateIcon].data(),
-                                   icon_size, icon_size);
-
-                if (selected_menu_icon == it)
+                if (!stateinfo.hidden)
                 {
-                    oled.drawRect(icon_xpos-1, icon_ypos-1, icon_size+1, icon_size+1, themecolour);
-                    oled.setCursor(2, 94);
-                    oled.setTextColor(WHITE);
-                    oled.print(stateinfo.stateName.c_str());
-                }
-                else oled.drawRect(icon_xpos-1, icon_ypos-1, icon_size+1, icon_size+1, BLACK);
+                    oled.drawRGBBitmap(icon_xpos, icon_ypos, icons[stateinfo.stateIcon].data(),
+                                       icon_size, icon_size);
 
-                icon_xpos += icon_size + icon_spacing;
-                if ((icon_xpos+icon_size) > SCREEN_WIDTH)
-                {
-                    icon_xpos = icon_spacing;
-                    icon_ypos += icon_size + icon_spacing;
-                }
+                    if (selected_menu_icon == it)
+                    {
+                        oled.drawRect(icon_xpos-1, icon_ypos-1, icon_size+1, icon_size+1, themecolour);
+                        oled.setCursor(2, 94);
+                        oled.setTextColor(WHITE);
+                        oled.print(stateinfo.stateName.c_str());
+                    }
+                    else oled.drawRect(icon_xpos-1, icon_ypos-1, icon_size+1, icon_size+1, BLACK);
 
-                if (!state_init)
-                {
-                    menu_positions.push_back(it);
-                }
+                    icon_xpos += icon_size + icon_spacing;
+                    if ((icon_xpos+icon_size) > SCREEN_WIDTH)
+                    {
+                        icon_xpos = icon_spacing;
+                        icon_ypos += icon_size + icon_spacing;
+                    }
 
-                if (!state_init) no_icons++;
+                    if (!state_init)
+                    {
+                        menu_positions.push_back(it);
+                    }
+
+                    if (!state_init) no_icons++;
+                }
             }
         }
 
@@ -337,7 +359,7 @@ void registerSystemStates()
             switchState(selected_menu_icon->first);
         }
 
-    });
+    }, true);
 
     //state 3
     registerState("Settings", "settings", [](){
