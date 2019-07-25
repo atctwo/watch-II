@@ -1,0 +1,24 @@
+D:\programming\arduino\watch2\build\libraries\tinyexpr\benchmark.c.o: \
+ C:\Users\alexm\personalpathprograms\arduino-PR-beta1.9-BUILD-107\libraries\tinyexpr\src\benchmark.c \
+ C:\Users\alexm\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.2/tools/sdk/include/newlib/stdio.h \
+ C:\Users\alexm\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.2/tools/sdk/include/newlib/_ansi.h \
+ C:\Users\alexm\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.2/tools/sdk/include/newlib/newlib.h \
+ C:\Users\alexm\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.2/tools/sdk/include/newlib/sys/config.h \
+ C:\Users\alexm\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.2/tools/sdk/include/newlib/machine/ieeefp.h \
+ C:\Users\alexm\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.2/tools/sdk/include/newlib/sys/features.h \
+ C:\Users\alexm\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.2/tools/sdk/include/esp32/xtensa/config/core-isa.h \
+ C:\Users\alexm\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.2/tools/sdk/include/newlib/sys/cdefs.h \
+ C:\Users\alexm\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.2/tools/sdk/include/newlib/machine/_default_types.h \
+ C:\Users\alexm\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.2/tools/sdk/include/newlib/sys/reent.h \
+ C:\Users\alexm\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.2/tools/sdk/include/newlib/_ansi.h \
+ C:\Users\alexm\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.2/tools/sdk/include/newlib/sys/_types.h \
+ C:\Users\alexm\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.2/tools/sdk/include/newlib/machine/_types.h \
+ C:\Users\alexm\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.2/tools/sdk/include/newlib/sys/lock.h \
+ C:\Users\alexm\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.2/tools/sdk/include/newlib/sys/types.h \
+ C:\Users\alexm\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.2/tools/sdk/include/newlib/machine/types.h \
+ C:\Users\alexm\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.2/tools/sdk/include/newlib/sys/sched.h \
+ C:\Users\alexm\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.2/tools/sdk/include/newlib/sys/stdio.h \
+ C:\Users\alexm\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.2/tools/sdk/include/newlib/time.h \
+ C:\Users\alexm\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.2/tools/sdk/include/newlib/machine/time.h \
+ C:\Users\alexm\AppData\Local\Arduino15\packages\esp32\hardware\esp32\1.0.2/tools/sdk/include/newlib/math.h \
+ C:\Users\alexm\personalpathprograms\arduino-PR-beta1.9-BUILD-107\libraries\tinyexpr\src\tinyexpr.h

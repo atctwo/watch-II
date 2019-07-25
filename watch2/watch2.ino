@@ -10,6 +10,7 @@
 #include <JC_Button.h>              // button object
 #include <WiFi.h>                   // wifi library
 #include <Preferences.h>
+#include <tinyexpr.h>
 #include <map>                      // map object for storing states
 #include <string>                   // std::string
 #include <functional>               // std::function thing
@@ -93,6 +94,7 @@ bool dpad_enter_lock = false;
 #include "icons/app_icons.cpp"
 
 #include "states/system_states.cpp"
+#include "states/util_states.cpp"
 
 ////////////////////////////////////////
 // setup function
@@ -151,6 +153,7 @@ void setup() {
 
     //set up states
     registerSystemStates();
+    registerUtilStates();
     if (boot_count == 0) selected_menu_icon = states.begin();
     else selected_menu_icon = states.find(selected_state);
 

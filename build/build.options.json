@@ -1,5 +1,5 @@
 {
-  "additionalFiles": "\\coolcrab.h,\\custom_fonts\\lato-regular-6.h,\\custom_fonts\\sourcesanspro-light-12.h,\\custom_fonts\\sourcesanspro-light-16.h,\\custom_fonts\\sourcesanspro-light-24.h,\\custom_fonts\\sourcesanspro-light-6.h,\\custom_fonts\\sourcesanspro-light-8.h,\\custom_fonts\\sourcesanspro-regular-16.h,\\custom_fonts\\sourcesanspro-regular-20.h,\\custom_fonts\\sourcesanspro-regular-24.h,\\custom_fonts\\sourcesanspro-regular-6.h,\\custom_fonts\\sourcesanspro-regular-8.h,\\icons\\app_icons.cpp,\\regret.h,\\states\\system_states.cpp,\\watch2.h",
+  "additionalFiles": "\\coolcrab.h,\\custom_fonts\\lato-regular-6.h,\\custom_fonts\\sourcesanspro-light-12.h,\\custom_fonts\\sourcesanspro-light-16.h,\\custom_fonts\\sourcesanspro-light-24.h,\\custom_fonts\\sourcesanspro-light-6.h,\\custom_fonts\\sourcesanspro-light-8.h,\\custom_fonts\\sourcesanspro-regular-16.h,\\custom_fonts\\sourcesanspro-regular-20.h,\\custom_fonts\\sourcesanspro-regular-24.h,\\custom_fonts\\sourcesanspro-regular-6.h,\\custom_fonts\\sourcesanspro-regular-8.h,\\icons\\app_icons.cpp,\\regret.h,\\states\\system_states.cpp,\\states\\util_states.cpp,\\watch2.h",
   "builtInLibrariesFolders": "",
   "customBuildProperties": "build.f_cpu=96000000L",
   "fqbn": "esp32:esp32:esp32",

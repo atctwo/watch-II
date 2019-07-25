@@ -13,6 +13,7 @@
 #include <JC_Button.h>              // button object
 #include <WiFi.h>                   // wifi library
 #include <Preferences.h>
+#include <tinyexpr.h>
 #include <map>                      // map object for storing states
 #include <string>                   // std::string
 #include <functional>               // std::function thing
@@ -96,40 +97,41 @@ bool dpad_enter_lock = false;
 #include "icons/app_icons.cpp"
 
 #include "states/system_states.cpp"
+#include "states/util_states.cpp"
 
 ////////////////////////////////////////
 // setup function
 ////////////////////////////////////////
 
-#line 101 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
+#line 103 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
 void setup();
-#line 166 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
+#line 169 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
 void loop();
-#line 218 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
+#line 221 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
 void drawTopThing();
-#line 245 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
+#line 248 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
 int registerState(std::string stateName, std::string stateIcon, const std::function<void()>& stateFunc);
-#line 259 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
+#line 262 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
 bool registerIcon(std::string iconName, std::vector<unsigned short int> icon);
-#line 266 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
+#line 269 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
 void switchState(int newState, int variant, int dim_pause_thing, int bright_pause_thing);
-#line 288 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
+#line 291 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
 void dimScreen(bool direction, int pause_thing);
-#line 307 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
+#line 310 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
 void deepSleep(int pause_thing);
-#line 338 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
+#line 341 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
 void drawMenu(int x, int y, int width, int height, std::vector<String> items, int selected, int colour);
-#line 368 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
+#line 371 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
 void drawSettingsMenu(int x, int y, int width, int height, std::vector<settingsMenuData> items, int selected, int colour);
-#line 466 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
+#line 469 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
 void colour888(uint16_t colour, float *r, float *g, float *b);
-#line 478 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
+#line 481 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
 void HSVtoRGB( float *r, float *g, float *b, float h, float s, float v );
-#line 528 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
+#line 531 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
 bool getHeatMapColor(float value, float *red, float *green, float *blue);
-#line 558 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
+#line 561 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
 double ReadVoltage(byte pin);
-#line 101 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
+#line 103 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
 void setup() {
 
     //set cpu Frequency
@@ -183,6 +185,7 @@ void setup() {
 
     //set up states
     registerSystemStates();
+    registerUtilStates();
     if (boot_count == 0) selected_menu_icon = states.begin();
     else selected_menu_icon = states.find(selected_state);
 

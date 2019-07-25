@@ -51,7 +51,9 @@
                                         //make sure the battery voltage (when scaled) is not aboe 3.3v.
                                         //a LiPo that maxes out at 4.7v will be scaled to 2.35v, which is
                                         //fine for the ESP32.
-
+                                        //Calculator definitions
+#define CALC_CELL_WIDTH   25//27 for 4 chrs
+#define CALC_CELL_HEIGHT  12                                        
 
 // struct definitions
 

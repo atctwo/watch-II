@@ -20,20 +20,21 @@
 # 19 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 2
 # 20 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 2
 # 21 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 2
+# 22 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 2
 
-# 23 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 2
+# 24 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 2
 
 // custom fonts
-# 26 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 2
 # 27 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 2
 # 28 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 2
 # 29 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 2
 # 30 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 2
 # 31 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 2
 # 32 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 2
+# 33 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 2
 
-# 34 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 2
 # 35 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 2
+# 36 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 2
 
 ////////////////////////////////////////
 // global stuff
@@ -92,9 +93,10 @@ bool dpad_enter_lock = false;
 ////////////////////////////////////////
 // include state file things and icon files
 ////////////////////////////////////////
-# 94 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 2
+# 95 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 2
 
-# 96 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 2
+# 97 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 2
+# 98 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 2
 
 ////////////////////////////////////////
 // setup function
@@ -138,9 +140,9 @@ void setup() {
     //set up time
     timeval tv;
     gettimeofday(&tv, 
-# 138 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 3 4
+# 140 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 3 4
                      __null
-# 138 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
+# 140 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
                          );
     setTime(tv.tv_sec);
 
@@ -157,6 +159,7 @@ void setup() {
 
     //set up states
     registerSystemStates();
+    registerUtilStates();
     if (boot_count == 0) selected_menu_icon = states.begin();
     else selected_menu_icon = states.find(selected_state);
 
@@ -331,9 +334,9 @@ void deepSleep(int pause_thing)
     };
 
     settimeofday(&tv, 
-# 327 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 3 4
+# 330 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino" 3 4
                      __null
-# 327 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
+# 330 "D:\\programming\\arduino\\watch2\\watch2\\watch2.ino"
                          );
 
     //configure deep sleep
