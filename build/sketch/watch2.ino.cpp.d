@@ -200,4 +200,5 @@ D:\programming\arduino\watch2\build\sketch\watch2.ino.cpp.o: \
  D:\programming\arduino\watch2\build\sketch\regret.h \
  D:\programming\arduino\watch2\build\sketch\icons/app_icons.cpp \
  D:\programming\arduino\watch2\build\sketch\states/system_states.cpp \
- D:\programming\arduino\watch2\build\sketch\states/util_states.cpp
+ D:\programming\arduino\watch2\build\sketch\states/util_states.cpp \
+ D:\programming\arduino\watch2\build\sketch\states/time_states.cpp

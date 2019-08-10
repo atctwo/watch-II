@@ -380,6 +380,8 @@ void registerSystemStates()
         static int time_element_padding = 3;
         static int radius = 4;
 
+        preferences.begin("watch2", false);      //open watch II preferences in RW mode
+
         switch (states[state].variant)
         {
             default:
@@ -411,6 +413,7 @@ void registerSystemStates()
                 if (dpad_left_active())
                 {
                     // go back to the state menu
+                    preferences.end();
                     switchState(2);
                 }
                 break;

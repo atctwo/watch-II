@@ -61,19 +61,33 @@ std::map<int, stateMeta> states;
 std::map<std::string, std::vector<unsigned short int>> icons;
 
 // global variables
-int state = 0;
-int state_init = 0;
-std::map<int, stateMeta>::iterator selected_menu_icon;
-RTC_DATA_ATTR int selected_state = 0;
+int state = 0;                                                  //currently selected state
+int state_init = 0;                                             //0 if the state is being executed for the first time (after swtiching from another stat)
+std::map<int, stateMeta>::iterator selected_menu_icon;          //iterator to the currently selected state
+RTC_DATA_ATTR int selected_state = 0;                           //numerical representation of currently selected state that persists accross sleep mode
 //boot count is used to keep track of what state was selected in the menu before
 //entering deep sleep.  This variable is only used when going in to or waking up
 //from sleep.  During active mode operation, selected_menu_icon is used,
-RTC_DATA_ATTR int boot_count = 0;
-int trans_mode = 0;
-int short_timeout = 5000;
-int long_timeout = 30000;
-bool timeout = true;
-int themecolour = BLUE;
+RTC_DATA_ATTR int boot_count = 0;                               //no of times watch has woken up (including initial boot)
+int trans_mode = 0;                                             //pretty colour scheme
+int short_timeout = 5000;                                       //timeout when looking at watch face
+int long_timeout = 30000;                                       //timeout (almost) everywhere else
+bool timeout = true;                                            //whether or not to go to sleep after timeout time has elapsed
+int themecolour = BLUE;                                         //colour of the system accent
+int RTC_DATA_ATTR stopwatch_timing = 0;                                       //stopwatch state
+                                                                //0 - stopped
+                                                                //1 - running
+                                                                //2 - paused
+uint32_t RTC_DATA_ATTR stopwatch_epoch = 0;                                   //time when the stopwatch was started
+uint32_t RTC_DATA_ATTR stopwatch_paused_diff = 0;                             //when the stopwatch is off or paused, stopwatch_epoch is set to the current time minus this value
+                                                                //when the stopwatch is paused, this value is set to the difference between stopwatch_epoch and the current time (keeps the difference constant)
+                                                                //when the stopwatch is off, this value is set to 0
+uint32_t stopwatch_time_diff = 0;                               //difference between epoch and current time (equivalent to elapsed time)
+uint32_t stopwatch_last_time_diff = 0;                          //last time diff (used for checking when to redraw elapsed time)
+uint32_t stopwatch_ms = 0, stopwatch_last_ms = 0;
+uint32_t stopwatch_s = 0, stopwatch_last_s = 0;
+uint32_t stopwatch_min = 0, stopwatch_last_min = 0;
+uint32_t stopwatch_hour = 0, stopwatch_last_hour = 0;
 
 //these variables stop button presses affecting new states
 //when switching from a previous state.
@@ -95,6 +109,7 @@ bool dpad_enter_lock = false;
 
 #include "states/system_states.cpp"
 #include "states/util_states.cpp"
+#include "states/time_states.cpp"
 
 ////////////////////////////////////////
 // setup function
@@ -127,6 +142,7 @@ void setup() {
     long_timeout = preferences.getInt("long_timeout", 30000);
     themecolour = preferences.getInt("themecolour", BLUE);
     trans_mode = preferences.getBool("trans_mode", false);
+    preferences.end();
 
     //set up buttons
     btn_dpad_up.begin();
@@ -154,6 +170,8 @@ void setup() {
     //set up states
     registerSystemStates();
     registerUtilStates();
+    registerTimeStates();
+
     if (boot_count == 0)
     {
         //set selected menu icon to first non-hidden state
@@ -199,6 +217,9 @@ void loop() {
     if (btn_dpad_left.isReleased())     dpad_left_lock = false;
     if (btn_dpad_right.isReleased())    dpad_right_lock = false;
     if (btn_dpad_enter.isReleased())    dpad_enter_lock = false;
+
+    Serial.println(stopwatch_epoch);
+    Serial.println(millis() - stopwatch_epoch);
 
     //handle timeouts
     if (timeout && (state != 0))
@@ -332,8 +353,6 @@ void deepSleep(int pause_thing)
 
     //save selected_state
     selected_state = selected_menu_icon->first;
-    state = 0;
-    state_init = 0;
 
     //set time
     timeval tv{
@@ -343,13 +362,30 @@ void deepSleep(int pause_thing)
 
     settimeofday(&tv, NULL);
 
-    //configure deep sleep
+    //deep sleep setup
     esp_sleep_enable_ext0_wakeup(GPIO_NUM_26, 1); //1 = High, 0 = Low
+
     esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_SLOW_MEM, ESP_PD_OPTION_ON);
     esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_FAST_MEM, ESP_PD_OPTION_ON);
 
     //begin sleep
-    esp_deep_sleep_start();
+    Serial.println("entering sleep mode");
+    esp_light_sleep_start();
+
+    //when the esp is woken up, it will resume execution at this point
+
+    Serial.println("awake");
+    oled.sendCommand(0xAF);
+
+    //set up buttons
+    btn_dpad_up.begin();
+    btn_dpad_down.begin();
+    btn_dpad_left.begin();
+    btn_dpad_right.begin();
+    btn_dpad_enter.begin();
+
+    //rtc_gpio_deinit(GPIO_NUM_26);
+    switchState(0);
 }
 
 void drawMenu(int x, int y, int width, int height, std::vector<String> items, int selected, int colour)

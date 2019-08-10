@@ -22,15 +22,15 @@ targets:
         name:   "watch2.ino"
         args:
             - upload
-            - -p COM9
+            - -p COM15
             - -v
             - --fqbn esp32:esp32:esp32
             - -i build/watch2.ino.bin
     serialconsole:
         cmd:    "miniterm.py"
         args:
-            - COM9
-            - 115200
+            - COM15
+            - 115200k
 
     chipid:
         cmd:    "esptool.py"
