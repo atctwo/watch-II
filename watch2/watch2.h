@@ -76,14 +76,51 @@ struct settingsMenuData {
 
 };
 
+// data for timers
+struct timerData {
+
+    //the time left on a timer (in seconds).  only updated when the timer is paused, so
+    //don't rely on this for when the timer is not paused.  when the timer
+    //is paused, the Alarm ID is freed, and timer (at least according to
+    //the TimeAlarms lib) ceases to exist.  this duration value is used to
+    //create a new timer when the timer is resumed.  this makes it look like
+    //the timer is actually paused.
+    time_t                      duration;
+
+    time_t                      initial_duration;
+
+    //if the timer is not paused, then it will be associated with a TimeAlarms
+    //timer.  this member stores the id of the timer.  when the timer is paused,
+    //the TimeAlarms timer does not exist (see above), so this variable is set
+    //to 255.  this can be used to check whether or not the timer is paused.
+    AlarmID_t                   alarm_id;
+
+    //the time at which the TimeAlarms timer is started.  if the timer is
+    //paused and resumed, this member stored the time at which the timer was
+    //resumed.  should be 255 if the timer has not yet started, or the timer
+    //is paused.
+    time_t                      time_started;
+
+    //the function to execute once the timer has completed
+    OnTick_t                    on_tick_handler;
+
+    time_t                      last_value;
+
+};
+
 
 // system function prototypes
-//preferences.getInt("themecolour", default_themecolour)
+
+//draw the status bar at the top of the page
 void    drawTopThing();
+
+//add a state to the list of states.  usage is described at docs/states.md
 int     registerState(std::string stateName, std::string stateIcon, const std::function<void()>& stateFunc, bool hidden = false);
+
 bool    registerIcon(std::string iconName, std::vector<unsigned short int> icon);
+bool    registerSmallIcon(std::string iconName, std::vector<unsigned char> icon);
 void    dimScreen(bool direction, int pause_thing);
-void    switchState(int newState, int variant = 0, int dim_pause_thing = 10, int bright_pause_thing = 10);
+void    switchState(int newState, int variant = 0, int dim_pause_thing = 10, int bright_pause_thing = 10, bool dont_draw_first_frame = false);
 void    deepSleep(int pause_thing=10);
 void    drawMenu(int x, int y, int width, int height, std::vector<String> items, int selected, int colour);
 void    drawSettingsMenu(int x, int y, int width, int height, std::vector<settingsMenuData> items, int selected, int colour);

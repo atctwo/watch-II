@@ -17,6 +17,7 @@
 #include <time.h>                   // used for system-level time keeping
 #include <sys/time.h>               // see above
 #include <TimeLib.h>                // used for managing time (see code note 1)
+#include <TimeAlarms.h>
 #include <stdio.h>                  // i don't actually know...
 #include <algorithm>                // used for std::find and std::min and std::max
 
@@ -58,7 +59,8 @@ Button btn_dpad_enter(dpad_enter, 25, false, false);
 std::map<int, stateMeta> states;
 
 //map of icons
-std::map<std::string, std::vector<unsigned short int>> icons;
+std::map<std::string, std::vector<unsigned short int>> icons;   //large colour icons for things like the state menu
+std::map<std::string, std::vector<unsigned char>> small_icons;  //smaller monochrome icons for use within GUIs
 
 // global variables
 int state = 0;                                                  //currently selected state
@@ -74,12 +76,13 @@ int short_timeout = 5000;                                       //timeout when l
 int long_timeout = 30000;                                       //timeout (almost) everywhere else
 bool timeout = true;                                            //whether or not to go to sleep after timeout time has elapsed
 int themecolour = BLUE;                                         //colour of the system accent
-int RTC_DATA_ATTR stopwatch_timing = 0;                                       //stopwatch state
+
+int RTC_DATA_ATTR stopwatch_timing = 0;                         //stopwatch state
                                                                 //0 - stopped
                                                                 //1 - running
                                                                 //2 - paused
-uint32_t RTC_DATA_ATTR stopwatch_epoch = 0;                                   //time when the stopwatch was started
-uint32_t RTC_DATA_ATTR stopwatch_paused_diff = 0;                             //when the stopwatch is off or paused, stopwatch_epoch is set to the current time minus this value
+uint32_t RTC_DATA_ATTR stopwatch_epoch = 0;                     //time when the stopwatch was started
+uint32_t RTC_DATA_ATTR stopwatch_paused_diff = 0;               //when the stopwatch is off or paused, stopwatch_epoch is set to the current time minus this value
                                                                 //when the stopwatch is paused, this value is set to the difference between stopwatch_epoch and the current time (keeps the difference constant)
                                                                 //when the stopwatch is off, this value is set to 0
 uint32_t stopwatch_time_diff = 0;                               //difference between epoch and current time (equivalent to elapsed time)
@@ -88,6 +91,13 @@ uint32_t stopwatch_ms = 0, stopwatch_last_ms = 0;
 uint32_t stopwatch_s = 0, stopwatch_last_s = 0;
 uint32_t stopwatch_min = 0, stopwatch_last_min = 0;
 uint32_t stopwatch_hour = 0, stopwatch_last_hour = 0;
+
+std::vector<timerData> timers;
+int timer_trigger_status = 0;                                   //the state of a timer
+                                                                //0 - timer not going off → normal state execution
+                                                                //1 - timer going off → suspend state execution and draw alarm message
+                                                                //2 - timer gone off → wait for user input before resuming state execution
+int timer_trigger_id = 255;
 
 //these variables stop button presses affecting new states
 //when switching from a previous state.
@@ -106,6 +116,7 @@ bool dpad_enter_lock = false;
 // include state file things and icon files
 ////////////////////////////////////////
 #include "icons/app_icons.cpp"
+#include "icons/small_icons.cpp"
 
 #include "states/system_states.cpp"
 #include "states/util_states.cpp"
@@ -166,6 +177,7 @@ void setup() {
 
     //set up icons
     registerAppIcons();
+    registerSmallIcons();
 
     //set up states
     registerSystemStates();
@@ -206,10 +218,51 @@ void loop() {
     btn_dpad_right.read();
     btn_dpad_enter.read();
 
+    //check timers and alarms
+    Alarm.delay(0);
+
     //run current state
-    if ( states.find(state) == states.end() )
-    states[-1].stateFunc();
-    else states[state].stateFunc();
+    if (timer_trigger_status == 0)
+    {
+        if ( states.find(state) == states.end() )
+        states[-1].stateFunc();
+        else states[state].stateFunc();
+    }
+    else
+    {
+        if (timer_trigger_status == 1)
+        {
+            //dim screen
+            dimScreen(0, 10);
+            oled.fillScreen(BLACK);
+
+            //get time to display
+            time_t duration = timers[timer_trigger_id].initial_duration;
+            time_t time_left_hrs = floor(duration / 3600);
+            time_t time_left_min = floor(duration % 3600 / 60);
+            time_t time_left_sec = floor(duration % 3600 % 60);
+
+            //draw message
+            oled.setFont(&SourceSansPro_Light8pt7b);
+            oled.setCursor(0, 20);
+            oled.printf("%02d hours,\n%02d minutes, and\n%02d seconds\n", time_left_hrs, time_left_min, time_left_sec);
+            oled.setFont(&SourceSansPro_Regular6pt7b);
+            oled.print("have elapsed.  press any\nkey to continue");
+
+            //brighten screen
+            dimScreen(1, 10);
+
+            //set timer trigger status
+            timer_trigger_status = 2;
+        }
+
+        drawTopThing();
+        if (dpad_any_active())
+        {
+            timer_trigger_status = 0;
+            switchState(state);
+        }
+    }
 
     //reset button lock state
     if (btn_dpad_up.isReleased())       dpad_up_lock = false;
@@ -217,9 +270,6 @@ void loop() {
     if (btn_dpad_left.isReleased())     dpad_left_lock = false;
     if (btn_dpad_right.isReleased())    dpad_right_lock = false;
     if (btn_dpad_enter.isReleased())    dpad_enter_lock = false;
-
-    Serial.println(stopwatch_epoch);
-    Serial.println(millis() - stopwatch_epoch);
 
     //handle timeouts
     if (timeout && (state != 0))
@@ -301,7 +351,14 @@ bool registerIcon(std::string iconName, std::vector<unsigned short int> icon)
     return false;
 }
 
-void switchState(int newState, int variant, int dim_pause_thing, int bright_pause_thing)
+bool registerSmallIcon(std::string iconName, std::vector<unsigned char> icon)
+{
+    small_icons.emplace( iconName, icon );
+
+    return false;
+}
+
+void switchState(int newState, int variant, int dim_pause_thing, int bright_pause_thing, bool dont_draw_first_frame)
 {
     dimScreen(0, dim_pause_thing);              //dim the screen
     oled.fillScreen(BLACK);                     //clear screen
@@ -316,6 +373,7 @@ void switchState(int newState, int variant, int dim_pause_thing, int bright_paus
     state = newState;                           //switch state variable
     states[state].variant = variant;            //set state variant
 
+    if (!dont_draw_first_frame)
     states[state].stateFunc();                  //run the state function once
 
     state_init = 1;                             //set first execution flag
@@ -368,6 +426,29 @@ void deepSleep(int pause_thing)
     esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_SLOW_MEM, ESP_PD_OPTION_ON);
     esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_FAST_MEM, ESP_PD_OPTION_ON);
 
+    //determine when to wake up (if a timer or alarm is set)
+    time_t next_alarm_time = -1;
+    time_t time_left = 0;
+
+    for (int i = 0; i < timers.size(); i++)
+    {
+        if (timers[i].alarm_id != 255)
+        {
+            time_t time_left = ( timers[i].time_started + Alarm.read(timers[i].alarm_id ) ) - now();
+            if (time_left > next_alarm_time) next_alarm_time = time_left;
+        }
+    }
+
+    //if an timer or an alarm has been set, set the device to wake up just before the alarm triggers
+    if (next_alarm_time > -1)
+    {
+        esp_sleep_enable_timer_wakeup(next_alarm_time * 1000 * 1000 - 100);
+    }
+    else //if no alarm or timer has been set, then disable the timer wake up source
+    {
+        esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_TIMER);
+    }
+
     //begin sleep
     Serial.println("entering sleep mode");
     esp_light_sleep_start();
@@ -385,7 +466,8 @@ void deepSleep(int pause_thing)
     btn_dpad_enter.begin();
 
     //rtc_gpio_deinit(GPIO_NUM_26);
-    switchState(0);
+    if (next_alarm_time > -1) switchState(0, 0, 0, 0, true);
+    else switchState(0);
 }
 
 void drawMenu(int x, int y, int width, int height, std::vector<String> items, int selected, int colour)

@@ -29,11 +29,12 @@ for y in range(im.height):
     for x in range(im.width):
 
         r,g,b,a = im.getpixel((x, y))
-        rgb = ((r & 0b11111000) << 8) | ((g & 0b11111100) << 3) | (b >> 3);
+        if (a == 0): rgb = 0
+        else: rgb = ((r & 0b11111000) << 8) | ((g & 0b11111100) << 3) | (b >> 3);
 
         if (output_thing % 20 == 0): out.write("\n\t");
 
-        out.write(str(hex(rgb)))
+        out.write("{0:#0{1}x}".format(rgb, 6))
         if (output_thing != pixels-1): out.write(",")
 
         output_thing += 1
