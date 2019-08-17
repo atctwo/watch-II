@@ -23,11 +23,11 @@
 #define KEY_REPEAT_DELAY    550     //time for key repeat to start, in ms
 #define KEY_REPEAT_PERIOD   24      //time between key repeats, in ms
 
-#define dpad_up_active()    ( !dpad_up_lock &&    (btn_dpad_up.wasPressed() || ( btn_dpad_up.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD == 0 ) ) ) )
-#define dpad_down_active()  ( !dpad_down_lock &&  (btn_dpad_down.wasPressed() || ( btn_dpad_down.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD == 0 ) ) ) )
-#define dpad_left_active()  ( !dpad_left_lock &&  (btn_dpad_left.wasPressed() || ( btn_dpad_left.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD == 0 ) ) ) )
-#define dpad_right_active() ( !dpad_right_lock && (btn_dpad_right.wasPressed() || ( btn_dpad_right.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD == 0 ) ) ) )
-#define dpad_enter_active() ( !dpad_enter_lock && (btn_dpad_enter.wasPressed() || ( btn_dpad_enter.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD == 0 ) ) ) )
+#define dpad_up_active()    ( !dpad_up_lock &&    (btn_dpad_up.wasPressed() || ( btn_dpad_up.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD < 5 ) ) ) )
+#define dpad_down_active()  ( !dpad_down_lock &&  (btn_dpad_down.wasPressed() || ( btn_dpad_down.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD < 5 ) ) ) )
+#define dpad_left_active()  ( !dpad_left_lock &&  (btn_dpad_left.wasPressed() || ( btn_dpad_left.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD < 5 ) ) ) )
+#define dpad_right_active() ( !dpad_right_lock && (btn_dpad_right.wasPressed() || ( btn_dpad_right.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD < 5 ) ) ) )
+#define dpad_enter_active() ( !dpad_enter_lock && (btn_dpad_enter.wasPressed() || ( btn_dpad_enter.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD < 5 ) ) ) )
 #define dpad_any_active()   ( dpad_up_active() || dpad_down_active() || dpad_left_active() || dpad_right_active() || dpad_enter_active() )
 
 // Color definitions
@@ -104,6 +104,15 @@ struct timerData {
     //the function to execute once the timer has completed
     OnTick_t                    on_tick_handler;
 
+    time_t                      last_value;
+
+};
+
+struct alarmData {
+
+    AlarmID_t                   alarm_id;
+    time_t                      initial_time;
+    bool                        paused;
     time_t                      last_value;
 
 };

@@ -76,6 +76,7 @@ int short_timeout = 5000;                                       //timeout when l
 int long_timeout = 30000;                                       //timeout (almost) everywhere else
 bool timeout = true;                                            //whether or not to go to sleep after timeout time has elapsed
 int themecolour = BLUE;                                         //colour of the system accent
+time_t alarm_snooze_time = 5*60;                                //time to add to alarm when snoozing
 
 int RTC_DATA_ATTR stopwatch_timing = 0;                         //stopwatch state
                                                                 //0 - stopped
@@ -93,11 +94,14 @@ uint32_t stopwatch_min = 0, stopwatch_last_min = 0;
 uint32_t stopwatch_hour = 0, stopwatch_last_hour = 0;
 
 std::vector<timerData> timers;
+std::vector<alarmData> alarms;
 int timer_trigger_status = 0;                                   //the state of a timer
                                                                 //0 - timer not going off → normal state execution
                                                                 //1 - timer going off → suspend state execution and draw alarm message
                                                                 //2 - timer gone off → wait for user input before resuming state execution
 int timer_trigger_id = 255;
+int alarm_trigger_status = 0;
+int alarm_trigger_id = 0;
 
 //these variables stop button presses affecting new states
 //when switching from a previous state.
@@ -222,13 +226,13 @@ void loop() {
     Alarm.delay(0);
 
     //run current state
-    if (timer_trigger_status == 0)
+    if (timer_trigger_status == 0 && alarm_trigger_status == 0)
     {
         if ( states.find(state) == states.end() )
         states[-1].stateFunc();
         else states[state].stateFunc();
     }
-    else
+    else if (timer_trigger_status != 0) //handle timers
     {
         if (timer_trigger_status == 1)
         {
@@ -262,6 +266,95 @@ void loop() {
             timer_trigger_status = 0;
             switchState(state);
         }
+    }
+    else if (alarm_trigger_status != 0) //handle alarms
+    {
+
+        static bool selected_alarm_action = 0;
+        static bool last_time = 0;
+        static char text_aaaa[150];
+        static int16_t x1, y1;
+        static uint16_t w=0, h=0;
+        static GFXcanvas1 *canvas_time = new GFXcanvas1(SCREEN_WIDTH, 20);
+        //0 - dismiss
+        //anything else - sleep
+
+        if (alarm_trigger_status == 1)
+        {
+            //dim screen
+            dimScreen(0, 10);
+            oled.fillScreen(BLACK);
+
+            //brighten screen
+            dimScreen(1, 10);
+
+            //set timer trigger status
+            alarm_trigger_status = 2;
+        }
+
+        if (dpad_left_active() || dpad_right_active())
+        {
+            if (selected_alarm_action == 0) selected_alarm_action = 1;
+            else if (selected_alarm_action == 1) selected_alarm_action = 0;
+        }
+
+        if (now() != last_time)
+        {
+            canvas_time->setFont(&SourceSansPro_Light12pt7b);
+            //canvas_time->setTextColor(WHITE);
+            canvas_time->fillScreen(BLACK);
+            canvas_time->setCursor(2, 16);
+            canvas_time->printf("%02d:%02d:%02d", hour(), minute(), second());
+            oled.drawBitmap(2, 16, canvas_time->getBuffer(), SCREEN_WIDTH, 20, themecolour, BLACK);
+            last_time = now();
+        }
+
+        //draw buttons
+        if (dpad_any_active() || alarm_trigger_status == 2)
+        {
+            //draw dismiss button
+            oled.drawRoundRect(24, 42, 28, 28, 4, (!selected_alarm_action) ? themecolour : BLACK);
+            oled.drawRGBBitmap(26, 44, icons["dismiss"].data(), 24, 24);
+
+            //draw snooze button
+            oled.drawRoundRect(SCREEN_WIDTH - 26 - 26, 42, 28, 28, 4, (selected_alarm_action) ? themecolour : BLACK);
+            oled.drawRGBBitmap(SCREEN_WIDTH - 26 - 24, 44, icons["bed"].data(), 24, 24);
+
+            //draw button text
+            oled.fillRect(0, 71, SCREEN_WIDTH, SCREEN_HEIGHT - 71, BLACK);
+            oled.setFont(&SourceSansPro_Regular6pt7b);
+            String button = (selected_alarm_action) ? "Snooze" : "Dismiss";
+            oled.getTextBounds(button, 24, 80, &x1, &y1, &w, &h);
+            oled.setCursor(
+                ( SCREEN_WIDTH / 2 ) - ( w / 2 ),
+                80
+            );
+            oled.print(button);
+
+            alarm_trigger_status = 3;  //hack hack hack hack
+        }
+
+        Serial.println(selected_alarm_action);
+        drawTopThing();
+
+        if (dpad_enter_active())
+        {
+            if (selected_alarm_action == 1)  //snooze alarm
+            {
+                time_t time_alarm = Alarm.read(alarms[alarm_trigger_id].alarm_id);
+                time_alarm += alarm_snooze_time;
+                Alarm.write(alarms[alarm_trigger_id].alarm_id, time_alarm);
+            }
+            else
+            {
+                Serial.print("i wanna be a girl and i can't type");
+                Alarm.write(alarms[alarm_trigger_id].alarm_id, alarms[alarm_trigger_id].initial_time);
+            }
+
+            alarm_trigger_status = 0;
+            switchState(state);
+        }
+
     }
 
     //reset button lock state
