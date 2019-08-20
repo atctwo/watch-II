@@ -600,6 +600,7 @@ void registerTimeStates()
                 if (selected_button == 0) alarm_time += 3600;      //hours
                 if (selected_button == 1) alarm_time += 60;        //minutes
                 if (selected_button == 2) alarm_time += 1;         //seconds
+                if (alarm_time > 24*60*60) alarm_time = 0;
                 Alarm.write(alarms[selected_alarm].alarm_id, alarm_time);
                 if (alarms[selected_alarm].paused) Alarm.disable(alarms[selected_alarm].alarm_id);
                 alarms[selected_alarm].initial_time = alarm_time;

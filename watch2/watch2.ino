@@ -532,7 +532,12 @@ void deepSleep(int pause_thing)
     }
     for (int i = 0; i < alarms.size(); i++)
     {
-        if (alarms[i].paused == false)
+        tmElements_t current_unix_time_without_the_time = {
+            0, 0, 0, weekday(), day(), month(), year() - 1970
+        };
+        if (alarms[i].paused == false &&
+            ( ( now() - makeTime(current_unix_time_without_the_time) ) < Alarm.read(alarms[i].alarm_id) )
+        )
         {
             //to calculate the time until an alarm goes off, the current time is subtracted
             //from the alarm time.  the current time is stored in a unix timestamp format, that is,
@@ -544,9 +549,6 @@ void deepSleep(int pause_thing)
             //to the alarm time.  the current time is subtracted from the calculated alarm time
             //(which now represents the actual unix time when the alarm will go off), giving the
             //time until the alarm goes off in seconds
-            tmElements_t current_unix_time_without_the_time = {
-                0, 0, 0, weekday(), day(), month(), year() - 1970
-            };
             time_t time_left = ( Alarm.read(alarms[i].alarm_id) + makeTime(current_unix_time_without_the_time) ) - now();
             if (time_left < next_alarm_time || next_alarm_time == -1) next_alarm_time = time_left;
         }
