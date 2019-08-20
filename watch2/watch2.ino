@@ -173,7 +173,7 @@ void setup() {
 
     if (boot_count == 0)
     {
-        setTime(22, 15, 00, 28, 6, 2019);
+        setTime(23, 58, 00, 28, 6, 2019);
         WiFi.mode(WIFI_OFF);
         btStop();
 
@@ -334,7 +334,6 @@ void loop() {
             alarm_trigger_status = 3;  //hack hack hack hack
         }
 
-        Serial.println(selected_alarm_action);
         drawTopThing();
 
         if (dpad_enter_active())
@@ -528,14 +527,35 @@ void deepSleep(int pause_thing)
         if (timers[i].alarm_id != 255)
         {
             time_t time_left = ( timers[i].time_started + Alarm.read(timers[i].alarm_id ) ) - now();
-            if (time_left > next_alarm_time) next_alarm_time = time_left;
+            if (time_left < next_alarm_time || next_alarm_time == -1) next_alarm_time = time_left;
+        }
+    }
+    for (int i = 0; i < alarms.size(); i++)
+    {
+        if (alarms[i].paused == false)
+        {
+            //to calculate the time until an alarm goes off, the current time is subtracted
+            //from the alarm time.  the current time is stored in a unix timestamp format, that is,
+            //the number of seconds since 1 Jan 1970.  the alarm time is also stored as a unix
+            //timestamp, but it doesn't consider days.  the current time timestamp considers
+            //the hours, minutes, seconds, days, months, and years, expressed as seconds, while the
+            //alarm timestamp only considers the hours, minutes, and seconds.
+            //for this reason, the current day in unix format (where h=0, m=0, s=0) is added
+            //to the alarm time.  the current time is subtracted from the calculated alarm time
+            //(which now represents the actual unix time when the alarm will go off), giving the
+            //time until the alarm goes off in seconds
+            tmElements_t current_unix_time_without_the_time = {
+                0, 0, 0, weekday(), day(), month(), year() - 1970
+            };
+            time_t time_left = ( Alarm.read(alarms[i].alarm_id) + makeTime(current_unix_time_without_the_time) ) - now();
+            if (time_left < next_alarm_time || next_alarm_time == -1) next_alarm_time = time_left;
         }
     }
 
     //if an timer or an alarm has been set, set the device to wake up just before the alarm triggers
     if (next_alarm_time > -1)
     {
-        esp_sleep_enable_timer_wakeup(next_alarm_time * 1000 * 1000 - 100);
+        esp_sleep_enable_timer_wakeup(next_alarm_time * 1000 * 1000 - 500);
     }
     else //if no alarm or timer has been set, then disable the timer wake up source
     {

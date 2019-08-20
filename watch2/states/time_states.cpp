@@ -619,7 +619,6 @@ void registerTimeStates()
                         second(),
                         [](){   //function to execute once alarm time has been idk
 
-                            Serial.println("alarm oeoeoeeeoeoeeeeeoeoeoeoeoeoeoeoeo to be continued");
                             AlarmID_t id = Alarm.getTriggeredAlarmId();
                             int alarm_id = -1;
                             for (int i = 0; i < alarms.size(); i++)
@@ -746,6 +745,17 @@ void registerTimeStates()
             }
 
             //draw alarms
+            if (alarms.size() == 0)
+            {
+                alarm_y += 8 + (icon_spacing * 4);
+                oled.setTextColor(working_alarm_colour);
+                oled.setCursor(alarm_x, alarm_y + 8);
+                oled.print("No alarms and ");
+                alarm_y += 8 + (icon_spacing * 4);
+                oled.setCursor(alarm_x, alarm_y + 8);
+                oled.print("no suprises");
+            }
+
             for (int i = 0; i < alarms.size(); i++)
             {
                 alarm_y += 8 + (icon_spacing * 4);
@@ -757,7 +767,11 @@ void registerTimeStates()
                 if (!state_init || alarm_time != alarms[i].last_value || (dpad_any_active() && (selected_alarm == i || last_selected_alarm == i)))
                 {
                     //clear previous text
-                    oled.fillRect(alarm_x, alarm_y, alarm_w - (icon_spacing * 6) - (icon_size * 2), 9, BLACK);
+                    int wheeoo = (i == 0 && alarms.size() == 1) ?
+                        ( SCREEN_WIDTH - alarm_x) :
+                        ( alarm_w - (icon_spacing * 6) - (icon_size * 2) );
+                    int other_wheoo = (i == 0 && alarms.size() == 1) ? (20 + (icon_spacing * 4)) : 9;
+                    oled.fillRect(alarm_x, alarm_y, wheeoo, other_wheoo , BLACK);
 
                     //set colour of row
                     working_alarm_colour = (selected_alarm == i) ? themecolour : WHITE;
