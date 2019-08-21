@@ -77,6 +77,9 @@ int long_timeout = 30000;                                       //timeout (almos
 bool timeout = true;                                            //whether or not to go to sleep after timeout time has elapsed
 int themecolour = BLUE;                                         //colour of the system accent
 time_t alarm_snooze_time = 5*60;                                //time to add to alarm when snoozing
+uint8_t screen_brightness = 15;                                     //brightness of screen, ranges from 0 (backlight off) to 15 (full brightness)
+uint8_t speaker_volume = 10;                                        //speaker volume, as controlled by audioI2S library.  ranges from 0 (no sound) to 21 (loudest)
+uint8_t torch_brightness = 0;                                       //brightness of the torch LED (pwm controlled, ranges from 0 (off) to 255 (fill brightnesss))
 
 int RTC_DATA_ATTR stopwatch_timing = 0;                         //stopwatch state
                                                                 //0 - stopped
@@ -157,6 +160,7 @@ void setup() {
     long_timeout = preferences.getInt("long_timeout", 30000);
     themecolour = preferences.getInt("themecolour", BLUE);
     trans_mode = preferences.getBool("trans_mode", false);
+    screen_brightness = preferences.getUChar("brightness", 15);
     preferences.end();
 
     //set up buttons
@@ -165,6 +169,11 @@ void setup() {
     btn_dpad_left.begin();
     btn_dpad_right.begin();
     btn_dpad_enter.begin();
+
+    //set up torch
+    ledcAttachPin(TORCH_PIN, 0);
+    ledcSetup(0, 4000, 8);
+    ledcWrite(0, 0);
 
     //set up time
     timeval tv;
@@ -479,14 +488,14 @@ void dimScreen(bool direction, int pause_thing)
     // direction
     // 0 - decrease brightness
     // 1 - increase brightness
-    if (direction) for (uint8_t contrast = 0; contrast < 16; contrast++)
+    if (direction) for (uint8_t contrast = 0; contrast < screen_brightness + 1; contrast++)
     {
         oled.sendCommand(0xC7, &contrast, 1);
         delay(pause_thing);
     }
-    else for (uint8_t contrast = 16; contrast > 0; contrast--)
+    else for (uint8_t contrast = screen_brightness; contrast > 0; contrast--)
     {
-        uint8_t contrast_step = contrast - 1;
+        uint8_t contrast_step = contrast;
         oled.sendCommand(0xC7, &contrast_step, 1);
         delay(pause_thing);
     }

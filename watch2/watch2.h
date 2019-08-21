@@ -18,6 +18,7 @@
 #define dpad_right  25
 #define dpad_enter  26
 #define BATTERY_DIVIDER_PIN 34
+#define TORCH_PIN 13
 
 //button active macros
 #define KEY_REPEAT_DELAY    550     //time for key repeat to start, in ms
