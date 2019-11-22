@@ -1,23 +1,26 @@
 
+#define SPI_SPEED SD_SCK_MHZ(4)
 
 ////////////////////////////////////////
 // includes
 ////////////////////////////////////////
 
 #include <SPI.h>                    // SPI library
+#include <SdFat.h>                     // sd card access library
+#include <sdios.h>
 #include <Adafruit_GFX.h>           // Used for drawing graphics to the OLED
 #include <Adafruit_SSD1351.h>       // used to interface with the OLED
 #include <JC_Button.h>              // button object
 #include <WiFi.h>                   // wifi library
-#include <Preferences.h>
-#include <tinyexpr.h>
+#include <Preferences.h>            // for storing settings in nvs (allowing for persistance over power cycles)
+#include <tinyexpr.h>               // expression evaluator for calculator
 #include <map>                      // map object for storing states
 #include <string>                   // std::string
 #include <functional>               // std::function thing
 #include <time.h>                   // used for system-level time keeping
 #include <sys/time.h>               // see above
 #include <TimeLib.h>                // used for managing time (see code note 1)
-#include <TimeAlarms.h>
+#include <TimeAlarms.h>             //used for creating and managing alarms
 #include <stdio.h>                  // i don't actually know...
 #include <algorithm>                // used for std::find and std::min and std::max
 
@@ -45,8 +48,9 @@ typedef void (*func)(void);         // function pointer type
 // object creation
 SPIClass *vspi = new SPIClass(VSPI);        // VSPI object
 Adafruit_SSD1351 oled = Adafruit_SSD1351(128, 96, vspi, cs, dc, rst);               //hw spi (use vspi or &SPI)
-//Adafruit_SSD1351 oled = Adafruit_SSD1351(128, 96, _cs, _dc, _mosi, _sclk, _rst);  //sw spi
+//Adafruit_SSD1351 oled = Adafruit_SSD1351(128, 96, cs, dc, mosi, sclk, rst);  //sw spi
 Preferences preferences;
+SdFat SD(&*vspi);
 
 //button objects
 Button btn_dpad_up(dpad_up, 25, false, false);
@@ -77,9 +81,13 @@ int long_timeout = 30000;                                       //timeout (almos
 bool timeout = true;                                            //whether or not to go to sleep after timeout time has elapsed
 int themecolour = BLUE;                                         //colour of the system accent
 time_t alarm_snooze_time = 5*60;                                //time to add to alarm when snoozing
-uint8_t screen_brightness = 15;                                     //brightness of screen, ranges from 0 (backlight off) to 15 (full brightness)
-uint8_t speaker_volume = 10;                                        //speaker volume, as controlled by audioI2S library.  ranges from 0 (no sound) to 21 (loudest)
-uint8_t torch_brightness = 0;                                       //brightness of the torch LED (pwm controlled, ranges from 0 (off) to 255 (fill brightnesss))
+uint8_t screen_brightness = 15;                                 //brightness of screen, ranges from 0 (backlight off) to 15 (full brightness)
+uint8_t speaker_volume = 10;                                    //speaker volume, as controlled by audioI2S library.  ranges from 0 (no sound) to 21 (loudest)
+uint8_t torch_brightness = 0;                                   //brightness of the torch LED (pwm controlled, ranges from 0 (off) to 255 (fill brightnesss))
+int sd_state = 0;                                               //state of the sd card
+                                                                //0 - not initalised
+                                                                //1 - initalised with no errors
+                                                                //2 - card not present
 
 int RTC_DATA_ATTR stopwatch_timing = 0;                         //stopwatch state
                                                                 //0 - stopped
@@ -96,8 +104,8 @@ uint32_t stopwatch_s = 0, stopwatch_last_s = 0;
 uint32_t stopwatch_min = 0, stopwatch_last_min = 0;
 uint32_t stopwatch_hour = 0, stopwatch_last_hour = 0;
 
-std::vector<timerData> timers;
-std::vector<alarmData> alarms;
+std::vector<timerData> timers;                                  //vector to store timers
+std::vector<alarmData> alarms;                                  //vector to store alarms
 int timer_trigger_status = 0;                                   //the state of a timer
                                                                 //0 - timer not going off → normal state execution
                                                                 //1 - timer going off → suspend state execution and draw alarm message
@@ -128,6 +136,7 @@ bool dpad_enter_lock = false;
 #include "states/system_states.cpp"
 #include "states/util_states.cpp"
 #include "states/time_states.cpp"
+#include "states/file_states.cpp"
 
 ////////////////////////////////////////
 // setup function
@@ -140,11 +149,18 @@ void setup() {
 
     // configure gpio data direction registers
     pinMode(12, OUTPUT);
-    pinMode(5, OUTPUT);
+    pinMode(cs, OUTPUT);
+    pinMode(sdcs, OUTPUT);
     pinMode(BATTERY_DIVIDER_PIN, INPUT);
 
     //begin serial
     Serial.begin(115200);
+
+
+    //test putting sdcs High
+    //format sd using sda tool
+    //flowchart - ask
+
 
     //set up oled
     oled.begin(18000000);
@@ -152,6 +168,16 @@ void setup() {
     //oled.setFont(&SourceSansPro_Regular6pt7b);
     uint8_t contrast = 0x0f;
     oled.sendCommand(0xC7, &contrast, 1);
+
+    //set up SD card
+    digitalWrite(cs, HIGH);
+    digitalWrite(sdcs, LOW);
+    
+    initSD();
+
+    digitalWrite(cs, LOW);
+    digitalWrite(sdcs, HIGH);
+    
 
     //set up preferences
     preferences.begin("watch2", false);      //open watch II preferences in RW mode
@@ -196,6 +222,7 @@ void setup() {
     registerSystemStates();
     registerUtilStates();
     registerTimeStates();
+    registerFileStates();
 
     if (boot_count == 0)
     {
@@ -403,31 +430,55 @@ void loop() {
 ////////////////////////////////////////
 
 
-void drawTopThing()
+void drawTopThing(bool light)
 {
     static double batteryVoltage = 4.2;
     static double batteryPercentage = 0;
     static int last_battery_reading = millis() - 1000;
 
-    oled.drawFastHLine(0, 10, SCREEN_WIDTH, themecolour);
-    oled.setCursor(1,8);
-    oled.setTextColor(WHITE);
-    oled.setTextSize(1);
-    oled.setFont(&SourceSansPro_Regular6pt7b);
-    oled.print("watch II");
-
-    //oled.printf(" %d ", preferences.getBool("timeout", true));
-
-    if ( millis() - last_battery_reading > 1000)
+    if (!light)
     {
-        //batteryVoltage = ( (ReadVoltage(BATTERY_DIVIDER_PIN) * 3.3 ) / 4095.0 ) * 2;
-        batteryVoltage = ReadVoltage(BATTERY_DIVIDER_PIN) * BATTERY_VOLTAGE_SCALE;
-        batteryPercentage = ( batteryVoltage / BATTERY_VOLTAGE_MAX ) * 100.0;
-        last_battery_reading = millis();
 
-        oled.fillRect(0, 0, SCREEN_WIDTH, 10, BLACK);  //update this to only clear status portion
-        oled.printf(" %.0f%%", batteryPercentage);
+        oled.drawFastHLine(0, 10, SCREEN_WIDTH, themecolour);
+        oled.setCursor(1,8);
+        oled.setTextColor(WHITE);
+        oled.setTextSize(1);
+        oled.setFont(&SourceSansPro_Regular6pt7b);
+        oled.print("watch II");
+
+        //oled.printf(" %d ", preferences.getBool("timeout", true));
+
+        if ( millis() - last_battery_reading > 1000)
+        {
+            //batteryVoltage = ( (ReadVoltage(BATTERY_DIVIDER_PIN) * 3.3 ) / 4095.0 ) * 2;
+            batteryVoltage = ReadVoltage(BATTERY_DIVIDER_PIN) * BATTERY_VOLTAGE_SCALE;
+            batteryPercentage = ( batteryVoltage / BATTERY_VOLTAGE_MAX ) * 100.0;
+            last_battery_reading = millis();
+
+            oled.fillRect(0, 0, SCREEN_WIDTH, 10, BLACK);  //update this to only clear status portion
+            oled.printf(" %.0f%%", batteryPercentage);
+        }
+
     }
+
+    //draw sd card status
+    int sd_colour = ORANGE;
+    switch(sd_state)
+    {
+        case 0: sd_colour = RED; break;    //didn't mount successfully
+        case 1: sd_colour = 0x0660; break; //mounted successfully
+        case 2: sd_colour = BLUE;          //sd card not present
+    }
+
+    oled.drawBitmap(
+        SCREEN_WIDTH - 13,
+        1,
+        small_icons["small_sd"].data(),
+        11,
+        8,
+        sd_colour,
+        BLACK
+    );
 }
 
 int registerState(std::string stateName, std::string stateIcon, const std::function<void()>& stateFunc, bool hidden)
@@ -589,6 +640,9 @@ void deepSleep(int pause_thing)
     btn_dpad_right.begin();
     btn_dpad_enter.begin();
 
+    //init SD card
+    initSD();
+
     //rtc_gpio_deinit(GPIO_NUM_26);
     if (next_alarm_time > -1) switchState(0, 0, 0, 0, true);
     else switchState(0);
@@ -696,6 +750,108 @@ void drawSettingsMenu(int x, int y, int width, int height, std::vector<settingsM
         }
         ypos += text_height + ( 2 * padding );
     }
+}
+
+std::vector<File> getDirFiles(String path)
+{
+    //vector to store files in the directory
+    std::vector<File> files;
+
+    //enable the sd card
+    digitalWrite(cs, HIGH);
+    digitalWrite(sdcs, LOW);
+
+    //initalise the sd card (without changing themecolourany CS pin)
+    if( initSD(false) == 0 ){
+        
+        //sd could not be accessed
+        return files;
+
+    }
+    else
+    {
+
+        digitalWrite(cs, HIGH);
+        digitalWrite(sdcs, LOW);
+
+        //open the dir at the path
+        File root = SD.open(path);
+
+        //check that path is valid
+        if (!root)
+        {
+            //file path is invalid
+            return files;
+        }
+
+        //check that path is actually a dir
+        if (!root.isDirectory())
+        {
+            //path is not a directory
+            return files;
+        }
+
+        while(true)
+        {
+            //open next file in dir
+            File f = root.openNextFile();
+
+            //if there are no more files, break
+            if (!f) break;
+
+            files.push_back(f);
+        }
+
+    }
+
+
+    //disable the sd card
+    digitalWrite(cs, LOW);
+    digitalWrite(sdcs, HIGH);
+
+    return files;
+}
+
+int initSD(bool handleCS)
+{
+    int no = 0;
+
+    if (handleCS)
+    {
+        //enable the sd card
+        digitalWrite(cs, HIGH);
+        digitalWrite(sdcs, LOW);
+    }
+
+    //initalise the sd card
+    if(!SD.begin(sdcs, SPISettings(5000000, MSBFIRST, SPI_MODE0))){
+
+        //card couldn't mount
+        Serial.println("Couldn't mount SD card");
+        no = 0;
+
+    }
+    else
+    {
+
+        //card mounted successfully
+        Serial.println("Successfully mounted SD card");
+        Serial.printf("Card size: %d\n", SD.card()->cardSize());
+        //SD.ls(LS_R | LS_DATE | LS_SIZE);
+        no = 1;
+
+    }
+
+    if (handleCS)
+    {
+        //disable the sd card
+        digitalWrite(cs, LOW);
+        digitalWrite(sdcs, HIGH);
+    }
+
+    //set global sd state variable, and return
+    sd_state = no;
+    return no;
 }
 
 void Adafruit_GFX::drawRainbowBitmap(int16_t x, int16_t y,

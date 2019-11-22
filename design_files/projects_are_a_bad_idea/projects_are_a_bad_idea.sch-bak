@@ -1,0 +1,285 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L RF_Module:ESP32-WROOM-32 U?
+U 1 1 5D6432DB
+P 2500 2750
+F 0 "U?" H 2500 4331 50  0000 C CNN
+F 1 "ESP32-WROOM-32" H 2500 4240 50  0000 C CNN
+F 2 "RF_Module:ESP32-WROOM-32" H 2500 1250 50  0001 C CNN
+F 3 "https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf" H 2200 2800 50  0001 C CNN
+	1    2500 2750
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+3V3 #PWR?
+U 1 1 5D644685
+P 1200 1350
+F 0 "#PWR?" H 1200 1200 50  0001 C CNN
+F 1 "+3V3" H 1215 1523 50  0000 C CNN
+F 2 "" H 1200 1350 50  0001 C CNN
+F 3 "" H 1200 1350 50  0001 C CNN
+	1    1200 1350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2500 1350 1350 1350
+$Comp
+L power:GND #PWR?
+U 1 1 5D6452F6
+P 2500 4400
+F 0 "#PWR?" H 2500 4150 50  0001 C CNN
+F 1 "GND" H 2505 4227 50  0000 C CNN
+F 2 "" H 2500 4400 50  0001 C CNN
+F 3 "" H 2500 4400 50  0001 C CNN
+	1    2500 4400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2500 4400 2500 4250
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5D645D9E
+P 1350 1950
+F 0 "SW?" V 1304 2098 50  0001 L CNN
+F 1 "Enable" V 1350 2098 50  0000 L CNN
+F 2 "" H 1350 2150 50  0001 C CNN
+F 3 "~" H 1350 2150 50  0001 C CNN
+	1    1350 1950
+	0    1    1    0   
+$EndComp
+Connection ~ 1350 1350
+Wire Wire Line
+	1350 1350 1200 1350
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5D6466CD
+P 3600 1950
+F 0 "SW?" V 3554 2098 50  0001 L CNN
+F 1 "GPIO0" V 3600 2098 50  0000 L CNN
+F 2 "" H 3600 2150 50  0001 C CNN
+F 3 "~" H 3600 2150 50  0001 C CNN
+	1    3600 1950
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 5D647495
+P 1350 1500
+F 0 "R?" H 1420 1546 50  0001 L CNN
+F 1 "10k" H 1420 1500 50  0000 L CNN
+F 2 "" V 1280 1500 50  0001 C CNN
+F 3 "~" H 1350 1500 50  0001 C CNN
+	1    1350 1500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 5D647B42
+P 3600 1500
+F 0 "R?" H 3670 1546 50  0001 L CNN
+F 1 "10k" H 3670 1500 50  0000 L CNN
+F 2 "" V 3530 1500 50  0001 C CNN
+F 3 "~" H 3600 1500 50  0001 C CNN
+	1    3600 1500
+	1    0    0    -1  
+$EndComp
+Connection ~ 2500 1350
+Wire Wire Line
+	1350 1750 1350 1700
+Wire Wire Line
+	3600 1750 3600 1700
+Wire Wire Line
+	2500 4250 1350 4250
+Wire Wire Line
+	1350 4250 1350 2150
+Connection ~ 2500 4250
+Wire Wire Line
+	2500 4250 2500 4150
+Wire Wire Line
+	2500 4250 3600 4250
+Wire Wire Line
+	3600 4250 3600 2150
+Wire Wire Line
+	1900 1550 1650 1550
+Wire Wire Line
+	1650 1550 1650 1700
+Wire Wire Line
+	1650 1700 1350 1700
+Connection ~ 1350 1700
+Wire Wire Line
+	1350 1700 1350 1650
+Wire Wire Line
+	3100 1550 3400 1550
+Wire Wire Line
+	3400 1550 3400 1700
+Wire Wire Line
+	3400 1700 3600 1700
+Connection ~ 3600 1700
+Wire Wire Line
+	3600 1700 3600 1650
+$Comp
+L Connector:Conn_01x02_Male J?
+U 1 1 5D64A206
+P 3300 950
+F 0 "J?" V 3454 762 50  0001 R CNN
+F 1 "Conn_01x02_Male" V 3408 762 50  0001 R CNN
+F 2 "" H 3300 950 50  0001 C CNN
+F 3 "~" H 3300 950 50  0001 C CNN
+	1    3300 950 
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2500 1350 3600 1350
+Wire Wire Line
+	3100 1650 3200 1650
+Wire Wire Line
+	3200 1650 3200 1150
+Wire Wire Line
+	3100 1850 3300 1850
+Wire Wire Line
+	3300 1850 3300 1150
+$Comp
+L Connector:Conn_01x11_Male J?
+U 1 1 5D64C233
+P 5700 2650
+F 0 "J?" H 5672 2582 50  0001 R CNN
+F 1 "SSD1351 breakout" H 5900 1950 50  0000 R CNN
+F 2 "" H 5700 2650 50  0001 C CNN
+F 3 "~" H 5700 2650 50  0001 C CNN
+	1    5700 2650
+	-1   0    0    1   
+$EndComp
+Text Notes 5700 2150 0    50   ~ 0
+MOSI
+Text Notes 5700 2350 0    50   ~ 0
+DC
+Text Notes 5700 2450 0    50   ~ 0
+RST
+Text Notes 5700 2550 0    50   ~ 0
+OLED_CS
+Text Notes 5700 2650 0    50   ~ 0
+SC_CS
+Text Notes 5700 2750 0    50   ~ 0
+MISO
+Text Notes 5700 2850 0    50   ~ 0
+CD
+Text Notes 5700 2950 0    50   ~ 0
+3v OUT
+Text Notes 5700 3050 0    50   ~ 0
+Vin
+Text Notes 5700 3150 0    50   ~ 0
+GND
+Text Notes 5700 2250 0    50   ~ 0
+SCLK
+Wire Wire Line
+	3100 2050 3500 2050
+Wire Wire Line
+	3500 2050 3500 2550
+Wire Wire Line
+	3500 2550 5500 2550
+Wire Wire Line
+	3100 1950 3450 1950
+Wire Wire Line
+	3450 1950 3450 2650
+Wire Wire Line
+	3450 2650 5500 2650
+Wire Wire Line
+	3100 3050 3650 3050
+Wire Wire Line
+	3650 3050 3650 2350
+Wire Wire Line
+	3650 2350 5500 2350
+Wire Wire Line
+	3100 3150 3700 3150
+Wire Wire Line
+	3700 3150 3700 2150
+Wire Wire Line
+	3700 2150 5500 2150
+Wire Wire Line
+	3100 2750 3750 2750
+Wire Wire Line
+	3750 2750 3750 2250
+Wire Wire Line
+	3750 2250 5500 2250
+Wire Wire Line
+	3100 2950 3800 2950
+Wire Wire Line
+	3800 2950 3800 2450
+Wire Wire Line
+	3800 2450 5500 2450
+Wire Wire Line
+	3100 2850 3850 2850
+Wire Wire Line
+	3850 2850 3850 2750
+Wire Wire Line
+	3850 2750 5500 2750
+Wire Wire Line
+	5500 3050 4950 3050
+Wire Wire Line
+	4950 3050 4950 1350
+Wire Wire Line
+	4950 1350 4450 1350
+Connection ~ 3600 1350
+Wire Wire Line
+	5500 4250 5500 3150
+Connection ~ 3600 4250
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5D65381E
+P 4450 3000
+F 0 "SW?" V 4404 3148 50  0001 L CNN
+F 1 "Push button" V 4550 3100 50  0000 L CNN
+F 2 "" H 4450 3200 50  0001 C CNN
+F 3 "~" H 4450 3200 50  0001 C CNN
+	1    4450 3000
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 5D6543F7
+P 4450 3500
+F 0 "R?" H 4520 3546 50  0001 L CNN
+F 1 "10k" H 4520 3500 50  0000 L CNN
+F 2 "" V 4380 3500 50  0001 C CNN
+F 3 "~" H 4450 3500 50  0001 C CNN
+	1    4450 3500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4450 2800 4450 1350
+Connection ~ 4450 1350
+Wire Wire Line
+	4450 1350 3600 1350
+Wire Wire Line
+	4450 3350 4450 3250
+Wire Wire Line
+	4450 3650 4450 4250
+Wire Wire Line
+	3600 4250 4450 4250
+Connection ~ 4450 4250
+Wire Wire Line
+	4450 4250 5500 4250
+Wire Wire Line
+	3100 3350 4300 3350
+Wire Wire Line
+	4300 3350 4300 3250
+Wire Wire Line
+	4300 3250 4450 3250
+Connection ~ 4450 3250
+Wire Wire Line
+	4450 3250 4450 3200
+$EndSCHEMATC

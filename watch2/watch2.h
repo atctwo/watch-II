@@ -2,15 +2,16 @@
 #define WATCH2_H
 
 //pin declarations
-#define cs   5//17  // goes to TFT CS
-#define dc   22//16  // goes to TFT DC
-#define mosi 23  // goes to TFT MOSI
-#define sclk 18  // goes to TFT SCK/CLK
-#define rst  21//5   // ESP RST to TFT RESET
+#define cs   5      // goes to TFT CS
+#define sdcs 4      //sd card chip select
+#define dc   22     // goes to TFT DC
+#define mosi 23     // goes to TFT MOSI
+#define sclk 18     // goes to TFT SCK/CLK
+#define rst  21     // ESP RST to TFT RESET
 #define miso 19     // Not connected
-//       3.3V     // Goes to TFT LED
-//       5v       // Goes to TFT Vcc
-//       Gnd      // Goes to TFT Gnd
+//       3.3V       // Goes to TFT LED
+//       5v         // Goes to TFT Vcc
+//       Gnd        // Goes to TFT Gnd
 
 #define dpad_up     33
 #define dpad_down   27
@@ -21,8 +22,8 @@
 #define TORCH_PIN 13
 
 //button active macros
-#define KEY_REPEAT_DELAY    550     //time for key repeat to start, in ms
-#define KEY_REPEAT_PERIOD   24      //time between key repeats, in ms
+#define KEY_REPEAT_DELAY    550     //time for key repeat to start, in ms [DAS]
+#define KEY_REPEAT_PERIOD   24      //time between key repeats, in ms     [ARR]
 
 #define dpad_up_active()    ( !dpad_up_lock &&    (btn_dpad_up.wasPressed() || ( btn_dpad_up.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD < 5 ) ) ) )
 #define dpad_down_active()  ( !dpad_down_lock &&  (btn_dpad_down.wasPressed() || ( btn_dpad_down.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD < 5 ) ) ) )
@@ -122,18 +123,39 @@ struct alarmData {
 // system function prototypes
 
 //draw the status bar at the top of the page
-void    drawTopThing();
+//light - if this is true, only the status icons will be drawn.  otherwise, everything will be drawn
+void    drawTopThing(bool light = false);
 
 //add a state to the list of states.  usage is described at docs/states.md
+//stateName - the name of the state as displayed in the state menu
+//stateIcon - the name of an icon in icons
+//stateFunc - the function that the state is executed using.  this will be executed on a loop
+//hidden - if this is true, the state will not be displayed on the state menu
 int     registerState(std::string stateName, std::string stateIcon, const std::function<void()>& stateFunc, bool hidden = false);
 
+//add an icon to the list of 16 bit colour icons
+//iconName - the name of the icon that will be used to access it later
+//icon - a vector or array of unsigned short ints that represent the icon
 bool    registerIcon(std::string iconName, std::vector<unsigned short int> icon);
+
+//add an icon to the list of smaller 8 bit monochrome icons
+//iconName - the name of the icon that will be used to access it later
+//icon - a vector or array of unsigned chars that represent the icon
 bool    registerSmallIcon(std::string iconName, std::vector<unsigned char> icon);
+
+//dim or make brighter the screen
+//direction - if this is false, the screen will dim.  if this is true, the screen will increase in brightness
+//pause_thing - the time in milliseconds between each step of brightness
 void    dimScreen(bool direction, int pause_thing);
 void    switchState(int newState, int variant = 0, int dim_pause_thing = 10, int bright_pause_thing = 10, bool dont_draw_first_frame = false);
 void    deepSleep(int pause_thing=10);
 void    drawMenu(int x, int y, int width, int height, std::vector<String> items, int selected, int colour);
 void    drawSettingsMenu(int x, int y, int width, int height, std::vector<settingsMenuData> items, int selected, int colour);
+
+//method to return all the files in a directory (non-recursively)
+//path - the path of the directory to return files in
+std::vector<File> getDirFiles(String path);
+int     initSD(bool handleCS = true);
 void    colour888(uint16_t colour, float *r, float *g, float *b);
 void    HSVtoRGB( float *r, float *g, float *b, float h, float s, float v );
 bool    getHeatMapColor(float value, float *red, float *green, float *blue);

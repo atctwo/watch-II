@@ -139,16 +139,16 @@ void registerSystemStates()
                 last_minute = minute(tim);
                 last_hour = hour(tim);
             }
-            oled.drawRainbowBitmap(time_x - 4, 6, canvas_time->getBuffer(), SCREEN_WIDTH, 38, BLACK, ((millis() % 60000) * 6)/1000);
+            oled.drawRainbowBitmap(time_x - 4, 11, canvas_time->getBuffer(), SCREEN_WIDTH, 38, BLACK, ((millis() % 60000) * 6)/1000);
 
             //draw seconds
             oled.setFont(&SourceSansPro_Light16pt7b);
-            oled.setCursor(time_x, 64);
+            oled.setCursor(time_x, 70);
 
             if ((last_second != second(tim)) || !state_init)
             {
                 sprintf(text_aaaa, "%02d", last_second);
-                oled.getTextBounds(text_aaaa, time_x, 64, &x1, &y1, &w_sec, &h);
+                oled.getTextBounds(text_aaaa, time_x, 70, &x1, &y1, &w_sec, &h);
                 oled.fillRect(x1, y1, w_sec, h, BLACK);
 
                 oled.printf("%02d", second(tim));
@@ -165,13 +165,13 @@ void registerSystemStates()
                 //we have to use getTextBounds to first calculate the width of the text,
                 //then we have to use getTextBounds again to calculate the actual x and y
                 //coordinates of the text
-                oled.getTextBounds(text_aaaa, time_x, 64, &x1, &y1, &w_meridian, &h);
+                oled.getTextBounds(text_aaaa, time_x, 70, &x1, &y1, &w_meridian, &h);
                 int meridian_x = (time_x + w_min_hour) - w_meridian;
-                oled.getTextBounds(text_aaaa, meridian_x, 64, &x1, &y1, &w_meridian, &h);
+                oled.getTextBounds(text_aaaa, meridian_x, 70, &x1, &y1, &w_meridian, &h);
 
                 oled.fillRect(x1, y1, w_meridian, h, BLACK);
 
-                oled.setCursor(meridian_x, 64);
+                oled.setCursor(meridian_x, 70);
                 oled.print(meridian);
 
                 last_meridian = isAM(tim);
@@ -179,7 +179,7 @@ void registerSystemStates()
 
             //draw date
             oled.setFont(&SourceSansPro_Light8pt7b);
-
+    
             if ((last_day != day(tim)) || !state_init)
             {
                 String datestring = String(day(tim)) + String(" ") + String(monthStr(month(tim))) + String(" ") + String(year(tim));
@@ -196,6 +196,37 @@ void registerSystemStates()
             //finish drawing state
             //drawTopThing();
             oled.setFont(&SourceSansPro_Regular6pt7b);
+
+            //draw minimal top thing
+            drawTopThing(true);
+
+            //check buttons
+            if (dpad_enter_active())
+            {
+                deepSleep(31);
+            }
+
+            if (dpad_right_active())
+            {
+                switchState(2);
+            }
+
+            if (dpad_up_active())
+            {
+                switchState(state, 1);
+            }
+
+            if (dpad_left_active())
+            {
+                digitalWrite(cs, HIGH);
+                digitalWrite(sdcs, LOW);
+                
+                initSD();
+
+                digitalWrite(cs, LOW);
+                digitalWrite(sdcs, HIGH);
+
+            }
 
             //check buttons
             if (dpad_enter_active())
