@@ -413,7 +413,7 @@ void loop() {
         static std::vector<String> files2;      //vector of Strings representing names of files in directory
         static std::stack<int> selected_icon_stack; //stack for storing selected file indecies when navigating through subdirectories
 
-        Serial.println(selected_icon_stack.top());
+        Serial.println("a");
 
         //handle dpad up press
         if (dpad_up_active()) 
@@ -511,6 +511,8 @@ void loop() {
             
         }
 
+        Serial.println("b");
+
         //if the file select list hasn't been initalised
         if (!file_select_dir_list_init)
         {
@@ -524,13 +526,15 @@ void loop() {
             files1.clear();
             files1 = getDirFiles(file_path);
 
+            Serial.println("f");
+
             //clear files2
             files2.clear();
 
             //if card isn't initalised, notify the user
             if (sd_state != 1)
             {
-                Serial.println("d");
+                Serial.println("g");
                 oled.setCursor(2, 36);
                 oled.print("SD card not mounted");
             }
@@ -539,12 +543,13 @@ void loop() {
                 //if there are no files, notify the user
                 if (files1.size() == 0)
                 {
+                    Serial.println("h");
                     oled.setCursor(2, 36);
                     oled.print("This directory is empty");
                 }
                 else
                 {
-                    Serial.println("b");
+                    Serial.println("i");
                     //add file names to files2 array
                     for (File f : files1)
                     {
@@ -552,6 +557,7 @@ void loop() {
                         files2.push_back(String(filename));
                     }
                 }
+                Serial.println("j");
                 //add back button if in a non-root directory
                 if (file_path != "/") files2.emplace(files2.begin(), "..");                
             }
@@ -560,14 +566,22 @@ void loop() {
             files2.emplace(files2.begin(), "Cancel");
 
             dimScreen(1, 10);
+
+            Serial.println("k");
         }
+
+        Serial.println("c");
 
         //if file select list hasn't been initliased, or any button is pressed, redraw the menu
         if (!file_select_dir_list_init || dpad_any_active())
         drawMenu(2, 12, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 12, files2, selected_icon, themecolour);
 
+        Serial.println("d");
+
         //finish file select list initilisation
         if (!file_select_dir_list_init) file_select_dir_list_init = true;
+
+        Serial.println("e");
 
         //Serial.println("c");
 

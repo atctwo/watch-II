@@ -418,6 +418,7 @@ void registerSystemStates()
 
         int icon_xpos = icon_spacing;
         int icon_ypos = icon_spacing;
+        static int last_yoffset = -1;
 
         if (!state_init)
         {
@@ -518,23 +519,62 @@ void registerSystemStates()
         {
             oled.fillRect(0, 86, SCREEN_WIDTH, 10, BLACK); //clear state name text
             icon_ypos += 10;                               //add space for top bar thing
+
+            //determine row of selected icon by means of an overengineered 2d-ish linear search
+            int selected_icon_row;
+            int row = 0;
+            int col = 0;
+            for (std::map<int, stateMeta>::iterator it = states.begin(); it != states.end(); it++)
+            {
+                stateMeta stateinfo = it->second;
+                if (!stateinfo.hidden)
+                {
+                    //if current icon is selected
+                    if (selected_menu_icon == it)
+                    {
+                        selected_icon_row = row;
+                        break;
+                    }
+                    else
+                    {
+                        col++;
+                        if (col > 3)
+                        {
+                            col = 0;
+                            row++;
+                        }
+                    }
+                }
+            }
+            
+            int selected_icon_ypos = icon_ypos + (selected_icon_row * (icon_size + icon_spacing));
+            int yoffset_threshold = SCREEN_HEIGHT - (icon_size + icon_spacing);
+            int icon_yoffset = (selected_icon_ypos > yoffset_threshold) ? (icon_size + icon_spacing) * (selected_icon_row - 1) : 0;
+
+            //if yoffset has changed, redraw screen
+            if (icon_yoffset != last_yoffset)
+            {
+                oled.fillScreen(BLACK);
+                last_yoffset = icon_yoffset;
+            }
+
             //draw state icons
             for (std::map<int, stateMeta>::iterator it = states.begin(); it != states.end(); it++)
             {
                 stateMeta stateinfo = it->second;
                 if (!stateinfo.hidden)
                 {
-                    oled.drawRGBBitmap(icon_xpos, icon_ypos, icons[stateinfo.stateIcon].data(),
+                    //draw app icon
+                    oled.drawRGBBitmap(icon_xpos, icon_ypos - icon_yoffset, icons[stateinfo.stateIcon].data(),
                                        icon_size, icon_size);
 
+                    //if current app is selected, draw an outline around it
                     if (selected_menu_icon == it)
                     {
-                        oled.drawRect(icon_xpos-1, icon_ypos-1, icon_size+1, icon_size+1, themecolour);
-                        oled.setCursor(2, 94);
-                        oled.setTextColor(WHITE);
-                        oled.print(stateinfo.stateName.c_str());
+                        oled.drawRect(icon_xpos-1, icon_ypos-1 - icon_yoffset, icon_size+1, icon_size+1, themecolour);
                     }
-                    else oled.drawRect(icon_xpos-1, icon_ypos-1, icon_size+1, icon_size+1, BLACK);
+                    //otherwise, clear any outline around it
+                    else oled.drawRect(icon_xpos-1, icon_ypos-1 - icon_yoffset, icon_size+1, icon_size+1, BLACK);
 
                     icon_xpos += icon_size + icon_spacing;
                     if ((icon_xpos+icon_size) > SCREEN_WIDTH)
@@ -551,6 +591,12 @@ void registerSystemStates()
                     if (!state_init) no_icons++;
                 }
             }
+
+            //draw name of selected icon
+            oled.setCursor(2, 94);
+            oled.setTextColor(WHITE);
+            oled.fillRect(0, 94 - 10, SCREEN_WIDTH, SCREEN_HEIGHT - (94 - 10), BLACK);
+            oled.print(selected_menu_icon->second.stateName.c_str());
         }
 
         drawTopThing();
