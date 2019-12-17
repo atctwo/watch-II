@@ -565,7 +565,7 @@ void registerSystemStates()
     //state 3
     registerState("Settings", "settings", [](){
 
-        static std::vector<String> panels = {"Time and Date", "Timeout", "Colour", "About"};
+        static std::vector<String> panels = {"Time and Date", "Timeout", "Colour", "About", "when", "i", "was", "sixteen", "i", "learned", "to", "sing"};
         static int selected_panel = 0;
         static int last_selected_time = 0;
 

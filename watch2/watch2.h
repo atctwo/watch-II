@@ -155,6 +155,10 @@ void    drawSettingsMenu(int x, int y, int width, int height, std::vector<settin
 //method to return all the files in a directory (non-recursively)
 //path - the path of the directory to return files in
 std::vector<File> getDirFiles(String path);
+
+//open the file select dialogue.  this will pause the state until a file has been selected (or the operation has been cancelled)
+//path - the path to start the file selection at
+void    beginFileSelect(String path = "/");
 int     initSD(bool handleCS = true);
 void    colour888(uint16_t colour, float *r, float *g, float *b);
 void    HSVtoRGB( float *r, float *g, float *b, float h, float s, float v );

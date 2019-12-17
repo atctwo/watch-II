@@ -23,6 +23,7 @@
 #include <TimeAlarms.h>             //used for creating and managing alarms
 #include <stdio.h>                  // i don't actually know...
 #include <algorithm>                // used for std::find and std::min and std::max
+#include <stack>
 
 #include "watch2.h"                 // defines and function prototypes
 
@@ -114,6 +115,13 @@ int timer_trigger_id = 255;
 int alarm_trigger_status = 0;
 int alarm_trigger_id = 0;
 
+int file_select_status = 0;                                     //whether or not to show the file select menu
+                                                                //0 - don't show the menu.  the current state (or alarm or timer dialogue) will show instead
+                                                                //1 - do show the dialog
+String file_path = "/";                                         //if the file select menu is active, this is used to keep track of the current directory.
+                                                                //otherwise, it is used to store the path of the file after file selection (or "canceled" if no file was selected)
+bool file_select_dir_list_init = false;                         //keeps track of whether or not the file list has been initalised for the current directory
+
 //these variables stop button presses affecting new states
 //when switching from a previous state.
 //when a user presses a button to go from the watch face to the menu,
@@ -152,6 +160,9 @@ void setup() {
     pinMode(cs, OUTPUT);
     pinMode(sdcs, OUTPUT);
     pinMode(BATTERY_DIVIDER_PIN, INPUT);
+
+    digitalWrite(cs, LOW);
+    digitalWrite(sdcs, HIGH);
 
     //begin serial
     Serial.begin(115200);
@@ -262,7 +273,7 @@ void loop() {
     Alarm.delay(0);
 
     //run current state
-    if (timer_trigger_status == 0 && alarm_trigger_status == 0)
+    if (timer_trigger_status == 0 && alarm_trigger_status == 0  && file_select_status == false)
     {
         if ( states.find(state) == states.end() )
         states[-1].stateFunc();
@@ -391,6 +402,177 @@ void loop() {
         }
 
     }
+    else if (file_select_status) //show the file select dialogue
+    {
+        //i was watching tiktoks while writing this, so it might be pretty awful
+
+        static int selected_icon = 0; //currently selected file
+        static char filename[255]; //buffer to hold filename
+
+        static std::vector<File> files1;        //vector of Files in directory
+        static std::vector<String> files2;      //vector of Strings representing names of files in directory
+        static std::stack<int> selected_icon_stack; //stack for storing selected file indecies when navigating through subdirectories
+
+        Serial.println(selected_icon_stack.top());
+
+        //handle dpad up press
+        if (dpad_up_active()) 
+        {
+            selected_icon--;
+            if (selected_icon < 0) selected_icon = files2.size() - 1;
+        }
+
+        //handle dpad down press
+        if (dpad_down_active())
+        {
+            selected_icon++;
+            if (selected_icon > files2.size() - 1) selected_icon = 0;
+        }
+
+        //handle dpad enter press
+        if (dpad_enter_active())
+        {
+            //if cancel was pressed
+            if (files2[selected_icon] == "Cancel")
+            {
+                //set the filename
+                file_path = "canceled";
+
+                //stop the file select menu being active
+                file_select_status = false;
+
+                //return to the calling state
+                switchState(state);
+            }
+            else if (files2[selected_icon] == "..") //if parent directory was selected
+            {
+                char path[file_path.length()];
+                strcpy(path, file_path.c_str());
+                char *pch;
+                file_path = "/";
+                
+                //get number of occurances of / character
+                int occurances = 0;
+                for (int i = 0; i < sizeof(path) / sizeof(char); i++) if (path[i] == '/') occurances++;
+                
+                //split the string
+                pch = strtok(path, "/");
+                
+                for (int i = 0; i < occurances - 2; i++)
+                {
+                    file_path += pch;
+                    file_path += "/";
+                    pch = strtok(NULL, "/");
+                }
+
+                //reset the file select dialogue
+                file_select_dir_list_init = false;
+
+                //load selected icon index from the selected index stack
+                selected_icon = selected_icon_stack.top();
+                selected_icon_stack.pop();
+            }
+            else
+            {
+                //determine whether selected path is a directory
+                File selected_file;
+                if (file_path != "/") selected_file = files1[selected_icon - 2];
+                else                  selected_file = files1[selected_icon - 1];
+                
+                //if the path points to a directory
+                if (selected_file.isDirectory())
+                {
+                    file_path += files2[selected_icon] + "/"; //set file select dialogue to subdirectory
+                    file_select_dir_list_init = false;
+                    selected_icon_stack.push(selected_icon);
+                    selected_icon = 0; //reset selected icon
+
+                }
+                else //otherwise, assume the path points to a file
+                {
+
+                    //set the file path
+                    file_path = file_path + files2[selected_icon];
+
+                    //reset selected icon
+                    selected_icon = 0;
+
+                    //clear the selected icon stack
+                    for (int i = 0; i < selected_icon_stack.size(); i++) selected_icon_stack.pop();
+
+                    //stop the file select menu being active
+                    file_select_status = false;
+
+                    //return to the calling state
+                    switchState(state);
+
+                }
+            }
+            
+        }
+
+        //if the file select list hasn't been initalised
+        if (!file_select_dir_list_init)
+        {
+            Serial.println("opening file dialogue for " + file_path);
+
+            //dim screen
+            dimScreen(0, 10);
+            oled.fillScreen(BLACK);
+
+            //populate files1 with the contents of the selected directory
+            files1.clear();
+            files1 = getDirFiles(file_path);
+
+            //clear files2
+            files2.clear();
+
+            //if card isn't initalised, notify the user
+            if (sd_state != 1)
+            {
+                Serial.println("d");
+                oled.setCursor(2, 36);
+                oled.print("SD card not mounted");
+            }
+            else
+            {
+                //if there are no files, notify the user
+                if (files1.size() == 0)
+                {
+                    oled.setCursor(2, 36);
+                    oled.print("This directory is empty");
+                }
+                else
+                {
+                    Serial.println("b");
+                    //add file names to files2 array
+                    for (File f : files1)
+                    {
+                        f.getName(filename, 255);
+                        files2.push_back(String(filename));
+                    }
+                }
+                //add back button if in a non-root directory
+                if (file_path != "/") files2.emplace(files2.begin(), "..");                
+            }
+
+            //add cancel option
+            files2.emplace(files2.begin(), "Cancel");
+
+            dimScreen(1, 10);
+        }
+
+        //if file select list hasn't been initliased, or any button is pressed, redraw the menu
+        if (!file_select_dir_list_init || dpad_any_active())
+        drawMenu(2, 12, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 12, files2, selected_icon, themecolour);
+
+        //finish file select list initilisation
+        if (!file_select_dir_list_init) file_select_dir_list_init = true;
+
+        //Serial.println("c");
+
+        drawTopThing();
+    }
 
     //reset button lock state
     if (btn_dpad_up.isReleased())       dpad_up_lock = false;
@@ -448,6 +630,11 @@ void drawTopThing(bool light)
 
         //oled.printf(" %d ", preferences.getBool("timeout", true));
 
+        if (dpad_any_active())
+        {
+            oled.fillRect(0, 0, SCREEN_WIDTH, 10, BLACK);
+        }
+
         if ( millis() - last_battery_reading > 1000)
         {
             //batteryVoltage = ( (ReadVoltage(BATTERY_DIVIDER_PIN) * 3.3 ) / 4095.0 ) * 2;
@@ -455,7 +642,7 @@ void drawTopThing(bool light)
             batteryPercentage = ( batteryVoltage / BATTERY_VOLTAGE_MAX ) * 100.0;
             last_battery_reading = millis();
 
-            oled.fillRect(0, 0, SCREEN_WIDTH, 10, BLACK);  //update this to only clear status portion
+            //todo: clear last value
             oled.printf(" %.0f%%", batteryPercentage);
         }
 
@@ -651,30 +838,125 @@ void deepSleep(int pause_thing)
 void drawMenu(int x, int y, int width, int height, std::vector<String> items, int selected, int colour)
 {
     static int16_t x1, y1;
-    static uint16_t w=0, h=0;
+    static uint16_t w=0, w2=0, h=0, h2=0;
     static int padding = 4;
     static int radius = 4;
+    
+    //clear screen where menu will be drawn
+    oled.fillRect(x, y, width, height, BLACK);
 
+    x += padding;
+
+    //get text dimensions
+    oled.getTextBounds(items[0], x, y, &x1, &y1, &w, &h);
+
+    //get total height of button (incl. padding)
+    int ht = h + padding + padding + padding;
+    
+    //calculate how many items are onscreen (not considering y offset)
+    int onscreen_items = height / ht;
+
+    //calculate how many items are onscreen after the offset threshold but before the height of the menu
+    int threshold_items = onscreen_items - ( (height - ht) / ht );
+
+    //calculate y index of selected item
+    int selected_y_index = y + ((selected + 1) * ht);
+
+    //calculate offset threshold based on selected item
+    //if the selected item has a y index greater than this value, the offset will be non-zero
+    int y_offset = 0;
+    if (selected_y_index > ((y + height) - (ht))) 
+    {
+        y_offset = ht * (selected - threshold_items - 1);
+        Serial.println(y_offset);
+    }
+
+    //print each menu item
     int fridgebuzz = 0;
     for (const String &item : items)
     {
-        oled.setCursor(x+padding, y+padding+8);
-        oled.getTextBounds(item, x+padding, y+padding+8   , &x1, &y1, &w, &h);
-        if (selected == fridgebuzz)
+        //calculate the item's y position
+        int item_ypos = y - y_offset;
+
+        //if item is within the area in which the menu is to be drawn
+        if (item_ypos >= ( y - ht) || item_ypos < (y + height + ht))
         {
-            oled.fillRoundRect(x, y, width, h + (2 * padding), radius, colour);
-            oled.setTextColor(BLACK);
+
+            //draw the item rounded rectangle
+
+            //if the current item is the selected item
+            if (fridgebuzz == selected)
+            {
+                //draw a filled in rounded rectangle
+                oled.fillRoundRect(x, y - y_offset, width - (padding*2), h + padding + padding, radius, colour);
+                oled.setTextColor(BLACK);
+            }
+            else
+            {
+                //draw the outline of a rounded rectangle
+                oled.drawRoundRect(x, y - y_offset, width - (padding*2), h + padding + padding, radius, colour);
+                oled.setTextColor(colour);
+            }
+
+            //draw the item text
+            String itemtext = "";
+
+            //get the length of the text
+            oled.getTextBounds(item, x + padding, y + h + padding - y_offset, &x1, &y1, &w, &h2);
+
+            //if the text is too long for the item button
+            if (w > (width - (padding * 4)))
+            {
+
+                //this is a _really_ inefficient idea
+                //iterate through each letter until the length of the button is reached
+
+                //find the width of the string "..." and store it in w2
+                oled.getTextBounds("...", x + padding, y + h + padding, &x1, &y1, &w2, &h2);
+
+                //running value of item text length
+                int text_length = 0;
+
+                //for each letter
+                for (int i = 0; i < item.length(); i++)
+                {
+                    //get width of character
+                    oled.getTextBounds(String(item.charAt(i)), x + padding, y + h + padding, &x1, &y1, &w, &h2);
+
+                    //add width to running value
+                    //really, the character width should be added to this value,
+                    //but for some reason, the character width calculated by oled.getTextBounds()
+                    //above isn't correct
+                    text_length += 6;
+
+                    //if the text would be too long (idk im tired)
+                    //the limit is the width - padding - the length of "..."
+                    if (text_length > (width - (padding * 4) - w2))
+                    {
+                        //add "..." to the item text, and break the loop
+                        itemtext += "...";
+                        break;
+                    }
+                    else
+                    {
+                        //add the character to the item text
+                        itemtext += String(item.charAt(i));
+                    }
+                    
+                }
+
+            }
+            else itemtext = item;
+
+            //print the text
+            oled.setCursor(x + padding, y + h + padding - y_offset);
+            oled.print(itemtext);
+
+            y += ht;
+
+            fridgebuzz++;
+
         }
-        else
-        {
-            oled.fillRoundRect(x, y, width, h + (2 * padding), radius, BLACK);
-            oled.drawRoundRect(x, y, width, h + (2 * padding), radius, colour);
-            oled.setTextColor(colour);
-        }
-        //oled.setCursor(x1, y1);
-        oled.print(item);
-        y += h + padding + padding + padding;
-        fridgebuzz++;
     }
 }
 
@@ -761,10 +1043,11 @@ std::vector<File> getDirFiles(String path)
     digitalWrite(cs, HIGH);
     digitalWrite(sdcs, LOW);
 
-    //initalise the sd card (without changing themecolourany CS pin)
+    //initalise the sd card (without changing any CS pin)
     if( initSD(false) == 0 ){
         
         //sd could not be accessed
+        Serial.println("getDirFiles failed because no");
         return files;
 
     }
@@ -793,6 +1076,8 @@ std::vector<File> getDirFiles(String path)
 
         while(true)
         {
+            Serial.print("f");
+
             //open next file in dir
             File f = root.openNextFile();
 
@@ -801,6 +1086,8 @@ std::vector<File> getDirFiles(String path)
 
             files.push_back(f);
         }
+
+        Serial.println();
 
     }
 
@@ -812,22 +1099,40 @@ std::vector<File> getDirFiles(String path)
     return files;
 }
 
+void beginFileSelect(String path)
+{
+    file_select_status = true;
+    file_path = path;
+    file_select_dir_list_init = false;
+}
+
 int initSD(bool handleCS)
 {
+
+
+
+
+    //add CS stuff to quickstart example
+    //enable CRC checks
+
+
+
+
     int no = 0;
 
-    if (handleCS)
-    {
-        //enable the sd card
-        digitalWrite(cs, HIGH);
-        digitalWrite(sdcs, LOW);
-    }
+    //enable the sd card
+    digitalWrite(cs, HIGH);
+    digitalWrite(sdcs, LOW);
 
     //initalise the sd card
-    if(!SD.begin(sdcs, SPISettings(5000000, MSBFIRST, SPI_MODE0))){
+    if(!SD.begin(sdcs, SPISettings(9000000, MSBFIRST, SPI_MODE0))){
 
         //card couldn't mount
-        Serial.println("Couldn't mount SD card");
+        Serial.println("initSD() - Couldn't mount SD card");
+        Serial.print("\tError code: ");
+        Serial.printf("0x%x\n", SD.cardErrorCode());
+        Serial.print("\tError data: ");
+        Serial.printf("0x%x\n", SD.cardErrorData());
         no = 0;
 
     }
@@ -835,18 +1140,11 @@ int initSD(bool handleCS)
     {
 
         //card mounted successfully
-        Serial.println("Successfully mounted SD card");
+        Serial.println("initSD() - Successfully mounted SD card");
         Serial.printf("Card size: %d\n", SD.card()->cardSize());
         //SD.ls(LS_R | LS_DATE | LS_SIZE);
         no = 1;
 
-    }
-
-    if (handleCS)
-    {
-        //disable the sd card
-        digitalWrite(cs, LOW);
-        digitalWrite(sdcs, HIGH);
     }
 
     //set global sd state variable, and return

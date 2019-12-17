@@ -3,37 +3,20 @@ void registerFileStates()
 
     registerState("SD Test", "what", [](){
 
-        // Directory file.
-        SdFile root;
-
-        // Use for file creation in folders.
-        SdFile file;
-
-        oled.setCursor(0,19);
-        oled.setFont(&SourceSansPro_Regular6pt7b);
-
-        oled.print("sd dir test\n");
-        //Serial.println("sd dir test");
-
-        if (!state_init)
+        if (file_path == "/") beginFileSelect("/");
+        else
         {
-            std::vector<File> files = getDirFiles("/");
-            char filename[255];
+            oled.setCursor(2, 42);
+            oled.print(file_path);
 
-            if (files.size() == 0) oled.print("error accessing files");
-            else
+            drawTopThing();
+
+            if (dpad_left_active()) 
             {
-                for (int i = 0; i < files.size(); i++)
-                {
-                    files[i].getName(filename, 255);
-                    oled.println(filename);
-                }
+                file_path = "/";
+                switchState(2);
             }
         }
-
-        drawTopThing();
-
-        if (dpad_left_active()) switchState(2);
 
     }, false);
 

@@ -1,0 +1,5 @@
+Reference, Value, Footprint, Datasheet
+"U1","ESP32-WROOM-32","RF_Module:ESP32-WROOM-32","https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32_datasheet_en.pdf"
+"U2","AP1117-33","Package_TO_SOT_SMD:SOT-223-3_TabPin2","http://www.diodes.com/datasheets/AP1117.pdf"
+"C2","C_Small","","~"
+"C1","C_Small","","~"
