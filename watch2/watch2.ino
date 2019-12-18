@@ -656,21 +656,6 @@ void drawTopThing(bool light)
     );
 }
 
-int registerState(std::string stateName, std::string stateIcon, const std::function<void()>& stateFunc, bool hidden)
-{
-    /*stateMeta meta = {
-        stateName,
-        stateIcon,
-        stateFunc,
-        0,
-        hidden
-    };
-
-    states.push_back(meta);
-
-    return 5; //fix*/
-}
-
 bool registerIcon(std::string iconName, std::vector<unsigned short int> icon)
 {
     icons.emplace( iconName, icon );

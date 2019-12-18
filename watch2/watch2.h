@@ -143,13 +143,6 @@ struct alarmData {
 //light - if this is true, only the status icons will be drawn.  otherwise, everything will be drawn
 void    drawTopThing(bool light = false);
 
-//add a state to the list of states.  usage is described at docs/states.md
-//stateName - the name of the state as displayed in the state menu
-//stateIcon - the name of an icon in icons
-//stateFunc - the function that the state is executed using.  this will be executed on a loop
-//hidden - if this is true, the state will not be displayed on the state menu
-int     registerState(std::string stateName, std::string stateIcon, const std::function<void()>& stateFunc, bool hidden = false);
-
 //add an icon to the list of 16 bit colour icons
 //iconName - the name of the icon that will be used to access it later
 //icon - a vector or array of unsigned short ints that represent the icon
