@@ -61,11 +61,28 @@
 
 // state metadata struct
 struct stateMeta {
+	
+	//stateMeta members
     std::string             stateName;
+	std::function<void()>   stateFunc;
     std::string             stateIcon;
-    std::function<void()>   stateFunc;
     int                     variant;
     bool                    hidden;
+	
+	//stateMeta constructor
+	stateMeta(
+		std::string stateName, 
+		std::function<void()> stateFunc,
+		std::string stateIcon = "what",
+		int variant = 0,
+		bool hidden = false
+	) : 
+		stateName(stateName),
+		stateFunc(stateFunc),
+		stateIcon(stateIcon),
+		variant(variant),
+		hidden(hidden)
+	{}
 };
 
 // data for entries in settings menus

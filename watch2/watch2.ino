@@ -26,6 +26,7 @@
 #include <stack>
 
 #include "watch2.h"                 // defines and function prototypes
+#include "globals.h"                // declatations for global variables
 
 // custom fonts
 #include "custom_fonts/sourcesanspro-regular-6.h"
@@ -43,13 +44,11 @@
 // global stuff
 ////////////////////////////////////////
 
-// type definitions
-typedef void (*func)(void);         // function pointer type
+//declatations for each variable can be found in globals.h
 
 // object creation
-SPIClass *vspi = new SPIClass(VSPI);        // VSPI object
-Adafruit_SSD1351 oled = Adafruit_SSD1351(128, 96, vspi, cs, dc, rst);               //hw spi (use vspi or &SPI)
-//Adafruit_SSD1351 oled = Adafruit_SSD1351(128, 96, cs, dc, mosi, sclk, rst);  //sw spi
+SPIClass *vspi = new SPIClass(VSPI);
+Adafruit_SSD1351 oled = Adafruit_SSD1351(128, 96, vspi, cs, dc, rst);
 Preferences preferences;
 SdFat SD(&*vspi);
 
@@ -60,75 +59,45 @@ Button btn_dpad_left(dpad_left, 25, false, false);
 Button btn_dpad_right(dpad_right, 25, false, false);
 Button btn_dpad_enter(dpad_enter, 25, false, false);
 
-//map of watch states
-std::map<int, stateMeta> states;
-
-//map of icons
-std::map<std::string, std::vector<unsigned short int>> icons;   //large colour icons for things like the state menu
-std::map<std::string, std::vector<unsigned char>> small_icons;  //smaller monochrome icons for use within GUIs
+std::map<std::string, std::vector<unsigned short int>> icons;
+std::map<std::string, std::vector<unsigned char>> small_icons;
 
 // global variables
-int state = 0;                                                  //currently selected state
-int state_init = 0;                                             //0 if the state is being executed for the first time (after swtiching from another stat)
-std::map<int, stateMeta>::iterator selected_menu_icon;          //iterator to the currently selected state
-RTC_DATA_ATTR int selected_state = 0;                           //numerical representation of currently selected state that persists accross sleep mode
-//boot count is used to keep track of what state was selected in the menu before
-//entering deep sleep.  This variable is only used when going in to or waking up
-//from sleep.  During active mode operation, selected_menu_icon is used,
-RTC_DATA_ATTR int boot_count = 0;                               //no of times watch has woken up (including initial boot)
-int trans_mode = 0;                                             //pretty colour scheme
-int short_timeout = 5000;                                       //timeout when looking at watch face
-int long_timeout = 30000;                                       //timeout (almost) everywhere else
-bool timeout = true;                                            //whether or not to go to sleep after timeout time has elapsed
-int themecolour = BLUE;                                         //colour of the system accent
-time_t alarm_snooze_time = 5*60;                                //time to add to alarm when snoozing
-uint8_t screen_brightness = 15;                                 //brightness of screen, ranges from 0 (backlight off) to 15 (full brightness)
-uint8_t speaker_volume = 10;                                    //speaker volume, as controlled by audioI2S library.  ranges from 0 (no sound) to 21 (loudest)
-uint8_t torch_brightness = 0;                                   //brightness of the torch LED (pwm controlled, ranges from 0 (off) to 255 (fill brightnesss))
-int sd_state = 0;                                               //state of the sd card
-                                                                //0 - not initalised
-                                                                //1 - initalised with no errors
-                                                                //2 - card not present
-
-int RTC_DATA_ATTR stopwatch_timing = 0;                         //stopwatch state
-                                                                //0 - stopped
-                                                                //1 - running
-                                                                //2 - paused
-uint32_t RTC_DATA_ATTR stopwatch_epoch = 0;                     //time when the stopwatch was started
-uint32_t RTC_DATA_ATTR stopwatch_paused_diff = 0;               //when the stopwatch is off or paused, stopwatch_epoch is set to the current time minus this value
-                                                                //when the stopwatch is paused, this value is set to the difference between stopwatch_epoch and the current time (keeps the difference constant)
-                                                                //when the stopwatch is off, this value is set to 0
-uint32_t stopwatch_time_diff = 0;                               //difference between epoch and current time (equivalent to elapsed time)
-uint32_t stopwatch_last_time_diff = 0;                          //last time diff (used for checking when to redraw elapsed time)
+int state = 0;
+int state_init = 0;
+RTC_DATA_ATTR int selected_menu_icon;
+RTC_DATA_ATTR int boot_count = 0;
+int trans_mode = 0;
+int short_timeout = 5000;
+int long_timeout = 30000;
+bool timeout = true;
+int themecolour = BLUE;
+time_t alarm_snooze_time = 5*60;
+uint8_t screen_brightness = 15;
+uint8_t speaker_volume = 10;
+uint8_t torch_brightness = 0;
+int sd_state = 0;
+int RTC_DATA_ATTR stopwatch_timing = 0;
+uint32_t RTC_DATA_ATTR stopwatch_epoch = 0;
+uint32_t RTC_DATA_ATTR stopwatch_paused_diff = 0;
+uint32_t stopwatch_time_diff = 0;
+uint32_t stopwatch_last_time_diff = 0;
 uint32_t stopwatch_ms = 0, stopwatch_last_ms = 0;
 uint32_t stopwatch_s = 0, stopwatch_last_s = 0;
 uint32_t stopwatch_min = 0, stopwatch_last_min = 0;
 uint32_t stopwatch_hour = 0, stopwatch_last_hour = 0;
 
-std::vector<timerData> timers;                                  //vector to store timers
-std::vector<alarmData> alarms;                                  //vector to store alarms
-int timer_trigger_status = 0;                                   //the state of a timer
-                                                                //0 - timer not going off → normal state execution
-                                                                //1 - timer going off → suspend state execution and draw alarm message
-                                                                //2 - timer gone off → wait for user input before resuming state execution
+std::vector<timerData> timers;
+std::vector<alarmData> alarms;
+int timer_trigger_status = 0;
 int timer_trigger_id = 255;
 int alarm_trigger_status = 0;
 int alarm_trigger_id = 0;
 
-int file_select_status = 0;                                     //whether or not to show the file select menu
-                                                                //0 - don't show the menu.  the current state (or alarm or timer dialogue) will show instead
-                                                                //1 - do show the dialog
-String file_path = "/";                                         //if the file select menu is active, this is used to keep track of the current directory.
-                                                                //otherwise, it is used to store the path of the file after file selection (or "canceled" if no file was selected)
-bool file_select_dir_list_init = false;                         //keeps track of whether or not the file list has been initalised for the current directory
+int file_select_status = 0;
+String file_path = "/";
+bool file_select_dir_list_init = false;
 
-//these variables stop button presses affecting new states
-//when switching from a previous state.
-//when a user presses a button to go from the watch face to the menu,
-//if the button is held down for long enough, the button press can affect
-//the next state.
-//these lock variables are set to true when switching states, then set to false
-//when each button is released.
 bool dpad_up_lock = false;
 bool dpad_down_lock = false;
 bool dpad_left_lock = false;
@@ -141,10 +110,7 @@ bool dpad_enter_lock = false;
 #include "icons/app_icons.cpp"
 #include "icons/small_icons.cpp"
 
-#include "states/system_states.cpp"
-#include "states/util_states.cpp"
-#include "states/time_states.cpp"
-#include "states/file_states.cpp"
+#include "states/states.h"
 
 ////////////////////////////////////////
 // setup function
@@ -229,27 +195,21 @@ void setup() {
     registerAppIcons();
     registerSmallIcons();
 
-    //set up states
-    registerSystemStates();
-    registerUtilStates();
-    registerTimeStates();
-    registerFileStates();
-
     if (boot_count == 0)
     {
         //set selected menu icon to first non-hidden state
-        selected_menu_icon = states.begin();
+        selected_menu_icon = 0;
         while(1)
         {
-            if (selected_menu_icon->second.hidden)
+            if (states[selected_menu_icon].hidden)
             {
                 //check next state
-                std::advance(selected_menu_icon, 1);
+                selected_menu_icon++;
             }
             else break;
         }
     }
-    else selected_menu_icon = states.find(selected_state);
+    //else selected_menu_icon = states.find(selected_state);
 
     //finish up
     boot_count++;
@@ -275,9 +235,23 @@ void loop() {
     //run current state
     if (timer_trigger_status == 0 && alarm_trigger_status == 0  && file_select_status == false)
     {
-        if ( states.find(state) == states.end() )
-        states[-1].stateFunc();
+        if ( state >= states.size() )
+        {
+            //dim screen
+            uint8_t contrast = 0x0F;
+            oled.sendCommand(0xC7, &contrast, 1);
+
+            digitalWrite(12, HIGH);
+
+            oled.setCursor(5, 10);
+            oled.setTextColor(WHITE, BLACK);
+            oled.print("no state has been\nloaded");
+            oled.drawRGBBitmap(0, 29, coolcrab, 128, 55);
+            if (dpad_any_active()) switchState(0);
+        }
         else states[state].stateFunc();
+
+        Serial.printf("state: %d\nstates: %d\n\n", state, states.size());
     }
     else if (timer_trigger_status != 0) //handle timers
     {
@@ -684,7 +658,7 @@ void drawTopThing(bool light)
 
 int registerState(std::string stateName, std::string stateIcon, const std::function<void()>& stateFunc, bool hidden)
 {
-    stateMeta meta = {
+    /*stateMeta meta = {
         stateName,
         stateIcon,
         stateFunc,
@@ -692,9 +666,9 @@ int registerState(std::string stateName, std::string stateIcon, const std::funct
         hidden
     };
 
-    states.insert( { states.size() - 1, meta } );
+    states.push_back(meta);
 
-    return 5; //fix
+    return 5; //fix*/
 }
 
 bool registerIcon(std::string iconName, std::vector<unsigned short int> icon)
@@ -763,7 +737,7 @@ void deepSleep(int pause_thing)
     oled.sendCommand(0xAE);
 
     //save selected_state
-    selected_state = selected_menu_icon->first;
+    //selected_state = selected_menu_icon->first;
 
     //set time
     timeval tv{
