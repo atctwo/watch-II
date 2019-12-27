@@ -32,7 +32,7 @@ void state_func_calc()
         while(1)
         {
             if (selected_calc_button == 0)
-            selected_calc_button = calc_buttons.size();
+            selected_calc_button = calc_buttons.size()-1;
             else selected_calc_button--;
             if (calc_buttons[selected_calc_button] != "") break;
         }

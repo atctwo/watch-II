@@ -1,0 +1,28 @@
+storing images for ir remote app
+
+1) store images in global small bitmap array
+	- dev has to add images to array and recompile watch system
+	- more difficult to make changes by only modifying stuff on the sd
+	- images take up space in ram that will never be freed (maybe use PROGMEM?)
+	
+2) store images in separate subdirectory on sd
+	- when would images be loaded?
+		- on initSD() (into small bitmap array)?
+			- would this increase time to execute?
+			- how to prevent duplication of icons
+			- the images would only have to be loaded once
+		- on loading an ir profile?
+			- would the images be reloaded every time the button grid is rewdrawn, or
+			  is there some mechanism where you can preload several images and draw them later?
+				- yes
+					Adafruit_Image img;
+					reader.loadBMP("/image.bmp", img);
+					img.draw(oled, x, y);
+				- maybe have a vector of Adafruit_Images (like calc_buttons and commands)
+				- if the code object has a btn_image key, draw the image, otherwise, print the btn text
+	- would have to use adafruit imagereader
+	- dev wouldn't have to create a byte array (they would just drop a bmp in a folder)
+	
+3) store byte array in json file
+	- if several profiles have the same icon, the data is repeated
+	- doesn't depend on any external files

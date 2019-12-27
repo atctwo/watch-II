@@ -1,0 +1,5 @@
+The system uses a fork of IRRemote that adds ESP32 support (https://github.com/ExploreEmbedded/Arduino-IRremote).  In the file boarddefs.h, the
+value of TIMER_PWM_PIN (line 565) was changed to 12.
+
+The library csscolorparser included in the source directory isn't an Arduino library, so was included with the source.  It's GitHub repository can be found
+at https://github.com/mapbox/css-color-parser-cpp.

@@ -10,11 +10,13 @@
 #include <sdios.h>
 #include <Adafruit_GFX.h>           // Used for drawing graphics to the OLED
 #include <Adafruit_SSD1351.h>       // used to interface with the OLED
+#include <Adafruit_ImageReader.h>
 #include <JC_Button.h>              // button object
 #include <WiFi.h>                   // wifi library
 #include <Preferences.h>            // for storing settings in nvs (allowing for persistance over power cycles)
 #include <tinyexpr.h>               // expression evaluator for calculator
 #include <map>                      // map object for storing states
+#include <unordered_map>
 #include <string>                   // std::string
 #include <functional>               // std::function thing
 #include <time.h>                   // used for system-level time keeping
@@ -51,6 +53,7 @@ SPIClass *vspi = new SPIClass(VSPI);
 Adafruit_SSD1351 oled = Adafruit_SSD1351(128, 96, vspi, cs, dc, rst);
 Preferences preferences;
 SdFat SD(&*vspi);
+Adafruit_ImageReader reader(SD);
 
 //button objects
 Button btn_dpad_up(dpad_up, 25, false, false);
@@ -58,6 +61,7 @@ Button btn_dpad_down(dpad_down, 25, false, false);
 Button btn_dpad_left(dpad_left, 25, false, false);
 Button btn_dpad_right(dpad_right, 25, false, false);
 Button btn_dpad_enter(dpad_enter, 25, false, false);
+Button btn_zero(0);
 
 std::map<std::string, std::vector<unsigned short int>> icons;
 std::map<std::string, std::vector<unsigned char>> small_icons;
@@ -95,7 +99,7 @@ int alarm_trigger_status = 0;
 int alarm_trigger_id = 0;
 
 int file_select_status = 0;
-String file_path = "/";
+std::string file_path = "/";
 bool file_select_dir_list_init = false;
 
 bool dpad_up_lock = false;
@@ -125,7 +129,9 @@ void setup() {
     pinMode(12, OUTPUT);
     pinMode(cs, OUTPUT);
     pinMode(sdcs, OUTPUT);
+    pinMode(sdcd, INPUT);
     pinMode(BATTERY_DIVIDER_PIN, INPUT);
+    pinMode(IR_PIN, OUTPUT);
 
     digitalWrite(cs, LOW);
     digitalWrite(sdcs, HIGH);
@@ -228,6 +234,7 @@ void loop() {
     btn_dpad_left.read();
     btn_dpad_right.read();
     btn_dpad_enter.read();
+    btn_zero.read();
 
     //check timers and alarms
     Alarm.delay(0);
@@ -251,7 +258,6 @@ void loop() {
         }
         else states[state].stateFunc();
 
-        Serial.printf("state: %d\nstates: %d\n\n", state, states.size());
     }
     else if (timer_trigger_status != 0) //handle timers
     {
@@ -383,11 +389,8 @@ void loop() {
         static int selected_icon = 0; //currently selected file
         static char filename[255]; //buffer to hold filename
 
-        static std::vector<File> files1;        //vector of Files in directory
-        static std::vector<String> files2;      //vector of Strings representing names of files in directory
+        static std::vector<std::string> files2;      //vector of Strings representing names of files in directory
         static std::stack<int> selected_icon_stack; //stack for storing selected file indecies when navigating through subdirectories
-
-        Serial.println("a");
 
         //handle dpad up press
         if (dpad_up_active()) 
@@ -450,8 +453,7 @@ void loop() {
             {
                 //determine whether selected path is a directory
                 File selected_file;
-                if (file_path != "/") selected_file = files1[selected_icon - 2];
-                else                  selected_file = files1[selected_icon - 1];
+                selected_file = SD.open(files2[selected_icon].c_str());
                 
                 //if the path points to a directory
                 if (selected_file.isDirectory())
@@ -485,53 +487,34 @@ void loop() {
             
         }
 
-        Serial.println("b");
-
         //if the file select list hasn't been initalised
         if (!file_select_dir_list_init)
         {
-            Serial.println("opening file dialogue for " + file_path);
+            Serial.print("opening file dialogue for ");
+            Serial.println(file_path.c_str());
 
             //dim screen
             dimScreen(0, 10);
             oled.fillScreen(BLACK);
 
-            //populate files1 with the contents of the selected directory
-            files1.clear();
-            files1 = getDirFiles(file_path);
-
-            Serial.println("f");
-
-            //clear files2
+            //populate files2 with the contents of the selected directory
             files2.clear();
+            files2 = getDirFiles(file_path);
 
             //if card isn't initalised, notify the user
             if (sd_state != 1)
             {
-                Serial.println("g");
                 oled.setCursor(2, 36);
                 oled.print("SD card not mounted");
             }
             else
             {
                 //if there are no files, notify the user
-                if (files1.size() == 0)
+                if (files2.size() == 0)
                 {
-                    Serial.println("h");
                     oled.setCursor(2, 36);
                     oled.print("This directory is empty");
                 }
-                else
-                {
-                    Serial.println("i");
-                    //add file names to files2 array
-                    for (File f : files1)
-                    {
-                        f.getName(filename, 255);
-                        files2.push_back(String(filename));
-                    }
-                }
-                Serial.println("j");
                 //add back button if in a non-root directory
                 if (file_path != "/") files2.emplace(files2.begin(), "..");                
             }
@@ -540,26 +523,43 @@ void loop() {
             files2.emplace(files2.begin(), "Cancel");
 
             dimScreen(1, 10);
-
-            Serial.println("k");
         }
-
-        Serial.println("c");
 
         //if file select list hasn't been initliased, or any button is pressed, redraw the menu
         if (!file_select_dir_list_init || dpad_any_active())
         drawMenu(2, 12, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 12, files2, selected_icon, themecolour);
 
-        Serial.println("d");
-
         //finish file select list initilisation
         if (!file_select_dir_list_init) file_select_dir_list_init = true;
 
-        Serial.println("e");
-
-        //Serial.println("c");
-
         drawTopThing();
+    }
+
+    //wip screenshot tool
+    //this doesn't work yet
+    if (btn_zero.pressedFor(1000))
+    {
+        oled.drawPixel(0,0,BLUE);
+        oled.startWrite();
+
+        for (int y = 0; y < SCREEN_HEIGHT; y++)
+        {
+            for (int x = 0; x < SCREEN_WIDTH; x++)
+            {
+                oled.setAddrWindow(x, y, 1, 1);
+                oled.writeCommand(SSD1351_CMD_READRAM);
+                vspi->transfer(0x12);
+                uint8_t colour = vspi->transfer(0x12);
+                Serial.printf("%02x", colour);
+                colour = vspi->transfer(0x12);
+                Serial.printf("%02x ", colour);
+            }
+            Serial.println();
+        }
+        
+
+
+        oled.endWrite();
     }
 
     //reset button lock state
@@ -808,7 +808,7 @@ void deepSleep(int pause_thing)
     else switchState(0);
 }
 
-void drawMenu(int x, int y, int width, int height, std::vector<String> items, int selected, int colour)
+void drawMenu(int x, int y, int width, int height, std::vector<std::string> items, int selected, int colour)
 {
     static int16_t x1, y1;
     static uint16_t w=0, w2=0, h=0, h2=0;
@@ -821,7 +821,7 @@ void drawMenu(int x, int y, int width, int height, std::vector<String> items, in
     x += padding;
 
     //get text dimensions
-    oled.getTextBounds(items[0], x, y, &x1, &y1, &w, &h);
+    oled.getTextBounds(String(items[0].c_str()), x, y, &x1, &y1, &w, &h);
 
     //get total height of button (incl. padding)
     int ht = h + padding + padding + padding;
@@ -846,7 +846,7 @@ void drawMenu(int x, int y, int width, int height, std::vector<String> items, in
 
     //print each menu item
     int fridgebuzz = 0;
-    for (const String &item : items)
+    for (const std::string &item : items)
     {
         //calculate the item's y position
         int item_ypos = y - y_offset;
@@ -875,7 +875,7 @@ void drawMenu(int x, int y, int width, int height, std::vector<String> items, in
             String itemtext = "";
 
             //get the length of the text
-            oled.getTextBounds(item, x + padding, y + h + padding - y_offset, &x1, &y1, &w, &h2);
+            oled.getTextBounds(String(item.c_str()), x + padding, y + h + padding - y_offset, &x1, &y1, &w, &h2);
 
             //if the text is too long for the item button
             if (w > (width - (padding * 4)))
@@ -894,7 +894,7 @@ void drawMenu(int x, int y, int width, int height, std::vector<String> items, in
                 for (int i = 0; i < item.length(); i++)
                 {
                     //get width of character
-                    oled.getTextBounds(String(item.charAt(i)), x + padding, y + h + padding, &x1, &y1, &w, &h2);
+                    oled.getTextBounds(String(item[i]), x + padding, y + h + padding, &x1, &y1, &w, &h2);
 
                     //add width to running value
                     //really, the character width should be added to this value,
@@ -913,13 +913,13 @@ void drawMenu(int x, int y, int width, int height, std::vector<String> items, in
                     else
                     {
                         //add the character to the item text
-                        itemtext += String(item.charAt(i));
+                        itemtext += String(item[i]);
                     }
                     
                 }
 
             }
-            else itemtext = item;
+            else itemtext = String(item.c_str());
 
             //print the text
             oled.setCursor(x + padding, y + h + padding - y_offset);
@@ -1007,10 +1007,13 @@ void drawSettingsMenu(int x, int y, int width, int height, std::vector<settingsM
     }
 }
 
-std::vector<File> getDirFiles(String path)
+std::vector<std::string> getDirFiles(std::string path)
 {
     //vector to store files in the directory
-    std::vector<File> files;
+    std::vector<std::string> files;
+
+    //buffer to store filenames
+    char filename[255];
 
     //enable the sd card
     digitalWrite(cs, HIGH);
@@ -1031,7 +1034,7 @@ std::vector<File> getDirFiles(String path)
         digitalWrite(sdcs, LOW);
 
         //open the dir at the path
-        File root = SD.open(path);
+        File root = SD.open(path.c_str());
 
         //check that path is valid
         if (!root)
@@ -1057,8 +1060,16 @@ std::vector<File> getDirFiles(String path)
             //if there are no more files, break
             if (!f) break;
 
-            files.push_back(f);
+            //get the name of the file
+            f.getName(filename, 255);
+
+            //add the name to the vector
+            files.push_back(std::string(filename));
+
+            f.close();
         }
+
+        root.close();
 
         Serial.println();
 
@@ -1072,7 +1083,7 @@ std::vector<File> getDirFiles(String path)
     return files;
 }
 
-void beginFileSelect(String path)
+void beginFileSelect(std::string path)
 {
     file_select_status = true;
     file_path = path;
@@ -1119,6 +1130,9 @@ int initSD(bool handleCS)
         no = 1;
 
     }
+
+    //if there is no sd card inserted, set no to 2
+    //if (!digitalRead(sdcd)) no = 2;
 
     //set global sd state variable, and return
     sd_state = no;
@@ -1247,3 +1261,4 @@ double ReadVoltage(byte pin){
   return -0.000000000009824 * pow(reading,3) + 0.000000016557283 * pow(reading,2) + 0.000854596860691 * reading + 0.065440348345433;
   // return -0.000000000000016 * pow(reading,4) + 0.000000000118171 * pow(reading,3)- 0.000000301211691 * pow(reading,2)+ 0.001109019271794 * reading + 0.034143524634089;
 } // Added an improved polynomial, use either, comment out as required
+

@@ -1,0 +1,37 @@
+{
+
+    "name": "Test Profile",
+    "pages": 2,
+    "codes": [
+
+        {
+            "btn_text": "Power",
+            "page": 0,
+            "row": 0,
+            "col": 0,
+            "protocol": "lg",
+            "code": "20DF10EF",
+            "size": 32
+        },
+        {
+            "btn_text": "Vol +",
+            "page": 0,
+            "row": 0,
+            "col": 1,
+            "protocol": "lg",
+            "code": "20DF40BF",
+            "size": 32
+        },
+        {
+            "btn_text": "Vol -",
+            "page": 0,
+            "row": 5,
+            "col": 2,
+            "protocol": "lg",
+            "code": "20DFC03F",
+            "size": 32
+        }
+
+    ]
+
+}

@@ -6,7 +6,7 @@ void state_func_sdtest()
     else
     {
         oled.setCursor(2, 42);
-        oled.print(file_path);
+        oled.print(String(file_path.c_str()));
 
         drawTopThing();
 

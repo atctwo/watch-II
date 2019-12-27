@@ -25,17 +25,23 @@ void state_func_notepad()
             if (read == 0)
             {
 
+                Serial.printf("reading file %s...\n", file_path.c_str());
+
                 filedata.clear();
                 yoffset = 0;
-                File f = SD.open(file_path);
+                File f = SD.open(file_path.c_str());
 
                 int chr;
                 while(chr != -1)
                 {
                     chr = f.read();
+                    Serial.print(chr);
                     if (chr != -1) filedata.push_back(chr);
                 }
                 f.rewind();
+                f.close();
+
+                Serial.println("\nfinished");
 
             }
 

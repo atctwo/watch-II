@@ -4,6 +4,7 @@
 //pin declarations
 #define cs   5      // goes to TFT CS
 #define sdcs 4      //sd card chip select
+#define sdcd 17     //sd card detect
 #define dc   22     // goes to TFT DC
 #define mosi 23     // goes to TFT MOSI
 #define sclk 18     // goes to TFT SCK/CLK
@@ -20,6 +21,7 @@
 #define dpad_enter  26
 #define BATTERY_DIVIDER_PIN 34
 #define TORCH_PIN 13
+#define IR_PIN 12
 
 //button active macros
 #define KEY_REPEAT_DELAY    550     //time for key repeat to start, in ms [DAS]
@@ -159,16 +161,16 @@ bool    registerSmallIcon(std::string iconName, std::vector<unsigned char> icon)
 void    dimScreen(bool direction, int pause_thing);
 void    switchState(int newState, int variant = 0, int dim_pause_thing = 10, int bright_pause_thing = 10, bool dont_draw_first_frame = false);
 void    deepSleep(int pause_thing=10);
-void    drawMenu(int x, int y, int width, int height, std::vector<String> items, int selected, int colour);
+void    drawMenu(int x, int y, int width, int height, std::vector<std::string> items, int selected, int colour);
 void    drawSettingsMenu(int x, int y, int width, int height, std::vector<settingsMenuData> items, int selected, int colour);
 
 //method to return all the files in a directory (non-recursively)
 //path - the path of the directory to return files in
-std::vector<File> getDirFiles(String path);
+std::vector<std::string> getDirFiles(std::string path);
 
 //open the file select dialogue.  this will pause the state until a file has been selected (or the operation has been cancelled)
 //path - the path to start the file selection at
-void    beginFileSelect(String path = "/");
+void    beginFileSelect(std::string path = "/");
 int     initSD(bool handleCS = true);
 void    colour888(uint16_t colour, float *r, float *g, float *b);
 void    HSVtoRGB( float *r, float *g, float *b, float h, float s, float v );

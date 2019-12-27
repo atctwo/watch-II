@@ -9,6 +9,7 @@
 #include "state_alarms.cpp"
 #include "state_sdtest.cpp"
 #include "state_notepad.cpp"
+#include "state_ir_remote.cpp"
 
 std::vector<stateMeta> states = {
 
@@ -22,6 +23,7 @@ std::vector<stateMeta> states = {
     stateMeta("Timer", state_func_timer, "timer"),
     stateMeta("Alarms", state_func_alarms, "alarms"),
     stateMeta("SD test", state_func_sdtest),
-    stateMeta("Notepad", state_func_notepad, "notepad")
+    stateMeta("Notepad", state_func_notepad, "notepad"),
+    stateMeta("IR remote", state_func_ir_remote, "ir remote")
 
 };
