@@ -228,19 +228,10 @@ void setup() {
 
 void loop() {
 
-    //initial button setup
-    btn_dpad_up.read();
-    btn_dpad_down.read();
-    btn_dpad_left.read();
-    btn_dpad_right.read();
-    btn_dpad_enter.read();
-    btn_zero.read();
-
-    //check timers and alarms
-    Alarm.delay(0);
+    startLoop();
 
     //run current state
-    if (timer_trigger_status == 0 && alarm_trigger_status == 0  && file_select_status == false)
+    if (timer_trigger_status == 0 && alarm_trigger_status == 0)
     {
         if ( state >= states.size() )
         {
@@ -382,159 +373,34 @@ void loop() {
         }
 
     }
-    else if (file_select_status) //show the file select dialogue
-    {
-        //i was watching tiktoks while writing this, so it might be pretty awful
 
-        static int selected_icon = 0; //currently selected file
-        static char filename[255]; //buffer to hold filename
+    
+    endLoop();
+    
 
-        static std::vector<std::string> files2;      //vector of Strings representing names of files in directory
-        static std::stack<int> selected_icon_stack; //stack for storing selected file indecies when navigating through subdirectories
+}
 
-        //handle dpad up press
-        if (dpad_up_active()) 
-        {
-            selected_icon--;
-            if (selected_icon < 0) selected_icon = files2.size() - 1;
-        }
 
-        //handle dpad down press
-        if (dpad_down_active())
-        {
-            selected_icon++;
-            if (selected_icon > files2.size() - 1) selected_icon = 0;
-        }
+////////////////////////////////////////
+// system functions
+////////////////////////////////////////
 
-        //handle dpad enter press
-        if (dpad_enter_active())
-        {
-            //if cancel was pressed
-            if (files2[selected_icon] == "Cancel")
-            {
-                //set the filename
-                file_path = "canceled";
+void startLoop()
+{
+    //initial button setup
+    btn_dpad_up.read();
+    btn_dpad_down.read();
+    btn_dpad_left.read();
+    btn_dpad_right.read();
+    btn_dpad_enter.read();
+    btn_zero.read();
 
-                //stop the file select menu being active
-                file_select_status = false;
+    //check timers and alarms
+    Alarm.delay(0);
+}
 
-                //return to the calling state
-                switchState(state);
-            }
-            else if (files2[selected_icon] == "..") //if parent directory was selected
-            {
-                char path[file_path.length()];
-                strcpy(path, file_path.c_str());
-                char *pch;
-                file_path = "/";
-                
-                //get number of occurances of / character
-                int occurances = 0;
-                for (int i = 0; i < sizeof(path) / sizeof(char); i++) if (path[i] == '/') occurances++;
-                
-                //split the string
-                pch = strtok(path, "/");
-                
-                for (int i = 0; i < occurances - 2; i++)
-                {
-                    file_path += pch;
-                    file_path += "/";
-                    pch = strtok(NULL, "/");
-                }
-
-                //reset the file select dialogue
-                file_select_dir_list_init = false;
-
-                //load selected icon index from the selected index stack
-                selected_icon = selected_icon_stack.top();
-                selected_icon_stack.pop();
-            }
-            else
-            {
-                //determine whether selected path is a directory
-                File selected_file;
-                selected_file = SD.open(files2[selected_icon].c_str());
-                
-                //if the path points to a directory
-                if (selected_file.isDirectory())
-                {
-                    file_path += files2[selected_icon] + "/"; //set file select dialogue to subdirectory
-                    file_select_dir_list_init = false;
-                    selected_icon_stack.push(selected_icon);
-                    selected_icon = 0; //reset selected icon
-
-                }
-                else //otherwise, assume the path points to a file
-                {
-
-                    //set the file path
-                    file_path = file_path + files2[selected_icon];
-
-                    //reset selected icon
-                    selected_icon = 0;
-
-                    //clear the selected icon stack
-                    for (int i = 0; i < selected_icon_stack.size(); i++) selected_icon_stack.pop();
-
-                    //stop the file select menu being active
-                    file_select_status = false;
-
-                    //return to the calling state
-                    switchState(state);
-
-                }
-            }
-            
-        }
-
-        //if the file select list hasn't been initalised
-        if (!file_select_dir_list_init)
-        {
-            Serial.print("opening file dialogue for ");
-            Serial.println(file_path.c_str());
-
-            //dim screen
-            dimScreen(0, 10);
-            oled.fillScreen(BLACK);
-
-            //populate files2 with the contents of the selected directory
-            files2.clear();
-            files2 = getDirFiles(file_path);
-
-            //if card isn't initalised, notify the user
-            if (sd_state != 1)
-            {
-                oled.setCursor(2, 36);
-                oled.print("SD card not mounted");
-            }
-            else
-            {
-                //if there are no files, notify the user
-                if (files2.size() == 0)
-                {
-                    oled.setCursor(2, 36);
-                    oled.print("This directory is empty");
-                }
-                //add back button if in a non-root directory
-                if (file_path != "/") files2.emplace(files2.begin(), "..");                
-            }
-
-            //add cancel option
-            files2.emplace(files2.begin(), "Cancel");
-
-            dimScreen(1, 10);
-        }
-
-        //if file select list hasn't been initliased, or any button is pressed, redraw the menu
-        if (!file_select_dir_list_init || dpad_any_active())
-        drawMenu(2, 12, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 12, files2, selected_icon, themecolour);
-
-        //finish file select list initilisation
-        if (!file_select_dir_list_init) file_select_dir_list_init = true;
-
-        drawTopThing();
-    }
-
+void endLoop()
+{
     //wip screenshot tool
     //this doesn't work yet
     if (btn_zero.pressedFor(1000))
@@ -591,13 +457,7 @@ void loop() {
                 deepSleep(31);
         }
     }
-
 }
-
-
-////////////////////////////////////////
-// system functions
-////////////////////////////////////////
 
 
 void drawTopThing(bool light)
@@ -1083,11 +943,169 @@ std::vector<std::string> getDirFiles(std::string path)
     return files;
 }
 
-void beginFileSelect(std::string path)
+std::string beginFileSelect(std::string path)
 {
-    file_select_status = true;
-    file_path = path;
+    //i was watching tiktoks while writing this, so it might be pretty awful
+
+    static int selected_icon = 0; //currently selected file
+    static char filename[255]; //buffer to hold filename
+
+    static std::vector<std::string> files2;      //vector of Strings representing names of files in directory
+    static std::stack<int> selected_icon_stack; //stack for storing selected file indecies when navigating through subdirectories
+
+    //call once
     file_select_dir_list_init = false;
+
+    while(true)
+    {
+        startLoop();
+
+        //handle dpad up press
+        if (dpad_up_active()) 
+        {
+            selected_icon--;
+            if (selected_icon < 0) selected_icon = files2.size() - 1;
+        }
+
+        //handle dpad down press
+        if (dpad_down_active())
+        {
+            selected_icon++;
+            if (selected_icon > files2.size() - 1) selected_icon = 0;
+        }
+
+        //handle dpad enter press
+        if (dpad_enter_active())
+        {
+            //if cancel was pressed
+            if (files2[selected_icon] == "Cancel")
+            {
+                //set the filename
+                file_path = "canceled";
+
+                //stop the file select menu being active
+                file_select_status = false;
+
+                //return to the calling state
+                switchState(state);
+            }
+            else if (files2[selected_icon] == "..") //if parent directory was selected
+            {
+                char path[file_path.length()];
+                strcpy(path, file_path.c_str());
+                char *pch;
+                file_path = "/";
+                
+                //get number of occurances of / character
+                int occurances = 0;
+                for (int i = 0; i < sizeof(path) / sizeof(char); i++) if (path[i] == '/') occurances++;
+                
+                //split the string
+                pch = strtok(path, "/");
+                
+                for (int i = 0; i < occurances - 2; i++)
+                {
+                    file_path += pch;
+                    file_path += "/";
+                    pch = strtok(NULL, "/");
+                }
+
+                //reset the file select dialogue
+                file_select_dir_list_init = false;
+
+                //load selected icon index from the selected index stack
+                selected_icon = selected_icon_stack.top();
+                selected_icon_stack.pop();
+            }
+            else
+            {
+                //determine whether selected path is a directory
+                File selected_file;
+                std::string filename = file_path + files2[selected_icon];
+                selected_file = SD.open(filename.c_str());
+                
+                //if the path points to a directory
+                if (selected_file.isDirectory())
+                {
+                    file_path += files2[selected_icon] + "/"; //set file select dialogue to subdirectory
+                    file_select_dir_list_init = false;
+                    selected_icon_stack.push(selected_icon);
+                    selected_icon = 0; //reset selected icon
+
+                }
+                else //otherwise, assume the path points to a file
+                {
+
+                    //set the file path
+                    file_path = file_path + files2[selected_icon];
+
+                    //reset selected icon
+                    selected_icon = 0;
+
+                    //clear the selected icon stack
+                    for (int i = 0; i < selected_icon_stack.size(); i++) selected_icon_stack.pop();
+
+                    //stop the file select menu being active
+                    file_select_status = false;
+
+                    //dim the screen and return to the calling state
+                    switchState(state, states[state].variant, 10, 10, true);
+                    return file_path;
+
+                }
+            }
+            
+        }
+
+        //if the file select list hasn't been initalised
+        if (!file_select_dir_list_init)
+        {
+            Serial.print("opening file dialogue for ");
+            Serial.println(file_path.c_str());
+
+            //dim screen
+            dimScreen(0, 10);
+            oled.fillScreen(BLACK);
+
+            //populate files2 with the contents of the selected directory
+            files2.clear();
+            files2 = getDirFiles(file_path);
+
+            //if card isn't initalised, notify the user
+            if (sd_state != 1)
+            {
+                oled.setCursor(2, 36);
+                oled.print("SD card not mounted");
+            }
+            else
+            {
+                //if there are no files, notify the user
+                if (files2.size() == 0)
+                {
+                    oled.setCursor(2, 36);
+                    oled.print("This directory is empty");
+                }
+                //add back button if in a non-root directory
+                if (file_path != "/") files2.emplace(files2.begin(), "..");                
+            }
+
+            //add cancel option
+            files2.emplace(files2.begin(), "Cancel");
+
+            dimScreen(1, 10);
+        }
+
+        //if file select list hasn't been initliased, or any button is pressed, redraw the menu
+        if (!file_select_dir_list_init || dpad_any_active())
+        drawMenu(2, 12, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 12, files2, selected_icon, themecolour);
+
+        //finish file select list initilisation
+        if (!file_select_dir_list_init) file_select_dir_list_init = true;
+
+        drawTopThing();
+        endLoop();
+
+    }
 }
 
 int initSD(bool handleCS)

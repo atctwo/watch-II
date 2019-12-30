@@ -141,6 +141,9 @@ struct alarmData {
 
 // system function prototypes
 
+void startLoop();
+void endLoop();
+
 //draw the status bar at the top of the page
 //light - if this is true, only the status icons will be drawn.  otherwise, everything will be drawn
 void    drawTopThing(bool light = false);
@@ -170,7 +173,7 @@ std::vector<std::string> getDirFiles(std::string path);
 
 //open the file select dialogue.  this will pause the state until a file has been selected (or the operation has been cancelled)
 //path - the path to start the file selection at
-void    beginFileSelect(std::string path = "/");
+std::string beginFileSelect(std::string path = "/");
 int     initSD(bool handleCS = true);
 void    colour888(uint16_t colour, float *r, float *g, float *b);
 void    HSVtoRGB( float *r, float *g, float *b, float h, float s, float v );

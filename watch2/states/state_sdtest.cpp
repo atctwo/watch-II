@@ -2,18 +2,20 @@
 
 void state_func_sdtest()
 {
-    if (file_path == "/") beginFileSelect("/");
-    else
+    static std::string filename;
+    if (!state_init) 
     {
+        filename = beginFileSelect();
+
         oled.setCursor(2, 42);
         oled.print(String(file_path.c_str()));
-
-        drawTopThing();
-
-        if (dpad_left_active()) 
-        {
-            file_path = "/";
-            switchState(2);
-        }
     }
+
+    drawTopThing();
+
+    if (dpad_left_active()) 
+    {
+        switchState(2);
+    }
+    
 }
