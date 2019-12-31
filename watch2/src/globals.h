@@ -1,3 +1,5 @@
+
+/*
 //this file contains declarations for every global variable that the system
 //uses.  the veriables are defined in watch2.ino
 
@@ -93,3 +95,5 @@ extern bool dpad_down_lock;
 extern bool dpad_left_lock;
 extern bool dpad_right_lock;
 extern bool dpad_enter_lock;
+
+*/

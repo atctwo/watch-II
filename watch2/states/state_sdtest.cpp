@@ -1,6 +1,7 @@
-#include "../globals.h"
+#include "../watch2.h"
+using namespace watch2;
 
-void state_func_sdtest()
+void state_func_SDtest()
 {
     static std::string filename;
     if (!state_init) 

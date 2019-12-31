@@ -1,4 +1,5 @@
-#include "../globals.h"
+#include "../watch2.h"
+using namespace watch2;
 
 void state_func_alarms()
 {

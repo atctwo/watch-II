@@ -1,4 +1,5 @@
-#include "../globals.h"
+#include "../watch2.h"
+using namespace watch2;
 #include "../src/csscolorparser/csscolorparser.hpp"
 #include <IRremote.h>
 #include <ArduinoJson.h>
@@ -75,7 +76,7 @@ void populateProfileDataStructures(
             {
                 Serial.printf("icon: %s ", icon);
 
-                //Adafruit_ImageReader::loadBMP expects a char* for a filename, but the ArduinoJson can only return a const char*.
+                //Adafruit_Imagereader::loadBMP expects a char* for a filename, but the ArduinoJson can only return a const char*.
                 //this step copies the const char* to a char* so that loadBMP can work with it
                 char variable_icon[sizeof(icon) / sizeof(char)];
                 strcpy(variable_icon, icon);
