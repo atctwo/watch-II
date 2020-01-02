@@ -1,4 +1,4 @@
-#include "../watch2.h"
+#include "../src/watch2.h"
 #include "state_init.cpp"
 #include "state_watch_face.cpp"
 #include "state_state_menu.cpp"

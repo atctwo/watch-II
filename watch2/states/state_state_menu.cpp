@@ -1,6 +1,4 @@
-#include "../watch2.h"
-
-using namespace watch2;
+#include "../src/watch2.h"
 
 void state_func_state_menu()
 {
@@ -14,7 +12,7 @@ void state_func_state_menu()
     int icon_ypos = icon_spacing;
     static int last_yoffset = -1;
 
-    if (!state_init)
+    if (!watch2::state_init)
     {
         no_icons = 0;
         menu_positions.clear();
@@ -22,14 +20,14 @@ void state_func_state_menu()
 
     if (dpad_left_active())
     {
-        if (selected_menu_icon == menu_positions[0])
+        if (watch2::selected_menu_icon == menu_positions[0])
         {
-            selected_menu_icon = states.size();
+            watch2::selected_menu_icon = watch2::states.size();
         }
         while(1)
         {
-            selected_menu_icon--;
-            if (!states[selected_menu_icon].hidden) break;
+            watch2::selected_menu_icon--;
+            if (!watch2::states[watch2::selected_menu_icon].hidden) break;
         }
     }
 
@@ -37,10 +35,10 @@ void state_func_state_menu()
     {
         while(1)
         {
-            selected_menu_icon++;
-            if (selected_menu_icon == states.size())
-            selected_menu_icon = 0;
-            if (!states[selected_menu_icon].hidden) break;
+            watch2::selected_menu_icon++;
+            if (watch2::selected_menu_icon == watch2::states.size())
+            watch2::selected_menu_icon = 0;
+            if (!watch2::states[watch2::selected_menu_icon].hidden) break;
         }
     }
 
@@ -48,7 +46,7 @@ void state_func_state_menu()
     {
         //get selected icon number
         int loop_limit = columns;
-        std::vector<int>::iterator selected_pos = std::find(menu_positions.begin(), menu_positions.end(), selected_menu_icon);
+        std::vector<int>::iterator selected_pos = std::find(menu_positions.begin(), menu_positions.end(), watch2::selected_menu_icon);
         if (selected_pos != menu_positions.end())
         {
             int index = std::distance(menu_positions.begin(), selected_pos) ;
@@ -63,14 +61,14 @@ void state_func_state_menu()
 
         for (int i=0; i < loop_limit; i++)
         {
-            if (selected_menu_icon == menu_positions[0])
+            if (watch2::selected_menu_icon == menu_positions[0])
             {
-                selected_menu_icon = states.size();
+                watch2::selected_menu_icon = watch2::states.size();
             }
             while(1)
             {
-                selected_menu_icon--;
-                if (!states[selected_menu_icon].hidden) break;
+                watch2::selected_menu_icon--;
+                if (!watch2::states[watch2::selected_menu_icon].hidden) break;
             }
         }
     }
@@ -79,7 +77,7 @@ void state_func_state_menu()
     {
         //get selected icon number
         int loop_limit = columns;
-        std::vector<int>::iterator selected_pos = std::find(menu_positions.begin(), menu_positions.end(), selected_menu_icon);
+        std::vector<int>::iterator selected_pos = std::find(menu_positions.begin(), menu_positions.end(), watch2::selected_menu_icon);
         if (selected_pos != menu_positions.end())
         {
             int index = std::distance(menu_positions.begin(), selected_pos) ;
@@ -96,10 +94,10 @@ void state_func_state_menu()
         {
             while(1)
             {
-                selected_menu_icon++;
-                if (selected_menu_icon == states.size())
-                selected_menu_icon = 0;
-                if (!states[selected_menu_icon].hidden) break;
+                watch2::selected_menu_icon++;
+                if (watch2::selected_menu_icon == watch2::states.size())
+                watch2::selected_menu_icon = 0;
+                if (!watch2::states[watch2::selected_menu_icon].hidden) break;
             }
         }
     }
@@ -107,22 +105,22 @@ void state_func_state_menu()
 
 
     if (dpad_up_active() || dpad_down_active() || dpad_left_active() ||
-        dpad_right_active() || dpad_enter_active() || !state_init)
+        dpad_right_active() || dpad_enter_active() || !watch2::state_init)
     {
-        oled.fillRect(0, 86, SCREEN_WIDTH, 10, BLACK); //clear state name text
+        watch2::oled.fillRect(0, 86, SCREEN_WIDTH, 10, BLACK); //clear state name text
         icon_ypos += 10;                               //add space for top bar thing
 
         //determine row of selected icon by means of an overengineered 2d-ish linear search
         int selected_icon_row;
         int row = 0;
         int col = 0;
-        for (int i = 0; i < states.size(); i++)
+        for (int i = 0; i < watch2::states.size(); i++)
         {
-            stateMeta stateinfo = states[i];
+            watch2::stateMeta stateinfo = watch2::states[i];
             if (!stateinfo.hidden)
             {
                 //if current icon is selected
-                if (selected_menu_icon == i)
+                if (watch2::selected_menu_icon == i)
                 {
                     selected_icon_row = row;
                     break;
@@ -146,27 +144,27 @@ void state_func_state_menu()
         //if yoffset has changed, redraw screen
         if (icon_yoffset != last_yoffset)
         {
-            oled.fillScreen(BLACK);
+            watch2::oled.fillScreen(BLACK);
             last_yoffset = icon_yoffset;
         }
 
         //draw state icons
-        for (int i = 0; i < states.size(); i++)
+        for (int i = 0; i < watch2::states.size(); i++)
         {
-            stateMeta stateinfo = states[i];
+            watch2::stateMeta stateinfo = watch2::states[i];
             if (!stateinfo.hidden)
             {
                 //draw app icon
-                oled.drawRGBBitmap(icon_xpos, icon_ypos - icon_yoffset, icons[stateinfo.stateIcon].data(),
+                watch2::oled.drawRGBBitmap(icon_xpos, icon_ypos - icon_yoffset, watch2::icons[stateinfo.stateIcon].data(),
                                     icon_size, icon_size);
 
                 //if current app is selected, draw an outline around it
-                if (selected_menu_icon == i)
+                if (watch2::selected_menu_icon == i)
                 {
-                    oled.drawRoundRect(icon_xpos-1, icon_ypos-1 - icon_yoffset, icon_size+1, icon_size+1, 3, themecolour);
+                    watch2::oled.drawRoundRect(icon_xpos-1, icon_ypos-1 - icon_yoffset, icon_size+1, icon_size+1, 3, watch2::themecolour);
                 }
                 //otherwise, clear any outline around it
-                else oled.drawRoundRect(icon_xpos-1, icon_ypos-1 - icon_yoffset, icon_size+1, icon_size+1, 3, BLACK);
+                else watch2::oled.drawRoundRect(icon_xpos-1, icon_ypos-1 - icon_yoffset, icon_size+1, icon_size+1, 3, BLACK);
 
                 icon_xpos += icon_size + icon_spacing;
                 if ((icon_xpos+icon_size) > SCREEN_WIDTH)
@@ -175,26 +173,26 @@ void state_func_state_menu()
                     icon_ypos += icon_size + icon_spacing;
                 }
 
-                if (!state_init)
+                if (!watch2::state_init)
                 {
                     menu_positions.push_back(i);
                 }
 
-                if (!state_init) no_icons++;
+                if (!watch2::state_init) no_icons++;
             }
         }
 
         //draw name of selected icon
-        oled.setCursor(2, 94);
-        oled.setTextColor(WHITE);
-        oled.fillRect(0, 94 - 10, SCREEN_WIDTH, SCREEN_HEIGHT - (94 - 10), BLACK);
-        oled.print(states[selected_menu_icon].stateName.c_str());
+        watch2::oled.setCursor(2, 94);
+        watch2::oled.setTextColor(WHITE);
+        watch2::oled.fillRect(0, 94 - 10, SCREEN_WIDTH, SCREEN_HEIGHT - (94 - 10), BLACK);
+        watch2::oled.print(watch2::states[watch2::selected_menu_icon].stateName.c_str());
     }
 
-    drawTopThing();
+    watch2::drawTopThing();
 
     if (dpad_enter_active())
     {
-        switchState(selected_menu_icon);
+        watch2::switchState(watch2::selected_menu_icon);
     }
 }

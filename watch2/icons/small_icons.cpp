@@ -1,4 +1,4 @@
-#include "../watch2.h"
+#include "../src/watch2.h"
 
 void registerSmallIcons()
 {

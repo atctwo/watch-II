@@ -1,5 +1,4 @@
-#include "../watch2.h"
-using namespace watch2;
+#include "../src/watch2.h"
 
 void state_func_notepad()
 {
@@ -8,15 +7,15 @@ void state_func_notepad()
     static std::vector<int> filedata;       //a vector to store the file data
     static std::string filename;            //the name of the file to read
     
-    if (!state_init) 
+    if (!watch2::state_init) 
     {
-        filename = beginFileSelect("/");
+        filename = watch2::beginFileSelect("/");
         read = 0;
     }
 
-    if (file_path == "canceled")
+    if (watch2::file_path == "canceled")
     {
-        switchState(2);
+        watch2::switchState(2);
     }
     else
     {
@@ -25,11 +24,11 @@ void state_func_notepad()
         if (read == 0)
         {
 
-            Serial.printf("reading file %s...\n", file_path.c_str());
+            Serial.printf("reading file %s...\n", watch2::file_path.c_str());
 
             filedata.clear();
             yoffset = 0;
-            File f = SD.open(filename.c_str());
+            File f = watch2::SD.open(filename.c_str());
 
             int chr;
             while(chr != -1)
@@ -52,15 +51,15 @@ void state_func_notepad()
         //of the file
         if (dpad_any_active() || read == 0)
         {
-            oled.fillScreen(BLACK);
-            oled.setCursor(0, 8 - yoffset);
-            for (int chr : filedata) oled.print((char) chr);
+            watch2::oled.fillScreen(BLACK);
+            watch2::oled.setCursor(0, 8 - yoffset);
+            for (int chr : filedata) watch2::oled.print((char) chr);
         }
 
         //if left is pressed, go back to the state selection screen
         if (dpad_left_active()) 
         {
-            switchState(2);
+            watch2::switchState(2);
         }
 
         if (read == 0) read = 1;

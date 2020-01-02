@@ -23,6 +23,7 @@
 #include <TimeLib.h>                // used for managing time (see code note 1)
 #include <TimeAlarms.h>             //used for creating and managing alarms
 #include <stdio.h>                  // i don't actually know...
+#include <stdint.h>
 #include <algorithm>                // used for std::find and std::min and std::max
 #include <stack>
 
@@ -67,11 +68,11 @@
 #define KEY_REPEAT_DELAY    550     //time for key repeat to start, in ms [DAS]
 #define KEY_REPEAT_PERIOD   24      //time between key repeats, in ms     [ARR]
 
-#define dpad_up_active()    ( !dpad_up_lock &&    (btn_dpad_up.wasPressed() || ( btn_dpad_up.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD < 5 ) ) ) )
-#define dpad_down_active()  ( !dpad_down_lock &&  (btn_dpad_down.wasPressed() || ( btn_dpad_down.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD < 5 ) ) ) )
-#define dpad_left_active()  ( !dpad_left_lock &&  (btn_dpad_left.wasPressed() || ( btn_dpad_left.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD < 5 ) ) ) )
-#define dpad_right_active() ( !dpad_right_lock && (btn_dpad_right.wasPressed() || ( btn_dpad_right.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD < 5 ) ) ) )
-#define dpad_enter_active() ( !dpad_enter_lock && (btn_dpad_enter.wasPressed() || ( btn_dpad_enter.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD < 5 ) ) ) )
+#define dpad_up_active()    ( !watch2::dpad_up_lock &&    (watch2::btn_dpad_up.wasPressed() || ( watch2::btn_dpad_up.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD < 5 ) ) ) )
+#define dpad_down_active()  ( !watch2::dpad_down_lock &&  (watch2::btn_dpad_down.wasPressed() || ( watch2::btn_dpad_down.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD < 5 ) ) ) )
+#define dpad_left_active()  ( !watch2::dpad_left_lock &&  (watch2::btn_dpad_left.wasPressed() || ( watch2::btn_dpad_left.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD < 5 ) ) ) )
+#define dpad_right_active() ( !watch2::dpad_right_lock && (watch2::btn_dpad_right.wasPressed() || ( watch2::btn_dpad_right.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD < 5 ) ) ) )
+#define dpad_enter_active() ( !watch2::dpad_enter_lock && (watch2::btn_dpad_enter.wasPressed() || ( watch2::btn_dpad_enter.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD < 5 ) ) ) )
 #define dpad_any_active()   ( dpad_up_active() || dpad_down_active() || dpad_left_active() || dpad_right_active() || dpad_enter_active() )
 
 // Color definitions

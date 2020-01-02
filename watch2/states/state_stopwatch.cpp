@@ -1,5 +1,4 @@
-#include "../watch2.h"
-using namespace watch2;
+#include "../src/watch2.h"
 
 void state_func_stopwatch()
 {
@@ -28,13 +27,13 @@ void state_func_stopwatch()
     static uint16_t width_two_digits = 0, width_two_digits_colon = 0, width_three_digits_colon = 0;
 
     //code to execute while in a stopwatch state
-    switch(stopwatch_timing)
+    switch(watch2::stopwatch_timing)
     {
 
         case 0: //stopped
 
-            stopwatch_epoch = millis();
-            stopwatch_paused_diff = 0;
+            watch2::stopwatch_epoch = millis();
+            watch2::stopwatch_paused_diff = 0;
             break;
 
         case 1: //running
@@ -44,7 +43,7 @@ void state_func_stopwatch()
 
         case 2: //paused
 
-            stopwatch_epoch = millis() - stopwatch_paused_diff;
+            watch2::stopwatch_epoch = millis() - watch2::stopwatch_paused_diff;
             break;
 
     }
@@ -52,23 +51,23 @@ void state_func_stopwatch()
     //code to execute when entering a stopwatch state
     if (dpad_enter_active())
     {
-        switch(stopwatch_timing)
+        switch(watch2::stopwatch_timing)
         {
             case 0: //stopped to running
 
-                stopwatch_epoch = millis();
-                stopwatch_timing = 1;
+                watch2::stopwatch_epoch = millis();
+                watch2::stopwatch_timing = 1;
                 break;
 
             case 1: //running to paused
 
-                stopwatch_paused_diff = millis() - stopwatch_epoch;
-                stopwatch_timing = 2;
+                watch2::stopwatch_paused_diff = millis() - watch2::stopwatch_epoch;
+                watch2::stopwatch_timing = 2;
                 break;
 
             case 2: //paused to running
 
-                stopwatch_timing = 1;
+                watch2::stopwatch_timing = 1;
                 break;
         }
     }
@@ -76,92 +75,92 @@ void state_func_stopwatch()
     //stop timing
     if (dpad_down_active())
     {
-        stopwatch_timing = 0;
+        watch2::stopwatch_timing = 0;
     }
 
     //draw elapsed time
-    stopwatch_time_diff = millis() - stopwatch_epoch;
-    stopwatch_ms = stopwatch_time_diff % 1000;
-    stopwatch_s    = (int) (stopwatch_time_diff / 1000)             % 60;
-    stopwatch_min  = (int)((stopwatch_time_diff / (1000 * 60))      % 60);
-    stopwatch_hour = (int)((stopwatch_time_diff / (1000 * 60 * 60)) % 24);
+    watch2::stopwatch_time_diff = millis() - watch2::stopwatch_epoch;
+    watch2::stopwatch_ms = watch2::stopwatch_time_diff % 1000;
+    watch2::stopwatch_s    = (int) (watch2::stopwatch_time_diff / 1000)             % 60;
+    watch2::stopwatch_min  = (int)((watch2::stopwatch_time_diff / (1000 * 60))      % 60);
+    watch2::stopwatch_hour = (int)((watch2::stopwatch_time_diff / (1000 * 60 * 60)) % 24);
 
-    oled.setFont(&SourceSansPro_Light12pt7b);
-    oled.setTextColor(themecolour);
+    watch2::oled.setFont(&SourceSansPro_Light12pt7b);
+    watch2::oled.setTextColor(watch2::themecolour);
 
     //calculate sizes of stopwatch digit things
-    if (!state_init)
+    if (!watch2::state_init)
     {
-        oled.getTextBounds("99", 0, 0, &x1, &y1, &width_two_digits, &h);
-        oled.getTextBounds(":99", 0, 0, &x1, &y1, &width_two_digits_colon, &h);
-        oled.getTextBounds(":999", 0, 0, &x1, &y1, &width_three_digits_colon, &h);
+        watch2::oled.getTextBounds("99", 0, 0, &x1, &y1, &width_two_digits, &h);
+        watch2::oled.getTextBounds(":99", 0, 0, &x1, &y1, &width_two_digits_colon, &h);
+        watch2::oled.getTextBounds(":999", 0, 0, &x1, &y1, &width_three_digits_colon, &h);
     }
 
     //draw hours
-    if ((stopwatch_hour != stopwatch_last_hour) || !state_init)
+    if ((watch2::stopwatch_hour != watch2::stopwatch_last_hour) || !watch2::state_init)
     {
-        oled.setCursor(2, 40);
-        sprintf(text_aaaa, "%02d", stopwatch_last_hour);
-        oled.getTextBounds(String(text_aaaa), 2, 40, &x1, &y1, &w, &h);
-        oled.fillRect(x1, y1, w, h, BLACK);
-        oled.printf("%02d", stopwatch_hour);
-        stopwatch_last_hour = stopwatch_hour;
+        watch2::oled.setCursor(2, 40);
+        sprintf(text_aaaa, "%02d", watch2::stopwatch_last_hour);
+        watch2::oled.getTextBounds(String(text_aaaa), 2, 40, &x1, &y1, &w, &h);
+        watch2::oled.fillRect(x1, y1, w, h, BLACK);
+        watch2::oled.printf("%02d", watch2::stopwatch_hour);
+        watch2::stopwatch_last_hour = watch2::stopwatch_hour;
     }
 
     //draw minutes
-    if ((stopwatch_min != stopwatch_last_min) || !state_init)
+    if ((watch2::stopwatch_min != watch2::stopwatch_last_min) || !watch2::state_init)
     {
-        oled.setCursor(2 + (width_two_digits), 40);
-        sprintf(text_aaaa, ":%02d", stopwatch_last_min);
-        oled.getTextBounds(text_aaaa, 2 + (width_two_digits), 40, &x1, &y1, &w, &h);
-        oled.fillRect(x1, y1, w, h, BLACK);
-        oled.printf(":%02d", stopwatch_min);
-        stopwatch_last_min = stopwatch_min;
+        watch2::oled.setCursor(2 + (width_two_digits), 40);
+        sprintf(text_aaaa, ":%02d", watch2::stopwatch_last_min);
+        watch2::oled.getTextBounds(text_aaaa, 2 + (width_two_digits), 40, &x1, &y1, &w, &h);
+        watch2::oled.fillRect(x1, y1, w, h, BLACK);
+        watch2::oled.printf(":%02d", watch2::stopwatch_min);
+        watch2::stopwatch_last_min = watch2::stopwatch_min;
     }
 
     //draw seconds
-    if ((stopwatch_s != stopwatch_last_s) || !state_init)
+    if ((watch2::stopwatch_s != watch2::stopwatch_last_s) || !watch2::state_init)
     {
-        oled.setCursor(2 + (2 * width_two_digits_colon), 40);
-        sprintf(text_aaaa, ":%02d", stopwatch_last_s);
-        oled.getTextBounds(text_aaaa, 2 + (2 * width_two_digits_colon), 40, &x1, &y1, &w, &h);
-        oled.fillRect(x1, y1, w, h, BLACK);
-        oled.printf(":%02d", stopwatch_s);
-        stopwatch_last_s = stopwatch_s;
+        watch2::oled.setCursor(2 + (2 * width_two_digits_colon), 40);
+        sprintf(text_aaaa, ":%02d", watch2::stopwatch_last_s);
+        watch2::oled.getTextBounds(text_aaaa, 2 + (2 * width_two_digits_colon), 40, &x1, &y1, &w, &h);
+        watch2::oled.fillRect(x1, y1, w, h, BLACK);
+        watch2::oled.printf(":%02d", watch2::stopwatch_s);
+        watch2::stopwatch_last_s = watch2::stopwatch_s;
     }
 
     //draw milliseconds
-    if ((stopwatch_ms != stopwatch_last_ms) || !state_init)
+    if ((watch2::stopwatch_ms != watch2::stopwatch_last_ms) || !watch2::state_init)
     {
-        oled.setCursor(2 + (3 * width_two_digits_colon), 40);
-        sprintf(text_aaaa, ":%03d", stopwatch_last_ms);
-        oled.getTextBounds(text_aaaa, 2 + (3 * width_two_digits_colon), 40, &x1, &y1, &w, &h);
-        oled.fillRect(x1, y1, w, h, BLACK);
-        oled.printf(":%03d", stopwatch_ms);
-        stopwatch_last_ms = stopwatch_ms;
+        watch2::oled.setCursor(2 + (3 * width_two_digits_colon), 40);
+        sprintf(text_aaaa, ":%03d", watch2::stopwatch_last_ms);
+        watch2::oled.getTextBounds(text_aaaa, 2 + (3 * width_two_digits_colon), 40, &x1, &y1, &w, &h);
+        watch2::oled.fillRect(x1, y1, w, h, BLACK);
+        watch2::oled.printf(":%03d", watch2::stopwatch_ms);
+        watch2::stopwatch_last_ms = watch2::stopwatch_ms;
     }
 
         // reset font
-    oled.setFont(&SourceSansPro_Light8pt7b);
-    oled.setTextColor(WHITE);
+    watch2::oled.setFont(&SourceSansPro_Light8pt7b);
+    watch2::oled.setTextColor(WHITE);
 
     //draw status text
-    if (dpad_any_active() || !state_init)
+    if (dpad_any_active() || !watch2::state_init)
     {
-        oled.setFont(&SourceSansPro_Regular6pt7b);
-        oled.setCursor(2, 20);
-        oled.fillRect(2, 12, SCREEN_WIDTH - 2, 11, BLACK);
-        if (stopwatch_timing == 0) oled.print("Stopped");
-        if (stopwatch_timing == 1) oled.print("Timing");
-        if (stopwatch_timing == 2) oled.print("Paused");
+        watch2::oled.setFont(&SourceSansPro_Regular6pt7b);
+        watch2::oled.setCursor(2, 20);
+        watch2::oled.fillRect(2, 12, SCREEN_WIDTH - 2, 11, BLACK);
+        if (watch2::stopwatch_timing == 0) watch2::oled.print("Stopped");
+        if (watch2::stopwatch_timing == 1) watch2::oled.print("Timing");
+        if (watch2::stopwatch_timing == 2) watch2::oled.print("Paused");
     }
 
     //draw top thing
-    drawTopThing();
+    watch2::drawTopThing();
 
     //if left pressed, go back to state menu
     if (dpad_left_active())
     {
-        switchState(2);
+        watch2::switchState(2);
     }
 }

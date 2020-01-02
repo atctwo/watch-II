@@ -1,6 +1,4 @@
-#include "../watch2.h"
-
-using namespace watch2;
+#include "../src/watch2.h"
 
 void state_func_settings()
 {
@@ -20,9 +18,9 @@ void state_func_settings()
     static int time_element_padding = 3;
     static int radius = 4;
 
-    preferences.begin("watch2", false);      //open watch II preferences in RW mode
+    watch2::preferences.begin("watch2", false);      //open watch II preferences in RW mode
 
-    switch (states[state].variant)
+    switch (watch2::states[watch2::state].variant)
     {
         default:
         case 0: //menu
@@ -39,28 +37,28 @@ void state_func_settings()
                 selected_panel--;
                 if (selected_panel < 0) selected_panel = panels.size();
             }
-            if (dpad_any_active() || !state_init)
+            if (dpad_any_active() || !watch2::state_init)
             {
                 // draw menu
-                oled.setFont(&SourceSansPro_Regular6pt7b);
-                drawMenu(2, 12, SCREEN_WIDTH-4, SCREEN_HEIGHT-12, panels, selected_panel, themecolour);
+                watch2::oled.setFont(&SourceSansPro_Regular6pt7b);
+                watch2::drawMenu(2, 12, SCREEN_WIDTH-4, SCREEN_HEIGHT-12, panels, selected_panel, watch2::themecolour);
             }
             if (dpad_enter_active())
             {
                 // go to panel
-                switchState(3, selected_panel + 1);
+                watch2::switchState(3, selected_panel + 1);
             }
             if (dpad_left_active())
             {
                 // go back to the state menu
-                preferences.end();
-                switchState(2);
+                watch2::preferences.end();
+                watch2::switchState(2);
             }
             break;
 
         case 1: //time and date
 
-            if (!state_init)
+            if (!watch2::state_init)
             {
                 temp_time[0] = hour();
                 temp_time[1] = minute();
@@ -70,8 +68,8 @@ void state_func_settings()
                 temp_time[5] = year();
             }
 
-            oled.setFont(&SourceSansPro_Light12pt7b);
-            oled.setCursor(4, 12 + 16);
+            watch2::oled.setFont(&SourceSansPro_Light12pt7b);
+            watch2::oled.setCursor(4, 12 + 16);
 
             if (dpad_left_active())
             {
@@ -107,22 +105,22 @@ void state_func_settings()
                 if (selected_time == 4 || selected_time == 4) temp_time[3] = std::min( temp_time[3], days_in_each_month[temp_time[4]-1] ); // limit current day value by month or year
             }
 
-            if (dpad_any_active() || !state_init)
+            if (dpad_any_active() || !watch2::state_init)
             {
                 // redraw date settings thing
                 for (int i = 0; i < 6; i++)
                 {
 
                     sprintf(text_aaaa, "%02d", temp_time[i]);
-                    oled.getTextBounds(String(text_aaaa), oled.getCursorX(), oled.getCursorY(), &x1, &y1, &w, &h);
-                    oled.fillRect(x1 - time_element_padding, y1 - time_element_padding, w + (2 * time_element_padding) + 10, h + (2 * time_element_padding), BLACK);
-                    if (selected_time == i) oled.drawRoundRect(x1 - time_element_padding, y1 - time_element_padding, w + (2 * time_element_padding), h + (2 * time_element_padding), radius, themecolour);
+                    watch2::oled.getTextBounds(String(text_aaaa), watch2::oled.getCursorX(), watch2::oled.getCursorY(), &x1, &y1, &w, &h);
+                    watch2::oled.fillRect(x1 - time_element_padding, y1 - time_element_padding, w + (2 * time_element_padding) + 10, h + (2 * time_element_padding), BLACK);
+                    if (selected_time == i) watch2::oled.drawRoundRect(x1 - time_element_padding, y1 - time_element_padding, w + (2 * time_element_padding), h + (2 * time_element_padding), radius, watch2::themecolour);
                     //oled.fillRect(x1, y1, w, h, BLACK);
-                    oled.printf("%02s", text_aaaa);
+                    watch2::oled.printf("%02s", text_aaaa);
 
-                    if ( (i == 0) || (i == 1) ) oled.print(":");
-                    if ( i == 2 ) oled.print("\n ");
-                    if ( (i == 3) || (i == 4) ) oled.print(".");
+                    if ( (i == 0) || (i == 1) ) watch2::oled.print(":");
+                    if ( i == 2 ) watch2::oled.print("\n ");
+                    if ( (i == 3) || (i == 4) ) watch2::oled.print(".");
                 }
             }
 
@@ -130,34 +128,34 @@ void state_func_settings()
             {
                 // save time
                 setTime(temp_time[0], temp_time[1], temp_time[2], temp_time[3], temp_time[4], temp_time[5]);
-                switchState(state, 0);
+                watch2::switchState(watch2::state, 0);
             }
-            oled.setFont(&SourceSansPro_Light8pt7b); // reset font
+            watch2::oled.setFont(&SourceSansPro_Light8pt7b); // reset font
             break;
 
         case 2: //timeouts
 
-            static std::vector<settingsMenuData> timeout_data;
+            static std::vector<watch2::settingsMenuData> timeout_data;
             static int selected_timeout = 0;
 
-            if (!state_init)
+            if (!watch2::state_init)
             {
                 timeout_data.clear();
-                timeout_data.push_back( (struct settingsMenuData){
+                timeout_data.push_back( (struct watch2::settingsMenuData){
                     "Timeout?",
-                    preferences.getBool("timeout", true),
+                    watch2::preferences.getBool("timeout", true),
                     {"No", "Yes"},
                     24
                 } );
-                timeout_data.push_back( (struct settingsMenuData){
+                timeout_data.push_back( (struct watch2::settingsMenuData){
                     "Watch face \ntimeout",
-                    preferences.getInt("short_timeout", 5000),
+                    watch2::preferences.getInt("short_timeout", 5000),
                     {},
                     24
                 } );
-                timeout_data.push_back( (struct settingsMenuData){
+                timeout_data.push_back( (struct watch2::settingsMenuData){
                     "Long timeout",
-                    preferences.getInt("long_timeout", 30000),
+                    watch2::preferences.getInt("long_timeout", 30000),
                     {},
                     24
                 } );
@@ -202,61 +200,61 @@ void state_func_settings()
                 if (selected_timeout < 0 ) selected_timeout = timeout_data.size() - 1;
             }
 
-            if (dpad_any_active() || !state_init)
+            if (dpad_any_active() || !watch2::state_init)
             {
-                oled.setFont(&SourceSansPro_Regular6pt7b);
-                oled.setTextColor(WHITE);
-                drawSettingsMenu(0, 12, SCREEN_WIDTH, SCREEN_HEIGHT - 12, timeout_data, selected_timeout, themecolour);
+                watch2::oled.setFont(&SourceSansPro_Regular6pt7b);
+                watch2::oled.setTextColor(WHITE);
+                drawSettingsMenu(0, 12, SCREEN_WIDTH, SCREEN_HEIGHT - 12, timeout_data, selected_timeout, watch2::themecolour);
             }
 
             if (dpad_enter_active())
             {
                 // store settings
-                timeout = timeout_data[0].setting_value;
-                short_timeout = timeout_data[1].setting_value;
-                long_timeout = timeout_data[2].setting_value;
+                watch2::timeout = timeout_data[0].setting_value;
+                watch2::short_timeout = timeout_data[1].setting_value;
+                watch2::long_timeout = timeout_data[2].setting_value;
 
-                preferences.putBool("timeout", timeout);
-                preferences.putInt("short_timeout", short_timeout);
-                preferences.putInt("long_timeout", long_timeout);
+                watch2::preferences.putBool("timeout", watch2::timeout);
+                watch2::preferences.putInt("short_timeout", watch2::short_timeout);
+                watch2::preferences.putInt("long_timeout", watch2::long_timeout);
 
                 // go back to settings menu
-                switchState(state, 0);
+                watch2::switchState(watch2::state, 0);
             }
 
             break;
 
         case 3: //colour
 
-            static std::vector<settingsMenuData> colour_data;
+            static std::vector<watch2::settingsMenuData> colour_data;
             static int selected_colour = 0;
-            static int last_themecolour = themecolour;
+            static int last_themecolour = watch2::themecolour;
 
-            if (!state_init)
+            if (!watch2::state_init)
             {
                 float r=0, g=0, b=0;
-                colour888(themecolour, &r, &g, &b);
+                watch2::colour888(watch2::themecolour, &r, &g, &b);
 
                 colour_data.clear();
-                colour_data.push_back( (struct settingsMenuData){
+                colour_data.push_back( (struct watch2::settingsMenuData){
                     "Trans Mode",
-                    preferences.getBool("trans_mode", false),
+                    watch2::preferences.getBool("trans_mode", false),
                     {"Off", "On"},
                     24
                 } );
-                colour_data.push_back( (struct settingsMenuData){
+                colour_data.push_back( (struct watch2::settingsMenuData){
                     "Theme colour R",
                     r,
                     {},
                     24
                 } );
-                colour_data.push_back( (struct settingsMenuData){
+                colour_data.push_back( (struct watch2::settingsMenuData){
                     "Theme colour G",
                     g,
                     {},
                     24
                 } );
-                colour_data.push_back( (struct settingsMenuData){
+                colour_data.push_back( (struct watch2::settingsMenuData){
                     "Theme colour B",
                     b,
                     {},
@@ -278,7 +276,7 @@ void state_func_settings()
                 }
 
                 // calculate themecolour
-                themecolour = oled.color565(colour_data[1].setting_value,
+                watch2::themecolour = watch2::oled.color565(colour_data[1].setting_value,
                                                 colour_data[2].setting_value,
                                                 colour_data[3].setting_value);
 
@@ -298,7 +296,7 @@ void state_func_settings()
                 }
 
                 // calculate themecolour
-                themecolour = oled.color565(colour_data[1].setting_value,
+                watch2::themecolour = watch2::oled.color565(colour_data[1].setting_value,
                                                 colour_data[2].setting_value,
                                                 colour_data[3].setting_value);
             }
@@ -315,23 +313,23 @@ void state_func_settings()
                 if (selected_colour < 0 ) selected_colour = colour_data.size() - 1;
             }
 
-            if (dpad_any_active() || !state_init)
+            if (dpad_any_active() || !watch2::state_init)
             {
-                oled.setFont(&SourceSansPro_Regular6pt7b);
-                oled.setTextColor(WHITE);
-                drawSettingsMenu(0, 12, SCREEN_WIDTH, SCREEN_HEIGHT - 12, colour_data, selected_colour, themecolour);
+                watch2::oled.setFont(&SourceSansPro_Regular6pt7b);
+                watch2::oled.setTextColor(WHITE);
+                drawSettingsMenu(0, 12, SCREEN_WIDTH, SCREEN_HEIGHT - 12, colour_data, selected_colour, watch2::themecolour);
             }
 
             if (dpad_enter_active())
             {
                 // store settings
-                trans_mode = colour_data[0].setting_value;
+                watch2::trans_mode = colour_data[0].setting_value;
 
-                preferences.putBool("trans_mode", trans_mode);
-                preferences.putInt("themecolour", themecolour);
+                watch2::preferences.putBool("trans_mode", watch2::trans_mode);
+                watch2::preferences.putInt("themecolour", watch2::themecolour);
 
                 // go back to settings menu
-                switchState(state, 0);
+                watch2::switchState(watch2::state, 0);
             }
 
             break;
@@ -343,7 +341,7 @@ void state_func_settings()
             static uint64_t chipid = ESP.getEfuseMac();
             static GFXcanvas16 *canvas_about = new GFXcanvas16(SCREEN_WIDTH, about_height);
 
-            if (!state_init)
+            if (!watch2::state_init)
             {
                 //clear text
                 //oled.fillRect(0, 11, SCREEN_WIDTH, SCREEN_HEIGHT-11, BLACK);
@@ -354,32 +352,32 @@ void state_func_settings()
 
                 canvas_about->print("watch II, version " + String(WATCH_VER) + "\nmade by alice (atctwo)\n\n");
                 canvas_about->print("Compile date and time:\n  ");
-                canvas_about->setTextColor(themecolour);
+                canvas_about->setTextColor(watch2::themecolour);
                 canvas_about->print(String(__DATE__) + " " + String(__TIME__) + "\n");
 
                 canvas_about->setTextColor(WHITE);
                 canvas_about->print("Chip Revision: ");
-                canvas_about->setTextColor(themecolour);
+                canvas_about->setTextColor(watch2::themecolour);
                 canvas_about->print(String(ESP.getChipRevision()) + "\n");
 
                 canvas_about->setTextColor(WHITE);
                 canvas_about->print("CPU Frequency: ");
-                canvas_about->setTextColor(themecolour);
+                canvas_about->setTextColor(watch2::themecolour);
                 canvas_about->print( String(ESP.getCpuFreqMHz()) + " MHz" );
 
                 canvas_about->setTextColor(WHITE);
                 canvas_about->print("Sketch Size: ");
-                canvas_about->setTextColor(themecolour);
+                canvas_about->setTextColor(watch2::themecolour);
                 canvas_about->print( String(ESP.getSketchSize()) + " B\n");
 
                 canvas_about->setTextColor(WHITE);
                 canvas_about->print("Flash Size: ");
-                canvas_about->setTextColor(themecolour);
+                canvas_about->setTextColor(watch2::themecolour);
                 canvas_about->print( String(ESP.getFlashChipSize()) + " B\n" );
 
                 canvas_about->setTextColor(WHITE);
                 canvas_about->print("MAC Address: \n  ");
-                canvas_about->setTextColor(themecolour);
+                canvas_about->setTextColor(watch2::themecolour);
                 canvas_about->printf("%04X",(uint16_t)(chipid>>32));//print High 2 bytes
                 canvas_about->printf("%08X",(uint32_t)chipid);//print Low 4bytes.
 
@@ -395,20 +393,20 @@ void state_func_settings()
                 yoffset = std::max(0, yoffset - 1);
             }
 
-            if (!state_init || dpad_any_active())
+            if (!watch2::state_init || dpad_any_active())
             {
                 //clear top of screen for top bar thing
-                oled.drawRGBBitmap(0, 20 - yoffset, canvas_about->getBuffer(), SCREEN_WIDTH, about_height);
-                oled.fillRect(0, 0, SCREEN_WIDTH, 10, BLACK);
+                watch2::oled.drawRGBBitmap(0, 20 - yoffset, canvas_about->getBuffer(), SCREEN_WIDTH, about_height);
+                watch2::oled.fillRect(0, 0, SCREEN_WIDTH, 10, BLACK);
             }
 
             if (dpad_enter_active() || dpad_left_active())
             {
-                switchState(state, 0);
+                watch2::switchState(watch2::state, 0);
             }
 
             break;
     }
 
-    drawTopThing();
+    watch2::drawTopThing();
 }

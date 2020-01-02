@@ -1,22 +1,21 @@
-#include "../watch2.h"
-using namespace watch2;
+#include "../src/watch2.h"
 
 void state_func_SDtest()
 {
     static std::string filename;
-    if (!state_init) 
+    if (!watch2::state_init) 
     {
-        filename = beginFileSelect();
+        filename = watch2::beginFileSelect();
 
-        oled.setCursor(2, 42);
-        oled.print(String(file_path.c_str()));
+        watch2::oled.setCursor(2, 42);
+        watch2::oled.print(String(filename.c_str()));
     }
 
-    drawTopThing();
+    watch2::drawTopThing();
 
     if (dpad_left_active()) 
     {
-        switchState(2);
+        watch2::switchState(2);
     }
     
 }

@@ -1,6 +1,4 @@
-#include "../watch2.h"
-
-using namespace watch2;
+#include "../src/watch2.h"
 
 void state_func_init()
 {
@@ -15,27 +13,27 @@ void state_func_init()
     //most setup is done in the deep sleep function, but code in the deep sleep function
     //won't be executed if the watch is being turned on for the first time (whereas this
     //code will)
-    if (states[state].variant == 0)
+    if (watch2::states[watch2::state].variant == 0)
     {
         //clear screen
-        oled.fillScreen(0);
+        watch2::oled.fillScreen(0);
 
         //dim screen
         uint8_t contrast = 0x00;
-        oled.sendCommand(0xC7, &contrast, 1);
+        watch2::oled.sendCommand(0xC7, &contrast, 1);
     }
 
     //variant 1
     //this will give the user a menu, which will allow them to wipe any saved system settings
-    else if (states[state].variant == 1)
+    else if (watch2::states[watch2::state].variant == 1)
     {
         //settings clear mode
-        if (!state_init)
+        if (!watch2::state_init)
         {
-            oled.setCursor(0,10);
-            oled.setFont(&SourceSansPro_Regular6pt7b);
-            oled.setTextColor(WHITE);
-            oled.print("Do you want to clear\nall saved settings?");
+            watch2::oled.setCursor(0,10);
+            watch2::oled.setFont(&SourceSansPro_Regular6pt7b);
+            watch2::oled.setTextColor(WHITE);
+            watch2::oled.print("Do you want to clear\nall saved settings?");
         }
 
         if (dpad_up_active() || dpad_down_active())
@@ -43,29 +41,29 @@ void state_func_init()
             selected_option = !selected_option;
         }
 
-        if (dpad_any_active() || !state_init)
+        if (dpad_any_active() || !watch2::state_init)
         {
-            drawMenu(2, 37, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 37, {"No", "Yes"}, selected_option, RED);
+            watch2::drawMenu(2, 37, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 37, {"No", "Yes"}, selected_option, RED);
         }
 
         if (dpad_enter_active())
         {
-            if (selected_option == 1) preferences.clear();
-            switchState(1);
+            if (selected_option == 1) watch2::preferences.clear();
+            watch2::switchState(1);
         }
     }
 
     //check down button for settings clearing thing
-    if (states[state].variant == 0)
+    if (watch2::states[watch2::state].variant == 0)
     {
         if (digitalRead(dpad_down))
         {
-            switchState(state, 1);
+            watch2::switchState(watch2::state, 1);
         }
         else
         {
             //switch state
-            switchState(1);
+            watch2::switchState(1);
         }
     }
 }

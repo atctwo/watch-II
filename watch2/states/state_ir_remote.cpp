@@ -1,5 +1,4 @@
-#include "../watch2.h"
-using namespace watch2;
+#include "../src/watch2.h"
 #include "../src/csscolorparser/csscolorparser.hpp"
 #include <IRremote.h>
 #include <ArduinoJson.h>
@@ -29,14 +28,14 @@ void populateProfileDataStructures(
 
     //open and deserialize json file
     Serial.printf("Loading ir profile %s...\n", filename);
-    File json = SD.open(filename);
+    File json = watch2::SD.open(filename);
     DeserializationError err = deserializeJson(doc, json);
     if (err)
     {
         Serial.print("\tdeserialisation unsuccessful, reason: ");
         Serial.print(err.c_str());
         Serial.println("\n\treturning to state menu...");
-        switchState(2);
+        watch2::switchState(2);
     }
     else
     {
@@ -81,8 +80,8 @@ void populateProfileDataStructures(
                 char variable_icon[sizeof(icon) / sizeof(char)];
                 strcpy(variable_icon, icon);
 
-                stat = reader.loadBMP(variable_icon, icons[index]);
-                reader.printStatus(stat);
+                stat = watch2::reader.loadBMP(variable_icon, icons[index]);
+                watch2::reader.printStatus(stat);
             }
             //if no icon was specified, or the icon wasn't loaded
             if (!icon || stat != IMAGE_SUCCESS)
@@ -134,14 +133,14 @@ std::map<std::string, std::string> getProfileNames() {
     //open and deserialize json file
     Serial.printf("Loading ir profiles\n");
 
-    std::vector<std::string> profiles = getDirFiles("/ir/");
+    std::vector<std::string> profiles = watch2::getDirFiles("/ir/");
     for (std::string profile : profiles)
     {
         Serial.print("loading profile ");
         Serial.print(profile.c_str());
         Serial.print(", ");
 
-        File json = SD.open(profile.c_str());
+        File json = watch2::SD.open(profile.c_str());
         DeserializationError err = deserializeJson(doc, json);
 
         if (err)
@@ -198,9 +197,9 @@ void state_func_ir_remote()
     int icon_ypos = icon_spacing;
     int total_icons_per_row = columns * pages;
 
-    if (states[state].variant == 0) // profile selection screen
+    if (watch2::states[watch2::state].variant == 0) // profile selection screen
     {
-        if (!state_init)
+        if (!watch2::state_init)
         {
             //get profile names and paths
             profiles.clear();
@@ -215,11 +214,11 @@ void state_func_ir_remote()
             }
         }
 
-        drawTopThing();
+        watch2::drawTopThing();
 
-        if (dpad_any_active() || !state_init)
+        if (dpad_any_active() || !watch2::state_init)
         {
-            drawMenu(2, 12, SCREEN_WIDTH - 4, SCREEN_HEIGHT, profile_names, selected_profile, themecolour);
+            watch2::drawMenu(2, 12, SCREEN_WIDTH - 4, SCREEN_HEIGHT, profile_names, selected_profile, watch2::themecolour);
         }
 
         if (dpad_enter_active())
@@ -234,7 +233,7 @@ void state_func_ir_remote()
                 profiles.clear();
 
                 //return to state menu
-                switchState(2);
+                watch2::switchState(2);
             }
             else
             {
@@ -244,10 +243,10 @@ void state_func_ir_remote()
             
         }
     }
-    else if (states[state].variant == 1) // ir remote
+    else if (watch2::states[watch2::state].variant == 1) // ir remote
     {
 
-        if (!state_init)
+        if (!watch2::state_init)
         {
             //populate the profile data structures with data from the selected json file
             populateProfileDataStructures(profile_filename.c_str(), rows, columns, pages, calc_buttons, commands, icons, colours);
@@ -342,7 +341,7 @@ void state_func_ir_remote()
         }
 
         if (dpad_up_active() || dpad_down_active() || dpad_left_active() ||
-            dpad_right_active() || dpad_enter_active() || !state_init)
+            dpad_right_active() || dpad_enter_active() || !watch2::state_init)
         {
             //draw current input
             /*
@@ -365,7 +364,7 @@ void state_func_ir_remote()
             //clear matrix on page change
             if (selected_page_number != last_page_number)
             {
-                oled.fillRect(0, icon_ypos, SCREEN_WIDTH, SCREEN_HEIGHT - icon_ypos, BLACK);
+                watch2::oled.fillRect(0, icon_ypos, SCREEN_WIDTH, SCREEN_HEIGHT - icon_ypos, BLACK);
                 last_page_number = selected_page_number;
             }
 
@@ -386,14 +385,14 @@ void state_func_ir_remote()
                     if (icons.find(i) != icons.end())
                     {
                         //draw the icon
-                        icons[i].draw(oled, icon_xpos, icon_ypos);
+                        icons[i].draw(watch2::oled, icon_xpos, icon_ypos);
 
                         //print outline
                         if (selected_calc_button == i)
                         {
-                            oled.drawRect(icon_xpos-1, icon_ypos-1, icon_width+1, icon_height+1, themecolour);
+                            watch2::oled.drawRect(icon_xpos-1, icon_ypos-1, icon_width+1, icon_height+1, watch2::themecolour);
                         }
-                        else oled.drawRect(icon_xpos-1, icon_ypos-1, icon_width+1, icon_height+1, 0x4A49);
+                        else watch2::oled.drawRect(icon_xpos-1, icon_ypos-1, icon_width+1, icon_height+1, 0x4A49);
                     }
                     // if item has text
                     if (calc_buttons[i] != "")
@@ -406,27 +405,27 @@ void state_func_ir_remote()
                             if (colour)
                             {
                                 Serial.print("know you");
-                                oled.setTextColor(oled.color565(colour->r, colour->g, colour->b));
+                                watch2::oled.setTextColor(watch2::oled.color565(colour->r, colour->g, colour->b));
                             }
-                            else oled.setTextColor(WHITE);
+                            else watch2::oled.setTextColor(WHITE);
                             Serial.println();
                         }
                         else
                         {
-                            oled.setTextColor(WHITE);
+                            watch2::oled.setTextColor(WHITE);
                         }
                         
 
                         //print button text
-                        oled.setCursor(icon_xpos + (int)(icon_spacing / 2), icon_ypos + 8 + (int)(icon_spacing / 2));
-                        oled.print(calc_buttons[i]);
+                        watch2::oled.setCursor(icon_xpos + (int)(icon_spacing / 2), icon_ypos + 8 + (int)(icon_spacing / 2));
+                        watch2::oled.print(calc_buttons[i]);
 
                         //print outline
                         if (selected_calc_button == i)
                         {
-                            oled.drawRect(icon_xpos-1, icon_ypos-1, icon_width+1, icon_height+1, themecolour);
+                            watch2::oled.drawRect(icon_xpos-1, icon_ypos-1, icon_width+1, icon_height+1, watch2::themecolour);
                         }
-                        else oled.drawRect(icon_xpos-1, icon_ypos-1, icon_width+1, icon_height+1, 0x4A49);
+                        else watch2::oled.drawRect(icon_xpos-1, icon_ypos-1, icon_width+1, icon_height+1, 0x4A49);
                     }
 
                     //calculate position of next item
@@ -440,13 +439,13 @@ void state_func_ir_remote()
                     //calculator_expression_thing += String(calc_buttons[i]) + String(" ");
                 }
 
-                if (!state_init) no_icons++;
+                if (!watch2::state_init) no_icons++;
             }
 
             Serial.println("i");
         }
 
-        drawTopThing();
+        watch2::drawTopThing();
 
         if (dpad_enter_active())
         {
