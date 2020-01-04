@@ -40,7 +40,7 @@ void state_func_settings()
             if (dpad_any_active() || !watch2::state_init)
             {
                 // draw menu
-                watch2::oled.setFont(&SourceSansPro_Regular6pt7b);
+                watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
                 watch2::drawMenu(2, 12, SCREEN_WIDTH-4, SCREEN_HEIGHT-12, panels, selected_panel, watch2::themecolour);
             }
             if (dpad_enter_active())
@@ -68,7 +68,7 @@ void state_func_settings()
                 temp_time[5] = year();
             }
 
-            watch2::oled.setFont(&SourceSansPro_Light12pt7b);
+            watch2::oled.setFreeFont(&SourceSansPro_Light12pt7b);
             watch2::oled.setCursor(4, 12 + 16);
 
             if (dpad_left_active())
@@ -112,7 +112,7 @@ void state_func_settings()
                 {
 
                     sprintf(text_aaaa, "%02d", temp_time[i]);
-                    watch2::oled.getTextBounds(String(text_aaaa), watch2::oled.getCursorX(), watch2::oled.getCursorY(), &x1, &y1, &w, &h);
+                    watch2::getTextBounds(String(text_aaaa), watch2::oled.getCursorX(), watch2::oled.getCursorY(), &x1, &y1, &w, &h);
                     watch2::oled.fillRect(x1 - time_element_padding, y1 - time_element_padding, w + (2 * time_element_padding) + 10, h + (2 * time_element_padding), BLACK);
                     if (selected_time == i) watch2::oled.drawRoundRect(x1 - time_element_padding, y1 - time_element_padding, w + (2 * time_element_padding), h + (2 * time_element_padding), radius, watch2::themecolour);
                     //oled.fillRect(x1, y1, w, h, BLACK);
@@ -130,7 +130,7 @@ void state_func_settings()
                 setTime(temp_time[0], temp_time[1], temp_time[2], temp_time[3], temp_time[4], temp_time[5]);
                 watch2::switchState(watch2::state, 0);
             }
-            watch2::oled.setFont(&SourceSansPro_Light8pt7b); // reset font
+            watch2::oled.setFreeFont(&SourceSansPro_Light8pt7b); // reset font
             break;
 
         case 2: //timeouts
@@ -202,7 +202,7 @@ void state_func_settings()
 
             if (dpad_any_active() || !watch2::state_init)
             {
-                watch2::oled.setFont(&SourceSansPro_Regular6pt7b);
+                watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
                 watch2::oled.setTextColor(WHITE);
                 drawSettingsMenu(0, 12, SCREEN_WIDTH, SCREEN_HEIGHT - 12, timeout_data, selected_timeout, watch2::themecolour);
             }
@@ -315,7 +315,7 @@ void state_func_settings()
 
             if (dpad_any_active() || !watch2::state_init)
             {
-                watch2::oled.setFont(&SourceSansPro_Regular6pt7b);
+                watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
                 watch2::oled.setTextColor(WHITE);
                 drawSettingsMenu(0, 12, SCREEN_WIDTH, SCREEN_HEIGHT - 12, colour_data, selected_colour, watch2::themecolour);
             }
@@ -339,6 +339,7 @@ void state_func_settings()
             static int yoffset = 0;
             const int about_height = 200;
             static uint64_t chipid = ESP.getEfuseMac();
+            /*
             static GFXcanvas16 *canvas_about = new GFXcanvas16(SCREEN_WIDTH, about_height);
 
             if (!watch2::state_init)
@@ -346,7 +347,7 @@ void state_func_settings()
                 //clear text
                 //oled.fillRect(0, 11, SCREEN_WIDTH, SCREEN_HEIGHT-11, BLACK);
 
-                canvas_about->setFont(&SourceSansPro_Regular6pt7b);
+                canvas_about->setFreeFont(&SourceSansPro_Regular6pt7b);
                 canvas_about->setCursor(0, 10);  //normally, y = 20
                 canvas_about->setTextColor(WHITE);
 
@@ -396,9 +397,9 @@ void state_func_settings()
             if (!watch2::state_init || dpad_any_active())
             {
                 //clear top of screen for top bar thing
-                watch2::oled.drawRGBBitmap(0, 20 - yoffset, canvas_about->getBuffer(), SCREEN_WIDTH, about_height);
+                //watch2::oled.drawRGBBitmap(0, 20 - yoffset, canvas_about->getBuffer(), SCREEN_WIDTH, about_height);
                 watch2::oled.fillRect(0, 0, SCREEN_WIDTH, 10, BLACK);
-            }
+            }*/
 
             if (dpad_enter_active() || dpad_left_active())
             {

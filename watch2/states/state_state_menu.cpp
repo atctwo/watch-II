@@ -155,8 +155,7 @@ void state_func_state_menu()
             if (!stateinfo.hidden)
             {
                 //draw app icon
-                watch2::oled.drawRGBBitmap(icon_xpos, icon_ypos - icon_yoffset, watch2::icons[stateinfo.stateIcon].data(),
-                                    icon_size, icon_size);
+                watch2::oled.pushImage(icon_xpos, icon_ypos - icon_yoffset, icon_size, icon_size, watch2::icons[stateinfo.stateIcon].data());
 
                 //if current app is selected, draw an outline around it
                 if (watch2::selected_menu_icon == i)

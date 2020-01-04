@@ -7,7 +7,7 @@ namespace watch2
 {
     // object creation
     SPIClass *vspi = new SPIClass(VSPI);
-    Adafruit_SSD1351 oled = Adafruit_SSD1351(128, 96, vspi, cs, dc, rst);
+    TFT_eSPI oled = TFT_eSPI();
     Preferences preferences;
     SdFat SD(&*vspi);
     Adafruit_ImageReader reader(SD);
@@ -34,7 +34,7 @@ namespace watch2
     bool timeout = true;
     int themecolour = BLUE;
     time_t alarm_snooze_time = 5*60;
-    uint8_t screen_brightness = 15;
+    uint16_t screen_brightness = 2^tftbl_resolution;
     uint8_t speaker_volume = 10;
     uint8_t torch_brightness = 0;
     int sd_state = 0;
@@ -86,26 +86,18 @@ namespace watch2
         if (btn_zero.pressedFor(1000))
         {
             oled.drawPixel(0,0,BLUE);
-            oled.startWrite();
-
+            
             for (int y = 0; y < SCREEN_HEIGHT; y++)
             {
                 for (int x = 0; x < SCREEN_WIDTH; x++)
                 {
-                    oled.setAddrWindow(x, y, 1, 1);
-                    oled.writeCommand(SSD1351_CMD_READRAM);
-                    vspi->transfer(0x12);
-                    uint8_t colour = vspi->transfer(0x12);
-                    Serial.printf("%02x", colour);
-                    colour = vspi->transfer(0x12);
-                    Serial.printf("%02x ", colour);
+                    uint16_t colour = oled.readPixel(x, y);
+                    Serial.print(colour);
+                    Serial.print(" ");
                 }
                 Serial.println();
             }
             
-
-
-            oled.endWrite();
         }
 
         //reset button lock state
@@ -153,7 +145,7 @@ namespace watch2
             oled.setCursor(1,8);
             oled.setTextColor(WHITE);
             oled.setTextSize(1);
-            oled.setFont(&SourceSansPro_Regular6pt7b);
+            oled.setFreeFont(&SourceSansPro_Regular6pt7b);
             oled.print("watch II");
 
             //oled.printf(" %d ", preferences.getBool("timeout", true));
@@ -191,8 +183,7 @@ namespace watch2
             small_icons["small_sd"].data(),
             11,
             8,
-            sd_colour,
-            BLACK
+            sd_colour
         );
     }
 
@@ -239,16 +230,15 @@ namespace watch2
         // direction
         // 0 - decrease brightness
         // 1 - increase brightness
-        if (direction) for (uint8_t contrast = 0; contrast < screen_brightness + 1; contrast++)
+        if (direction) for (uint16_t contrast = 0; contrast < screen_brightness + 1; contrast++)
         {
-            oled.sendCommand(0xC7, &contrast, 1);
-            delay(pause_thing);
+            ledcWrite(1, contrast);
+            delay(std::max(pause_thing / screen_brightness, 1));
         }
-        else for (uint8_t contrast = screen_brightness; contrast > 0; contrast--)
+        else for (uint16_t contrast = screen_brightness; contrast > 0; contrast--)
         {
-            uint8_t contrast_step = contrast;
-            oled.sendCommand(0xC7, &contrast_step, 1);
-            delay(pause_thing);
+            ledcWrite(1, contrast);
+            delay(std::max(pause_thing / screen_brightness, 1));
         }
     }
 
@@ -259,7 +249,7 @@ namespace watch2
         oled.fillScreen(BLACK);
 
         //turn off display
-        oled.sendCommand(0xAE);
+        //oled.sendCommand(0xAE);
 
         //save selected_state
         //selected_state = selected_menu_icon->first;
@@ -331,7 +321,7 @@ namespace watch2
         //when the esp is woken up, it will resume execution at this point
 
         Serial.println("awake");
-        oled.sendCommand(0xAF);
+        //oled.sendCommand(0xAF);
 
         //set up buttons
         btn_dpad_up.begin();
@@ -361,7 +351,8 @@ namespace watch2
         x += padding;
 
         //get text dimensions
-        oled.getTextBounds(String(items[0].c_str()), x, y, &x1, &y1, &w, &h);
+        w = oled.textWidth(items[0].c_str());
+        h = oled.fontHeight();
 
         //get total height of button (incl. padding)
         int ht = h + padding + padding + padding;
@@ -415,7 +406,7 @@ namespace watch2
                 String itemtext = "";
 
                 //get the length of the text
-                oled.getTextBounds(String(item.c_str()), x + padding, y + h + padding - y_offset, &x1, &y1, &w, &h2);
+                watch2::getTextBounds(String(item.c_str()), x + padding, y + h + padding - y_offset, &x1, &y1, &w, &h2);
 
                 //if the text is too long for the item button
                 if (w > (width - (padding * 4)))
@@ -425,7 +416,8 @@ namespace watch2
                     //iterate through each letter until the length of the button is reached
 
                     //find the width of the string "..." and store it in w2
-                    oled.getTextBounds("...", x + padding, y + h + padding, &x1, &y1, &w2, &h2);
+                    w = oled.textWidth("...");
+                    h = oled.fontHeight();
 
                     //running value of item text length
                     int text_length = 0;
@@ -434,11 +426,11 @@ namespace watch2
                     for (int i = 0; i < item.length(); i++)
                     {
                         //get width of character
-                        oled.getTextBounds(String(item[i]), x + padding, y + h + padding, &x1, &y1, &w, &h2);
+                        w = 7;//oled.textWidth(String(item[i][0]);
 
                         //add width to running value
                         //really, the character width should be added to this value,
-                        //but for some reason, the character width calculated by oled.getTextBounds()
+                        //but for some reason, the character width calculated by watch2::getTextBounds()
                         //above isn't correct
                         text_length += 6;
 
@@ -494,7 +486,7 @@ namespace watch2
 
             // draw settings title
             oled.setCursor(x, cursor_y_pos);
-            oled.getTextBounds(String(items[i].setting_title), x, cursor_y_pos, &x1, &y1, &w, &h);
+            watch2::getTextBounds(String(items[i].setting_title), x, cursor_y_pos, &x1, &y1, &w, &h);
             oled.print(items[i].setting_title);
             text_height = h;
 
@@ -507,7 +499,7 @@ namespace watch2
             if (last_selected_element == i && last_selected_value != final_setting_value)
             {
                 digitalWrite(12, HIGH);
-                oled.getTextBounds(last_selected_value, x, cursor_y_pos, &x1, &y1, &w, &h);
+                watch2::getTextBounds(last_selected_value, x, cursor_y_pos, &x1, &y1, &w, &h);
                 outline_width = std::max(items[i]. min_field_width, w + (2 * padding));
 
                 oled.fillRect( (x + (width - padding - outline_width)) - padding,
@@ -520,7 +512,7 @@ namespace watch2
             else digitalWrite(12, LOW);
 
             // draw settings value
-            oled.getTextBounds(final_setting_value, x, cursor_y_pos, &x1, &y1, &w, &h);
+            watch2::getTextBounds(final_setting_value, x, cursor_y_pos, &x1, &y1, &w, &h);
             outline_width = std::max(items[i]. min_field_width, w + (2 * padding));
             outlinecolour = BLACK;
 
@@ -634,6 +626,7 @@ namespace watch2
         static std::stack<int> selected_icon_stack; //stack for storing selected file indecies when navigating through subdirectories
 
         //call once
+        file_path = path;
         file_select_dir_list_init = false;
 
         while(true)
@@ -667,7 +660,8 @@ namespace watch2
                     file_select_status = false;
 
                     //return to the calling state
-                    switchState(state);
+                    switchState(state, states[state].variant, 10, 10, true);
+                    return file_path;
                 }
                 else if (files2[selected_icon] == "..") //if parent directory was selected
                 {
@@ -937,7 +931,17 @@ namespace watch2
     // return -0.000000000000016 * pow(reading,4) + 0.000000000118171 * pow(reading,3)- 0.000000301211691 * pow(reading,2)+ 0.001109019271794 * reading + 0.034143524634089;
     } // Added an improved polynomial, use either, comment out as required
 
+    void getTextBounds(const char *string, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h)
+    {
+        *w = oled.textWidth(string);
+        *h = oled.fontHeight();
+    }
 
+    void getTextBounds(const String &str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h)
+    {
+        *w = oled.textWidth(str);
+        *h = oled.fontHeight();
+    }
 
 }
 

@@ -22,7 +22,7 @@ registerState("Initial State", "init", [](){
         if (!state_init)
         {
             oled.setCursor(0,10);
-            oled.setFont(&SourceSansPro_Regular6pt7b);
+            oled.setFreeFont(&SourceSansPro_Regular6pt7b);
             oled.setTextColor(WHITE);
             oled.print("Do you want to clear\nall saved settings?");
         }
@@ -177,7 +177,7 @@ case 3: //colour
 
     if (dpad_any_active() || !state_init)
     {
-        oled.setFont(&SourceSansPro_Regular6pt7b);
+        oled.setFreeFont(&SourceSansPro_Regular6pt7b);
         oled.setTextColor(WHITE);
         drawSettingsMenu(0, 12, SCREEN_WIDTH, SCREEN_HEIGHT - 12, colour_data, selected_colour, themecolour);
     }

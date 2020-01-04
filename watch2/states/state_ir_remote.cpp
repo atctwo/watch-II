@@ -385,7 +385,7 @@ void state_func_ir_remote()
                     if (icons.find(i) != icons.end())
                     {
                         //draw the icon
-                        icons[i].draw(watch2::oled, icon_xpos, icon_ypos);
+                        //icons[i].draw(watch2::oled, icon_xpos, icon_ypos);
 
                         //print outline
                         if (selected_calc_button == i)

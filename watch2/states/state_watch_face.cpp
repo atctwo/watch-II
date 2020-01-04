@@ -22,7 +22,7 @@ void state_func_watch_face()
         //state-specific variables
         //the last_x variables are used to keep track of when an element has changed
         //the last_x variables are initilised to -1 so that they change when the state is first loaded
-        static GFXcanvas1 *canvas_time = new GFXcanvas1(SCREEN_WIDTH-1, 42);            //time canvas (used to draw time w/ a gradient)
+        //static GFXcanvas1 *canvas_time = new GFXcanvas1(SCREEN_WIDTH-1, 42);            //time canvas (used to draw time w/ a gradient)
         static char text_aaaa[150];                                                     //buffer for sprintf
         String meridian = "owo";                                                        //default value for meridian
         static int time_x = 0;                                                          //x pos of time canvas (and seconds element)
@@ -39,82 +39,7 @@ void state_func_watch_face()
         watch2::oled.setTextColor(WHITE, BLACK);
 
         watch2::oled.setTextSize(1);
-        //oled.print("The time right now is");
-
-        //draw minutes and hours
-        if ((last_minute != minute(tim)) || !watch2::state_init)
-        {
-            canvas_time->setFont(&SourceSansPro_Regular24pt7b);
-            canvas_time->setCursor(0, 32);
-
-            sprintf(text_aaaa, "%02d:%02d", last_hour, last_minute);
-            canvas_time->getTextBounds(text_aaaa, 0, 32, &x1, &y1, &w_min_hour, &h);
-            canvas_time->fillRect(x1, y1, w_min_hour, h, BLACK);
-            //oled.fillRect(x1, y1, w, h, BLACK);
-            time_x = (int)((SCREEN_WIDTH - w_min_hour) / 2);
-
-            canvas_time->printf("%02d:%02d", hour(tim), minute(tim));
-
-            last_minute = minute(tim);
-            last_hour = hour(tim);
-        }
-        watch2::oled.drawRainbowBitmap(time_x - 4, 11, canvas_time->getBuffer(), SCREEN_WIDTH, 38, BLACK, ((millis() % 60000) * 6)/1000);
-
-        //draw seconds
-        watch2::oled.setFont(&SourceSansPro_Light16pt7b);
-        watch2::oled.setCursor(time_x, 70);
-
-        if ((last_second != second(tim)) || !watch2::state_init)
-        {
-            sprintf(text_aaaa, "%02d", last_second);
-            watch2::oled.getTextBounds(text_aaaa, time_x, 70, &x1, &y1, &w_sec, &h);
-            watch2::oled.fillRect(x1, y1, w_sec, h, BLACK);
-
-            watch2::oled.printf("%02d", second(tim));
-            last_second = second(tim);
-        }
-
-        //draw meridian
-        if ((last_meridian != isAM(tim)) || !watch2::state_init)
-        {
-            String meridian = isAM(tim) ? "am" : "pm";
-            sprintf(text_aaaa, "%s", meridian.c_str());
-
-            //because the x pos of this element is dependant on its width,
-            //we have to use getTextBounds to first calculate the width of the text,
-            //then we have to use getTextBounds again to calculate the actual x and y
-            //coordinates of the text
-            watch2::oled.getTextBounds(text_aaaa, time_x, 70, &x1, &y1, &w_meridian, &h);
-            int meridian_x = (time_x + w_min_hour) - w_meridian;
-            watch2::oled.getTextBounds(text_aaaa, meridian_x, 70, &x1, &y1, &w_meridian, &h);
-
-            watch2::oled.fillRect(x1, y1, w_meridian, h, BLACK);
-
-            watch2::oled.setCursor(meridian_x, 70);
-            watch2::oled.print(meridian);
-
-            last_meridian = isAM(tim);
-        }
-
-        //draw date
-        watch2::oled.setFont(&SourceSansPro_Light8pt7b);
-
-        if ((last_day != day(tim)) || !watch2::state_init)
-        {
-            String datestring = String(day(tim)) + String(" ") + String(monthStr(month(tim))) + String(" ") + String(year(tim));
-            sprintf(text_aaaa, "%s", datestring.c_str());
-            watch2::oled.getTextBounds(text_aaaa, time_x, 64, &x1, &y1, &w_datestring, &h);
-            watch2::oled.fillRect(0, 90, SCREEN_WIDTH, 6, BLACK);
-
-            watch2::oled.setCursor((SCREEN_WIDTH - w_datestring) / 2, 90);
-            watch2::oled.print(datestring);
-
-            last_day = day(tim);
-        }
-
-        //finish drawing state
-        //drawTopThing();
-        watch2::oled.setFont(&SourceSansPro_Regular6pt7b);
+        watch2::oled.print("The time right now is");
 
         //draw minimal top thing
         watch2::drawTopThing(true);
@@ -187,10 +112,10 @@ void state_func_watch_face()
             }
             else if (selected_widget == 1) // brightness
             {
-                watch2::screen_brightness = std::max(watch2::screen_brightness - 1, 0);
-                watch2::oled.sendCommand(0xC7, &watch2::screen_brightness, 1);
+                watch2::screen_brightness = std::max(watch2::screen_brightness - 10, 0);
+                ledcWrite(1, watch2::screen_brightness);
                 watch2::preferences.begin("watch2", false);      //open watch II preferences in RW mode
-                watch2::preferences.putUChar("brightness", watch2::screen_brightness);
+                watch2::preferences.putUInt("brightness", watch2::screen_brightness);
                 watch2::preferences.end();
             }
             else if (selected_widget == 2) // torch
@@ -212,10 +137,10 @@ void state_func_watch_face()
             }
             else if (selected_widget == 1) // brightness
             {
-                watch2::screen_brightness = std::min(watch2::screen_brightness + 1, 15);
-                watch2::oled.sendCommand(0xC7, &watch2::screen_brightness, 1);
+                watch2::screen_brightness = std::min(watch2::screen_brightness + 10, 255);
+                ledcWrite(1, watch2::screen_brightness);
                 watch2::preferences.begin("watch2", false);      //open watch II preferences in RW mode
-                watch2::preferences.putUChar("brightness", watch2::screen_brightness);
+                watch2::preferences.putUInt("brightness", watch2::screen_brightness);
                 watch2::preferences.end();
             }
             else if (selected_widget == 2) // torch
@@ -258,9 +183,9 @@ void state_func_watch_face()
 
         if (!watch2::state_init || dpad_any_active())
         {
-            int spacing = 5;
-            int button_size = 18;
-            int radius = 4;
+            int spacing = 10;
+            int button_size = 30;
+            int radius = 10;
             int outline_colour = WHITE;
             int background_colour = BLACK;
             int button_x = spacing;
@@ -269,7 +194,7 @@ void state_func_watch_face()
 
             //draw volume slider                                                                                                                    jungle green
             if (selected_widget == 0) watch2::oled.fillRect(button_x - 2, button_y - 2, SCREEN_WIDTH - button_x, button_size + 4, BLACK);
-            watch2::oled.drawRoundRect(button_x, button_y + (button_size / 4), SCREEN_WIDTH - spacing - button_x, button_size / 2, radius, WHITE);
+            watch2::oled.drawRoundRect(button_x, button_y + (button_size / 3), SCREEN_WIDTH - spacing - button_x, button_size / 3, (button_size / 3)/2, WHITE);
             slider_x = button_x + ( watch2::speaker_volume * ( ( SCREEN_WIDTH - button_size - spacing - 2 - button_x ) / 21.0 ) );
             watch2::oled.fillRect(slider_x - 2, button_y - 2, button_size + 4, button_size + 4, BLACK);
             watch2::oled.fillRoundRect(slider_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, 0x2D50);                               //background thing
@@ -280,8 +205,8 @@ void state_func_watch_face()
 
             //draw brightness slider                                                                                                                yellow
             if (selected_widget == 1) watch2::oled.fillRect(button_x - 2, button_y - 2, SCREEN_WIDTH - button_x, button_size + 4, BLACK);
-            watch2::oled.drawRoundRect(button_x, button_y + (button_size / 4), SCREEN_WIDTH - spacing - button_x, button_size / 2, radius, WHITE);
-            slider_x = button_x + ( watch2::screen_brightness * ( ( SCREEN_WIDTH - button_size - spacing - 2 - button_x ) / 15.0 ) );
+            watch2::oled.drawRoundRect(button_x, button_y + (button_size / 3), SCREEN_WIDTH - spacing - button_x, button_size / 3, (button_size / 3)/2, WHITE);
+            slider_x = button_x + ( watch2::screen_brightness * ( (float)( SCREEN_WIDTH - button_size - spacing - 2 - button_x ) / ( 255.0 ) ) );
             watch2::oled.fillRect(slider_x - 2, button_y - 2, button_size + 4, button_size + 4, BLACK);
             watch2::oled.fillRoundRect(slider_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, 0xFEC0);                               //background thing
             outline_colour = (selected_widget == 1) ? WHITE : 0xFEC0;                                                                               //determine outline colour
@@ -291,7 +216,7 @@ void state_func_watch_face()
 
             //draw torch slider                                                                                                                     adafruit yellow
             if (selected_widget == 2) watch2::oled.fillRect(button_x - 2, button_y - 2, SCREEN_WIDTH - button_x, button_size + 4, BLACK);
-            watch2::oled.drawRoundRect(button_x, button_y + (button_size / 4), SCREEN_WIDTH - spacing - button_x, button_size / 2, radius, WHITE);
+            watch2::oled.drawRoundRect(button_x, button_y + (button_size / 3), SCREEN_WIDTH - spacing - button_x, button_size / 3, (button_size / 3)/2, WHITE);
             slider_x = button_x + ( watch2::torch_brightness * ( ( SCREEN_WIDTH - button_size - spacing - 2 - button_x ) / 255.0 ) );
             watch2::oled.fillRect(slider_x - 2, button_y - 2, button_size + 4, button_size + 4, BLACK);
             watch2::oled.fillRoundRect(slider_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, YELLOW);                               //background thing

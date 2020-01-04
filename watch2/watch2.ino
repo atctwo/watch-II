@@ -17,7 +17,7 @@ void setup() {
     pinMode(12, OUTPUT);
     pinMode(cs, OUTPUT);
     pinMode(sdcs, OUTPUT);
-    pinMode(sdcd, INPUT);
+    pinMode(tftbl, OUTPUT);
     pinMode(BATTERY_DIVIDER_PIN, INPUT);
     pinMode(IR_PIN, OUTPUT);
 
@@ -36,9 +36,9 @@ void setup() {
     //set up oled
     watch2::oled.begin(18000000);
     watch2::oled.fillScreen(0);
-    //oled.setFont(&SourceSansPro_Regular6pt7b);
+    //oled.setFreeFont(&SourceSansPro_Regular6pt7b);
     uint8_t contrast = 0x0f;
-    watch2::oled.sendCommand(0xC7, &contrast, 1);
+    //watch2::oled.sendCommand(0xC7, &contrast, 1);
 
     //set up SD card
     digitalWrite(cs, HIGH);
@@ -57,7 +57,7 @@ void setup() {
     watch2::long_timeout = watch2::preferences.getInt("long_timeout", 30000);
     watch2::themecolour = watch2::preferences.getInt("themecolour", BLUE);
     watch2::trans_mode = watch2::preferences.getBool("trans_mode", false);
-    watch2::screen_brightness = watch2::preferences.getUChar("brightness", 15);
+    watch2::screen_brightness = watch2::preferences.getUInt("brightness", 2^tftbl_resolution);
     watch2::preferences.end();
 
     //set up buttons
@@ -71,6 +71,11 @@ void setup() {
     ledcAttachPin(TORCH_PIN, 0);
     ledcSetup(0, 4000, 8);
     ledcWrite(0, 0);
+
+    //set up tft backlight
+    ledcAttachPin(tftbl, 1);
+    ledcSetup(1, 4000, tftbl_resolution);
+    ledcWrite(1, 2^tftbl_resolution);
 
     //set up time
     timeval tv;
@@ -125,14 +130,14 @@ void loop() {
         {
             //dim screen
             uint8_t contrast = 0x0F;
-            watch2::oled.sendCommand(0xC7, &contrast, 1);
+            //watch2::oled.sendCommand(0xC7, &contrast, 1);
 
             digitalWrite(12, HIGH);
 
             watch2::oled.setCursor(5, 10);
             watch2::oled.setTextColor(WHITE, BLACK);
             watch2::oled.print("no state has been\nloaded");
-            watch2::oled.drawRGBBitmap(0, 29, coolcrab, 128, 55);
+            //watch2::oled.drawRGBBitmap(0, 29, coolcrab, 128, 55);
             if (dpad_any_active()) watch2::switchState(0);
         }
         else watch2::states[watch2::state].stateFunc();
@@ -153,10 +158,10 @@ void loop() {
             time_t time_left_sec = floor(duration % 3600 % 60);
 
             //draw message
-            watch2::oled.setFont(&SourceSansPro_Light8pt7b);
+            watch2::oled.setFreeFont(&SourceSansPro_Light8pt7b);
             watch2::oled.setCursor(0, 20);
             watch2::oled.printf("%02d hours,\n%02d minutes, and\n%02d seconds\n", time_left_hrs, time_left_min, time_left_sec);
-            watch2::oled.setFont(&SourceSansPro_Regular6pt7b);
+            watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
             watch2::oled.print("have elapsed.  press any\nkey to continue");
 
             //brighten screen
@@ -181,7 +186,7 @@ void loop() {
         static char text_aaaa[150];
         static int16_t x1, y1;
         static uint16_t w=0, h=0;
-        static GFXcanvas1 *canvas_time = new GFXcanvas1(SCREEN_WIDTH, 20);
+        //static GFXcanvas1 *canvas_time = new GFXcanvas1(SCREEN_WIDTH, 20);
         //0 - dismiss
         //anything else - sleep
 
@@ -206,12 +211,12 @@ void loop() {
 
         if (now() != last_time)
         {
-            canvas_time->setFont(&SourceSansPro_Light12pt7b);
+            //canvas_time->setFreeFont(&SourceSansPro_Light12pt7b);
             //canvas_time->setTextColor(WHITE);
-            canvas_time->fillScreen(BLACK);
-            canvas_time->setCursor(2, 16);
-            canvas_time->printf("%02d:%02d:%02d", hour(), minute(), second());
-            watch2::oled.drawBitmap(2, 16, canvas_time->getBuffer(), SCREEN_WIDTH, 20, watch2::themecolour, BLACK);
+            //canvas_time->fillScreen(BLACK);
+            //canvas_time->setCursor(2, 16);
+            //canvas_time->printf("%02d:%02d:%02d", hour(), minute(), second());
+            //watch2::oled.drawBitmap(2, 16, canvas_time->getBuffer(), SCREEN_WIDTH, 20, watch2::themecolour, BLACK);
             last_time = now();
         }
 
@@ -220,17 +225,17 @@ void loop() {
         {
             //draw dismiss button
             watch2::oled.drawRoundRect(24, 42, 28, 28, 4, (!selected_alarm_action) ? watch2::themecolour : BLACK);
-            watch2::oled.drawRGBBitmap(26, 44, watch2::icons["dismiss"].data(), 24, 24);
+            //watch2::oled.drawRGBBitmap(26, 44, watch2::icons["dismiss"].data(), 24, 24);
 
             //draw snooze button
             watch2::oled.drawRoundRect(SCREEN_WIDTH - 26 - 26, 42, 28, 28, 4, (selected_alarm_action) ? watch2::themecolour : BLACK);
-            watch2::oled.drawRGBBitmap(SCREEN_WIDTH - 26 - 24, 44, watch2::icons["bed"].data(), 24, 24);
+            //watch2::oled.drawRGBBitmap(SCREEN_WIDTH - 26 - 24, 44, watch2::icons["bed"].data(), 24, 24);
 
             //draw button text
             watch2::oled.fillRect(0, 71, SCREEN_WIDTH, SCREEN_HEIGHT - 71, BLACK);
-            watch2::oled.setFont(&SourceSansPro_Regular6pt7b);
+            watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
             String button = (selected_alarm_action) ? "Snooze" : "Dismiss";
-            watch2::oled.getTextBounds(button, 24, 80, &x1, &y1, &w, &h);
+            //watch2::getTextBounds(button, 24, 80, &x1, &y1, &w, &h);
             watch2::oled.setCursor(
                 ( SCREEN_WIDTH / 2 ) - ( w / 2 ),
                 80
@@ -274,7 +279,7 @@ void loop() {
 ////////////////////////////////////////
 
 
-
+/*
 void Adafruit_GFX::drawRainbowBitmap(int16_t x, int16_t y,
   const uint8_t bitmap[], int16_t w, int16_t h,
   uint16_t bg, int phase_difference) {
@@ -297,3 +302,4 @@ void Adafruit_GFX::drawRainbowBitmap(int16_t x, int16_t y,
     }
     endWrite();
 }
+*/

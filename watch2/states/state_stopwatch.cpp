@@ -85,15 +85,15 @@ void state_func_stopwatch()
     watch2::stopwatch_min  = (int)((watch2::stopwatch_time_diff / (1000 * 60))      % 60);
     watch2::stopwatch_hour = (int)((watch2::stopwatch_time_diff / (1000 * 60 * 60)) % 24);
 
-    watch2::oled.setFont(&SourceSansPro_Light12pt7b);
+    watch2::oled.setFreeFont(&SourceSansPro_Light12pt7b);
     watch2::oled.setTextColor(watch2::themecolour);
 
     //calculate sizes of stopwatch digit things
     if (!watch2::state_init)
     {
-        watch2::oled.getTextBounds("99", 0, 0, &x1, &y1, &width_two_digits, &h);
-        watch2::oled.getTextBounds(":99", 0, 0, &x1, &y1, &width_two_digits_colon, &h);
-        watch2::oled.getTextBounds(":999", 0, 0, &x1, &y1, &width_three_digits_colon, &h);
+        watch2::getTextBounds("99", 0, 0, &x1, &y1, &width_two_digits, &h);
+        watch2::getTextBounds(":99", 0, 0, &x1, &y1, &width_two_digits_colon, &h);
+        watch2::getTextBounds(":999", 0, 0, &x1, &y1, &width_three_digits_colon, &h);
     }
 
     //draw hours
@@ -101,7 +101,7 @@ void state_func_stopwatch()
     {
         watch2::oled.setCursor(2, 40);
         sprintf(text_aaaa, "%02d", watch2::stopwatch_last_hour);
-        watch2::oled.getTextBounds(String(text_aaaa), 2, 40, &x1, &y1, &w, &h);
+        watch2::getTextBounds(String(text_aaaa), 2, 40, &x1, &y1, &w, &h);
         watch2::oled.fillRect(x1, y1, w, h, BLACK);
         watch2::oled.printf("%02d", watch2::stopwatch_hour);
         watch2::stopwatch_last_hour = watch2::stopwatch_hour;
@@ -112,7 +112,7 @@ void state_func_stopwatch()
     {
         watch2::oled.setCursor(2 + (width_two_digits), 40);
         sprintf(text_aaaa, ":%02d", watch2::stopwatch_last_min);
-        watch2::oled.getTextBounds(text_aaaa, 2 + (width_two_digits), 40, &x1, &y1, &w, &h);
+        watch2::getTextBounds(text_aaaa, 2 + (width_two_digits), 40, &x1, &y1, &w, &h);
         watch2::oled.fillRect(x1, y1, w, h, BLACK);
         watch2::oled.printf(":%02d", watch2::stopwatch_min);
         watch2::stopwatch_last_min = watch2::stopwatch_min;
@@ -123,7 +123,7 @@ void state_func_stopwatch()
     {
         watch2::oled.setCursor(2 + (2 * width_two_digits_colon), 40);
         sprintf(text_aaaa, ":%02d", watch2::stopwatch_last_s);
-        watch2::oled.getTextBounds(text_aaaa, 2 + (2 * width_two_digits_colon), 40, &x1, &y1, &w, &h);
+        watch2::getTextBounds(text_aaaa, 2 + (2 * width_two_digits_colon), 40, &x1, &y1, &w, &h);
         watch2::oled.fillRect(x1, y1, w, h, BLACK);
         watch2::oled.printf(":%02d", watch2::stopwatch_s);
         watch2::stopwatch_last_s = watch2::stopwatch_s;
@@ -134,20 +134,20 @@ void state_func_stopwatch()
     {
         watch2::oled.setCursor(2 + (3 * width_two_digits_colon), 40);
         sprintf(text_aaaa, ":%03d", watch2::stopwatch_last_ms);
-        watch2::oled.getTextBounds(text_aaaa, 2 + (3 * width_two_digits_colon), 40, &x1, &y1, &w, &h);
+        watch2::getTextBounds(text_aaaa, 2 + (3 * width_two_digits_colon), 40, &x1, &y1, &w, &h);
         watch2::oled.fillRect(x1, y1, w, h, BLACK);
         watch2::oled.printf(":%03d", watch2::stopwatch_ms);
         watch2::stopwatch_last_ms = watch2::stopwatch_ms;
     }
 
         // reset font
-    watch2::oled.setFont(&SourceSansPro_Light8pt7b);
+    watch2::oled.setFreeFont(&SourceSansPro_Light8pt7b);
     watch2::oled.setTextColor(WHITE);
 
     //draw status text
     if (dpad_any_active() || !watch2::state_init)
     {
-        watch2::oled.setFont(&SourceSansPro_Regular6pt7b);
+        watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
         watch2::oled.setCursor(2, 20);
         watch2::oled.fillRect(2, 12, SCREEN_WIDTH - 2, 11, BLACK);
         if (watch2::stopwatch_timing == 0) watch2::oled.print("Stopped");

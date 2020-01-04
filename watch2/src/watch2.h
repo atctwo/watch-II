@@ -4,28 +4,31 @@
 ////////////////////////////////////////
 // includes
 ////////////////////////////////////////
+
+#include <stdio.h>                  // i don't actually know...
+#include <stdint.h>
+#include <algorithm>                // used for std::find and std::min and std::max
+#include <stack>
+#include <map>                      // map object for storing states
+#include <unordered_map>
+#include <string>                   // std::string
+#include <functional>               // std::function thing
+
 #include <SPI.h>                    // SPI library
 #include <SdFat.h>                     // sd card access library
 #include <sdios.h>
-#include <Adafruit_GFX.h>           // Used for drawing graphics to the OLED
-#include <Adafruit_SSD1351.h>       // used to interface with the OLED
+#include <TFT_eSPI.h>
 #include <Adafruit_ImageReader.h>
 #include <JC_Button.h>              // button object
 #include <WiFi.h>                   // wifi library
 #include <Preferences.h>            // for storing settings in nvs (allowing for persistance over power cycles)
 #include <tinyexpr.h>               // expression evaluator for calculator
-#include <map>                      // map object for storing states
-#include <unordered_map>
-#include <string>                   // std::string
-#include <functional>               // std::function thing
+
 #include <time.h>                   // used for system-level time keeping
 #include <sys/time.h>               // see above
 #include <TimeLib.h>                // used for managing time (see code note 1)
 #include <TimeAlarms.h>             //used for creating and managing alarms
-#include <stdio.h>                  // i don't actually know...
-#include <stdint.h>
-#include <algorithm>                // used for std::find and std::min and std::max
-#include <stack>
+
 
 #include "watch2.h"                 // defines and function prototypes
 //#include "globals.h"                // declatations for global variables
@@ -45,7 +48,6 @@
 //pin declarations
 #define cs   5      // goes to TFT CS
 #define sdcs 4      //sd card chip select
-#define sdcd 17     //sd card detect
 #define dc   22     // goes to TFT DC
 #define mosi 23     // goes to TFT MOSI
 #define sclk 18     // goes to TFT SCK/CLK
@@ -54,6 +56,8 @@
 //       3.3V       // Goes to TFT LED
 //       5v         // Goes to TFT Vcc
 //       Gnd        // Goes to TFT Gnd
+#define tftbl 17    //tft backlight
+#define tftbl_resolution 8 //resolution of backlight pwm in bits
 
 #define dpad_up     33
 #define dpad_down   27
@@ -88,8 +92,8 @@
 #define WHITE           0xFFFF
 
 // device info
-#define SCREEN_WIDTH            128
-#define SCREEN_HEIGHT           96
+#define SCREEN_WIDTH            240
+#define SCREEN_HEIGHT           240
 #define WATCH_VER               "0.1"
 #define BATTERY_VOLTAGE_MAX     3.3     //max voltage of battery (when fully charged)
 #define BATTERY_VOLTAGE_SCALE   2       //scale factor of voltage divider
@@ -186,8 +190,7 @@ namespace watch2
 
     // object creation
     extern SPIClass *vspi;                                                                     // VSPI object
-    extern Adafruit_SSD1351 oled;                                                              //hw spi (use vspi or &SPI)
-    //Adafruit_SSD1351 oled = Adafruit_SSD1351(128, 96, cs, dc, mosi, sclk, rst);       //sw spi
+    extern TFT_eSPI oled;                                                              //hw spi (use vspi or &SPI)
     extern Preferences preferences;                                                            //wrapper for esp32 nvs used to store system settings
     extern SdFat SD;    
     extern Adafruit_ImageReader reader;                                                                       //sdfat instance used for accessing sd card
@@ -222,7 +225,7 @@ namespace watch2
     extern bool timeout;                                                                        //whether or not to go to sleep after timeout time has elapsed
     extern int themecolour;                                                                     //colour of the system accent
     extern time_t alarm_snooze_time;                                                            //time to add to alarm when snoozing
-    extern uint8_t screen_brightness;                                                           //brightness of screen, ranges from 0 (backlight off) to 15 (full brightness)
+    extern uint16_t screen_brightness;                                                           //brightness of screen, ranges from 0 (backlight off) to 15 (full brightness)
     extern uint8_t speaker_volume;                                                              //speaker volume, as controlled by audioI2S library.  ranges from 0 (no sound) to 21 (loudest)
     extern uint8_t torch_brightness;                                                            //brightness of the torch LED (pwm controlled, ranges from 0 (off) to 255 (fill brightnesss))
     extern int sd_state;                                                                        //state of the sd card
@@ -298,7 +301,7 @@ namespace watch2
     //direction - if this is false, the screen will dim.  if this is true, the screen will increase in brightness
     //pause_thing - the time in milliseconds between each step of brightness
     void    dimScreen(bool direction, int pause_thing);
-    void    switchState(int newState, int variant = 0, int dim_pause_thing = 10, int bright_pause_thing = 10, bool dont_draw_first_frame = false);
+    void    switchState(int newState, int variant = 0, int dim_pause_thing = 250, int bright_pause_thing = 250, bool dont_draw_first_frame = false);
     void    deepSleep(int pause_thing=10);
     void    drawMenu(int x, int y, int width, int height, std::vector<std::string> items, int selected, int colour);
     void    drawSettingsMenu(int x, int y, int width, int height, std::vector<settingsMenuData> items, int selected, int colour);
@@ -316,6 +319,9 @@ namespace watch2
     bool    getHeatMapColor(float value, float *red, float *green, float *blue);
     double  ReadVoltage(byte pin);
     int     something(int x, int y);
+
+    void getTextBounds(const char *string, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
+    void getTextBounds(const String &str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
 
 }
 

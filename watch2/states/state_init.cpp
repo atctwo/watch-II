@@ -20,7 +20,7 @@ void state_func_init()
 
         //dim screen
         uint8_t contrast = 0x00;
-        watch2::oled.sendCommand(0xC7, &contrast, 1);
+        //watch2::oled.sendCommand(0xC7, &contrast, 1);
     }
 
     //variant 1
@@ -31,7 +31,7 @@ void state_func_init()
         if (!watch2::state_init)
         {
             watch2::oled.setCursor(0,10);
-            watch2::oled.setFont(&SourceSansPro_Regular6pt7b);
+            watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
             watch2::oled.setTextColor(WHITE);
             watch2::oled.print("Do you want to clear\nall saved settings?");
         }

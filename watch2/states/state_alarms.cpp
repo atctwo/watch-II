@@ -17,12 +17,12 @@ void state_func_alarms()
 
     if (!watch2::state_init)
     {
-        watch2::oled.setFont(&SourceSansPro_Regular6pt7b);
+        watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
 
         //calculate sizes of digit things
-        watch2::oled.getTextBounds("99", 0, 0, &x1, &y1, &width_two_digits, &h);
-        watch2::oled.getTextBounds(":99", 0, 0, &x1, &y1, &width_two_digits_colon, &h);
-        watch2::oled.getTextBounds(":999", 0, 0, &x1, &y1, &width_three_digits_colon, &h);
+        watch2::getTextBounds("99", 0, 0, &x1, &y1, &width_two_digits, &h);
+        watch2::getTextBounds(":99", 0, 0, &x1, &y1, &width_two_digits_colon, &h);
+        watch2::getTextBounds(":999", 0, 0, &x1, &y1, &width_three_digits_colon, &h);
 
     }
 
@@ -260,9 +260,9 @@ void state_func_alarms()
                 time_t alarm_time_sec = floor(alarm_time % 3600 % 60);
 
                 /*
-                oled.getTextBounds("99", 0, 0, &x1, &y1, &width_two_digits, &h);
-                oled.getTextBounds(":99", 0, 0, &x1, &y1, &width_two_digits_colon, &h);
-                oled.getTextBounds(":999", 0, 0, &x1, &y1, &width_three_digits_colon, &h);
+                watch2::getTextBounds("99", 0, 0, &x1, &y1, &width_two_digits, &h);
+                watch2::getTextBounds(":99", 0, 0, &x1, &y1, &width_two_digits_colon, &h);
+                watch2::getTextBounds(":999", 0, 0, &x1, &y1, &width_three_digits_colon, &h);
                 */
 
                 //print hours
