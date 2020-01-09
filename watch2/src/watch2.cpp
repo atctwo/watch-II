@@ -11,6 +11,7 @@ namespace watch2
     Preferences preferences;
     SdFat SD(&*vspi);
     Adafruit_ImageReader reader(SD);
+    TFT_eSprite top_thing = TFT_eSprite(&oled);
 
     //button objects
     Button btn_dpad_up(dpad_up, 25, false, false);
@@ -28,6 +29,7 @@ namespace watch2
     int state_init = 0;
     RTC_DATA_ATTR int selected_menu_icon;
     RTC_DATA_ATTR int boot_count = 0;
+    uint8_t top_thing_height = oled.fontHeight() + 20;
     int trans_mode = 0;
     int short_timeout = 5000;
     int long_timeout = 30000;
@@ -91,9 +93,10 @@ namespace watch2
             {
                 for (int x = 0; x < SCREEN_WIDTH; x++)
                 {
-                    uint16_t colour = oled.readPixel(x, y);
-                    Serial.print(colour);
-                    Serial.print(" ");
+                    uint16_t colour[1];
+                    oled.readRect(x, y, 1, 1, colour);
+                    Serial.printf("%d ", colour[0]);
+                    //Serial.printf("%3d %3d\n", x, y);
                 }
                 Serial.println();
             }
@@ -138,22 +141,20 @@ namespace watch2
         static double batteryPercentage = 0;
         static int last_battery_reading = millis() - 1000;
 
+        top_thing.fillRect(0, 0, top_thing.width(), top_thing.height(), BLACK);
+
         if (!light)
         {
+            //top_thing_height = top_thing.fontHeight() + 10;
+            top_thing.drawFastHLine(0, top_thing.fontHeight(), SCREEN_WIDTH, themecolour);
+            top_thing.drawFastHLine(0, top_thing.fontHeight() + 1, SCREEN_WIDTH, themecolour);
+            top_thing.drawFastHLine(0, top_thing.fontHeight() + 2, SCREEN_WIDTH, themecolour);
 
-            oled.drawFastHLine(0, 10, SCREEN_WIDTH, themecolour);
-            oled.setCursor(1,8);
-            oled.setTextColor(WHITE);
-            oled.setTextSize(1);
-            oled.setFreeFont(&SourceSansPro_Regular6pt7b);
-            oled.print("watch II");
-
-            //oled.printf(" %d ", preferences.getBool("timeout", true));
-
-            if (dpad_any_active())
-            {
-                oled.fillRect(0, 0, SCREEN_WIDTH, 10, BLACK);
-            }
+            top_thing.setCursor(1,1);
+            top_thing.setTextColor(WHITE, BLACK);
+            top_thing.setTextSize(1);
+            //top_thing.setFreeFont(&SourceSansPro_Regular6pt7b);
+            top_thing.printf("%02d:%02d", hour(), minute());
 
             if ( millis() - last_battery_reading > 1000)
             {
@@ -161,10 +162,10 @@ namespace watch2
                 batteryVoltage = ReadVoltage(BATTERY_DIVIDER_PIN) * BATTERY_VOLTAGE_SCALE;
                 batteryPercentage = ( batteryVoltage / BATTERY_VOLTAGE_MAX ) * 100.0;
                 last_battery_reading = millis();
-
-                //todo: clear last value
-                oled.printf(" %.0f%%", batteryPercentage);
             }
+
+            top_thing.printf(" lipo:[%.0f%%]", batteryPercentage);
+            top_thing.printf(" ram:[%2.0f%%]", ((float)(ESP.getHeapSize() - ESP.getFreeHeap()) / ESP.getHeapSize()) * 100);
 
         }
 
@@ -177,7 +178,7 @@ namespace watch2
             case 2: sd_colour = BLUE;          //sd card not present
         }
 
-        oled.drawBitmap(
+        top_thing.drawBitmap(
             SCREEN_WIDTH - 13,
             1,
             small_icons["small_sd"].data(),
@@ -185,6 +186,8 @@ namespace watch2
             8,
             sd_colour
         );
+
+        top_thing.pushSprite(0, 0);
     }
 
     bool registerIcon(std::string iconName, std::vector<unsigned short int> icon)
@@ -203,6 +206,7 @@ namespace watch2
 
     void switchState(int newState, int variant, int dim_pause_thing, int bright_pause_thing, bool dont_draw_first_frame)
     {
+        if (dim_pause_thing > 0)
         dimScreen(0, dim_pause_thing);              //dim the screen
         oled.fillScreen(BLACK);                     //clear screen
 
@@ -220,6 +224,7 @@ namespace watch2
         states[state].stateFunc();                  //run the state function once
 
         state_init = 1;                             //set first execution flag
+        if (bright_pause_thing > 0)
         dimScreen(1, bright_pause_thing);           //make the screen brighter
 
     }
@@ -393,13 +398,13 @@ namespace watch2
                 {
                     //draw a filled in rounded rectangle
                     oled.fillRoundRect(x, y - y_offset, width - (padding*2), h + padding + padding, radius, colour);
-                    oled.setTextColor(BLACK);
+                    oled.setTextColor(BLACK, colour);
                 }
                 else
                 {
                     //draw the outline of a rounded rectangle
                     oled.drawRoundRect(x, y - y_offset, width - (padding*2), h + padding + padding, radius, colour);
-                    oled.setTextColor(colour);
+                    oled.setTextColor(colour, BLACK);
                 }
 
                 //draw the item text
@@ -454,7 +459,7 @@ namespace watch2
                 else itemtext = String(item.c_str());
 
                 //print the text
-                oled.setCursor(x + padding, y + h + padding - y_offset);
+                oled.setCursor(x + padding, y + padding - y_offset);
                 oled.print(itemtext);
 
                 y += ht;
@@ -480,7 +485,7 @@ namespace watch2
         for (int i = 0; i < items.size(); i++)
         {
             int text_height = 0;
-            int cursor_y_pos = y + ypos + 8;
+            int cursor_y_pos = y + ypos;
             int outline_width;
             int outlinecolour;
 
@@ -738,7 +743,7 @@ namespace watch2
                 Serial.println(file_path.c_str());
 
                 //dim screen
-                dimScreen(0, 10);
+                dimScreen(0, top_thing_height);
                 oled.fillScreen(BLACK);
 
                 //populate files2 with the contents of the selected directory
@@ -771,7 +776,7 @@ namespace watch2
 
             //if file select list hasn't been initliased, or any button is pressed, redraw the menu
             if (!file_select_dir_list_init || dpad_any_active())
-            drawMenu(2, 12, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 12, files2, selected_icon, themecolour);
+            drawMenu(2, top_thing_height, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 12, files2, selected_icon, themecolour);
 
             //finish file select list initilisation
             if (!file_select_dir_list_init) file_select_dir_list_init = true;
@@ -942,6 +947,97 @@ namespace watch2
         *w = oled.textWidth(str);
         *h = oled.fontHeight();
     }
+
+    // Bodmers BMP image rendering function
+    // stolen from https://github.com/Bodmer/TFT_eSPI/blob/master/examples/Generic/TFT_SPIFFS_BMP/BMP_functions.ino
+
+    uint16_t read16(fs::File &f) {
+    uint16_t result;
+    ((uint8_t *)&result)[0] = f.read(); // LSB
+    ((uint8_t *)&result)[1] = f.read(); // MSB
+    return result;
+    }
+
+    uint32_t read32(fs::File &f) {
+    uint32_t result;
+    ((uint8_t *)&result)[0] = f.read(); // LSB
+    ((uint8_t *)&result)[1] = f.read();
+    ((uint8_t *)&result)[2] = f.read();
+    ((uint8_t *)&result)[3] = f.read(); // MSB
+    return result;
+    }
+
+    void drawBmp(const char *filename, int16_t x, int16_t y) {
+
+    if ((x >= oled.width()) || (y >= oled.height())) return;
+
+    fs::File bmpFS;
+
+    // Open requested file on SD card
+    bmpFS = SPIFFS.open(filename, "r");
+
+    if (!bmpFS)
+    {
+        Serial.print("File not found");
+        return;
+    }
+
+    uint32_t seekOffset;
+    uint16_t w, h, row, col;
+    uint8_t  r, g, b;
+
+    uint32_t startTime = millis();
+
+    if (read16(bmpFS) == 0x4D42)
+    {
+        read32(bmpFS);
+        read32(bmpFS);
+        seekOffset = read32(bmpFS);
+        read32(bmpFS);
+        w = read32(bmpFS);
+        h = read32(bmpFS);
+
+        if ((read16(bmpFS) == 1) && (read16(bmpFS) == 24) && (read32(bmpFS) == 0))
+        {
+        y += h - 1;
+
+        bool oldSwapBytes = oled.getSwapBytes();
+        oled.setSwapBytes(true);
+        bmpFS.seek(seekOffset);
+
+        uint16_t padding = (4 - ((w * 3) & 3)) & 3;
+        uint8_t lineBuffer[w * 3 + padding];
+
+        for (row = 0; row < h; row++) {
+            
+            bmpFS.read(lineBuffer, sizeof(lineBuffer));
+            uint8_t*  bptr = lineBuffer;
+            uint16_t* tptr = (uint16_t*)lineBuffer;
+            // Convert 24 to 16 bit colours
+            for (uint16_t col = 0; col < w; col++)
+            {
+            b = *bptr++;
+            g = *bptr++;
+            r = *bptr++;
+            *tptr++ = ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3);
+            }
+
+            // Push the pixel row to screen, pushImage will crop the line if needed
+            // y is decremented as the BMP image is drawn bottom up
+            oled.pushImage(x, y--, w, 1, (uint16_t*)lineBuffer);
+        }
+        oled.setSwapBytes(oldSwapBytes);
+        Serial.print("Loaded in "); Serial.print(millis() - startTime);
+        Serial.println(" ms");
+        }
+        else Serial.println("BMP format not recognized.");
+    }
+    bmpFS.close();
+    }
+
+    // These read 16- and 32-bit types from the SD card file.
+    // BMP data is stored little-endian, Arduino is little-endian too.
+    // May need to reverse subscript order if porting elsewhere.
 
 }
 

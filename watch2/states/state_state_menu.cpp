@@ -3,13 +3,13 @@
 void state_func_state_menu()
 {
     static int columns = 4;
-    static int icon_size = 27;
-    static int icon_spacing = 4;
+    static int icon_size = 47;
+    static int icon_spacing = 10;
     static int no_icons = 0;
     static std::vector<int> menu_positions;
 
     int icon_xpos = icon_spacing;
-    int icon_ypos = icon_spacing;
+    int icon_ypos = 0;//icon_spacing;
     static int last_yoffset = -1;
 
     if (!watch2::state_init)
@@ -108,7 +108,7 @@ void state_func_state_menu()
         dpad_right_active() || dpad_enter_active() || !watch2::state_init)
     {
         watch2::oled.fillRect(0, 86, SCREEN_WIDTH, 10, BLACK); //clear state name text
-        icon_ypos += 10;                               //add space for top bar thing
+        icon_ypos += watch2::top_thing_height;                 //add space for top bar thing
 
         //determine row of selected icon by means of an overengineered 2d-ish linear search
         int selected_icon_row;
@@ -155,15 +155,28 @@ void state_func_state_menu()
             if (!stateinfo.hidden)
             {
                 //draw app icon
+                Serial.println(stateinfo.stateIcon.c_str());
+                watch2::oled.setSwapBytes(true);
                 watch2::oled.pushImage(icon_xpos, icon_ypos - icon_yoffset, icon_size, icon_size, watch2::icons[stateinfo.stateIcon].data());
+                /*std::string icon_path = "/" + stateinfo.stateIcon;
+                if (SPIFFS.exists(icon_path.c_str()))
+                {
+                    watch2::drawBmp(icon_path.c_str(), icon_xpos, icon_ypos - icon_yoffset);
+                }
+                else
+                {
+                    Serial.print("[error] ");
+                    Serial.print(icon_path.c_str());
+                    Serial.println(" does not exist");
+                }*/
 
                 //if current app is selected, draw an outline around it
                 if (watch2::selected_menu_icon == i)
                 {
-                    watch2::oled.drawRoundRect(icon_xpos-1, icon_ypos-1 - icon_yoffset, icon_size+1, icon_size+1, 3, watch2::themecolour);
+                    watch2::oled.drawRoundRect(icon_xpos-1, icon_ypos-1 - icon_yoffset, icon_size+1, icon_size+1, 10, watch2::themecolour);
                 }
                 //otherwise, clear any outline around it
-                else watch2::oled.drawRoundRect(icon_xpos-1, icon_ypos-1 - icon_yoffset, icon_size+1, icon_size+1, 3, BLACK);
+                else watch2::oled.drawRoundRect(icon_xpos-1, icon_ypos-1 - icon_yoffset, icon_size+1, icon_size+1, 10, BLACK);
 
                 icon_xpos += icon_size + icon_spacing;
                 if ((icon_xpos+icon_size) > SCREEN_WIDTH)
@@ -182,9 +195,9 @@ void state_func_state_menu()
         }
 
         //draw name of selected icon
-        watch2::oled.setCursor(2, 94);
-        watch2::oled.setTextColor(WHITE);
-        watch2::oled.fillRect(0, 94 - 10, SCREEN_WIDTH, SCREEN_HEIGHT - (94 - 10), BLACK);
+        watch2::oled.setCursor(2, SCREEN_HEIGHT - 4 - watch2::oled.fontHeight());
+        watch2::oled.setTextColor(WHITE, BLACK);
+        watch2::oled.fillRect(0, SCREEN_HEIGHT - watch2::oled.fontHeight() - 8, SCREEN_WIDTH, watch2::oled.fontHeight() + 8, BLACK);
         watch2::oled.print(watch2::states[watch2::selected_menu_icon].stateName.c_str());
     }
 

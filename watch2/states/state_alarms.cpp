@@ -17,7 +17,7 @@ void state_func_alarms()
 
     if (!watch2::state_init)
     {
-        watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
+        //watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
 
         //calculate sizes of digit things
         watch2::getTextBounds("99", 0, 0, &x1, &y1, &width_two_digits, &h);
@@ -174,7 +174,7 @@ void state_func_alarms()
             working_alarm_colour = (selected_alarm == -1) ? watch2::themecolour : WHITE;
 
             //draw header
-            watch2::oled.setTextColor(working_alarm_colour);
+            watch2::oled.setTextColor(working_alarm_colour, BLACK);
             watch2::oled.setCursor(alarm_x, alarm_y + 8);
             watch2::oled.print("Alarms");
 
@@ -224,18 +224,18 @@ void state_func_alarms()
         //draw alarms
         if (watch2::alarms.size() == 0)
         {
-            alarm_y += 8 + (icon_spacing * 4);
-            watch2::oled.setTextColor(working_alarm_colour);
+            alarm_y += (icon_spacing * 4);
+            watch2::oled.setTextColor(working_alarm_colour, BLACK);
             watch2::oled.setCursor(alarm_x, alarm_y + 8);
             watch2::oled.print("No alarms and ");
-            alarm_y += 8 + (icon_spacing * 4);
+            alarm_y += (icon_spacing * 4);
             watch2::oled.setCursor(alarm_x, alarm_y + 8);
             watch2::oled.print("no suprises");
         }
 
         for (int i = 0; i < watch2::alarms.size(); i++)
         {
-            alarm_y += 8 + (icon_spacing * 4);
+            alarm_y += (icon_spacing * 4);
 
             time_t alarm_time = Alarm.read(watch2::alarms[i].alarm_id);
             //if this is the state's first frame, or the time of the alarm has changed,
@@ -267,7 +267,7 @@ void state_func_alarms()
 
                 //print hours
                 watch2::oled.setCursor(alarm_x, alarm_y + 8);
-                watch2::oled.setTextColor(working_alarm_colour);
+                watch2::oled.setTextColor(working_alarm_colour, BLACK);
                 watch2::oled.printf("%02d", alarm_time_hrs);
                 working_button_colour = (selected_button == 0 && selected_alarm == i) ? watch2::themecolour : BLACK;
                 watch2::oled.drawRoundRect(alarm_x - 1, alarm_y - 1, width_two_digits + 4, 12, icon_radius, working_button_colour);

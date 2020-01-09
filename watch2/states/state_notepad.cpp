@@ -52,7 +52,7 @@ void state_func_notepad()
         if (dpad_any_active() || read == 0)
         {
             watch2::oled.fillScreen(BLACK);
-            watch2::oled.setCursor(0, 8 - yoffset);
+            watch2::oled.setCursor(0, yoffset);
             for (int chr : filedata) watch2::oled.print((char) chr);
         }
 

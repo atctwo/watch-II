@@ -5,6 +5,8 @@
 // includes
 ////////////////////////////////////////
 
+
+
 #include <stdio.h>                  // i don't actually know...
 #include <stdint.h>
 #include <algorithm>                // used for std::find and std::min and std::max
@@ -18,6 +20,7 @@
 #include <SdFat.h>                     // sd card access library
 #include <sdios.h>
 #include <TFT_eSPI.h>
+#include <FS.h>
 #include <Adafruit_ImageReader.h>
 #include <JC_Button.h>              // button object
 #include <WiFi.h>                   // wifi library
@@ -34,6 +37,7 @@
 //#include "globals.h"                // declatations for global variables
 
 // custom fonts
+/*
 #include "custom_fonts/sourcesanspro-regular-6.h"
 #include "custom_fonts/sourcesanspro-light-8.h"
 #include "custom_fonts/sourcesanspro-light-12.h"
@@ -41,22 +45,23 @@
 #include "custom_fonts/sourcesanspro-light-16.h"
 #include "custom_fonts/sourcesanspro-regular-24.h"
 #include "custom_fonts/sourcesanspro-light-24.h"
+*/
 
 #include "coolcrab.h"
 #include "regret.h"
 
 //pin declarations
-#define cs   5      // goes to TFT CS
-#define sdcs 4      //sd card chip select
-#define dc   22     // goes to TFT DC
-#define mosi 23     // goes to TFT MOSI
-#define sclk 18     // goes to TFT SCK/CLK
-#define rst  21     // ESP RST to TFT RESET
-#define miso 19     // Not connected
-//       3.3V       // Goes to TFT LED
-//       5v         // Goes to TFT Vcc
-//       Gnd        // Goes to TFT Gnd
-#define tftbl 17    //tft backlight
+#define cs   5          // goes to TFT CS
+#define sdcs 4          //sd card chip select
+#define spi_dc   22     // goes to TFT DC
+#define spi_mosi 23     // goes to TFT MOSI
+#define spi_sclk 18     // goes to TFT SCK/CLK
+#define spi_rst  21     // ESP RST to TFT RESET
+#define spi_miso 19     // Not connected
+//       3.3V           // Goes to TFT LED
+//       5v             // Goes to TFT Vcc
+//       Gnd            // Goes to TFT Gnd
+#define tftbl 17        //tft backlight
 #define tftbl_resolution 8 //resolution of backlight pwm in bits
 
 #define dpad_up     33
@@ -194,6 +199,8 @@ namespace watch2
     extern Preferences preferences;                                                            //wrapper for esp32 nvs used to store system settings
     extern SdFat SD;    
     extern Adafruit_ImageReader reader;                                                                       //sdfat instance used for accessing sd card
+    extern Adafruit_ImageReader flash_reader;
+    extern TFT_eSprite top_thing;
 
     //button objects
     extern Button btn_dpad_up;
@@ -322,6 +329,9 @@ namespace watch2
 
     void getTextBounds(const char *string, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
     void getTextBounds(const String &str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
+    uint16_t read16(fs::File &f);
+    uint32_t read32(fs::File &f);
+    void drawBmp(const char *filename, int16_t x, int16_t y);
 
 }
 

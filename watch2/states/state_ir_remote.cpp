@@ -136,12 +136,26 @@ std::map<std::string, std::string> getProfileNames() {
     std::vector<std::string> profiles = watch2::getDirFiles("/ir/");
     for (std::string profile : profiles)
     {
+
+        std::string filename = "/ir/" + profile;
         Serial.print("loading profile ");
-        Serial.print(profile.c_str());
+        Serial.print(filename.c_str());
         Serial.print(", ");
 
-        File json = watch2::SD.open(profile.c_str());
+        File json = watch2::SD.open(filename.c_str());
+        json.setTimeout(5000);
+
+        int chr = 0;
+        while(chr != -1)
+        {
+            chr = json.read();
+            Serial.print((char)chr);
+        }
+        json.rewind();
+
         DeserializationError err = deserializeJson(doc, json);
+
+        Serial.printf("ram:[%2.0f%%]\n", ((float)ESP.getFreeHeap() / ESP.getHeapSize()) * 100);
 
         if (err)
         {
@@ -153,6 +167,8 @@ std::map<std::string, std::string> getProfileNames() {
             Serial.println("success");
             profile_data[std::string(doc["name"].as<char*>())] = profile;
         }
+
+        json.close();
 
     }
 
@@ -216,9 +232,21 @@ void state_func_ir_remote()
 
         watch2::drawTopThing();
 
+        if (dpad_up_active())
+        {
+            selected_profile--;
+            if (selected_profile < 0) selected_profile = 2; //todo: get number of profiles
+        }
+
+        if (dpad_down_active())
+        {
+            selected_profile++;
+            if (selected_profile > 2) selected_profile = 0;
+        }
+
         if (dpad_any_active() || !watch2::state_init)
         {
-            watch2::drawMenu(2, 12, SCREEN_WIDTH - 4, SCREEN_HEIGHT, profile_names, selected_profile, watch2::themecolour);
+            watch2::drawMenu(2, watch2::top_thing_height, SCREEN_WIDTH - 4, SCREEN_HEIGHT, profile_names, selected_profile, watch2::themecolour);
         }
 
         if (dpad_enter_active())
@@ -238,7 +266,10 @@ void state_func_ir_remote()
             else
             {
                 //set profile filename
-                profile_filename = profiles[profile_names[selected_profile]];
+                profile_filename = "/ir/" + profiles[profile_names[selected_profile]];
+
+                //switch to remote grid
+                watch2::switchState(watch2::state, 1);
             }
             
         }
@@ -405,14 +436,14 @@ void state_func_ir_remote()
                             if (colour)
                             {
                                 Serial.print("know you");
-                                watch2::oled.setTextColor(watch2::oled.color565(colour->r, colour->g, colour->b));
+                                watch2::oled.setTextColor(watch2::oled.color565(colour->r, colour->g, colour->b), BLACK);
                             }
-                            else watch2::oled.setTextColor(WHITE);
+                            else watch2::oled.setTextColor(WHITE, BLACK);
                             Serial.println();
                         }
                         else
                         {
-                            watch2::oled.setTextColor(WHITE);
+                            watch2::oled.setTextColor(WHITE, BLACK);
                         }
                         
 
@@ -451,7 +482,7 @@ void state_func_ir_remote()
         {
             if (selected_calc_button == 0)
             {
-                
+                watch2::switchState(watch2::state, 0);
             }
             else
             {

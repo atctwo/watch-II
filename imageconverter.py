@@ -7,6 +7,7 @@ parser.add_argument( "input", metavar = "input", help = "The file to adapt" )
 parser.add_argument( "--output", "-o", default = "poppyseed.c", help = "Where to save and what to name the final collage")
 parser.add_argument( "--xscale", default = 1, type = float, help = "Scale the width of images.  1 means unscaled, 0.5 means scaled to half, etc")
 parser.add_argument( "--yscale", default = 1, type = float, help = "Scale the height of images.  1 means unscaled, 0.5 means scaled to half, etc")
+parser.add_argument( "--format", "-f", default = "rgb", help="the order in which to store red, green, and blue channels")
 
 args = parser.parse_args()
 
@@ -28,9 +29,18 @@ pixels = im.width * im.height
 for y in range(im.height):
     for x in range(im.width):
 
-        r,g,b,a = im.getpixel((x, y))
+        #partly adapted from https://stackoverflow.com/questions/31957771/default-value-in-python-unpacking
+        r,g,b,*a = im.getpixel((x, y))
+        a = a[0] if a else 255
+        channels = [0, 0, 0]
+
+        for i in range(0, 3):
+            if args.format[i] == "r": channels[i] = r
+            if args.format[i] == "g": channels[i] = g
+            if args.format[i] == "b": channels[i] = b
+
         if (a == 0): rgb = 0
-        else: rgb = ((r & 0b11111000) << 8) | ((g & 0b11111100) << 3) | (b >> 3);
+        else: rgb = ((channels[0] & 0b11111000) << 8) | ((channels[1] & 0b11111100) << 3) | (channels[2] >> 3);
 
         if (output_thing % 20 == 0): out.write("\n\t");
 

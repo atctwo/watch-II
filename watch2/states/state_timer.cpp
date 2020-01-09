@@ -17,7 +17,7 @@ void state_func_timer()
 
     if (!watch2::state_init)
     {
-        watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
+        //watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
 
         //calculate sizes of digit things
         watch2::getTextBounds("99", 0, 0, &x1, &y1, &width_two_digits, &h);
@@ -179,7 +179,7 @@ void state_func_timer()
             working_timer_colour = (selected_timer == -1) ? watch2::themecolour : WHITE;
 
             //draw header
-            watch2::oled.setTextColor(working_timer_colour);
+            watch2::oled.setTextColor(working_timer_colour, BLACK);
             watch2::oled.setCursor(timer_x, timer_y + 8);
             watch2::oled.print("Timers");
 
@@ -257,7 +257,7 @@ void state_func_timer()
 
                 //print hours
                 watch2::oled.setCursor(timer_x, timer_y + 8);
-                watch2::oled.setTextColor(working_timer_colour);
+                watch2::oled.setTextColor(working_timer_colour, BLACK);
                 watch2::oled.printf("%02d", time_left_hrs);
                 working_button_colour = (selected_button == 0 && selected_timer == i) ? watch2::themecolour : BLACK;
                 watch2::oled.drawRoundRect(timer_x - 1, timer_y - 1, width_two_digits + 4, 12, icon_radius, working_button_colour);

@@ -40,8 +40,8 @@ void state_func_settings()
             if (dpad_any_active() || !watch2::state_init)
             {
                 // draw menu
-                watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
-                watch2::drawMenu(2, 12, SCREEN_WIDTH-4, SCREEN_HEIGHT-12, panels, selected_panel, watch2::themecolour);
+                //watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
+                watch2::drawMenu(2, watch2::top_thing_height, SCREEN_WIDTH-4, SCREEN_HEIGHT-12, panels, selected_panel, watch2::themecolour);
             }
             if (dpad_enter_active())
             {
@@ -68,7 +68,7 @@ void state_func_settings()
                 temp_time[5] = year();
             }
 
-            watch2::oled.setFreeFont(&SourceSansPro_Light12pt7b);
+            //watch2::oled.setFreeFont(&SourceSansPro_Light12pt7b);
             watch2::oled.setCursor(4, 12 + 16);
 
             if (dpad_left_active())
@@ -130,7 +130,7 @@ void state_func_settings()
                 setTime(temp_time[0], temp_time[1], temp_time[2], temp_time[3], temp_time[4], temp_time[5]);
                 watch2::switchState(watch2::state, 0);
             }
-            watch2::oled.setFreeFont(&SourceSansPro_Light8pt7b); // reset font
+            //watch2::oled.setFreeFont(&SourceSansPro_Light8pt7b); // reset font
             break;
 
         case 2: //timeouts
@@ -202,8 +202,8 @@ void state_func_settings()
 
             if (dpad_any_active() || !watch2::state_init)
             {
-                watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
-                watch2::oled.setTextColor(WHITE);
+                //watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
+                watch2::oled.setTextColor(WHITE, BLACK);
                 drawSettingsMenu(0, 12, SCREEN_WIDTH, SCREEN_HEIGHT - 12, timeout_data, selected_timeout, watch2::themecolour);
             }
 
@@ -315,8 +315,8 @@ void state_func_settings()
 
             if (dpad_any_active() || !watch2::state_init)
             {
-                watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
-                watch2::oled.setTextColor(WHITE);
+                //watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
+                watch2::oled.setTextColor(WHITE, BLACK);
                 drawSettingsMenu(0, 12, SCREEN_WIDTH, SCREEN_HEIGHT - 12, colour_data, selected_colour, watch2::themecolour);
             }
 

@@ -150,7 +150,7 @@ void state_func_calc()
         //draw current input
         watch2::oled.drawRoundRect(2, 12, SCREEN_WIDTH - 4, 8 + (2 * icon_spacing), radius, watch2::themecolour);
         watch2::oled.setCursor(2 + icon_spacing, 12 + icon_spacing + 8);
-        watch2::oled.setTextColor(input_colour);
+        watch2::oled.setTextColor(input_colour, BLACK);
         watch2::oled.fillRect(2 + icon_spacing, 12 + icon_spacing, SCREEN_WIDTH - 4 - (2 * icon_spacing), 10, BLACK);
         watch2::oled.print(calculator_expression_thing);
 
@@ -186,7 +186,7 @@ void state_func_calc()
                 {
                     //print button text
                     watch2::oled.setCursor(icon_xpos + (int)(icon_spacing / 2), icon_ypos + 8 + (int)(icon_spacing / 2));
-                    watch2::oled.setTextColor(WHITE);
+                    watch2::oled.setTextColor(WHITE, BLACK);
                     watch2::oled.print(calc_buttons[i]);
 
                     //print outline

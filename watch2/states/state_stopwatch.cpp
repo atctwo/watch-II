@@ -85,8 +85,8 @@ void state_func_stopwatch()
     watch2::stopwatch_min  = (int)((watch2::stopwatch_time_diff / (1000 * 60))      % 60);
     watch2::stopwatch_hour = (int)((watch2::stopwatch_time_diff / (1000 * 60 * 60)) % 24);
 
-    watch2::oled.setFreeFont(&SourceSansPro_Light12pt7b);
-    watch2::oled.setTextColor(watch2::themecolour);
+    //watch2::oled.setFreeFont(&SourceSansPro_Light12pt7b);
+    watch2::oled.setTextColor(watch2::themecolour, BLACK);
 
     //calculate sizes of stopwatch digit things
     if (!watch2::state_init)
@@ -141,13 +141,13 @@ void state_func_stopwatch()
     }
 
         // reset font
-    watch2::oled.setFreeFont(&SourceSansPro_Light8pt7b);
-    watch2::oled.setTextColor(WHITE);
+    //watch2::oled.setFreeFont(&SourceSansPro_Light8pt7b);
+    watch2::oled.setTextColor(WHITE, BLACK);
 
     //draw status text
     if (dpad_any_active() || !watch2::state_init)
     {
-        watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
+        //watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
         watch2::oled.setCursor(2, 20);
         watch2::oled.fillRect(2, 12, SCREEN_WIDTH - 2, 11, BLACK);
         if (watch2::stopwatch_timing == 0) watch2::oled.print("Stopped");

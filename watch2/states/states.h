@@ -10,13 +10,14 @@
 #include "state_SDtest.cpp"
 #include "state_notepad.cpp"
 #include "state_ir_remote.cpp"
+#include "state_image_viewer.cpp"
 
 namespace watch2
 {
 
     std::vector<stateMeta> states = {
 
-        stateMeta("Initial State", state_func_init, "init", 0, true),
+        stateMeta("Initial State", state_func_init, "init.bmp", 0, true),
         stateMeta("Watch Face", state_func_watch_face, "watch"),
         stateMeta("State Menu", state_func_state_menu, "menu", 0, true),
         stateMeta("Settings", state_func_settings, "settings"),
@@ -25,9 +26,10 @@ namespace watch2
         stateMeta("Stopwatch", state_func_stopwatch, "stopwatch"),
         stateMeta("Timer", state_func_timer, "timer"),
         stateMeta("Alarms", state_func_alarms, "alarms"),
-        stateMeta("SD test", state_func_SDtest),
+        stateMeta("SD test", state_func_SDtest, "sd"),
         stateMeta("Notepad", state_func_notepad, "notepad"),
-        stateMeta("IR remote", state_func_ir_remote, "ir remote")
+        stateMeta("IR remote", state_func_ir_remote, "ir remote"),
+        stateMeta("Image Viewer", state_func_image_viewer, "image_viewer")
 
     };
 

@@ -4,6 +4,8 @@
 #include "icons/app_icons.cpp"
 #include "icons/small_icons.cpp"
 
+
+
 ////////////////////////////////////////
 // setup function
 ////////////////////////////////////////
@@ -32,13 +34,20 @@ void setup() {
     //format SD using SDa tool
     //flowchart - ask
 
+    //set up spiffs
+    if (!SPIFFS.begin())
+    {
+        Serial.println("[error] spiffs init failed");
+    }
 
     //set up oled
-    watch2::oled.begin(18000000);
+    watch2::oled.begin();
     watch2::oled.fillScreen(0);
-    //oled.setFreeFont(&SourceSansPro_Regular6pt7b);
-    uint8_t contrast = 0x0f;
-    //watch2::oled.sendCommand(0xC7, &contrast, 1);
+    if (SPIFFS.exists("/SourceSansPro-Light20.vlw"))
+    {
+        watch2::oled.loadFont("SourceSansPro-Light20");
+    }
+    else Serial.println("[error] font SourceSansPro-Light20 doesn't exist");
 
     //set up SD card
     digitalWrite(cs, HIGH);
@@ -76,6 +85,14 @@ void setup() {
     ledcAttachPin(tftbl, 1);
     ledcSetup(1, 4000, tftbl_resolution);
     ledcWrite(1, 2^tftbl_resolution);
+
+    //set up top thing
+    watch2::top_thing.createSprite(SCREEN_WIDTH, watch2::oled.fontHeight() + 2);
+    if (SPIFFS.exists("/SourceSansPro-Light20.vlw"))
+    {
+        watch2::top_thing.loadFont("SourceSansPro-Light20");
+    }
+    else Serial.println("[error] font SourceSansPro-Light20 doesn't exist");
 
     //set up time
     timeval tv;
@@ -158,10 +175,10 @@ void loop() {
             time_t time_left_sec = floor(duration % 3600 % 60);
 
             //draw message
-            watch2::oled.setFreeFont(&SourceSansPro_Light8pt7b);
+            //watch2::oled.setFreeFont(&SourceSansPro_Light8pt7b);
             watch2::oled.setCursor(0, 20);
             watch2::oled.printf("%02d hours,\n%02d minutes, and\n%02d seconds\n", time_left_hrs, time_left_min, time_left_sec);
-            watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
+            //watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
             watch2::oled.print("have elapsed.  press any\nkey to continue");
 
             //brighten screen
@@ -233,7 +250,7 @@ void loop() {
 
             //draw button text
             watch2::oled.fillRect(0, 71, SCREEN_WIDTH, SCREEN_HEIGHT - 71, BLACK);
-            watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
+            //watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
             String button = (selected_alarm_action) ? "Snooze" : "Dismiss";
             //watch2::getTextBounds(button, 24, 80, &x1, &y1, &w, &h);
             watch2::oled.setCursor(

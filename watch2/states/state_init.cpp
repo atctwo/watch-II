@@ -30,9 +30,9 @@ void state_func_init()
         //settings clear mode
         if (!watch2::state_init)
         {
-            watch2::oled.setCursor(0,10);
-            watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
-            watch2::oled.setTextColor(WHITE);
+            watch2::oled.setCursor(0,watch2::top_thing_height + 5);
+            //watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
+            watch2::oled.setTextColor(WHITE, BLACK);
             watch2::oled.print("Do you want to clear\nall saved settings?");
         }
 
