@@ -35,7 +35,7 @@ void state_func_watch_face()
         static int last_meridian = -1; //1 - am, 0 - pm
 
         //draw introduction message
-        watch2::oled.setCursor(2, 20);
+        watch2::oled.setCursor(2, watch2::top_thing_height);
         watch2::oled.setTextColor(WHITE, BLACK);
 
         watch2::oled.setTextSize(1);

@@ -936,6 +936,19 @@ namespace watch2
     // return -0.000000000000016 * pow(reading,4) + 0.000000000118171 * pow(reading,3)- 0.000000301211691 * pow(reading,2)+ 0.001109019271794 * reading + 0.034143524634089;
     } // Added an improved polynomial, use either, comment out as required
 
+    void setFont(const char* font, TFT_eSPI &tft, fs::FS &ffs)
+    {
+        if (ffs.exists("/" + String(font) + ".vlw"))
+        {
+            tft.loadFont(String(font));
+        }
+        else 
+        {
+            Serial.println("[error] font " + String(font) + " doesn't exist");
+            tft.setFreeFont(NULL);
+        }
+    }
+
     void getTextBounds(const char *string, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h)
     {
         std::string help(string);

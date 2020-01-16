@@ -6,7 +6,6 @@
 ////////////////////////////////////////
 
 
-
 #include <stdio.h>                  // i don't actually know...
 #include <stdint.h>
 #include <algorithm>                // used for std::find and std::min and std::max
@@ -329,6 +328,7 @@ namespace watch2
     void    HSVtoRGB( float *r, float *g, float *b, float h, float s, float v );
     bool    getHeatMapColor(float value, float *red, float *green, float *blue);
     double  ReadVoltage(byte pin);
+    void    setFont(const char* font, TFT_eSPI &tft = oled, fs::FS &ffs = SPIFFS);
     int     something(int x, int y);
 
     void getTextBounds(const char *string, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);

@@ -112,11 +112,7 @@ void state_func_settings()
             if (dpad_any_active() || !watch2::state_init)
             {
                 watch2::oled.setCursor(4, watch2::top_thing_height);
-                if (SPIFFS.exists("/" + String(LARGE_FONT) + ".vlw"))
-                {
-                    watch2::oled.loadFont(LARGE_FONT);
-                }
-                else Serial.println("[error] font " + String(LARGE_FONT) + "doesn't exist");
+                watch2::setFont(LARGE_FONT);
 
                 // redraw date settings thing
                 for (int i = 0; i < 6; i++)
@@ -134,15 +130,7 @@ void state_func_settings()
                     if ( (i == 3) || (i == 4) ) watch2::oled.print(".");
                 }
 
-                if (SPIFFS.exists("/" + String(MAIN_FONT) + ".vlw"))
-                {
-                    watch2::oled.loadFont(MAIN_FONT);
-                }
-                else 
-                {
-                    Serial.println("[error] font " + String(MAIN_FONT) + " doesn't exist");
-                    watch2::oled.setFreeFont(NULL);
-                }
+                watch2::setFont(MAIN_FONT);
             }
 
             if (dpad_enter_active())

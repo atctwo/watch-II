@@ -38,15 +38,7 @@ void setup() {
     //set up oled
     watch2::oled.begin();
     watch2::oled.fillScreen(0);
-    if (SPIFFS.exists("/" + String(MAIN_FONT) + ".vlw"))
-    {
-        watch2::oled.loadFont(MAIN_FONT);
-    }
-    else 
-    {
-        Serial.println("[error] font " + String(MAIN_FONT) + " doesn't exist");
-        watch2::oled.setFreeFont(NULL);
-    }
+    watch2::setFont(MAIN_FONT);
 
     //set up SD card
     digitalWrite(cs, HIGH);
@@ -87,15 +79,7 @@ void setup() {
 
     //set up top thing
     watch2::top_thing.createSprite(SCREEN_WIDTH, watch2::oled.fontHeight() + 2);
-    if (SPIFFS.exists("/" + String(MAIN_FONT) + ".vlw"))
-    {
-        watch2::top_thing.loadFont(MAIN_FONT);
-    }
-    else 
-    {
-        Serial.println("[error] font" + String(MAIN_FONT) + "doesn't exist");
-        watch2::top_thing.setFreeFont(NULL);
-    }
+    watch2::setFont(MAIN_FONT, watch2::top_thing);
 
     //set up time
     timeval tv;
