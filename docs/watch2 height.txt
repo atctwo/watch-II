@@ -1,0 +1,29 @@
+
+og lipo thickness:				4.75mm
+new thicc lipo thickness:		9.5mm
+apple watch case thickness:		10.7mm / 11.4mm
+watch 1 thickness:				17mm
+worse case pcb thickness *2:	(1.6*3)*2 = 9.6mm
+thin pcb thickness:				(0.6*3)*2 = 3.6mm
+
+standard header
+
+plastic height: 2.5mm
+pin height:		6mm
+
+standard socket
+
+plastic height:	8.5mm
+inner depth:	6.5mm
+
+standard combined height:	11mm
+inner space:				11 - 2mm = 9mm
+
+
+
+short socket
+
+plastic height:	5mm
+
+short combined height:		5 + 2.5 = 7.5mm
+inner space:				7.5mm - 2mm = 5.5mm

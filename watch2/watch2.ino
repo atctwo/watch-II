@@ -29,11 +29,6 @@ void setup() {
     //begin serial
     Serial.begin(115200);
 
-
-    //test putting sdcs High
-    //format SD using SDa tool
-    //flowchart - ask
-
     //set up spiffs
     if (!SPIFFS.begin())
     {
@@ -43,11 +38,15 @@ void setup() {
     //set up oled
     watch2::oled.begin();
     watch2::oled.fillScreen(0);
-    if (SPIFFS.exists("/SourceSansPro-Light20.vlw"))
+    if (SPIFFS.exists("/" + String(MAIN_FONT) + ".vlw"))
     {
-        watch2::oled.loadFont("SourceSansPro-Light20");
+        watch2::oled.loadFont(MAIN_FONT);
     }
-    else Serial.println("[error] font SourceSansPro-Light20 doesn't exist");
+    else 
+    {
+        Serial.println("[error] font " + String(MAIN_FONT) + " doesn't exist");
+        watch2::oled.setFreeFont(NULL);
+    }
 
     //set up SD card
     digitalWrite(cs, HIGH);
@@ -88,11 +87,15 @@ void setup() {
 
     //set up top thing
     watch2::top_thing.createSprite(SCREEN_WIDTH, watch2::oled.fontHeight() + 2);
-    if (SPIFFS.exists("/SourceSansPro-Light20.vlw"))
+    if (SPIFFS.exists("/" + String(MAIN_FONT) + ".vlw"))
     {
-        watch2::top_thing.loadFont("SourceSansPro-Light20");
+        watch2::top_thing.loadFont(MAIN_FONT);
     }
-    else Serial.println("[error] font SourceSansPro-Light20 doesn't exist");
+    else 
+    {
+        Serial.println("[error] font" + String(MAIN_FONT) + "doesn't exist");
+        watch2::top_thing.setFreeFont(NULL);
+    }
 
     //set up time
     timeval tv;
@@ -284,7 +287,6 @@ void loop() {
 
     }
 
-    
     watch2::endLoop();
     
 

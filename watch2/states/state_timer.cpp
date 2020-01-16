@@ -21,8 +21,8 @@ void state_func_timer()
 
         //calculate sizes of digit things
         watch2::getTextBounds("99", 0, 0, &x1, &y1, &width_two_digits, &h);
-        watch2::getTextBounds(":99", 0, 0, &x1, &y1, &width_two_digits_colon, &h);
-        watch2::getTextBounds(":999", 0, 0, &x1, &y1, &width_three_digits_colon, &h);
+        watch2::getTextBounds(": 99", 0, 0, &x1, &y1, &width_two_digits_colon, &h);
+        watch2::getTextBounds(": 999", 0, 0, &x1, &y1, &width_three_digits_colon, &h);
 
     }
 
@@ -161,13 +161,13 @@ void state_func_timer()
     if (1)
     {
         int timer_x = 2;
-        int timer_y = 14;
+        int timer_y = watch2::top_thing_height;
         int timer_w = SCREEN_WIDTH - (timer_x * 2);
         int timer_h = SCREEN_HEIGHT - timer_y;
-        int icon_radius = 3;
+        int icon_radius = 8;
         int radius = 4;
-        int icon_spacing = 2;
-        int icon_size = 8;
+        int icon_spacing = 3;
+        int icon_size = 10;
         int timer_edge = timer_x + timer_w;
         uint16_t working_button_colour = WHITE;
         uint16_t working_timer_colour = WHITE;
@@ -180,7 +180,7 @@ void state_func_timer()
 
             //draw header
             watch2::oled.setTextColor(working_timer_colour, BLACK);
-            watch2::oled.setCursor(timer_x, timer_y + 8);
+            watch2::oled.setCursor(timer_x, timer_y);
             watch2::oled.print("Timers");
 
             //set colour of back button
@@ -229,16 +229,15 @@ void state_func_timer()
         //draw timers
         for (int i = 0; i < watch2::timers.size(); i++)
         {
-            timer_y += 8 + (icon_spacing * 4);
+            timer_y += watch2::oled.fontHeight() + (icon_spacing * 2);
 
-            time_t current_time = ( watch2::timers[i].time_started + Alarm.read(watch2::timers[i].alarm_id) ) - now();
+            time_t current_time = (watch2::timers[i].alarm_id == 255) ? watch2::timers[i].duration : ( watch2::timers[i].time_started + Alarm.read(watch2::timers[i].alarm_id ) ) - now();
             //if this is the state's first frame, or the time of the timer has changed,
-            //or this is the selected timer and any button has been pressed,
-            //or this is the previouskly selected timer and any button has been pressed
-            if (!watch2::state_init || current_time != watch2::timers[i].last_value || (dpad_any_active() && (selected_timer == i || last_selected_timer == i)))
+            //or this is the selected timer and any button has been pressed
+            if (!watch2::state_init || dpad_any_active() || current_time != watch2::timers[i].last_value)
             {
                 //clear previous text
-                watch2::oled.fillRect(timer_x, timer_y, timer_w - (icon_spacing * 6) - (icon_size * 2), 9, BLACK);
+                watch2::oled.fillRect(timer_x, timer_y, timer_w - (icon_spacing * 6) - (icon_size * 2), watch2::oled.fontHeight(), BLACK);
 
                 //set colour of row
                 working_timer_colour = (selected_timer == i) ? watch2::themecolour : WHITE;
@@ -256,23 +255,23 @@ void state_func_timer()
                 */
 
                 //print hours
-                watch2::oled.setCursor(timer_x, timer_y + 8);
+                watch2::oled.setCursor(timer_x, timer_y);
                 watch2::oled.setTextColor(working_timer_colour, BLACK);
                 watch2::oled.printf("%02d", time_left_hrs);
                 working_button_colour = (selected_button == 0 && selected_timer == i) ? watch2::themecolour : BLACK;
-                watch2::oled.drawRoundRect(timer_x - 1, timer_y - 1, width_two_digits + 4, 12, icon_radius, working_button_colour);
+                watch2::oled.drawRoundRect(timer_x - 1, timer_y - 1, width_two_digits + 4, watch2::oled.fontHeight(), icon_radius, working_button_colour);
 
                 //print minutes
-                watch2::oled.setCursor(timer_x + (width_two_digits) + 4, timer_y + 8);
-                watch2::oled.printf(":%02d", time_left_min);
+                watch2::oled.setCursor(timer_x + (width_two_digits) + 4, timer_y);
+                watch2::oled.printf(": %02d", time_left_min);
                 working_button_colour = (selected_button == 1 && selected_timer == i) ? watch2::themecolour : BLACK;
-                watch2::oled.drawRoundRect(timer_x + (width_two_digits) + 4 - 1, timer_y - 1, width_two_digits_colon + 5, 12, icon_radius, working_button_colour);
+                watch2::oled.drawRoundRect(timer_x + (width_two_digits) + 4 - 1, timer_y - 1, width_two_digits_colon + 5, watch2::oled.fontHeight(), icon_radius, working_button_colour);
 
                 //print seconds
-                watch2::oled.setCursor(timer_x + width_two_digits + width_two_digits_colon + 2 + 7, timer_y + 8);
+                watch2::oled.setCursor(timer_x + width_two_digits + width_two_digits_colon + 2 + 7, timer_y);
                 watch2::oled.printf(": %02d", time_left_sec);
                 working_button_colour = (selected_button == 2 && selected_timer == i) ? watch2::themecolour : BLACK;
-                watch2::oled.drawRoundRect(timer_x + width_two_digits + width_two_digits_colon + 2 + 7 - 1, timer_y - 1, width_two_digits_colon + 5, 12, icon_radius, working_button_colour);
+                watch2::oled.drawRoundRect(timer_x + width_two_digits + width_two_digits_colon + 2 + 7 - 1, timer_y - 1, width_two_digits_colon + 5, watch2::oled.fontHeight(), icon_radius, working_button_colour);
 
                 //set colour of play / pause button
                 working_button_colour = (selected_button == 3 && selected_timer == i) ? watch2::themecolour : WHITE;
@@ -330,7 +329,7 @@ void state_func_timer()
                     working_timer_colour
                 );
 
-                watch2::timers[i].last_value = ( watch2::timers[i].time_started + Alarm.read(watch2::timers[i].alarm_id) ) - now();
+                watch2::timers[i].last_value = (watch2::timers[i].alarm_id == 255) ? watch2::timers[i].duration : ( watch2::timers[i].time_started + Alarm.read(watch2::timers[i].alarm_id ) ) - now();
 
             }
 

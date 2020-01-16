@@ -508,7 +508,7 @@ namespace watch2
                 outline_width = std::max(items[i]. min_field_width, w + (2 * padding));
 
                 oled.fillRect( (x + (width - padding - outline_width)) - padding,
-                                cursor_y_pos - padding - 8,
+                                cursor_y_pos - padding,
                                 outline_width,
                                 h + (2 * padding),
                                 BLACK
@@ -528,7 +528,7 @@ namespace watch2
             if (selected == i) outlinecolour = colour;
 
             oled.drawRoundRect( (x + (width - padding - outline_width)) - padding,
-                                cursor_y_pos - padding - 8,
+                                cursor_y_pos - padding,
                                 outline_width,
                                 h + (2 * padding),
                                 radius,
@@ -938,14 +938,24 @@ namespace watch2
 
     void getTextBounds(const char *string, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h)
     {
+        std::string help(string);
+        int newlines = std::count(help.begin(), help.end(), '\n') + 1;
+
+        *x1 = x;
+        *y1 = y;
         *w = oled.textWidth(string);
-        *h = oled.fontHeight();
+        *h = oled.fontHeight() * newlines;
     }
 
     void getTextBounds(const String &str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h)
     {
+        std::string help(str.c_str());
+        int newlines = std::count(help.begin(), help.end(), '\n') + 1;
+
+        *x1 = x;
+        *y1 = y;
         *w = oled.textWidth(str);
-        *h = oled.fontHeight();
+        *h = oled.fontHeight() * newlines;
     }
 
     // Bodmers BMP image rendering function

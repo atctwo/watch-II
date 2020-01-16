@@ -14,8 +14,8 @@ void state_func_settings()
 
     static int16_t x1, y1;
     static uint16_t w=0, h=0;
-    static char text_aaaa[4];
-    static int time_element_padding = 3;
+    static char text_aaaa[6];
+    static int time_element_padding = 1;
     static int radius = 4;
 
     watch2::preferences.begin("watch2", false);      //open watch II preferences in RW mode
@@ -58,6 +58,7 @@ void state_func_settings()
 
         case 1: //time and date
 
+            Serial.printf("0: %d\n", selected_time);
             if (!watch2::state_init)
             {
                 temp_time[0] = hour();
@@ -67,22 +68,23 @@ void state_func_settings()
                 temp_time[4] = month();
                 temp_time[5] = year();
             }
-
+            //Serial.printf("1: %d\n", selected_time);
             //watch2::oled.setFreeFont(&SourceSansPro_Light12pt7b);
-            watch2::oled.setCursor(4, 12 + 16);
-
+            
             if (dpad_left_active())
             {
                 // decrement element selection
                 selected_time--;
                 if (selected_time < 0) selected_time = 5;
             }
+            //Serial.printf("2: %d\n", selected_time);
             if (dpad_right_active())
             {
                 // increment element selection
                 selected_time++;
                 if (selected_time > 5) selected_time = 0;
             }
+            //Serial.printf("3: %d\n", selected_time);
 
             if (dpad_up_active())
             {
@@ -94,6 +96,7 @@ void state_func_settings()
                 if (temp_time[selected_time] > time_limits[selected_time]) temp_time[selected_time] = time_lower[selected_time];    // if value is above limit, loop
                 if (selected_time == 4 || selected_time == 5) temp_time[3] = std::min( temp_time[3], days_in_each_month[temp_time[4]-1] ); // limit current day value by month or year
             }
+            //Serial.printf("4: %d\n", selected_time);
             if (dpad_down_active())
             {
                 // increment selected element
@@ -104,23 +107,41 @@ void state_func_settings()
                 if (temp_time[selected_time] < time_lower[selected_time]) temp_time[selected_time] = time_limits[selected_time];    // if value is below limit, loop
                 if (selected_time == 4 || selected_time == 4) temp_time[3] = std::min( temp_time[3], days_in_each_month[temp_time[4]-1] ); // limit current day value by month or year
             }
+            //Serial.printf("5: %d\n", selected_time);
 
             if (dpad_any_active() || !watch2::state_init)
             {
+                watch2::oled.setCursor(4, watch2::top_thing_height);
+                if (SPIFFS.exists("/" + String(LARGE_FONT) + ".vlw"))
+                {
+                    watch2::oled.loadFont(LARGE_FONT);
+                }
+                else Serial.println("[error] font " + String(LARGE_FONT) + "doesn't exist");
+
                 // redraw date settings thing
                 for (int i = 0; i < 6; i++)
                 {
-
-                    sprintf(text_aaaa, "%02d", temp_time[i]);
+                    if (i != 5) sprintf(text_aaaa, "%02d", temp_time[i]); //sets hours to zero when i = 5
+                    else sprintf(text_aaaa, "%04d", temp_time[i]);
                     watch2::getTextBounds(String(text_aaaa), watch2::oled.getCursorX(), watch2::oled.getCursorY(), &x1, &y1, &w, &h);
                     watch2::oled.fillRect(x1 - time_element_padding, y1 - time_element_padding, w + (2 * time_element_padding) + 10, h + (2 * time_element_padding), BLACK);
-                    if (selected_time == i) watch2::oled.drawRoundRect(x1 - time_element_padding, y1 - time_element_padding, w + (2 * time_element_padding), h + (2 * time_element_padding), radius, watch2::themecolour);
-                    //oled.fillRect(x1, y1, w, h, BLACK);
+                    if (selected_time == i) watch2::oled.drawRoundRect(x1 - time_element_padding, y1 - time_element_padding, w + (2 * time_element_padding), h, radius, watch2::themecolour);
+                    watch2::oled.setTextColor(WHITE, BLACK);
                     watch2::oled.printf("%02s", text_aaaa);
-
+                    
                     if ( (i == 0) || (i == 1) ) watch2::oled.print(":");
                     if ( i == 2 ) watch2::oled.print("\n ");
                     if ( (i == 3) || (i == 4) ) watch2::oled.print(".");
+                }
+
+                if (SPIFFS.exists("/" + String(MAIN_FONT) + ".vlw"))
+                {
+                    watch2::oled.loadFont(MAIN_FONT);
+                }
+                else 
+                {
+                    Serial.println("[error] font " + String(MAIN_FONT) + " doesn't exist");
+                    watch2::oled.setFreeFont(NULL);
                 }
             }
 
@@ -130,6 +151,7 @@ void state_func_settings()
                 setTime(temp_time[0], temp_time[1], temp_time[2], temp_time[3], temp_time[4], temp_time[5]);
                 watch2::switchState(watch2::state, 0);
             }
+            //Serial.printf("7: %d\n", selected_time);
             //watch2::oled.setFreeFont(&SourceSansPro_Light8pt7b); // reset font
             break;
 
@@ -204,7 +226,7 @@ void state_func_settings()
             {
                 //watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
                 watch2::oled.setTextColor(WHITE, BLACK);
-                drawSettingsMenu(0, 12, SCREEN_WIDTH, SCREEN_HEIGHT - 12, timeout_data, selected_timeout, watch2::themecolour);
+                drawSettingsMenu(0, watch2::top_thing_height, SCREEN_WIDTH, SCREEN_HEIGHT - watch2::top_thing_height, timeout_data, selected_timeout, watch2::themecolour);
             }
 
             if (dpad_enter_active())
@@ -317,7 +339,7 @@ void state_func_settings()
             {
                 //watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
                 watch2::oled.setTextColor(WHITE, BLACK);
-                drawSettingsMenu(0, 12, SCREEN_WIDTH, SCREEN_HEIGHT - 12, colour_data, selected_colour, watch2::themecolour);
+                drawSettingsMenu(0, watch2::top_thing_height, SCREEN_WIDTH, SCREEN_HEIGHT - watch2::top_thing_height, colour_data, selected_colour, watch2::themecolour);
             }
 
             if (dpad_enter_active())
