@@ -17,9 +17,9 @@ namespace watch2
 
     std::vector<stateMeta> states = {
 
-        stateMeta("Initial State", state_func_init, "init.bmp", 0, true),
+        stateMeta("Initial State", state_func_init, "init.bmp", 0, false, true),
         stateMeta("Watch Face", state_func_watch_face, "watch"),
-        stateMeta("State Menu", state_func_state_menu, "menu", 0, true),
+        stateMeta("State Menu", state_func_state_menu, "menu", 0, false, true),
         stateMeta("Settings", state_func_settings, "settings"),
 
         stateMeta("Calculator", state_func_calc, "calculator"),

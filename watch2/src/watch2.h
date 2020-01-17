@@ -124,6 +124,7 @@ namespace watch2
         std::function<void()>   stateFunc;
         std::string             stateIcon;
         int                     variant;
+        bool                    framebuffer;
         bool                    hidden;
         
         //stateMeta constructor
@@ -132,12 +133,14 @@ namespace watch2
             std::function<void()> stateFunc,
             std::string stateIcon = "what",
             int variant = 0,
+            bool framebuffer = false,
             bool hidden = false
         ) : 
             stateName(stateName),
             stateFunc(stateFunc),
             stateIcon(stateIcon),
             variant(variant),
+            framebuffer(framebuffer),
             hidden(hidden)
         {}
     };
@@ -204,6 +207,7 @@ namespace watch2
     extern Adafruit_ImageReader reader;                                                                       //sdfat instance used for accessing sd card
     extern Adafruit_ImageReader flash_reader;
     extern TFT_eSprite top_thing;
+    extern TFT_eSprite framebuffer;
 
     //button objects
     extern Button btn_dpad_up;

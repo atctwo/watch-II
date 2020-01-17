@@ -12,6 +12,7 @@ namespace watch2
     SdFat SD(&*vspi);
     Adafruit_ImageReader reader(SD);
     TFT_eSprite top_thing = TFT_eSprite(&oled);
+    TFT_eSprite framebuffer = TFT_eSprite(&oled);
 
     //button objects
     Button btn_dpad_up(dpad_up, 25, false, false);
@@ -79,6 +80,9 @@ namespace watch2
 
         //check timers and alarms
         Alarm.delay(0);
+
+        //if the current state uses a framebuffer, clear it
+        if (states[state].framebuffer) framebuffer.fillScreen(BLUE);
     }
 
     void endLoop()
@@ -132,6 +136,9 @@ namespace watch2
                     deepSleep(31);
             }
         }
+
+        // if the current state uses a framebuffer, draw it to the tft
+        if (states[state].framebuffer) framebuffer.pushSprite(0, 0);
     }
 
 

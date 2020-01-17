@@ -81,6 +81,10 @@ void setup() {
     watch2::top_thing.createSprite(SCREEN_WIDTH, watch2::oled.fontHeight() + 2);
     watch2::setFont(MAIN_FONT, watch2::top_thing);
 
+    //set up framebuffer
+    watch2::framebuffer.createSprite(100, 100);
+    watch2::setFont(MAIN_FONT, watch2::framebuffer);
+
     //set up time
     timeval tv;
     gettimeofday(&tv, NULL);
