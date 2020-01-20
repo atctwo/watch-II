@@ -1,0 +1,15 @@
+screen width = 240
+columns = 5
+spacing = 6
+
+
+
+	column width = screen_width - ( (columns + 1) * spacing )
+				   ------------------------------------------
+				                     columns
+
+
+
+  column number     1     2     3     4     5
+  screen start | s |c| s |c| s |c| s |c| s |c| s |
+  spacing        1     2     3     4     5     6

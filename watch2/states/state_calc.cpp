@@ -9,16 +9,17 @@ void state_func_calc()
     static String calculator_expression_thing = "";
     static int columns = 5;
     static int pages = 2;
-    static int icon_spacing = 3;
-    static int icon_width = 22;
-    static int icon_height = (2 * icon_spacing) + 8;
-    static int radius = 2;
+    static int icon_spacing = 6;
+    static int radius = 10;
     static int no_icons = 0;
     static int input_colour = WHITE;
     static int selected_calc_button = 4;
     static int16_t x1, y1;
     static uint16_t w=0, h=0;
     static int last_page_number = -1;
+
+    static int icon_width = ( SCREEN_WIDTH - ( ( columns + 1 ) * icon_spacing ) ) / columns;
+    static int icon_height = (2 * icon_spacing) + watch2::oled.fontHeight();
 
     int icon_xpos = icon_spacing;
     int icon_ypos = icon_spacing;
@@ -148,14 +149,14 @@ void state_func_calc()
         dpad_right_active() || dpad_enter_active() || !watch2::state_init)
     {
         //draw current input
-        watch2::oled.drawRoundRect(2, 12, SCREEN_WIDTH - 4, 8 + (2 * icon_spacing), radius, watch2::themecolour);
-        watch2::oled.setCursor(2 + icon_spacing, 12 + icon_spacing + 8);
+        watch2::oled.drawRoundRect(2, watch2::top_thing_height, SCREEN_WIDTH - 4, watch2::oled.fontHeight() + (2 * icon_spacing), radius, watch2::themecolour);
+        watch2::oled.setCursor(2 + icon_spacing, watch2::top_thing_height + icon_spacing);
         watch2::oled.setTextColor(input_colour, BLACK);
-        watch2::oled.fillRect(2 + icon_spacing, 12 + icon_spacing, SCREEN_WIDTH - 4 - (2 * icon_spacing), 10, BLACK);
+        watch2::oled.fillRect(2 + icon_spacing, watch2::top_thing_height + icon_spacing, SCREEN_WIDTH - 4 - (2 * icon_spacing), watch2::oled.fontHeight(), BLACK);
         watch2::oled.print(calculator_expression_thing);
 
         //add space for top bar thing (10) and input display (8 + (3 * icon_spacing))
-        icon_ypos += 10 + 8 + (3 * icon_spacing);
+        icon_ypos += watch2::top_thing_height + watch2::oled.fontHeight() + (3 * icon_spacing);
 
         //calculate page of selected item
         int selected_item_column = selected_calc_button % total_icons_per_row;
@@ -165,7 +166,7 @@ void state_func_calc()
         if (selected_page_number != last_page_number)
         {
             int matrix_width = icon_spacing;
-            int matrix_height = icon_spacing + 10 + 8 + (3 * icon_spacing);
+            int matrix_height = icon_spacing + watch2::top_thing_height + watch2::oled.fontHeight() + (3 * icon_spacing);
             watch2::oled.fillRect(matrix_width, matrix_height, SCREEN_WIDTH - matrix_width, SCREEN_HEIGHT - matrix_height, BLACK);
             last_page_number = selected_page_number;
         }
@@ -185,9 +186,10 @@ void state_func_calc()
                 if (calc_buttons[i] != "")
                 {
                     //print button text
-                    watch2::oled.setCursor(icon_xpos + (int)(icon_spacing / 2), icon_ypos + 8 + (int)(icon_spacing / 2));
+                    watch2::oled.setTextDatum(MC_DATUM);
                     watch2::oled.setTextColor(WHITE, BLACK);
-                    watch2::oled.print(calc_buttons[i]);
+                    watch2::oled.drawString(calc_buttons[i], icon_xpos + (icon_width / 2), icon_ypos + (icon_height / 2));
+                    //watch2::oled.setTextDatum(TL_DATUM);
 
                     //print outline
                     if (selected_calc_button == i)
@@ -199,7 +201,7 @@ void state_func_calc()
 
                 //calculate position of next item
                 icon_xpos += icon_width + icon_spacing;
-                if ((icon_xpos + icon_width) > SCREEN_WIDTH)
+                if ((item_column + 1) >= columns * (page_number + 1))
                 {
                     icon_xpos = icon_spacing;
                     icon_ypos += icon_height + icon_spacing;
@@ -217,6 +219,7 @@ void state_func_calc()
     if (dpad_enter_active() && selected_calc_button == 4)
     {
         //exit state
+        watch2::oled.setTextDatum(TL_DATUM);
         watch2::switchState(2);
     }
 }

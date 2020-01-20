@@ -94,7 +94,9 @@ void state_func_stopwatch()
     //calculate sizes of stopwatch digit things, and calculate text height
     if (!watch2::state_init)
     {
+        watch2::oled.setTextDatum(ML_DATUM);   //set datum to middle left
         watch2::setFont(LARGE_FONT);
+        watch2::oled.setTextDatum(ML_DATUM);   //set datum to middle left
         watch2::getTextBounds("99", 0, 0, &x1, &y1, &width_two_digits, &h);
         watch2::getTextBounds(":99", 0, 0, &x1, &y1, &width_two_digits_colon, &h);
         watch2::getTextBounds(":999", 0, 0, &x1, &y1, &width_three_digits_colon, &h);
@@ -175,6 +177,7 @@ void state_func_stopwatch()
     if (dpad_left_active())
     {
         watch2::setFont(MAIN_FONT);
+        watch2::oled.setTextDatum(TL_DATUM);   //set datum to top left
         watch2::switchState(2);
     }
 }

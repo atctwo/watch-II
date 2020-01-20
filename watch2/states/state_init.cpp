@@ -63,7 +63,7 @@ void state_func_init()
         else
         {
             //switch state
-            watch2::switchState(1);
+            watch2::switchState(1, 0, 0, 0);
         }
     }
 }
