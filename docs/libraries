@@ -6,6 +6,8 @@ User setup header file in the library's source directory.  The file is cloned in
 
 The ESP32 Arduino core was modified to enable C++17 support.
 
+The core was also modified to double the stack size of the loopTask.  Parameter 3 of the function xTaskCreateUniversal was changed to 16384.
+
 The library csscolorparser included in the source directory isn't an Arduino library, so was included with the source.  It's GitHub repository can be found
 at https://github.com/mapbox/css-color-parser-cpp.
 

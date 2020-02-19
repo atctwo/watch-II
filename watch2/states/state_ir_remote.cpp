@@ -18,13 +18,22 @@ void populateProfileDataStructures(
     int &pages,
     std::vector<String> &calc_buttons,
     std::vector<cmdData> &commands,
-    std::unordered_map<int, Adafruit_Image> &icons,
+    std::unordered_map<int, unsigned char*> &icons,
     std::unordered_map<int, const char*> &colours
 ) {
+
+    stbi_io_callbacks callbacks = {
+        watch2::img_read,
+        watch2::img_skip,
+        watch2::img_eof
+    };
 
     static DynamicJsonDocument doc(10000);
     static ImageReturnCode stat;
     static int page, col, row, index;
+
+    //disable tft cs
+    digitalWrite(cs, HIGH);
 
     //open and deserialize json file
     Serial.printf("Loading ir profile %s...\n", filename);
@@ -47,6 +56,7 @@ void populateProfileDataStructures(
         pages = doc["pages"];               //set number of pages
         calc_buttons.clear();
         commands.clear();
+        //todo: free memory
         icons.clear();
         colours.clear();
 
@@ -62,34 +72,46 @@ void populateProfileDataStructures(
         {
 
             //get button page, row, and column
-            Serial.print("\tloading button location information, ");
+            Serial.print("\t(*) loading button location information, ");
             page = code["page"];
             row = code["row"];
             col = code["col"];
             index = (row * columns * pages) + (page * columns) + col;
+            unsigned char *data = NULL;
             
             //if code has an icon, attempt to store it in memory
             Serial.print("loading button data, ");
-            const char* icon = code["btn_icon"].as<const char*>();
+            const char* icon = code["btn_icon"].as<const char*>();  //icon filename
             if (icon)
             {
                 Serial.printf("icon: %s ", icon);
 
-                //Adafruit_Imagereader::loadBMP expects a char* for a filename, but the ArduinoJson can only return a const char*.
-                //this step copies the const char* to a char* so that loadBMP can work with it
-                char variable_icon[sizeof(icon) / sizeof(char)];
-                strcpy(variable_icon, icon);
-
-                stat = watch2::reader.loadBMP(variable_icon, icons[index]);
-                watch2::reader.printStatus(stat);
+                //use stb_image to read the image data
+                int img_w, img_h, img_n;
+                File f = watch2::SD.open(icon);                                                 // open the image
+                data = stbi_load_from_callbacks(&callbacks, &f, &img_w, &img_h, &img_n, 3);     // parse the image data
+                f.close();                                                                      // close the image
+                if (data != NULL) icons[index] = data;
+                else
+                {
+                    Serial.print("icon load failed: ");
+                    Serial.print(stbi_failure_reason());
+                    Serial.print(", "); 
+                }
             }
             //if no icon was specified, or the icon wasn't loaded
-            if (!icon || stat != IMAGE_SUCCESS)
+            const char *btn_text = code["btn_text"].as<char*>();
+            if ((!icon || data == NULL) && btn_text)
             {
-                Serial.printf("text: %s ", code["btn_text"].as<char*>());
+                Serial.printf("text: %s ", btn_text);
 
                 //set button text
-                calc_buttons[index] = code["btn_text"].as<String>();
+                calc_buttons[index] = String(btn_text);
+            }
+            else
+            {
+                //set button text
+                calc_buttons[index] = String("idk");
             }
 
             //load colour
@@ -113,6 +135,8 @@ void populateProfileDataStructures(
                 code["protocol"].as<String>()
             };
 
+            Serial.printf(" ram:[%2.0f%%]", ((float)(ESP.getHeapSize() - ESP.getFreeHeap()) / ESP.getHeapSize()) * 100);
+
             Serial.println();
 
         }
@@ -129,6 +153,9 @@ std::map<std::string, std::string> getProfileNames() {
     static ImageReturnCode stat;
     static int page, col, row, index;
     std::map<std::string, std::string> profile_data;
+
+    //disable tft cs
+    digitalWrite(cs, HIGH);
 
     //open and deserialize json file
     Serial.printf("Loading ir profiles\n");
@@ -186,21 +213,21 @@ void state_func_ir_remote()
     //   and set commands[(row * columns * pages) + (page * columns) + col] to the command
 
     static IRsend irsend;
+    static IRrecv irrecv(IR_REC_PIN);
+    static decode_results results;
     static int columns = 5;
     static int rows = 5;
     static int pages = 2;//doc["pages"].as<int>();
     static std::vector<String> calc_buttons;
     static std::vector<cmdData> commands;
-    static std::unordered_map<int, Adafruit_Image> icons;
+    static std::unordered_map<int, unsigned char*> icons;
     static std::unordered_map<int, const char*> colours;
     static std::map<std::string, std::string> profiles;
     static std::vector<std::string> profile_names;
     static std::string profile_filename;
     static int selected_profile;
-    static int icon_spacing = 3;
-    static int icon_width = 22;
-    static int icon_height = (2 * icon_spacing) + 8;
-    static int radius = 2;
+    static int icon_spacing = 6;
+    static int radius = 10;
     static int no_icons = 0;
     static int input_colour = WHITE;
     static int selected_calc_button = 0;
@@ -208,6 +235,9 @@ void state_func_ir_remote()
     static uint16_t w=0, h=0;
     static int32_t width = 0, height = 0;
     static int last_page_number = -1;
+
+    static int icon_width = ( SCREEN_WIDTH - ( ( columns + 1 ) * icon_spacing ) ) / columns;
+    static int icon_height = (2 * icon_spacing) + watch2::oled.fontHeight();
 
     int icon_xpos = icon_spacing;
     int icon_ypos = icon_spacing;
@@ -224,13 +254,14 @@ void state_func_ir_remote()
             //create array of profile names
             profile_names.clear();
             profile_names.push_back("Cancel");
+            profile_names.push_back("Receiver");
             for (std::pair<std::string, std::string> bob : profiles)
             {
                 profile_names.push_back(bob.first);
             }
         }
 
-        watch2::drawTopThing();
+        //watch2::drawTopThing();
 
         if (dpad_up_active())
         {
@@ -256,12 +287,18 @@ void state_func_ir_remote()
                 //clear button and code data structures
                 calc_buttons.clear();
                 commands.clear();
+                //todo: free memory
                 icons.clear();
                 colours.clear();
                 profiles.clear();
 
                 //return to state menu
                 watch2::switchState(2);
+            }
+            else if (selected_profile == 1) //if receiver is selected
+            {
+                //switch to receiver thing
+                watch2::switchState(watch2::state, 2);
             }
             else
             {
@@ -374,19 +411,8 @@ void state_func_ir_remote()
         if (dpad_up_active() || dpad_down_active() || dpad_left_active() ||
             dpad_right_active() || dpad_enter_active() || !watch2::state_init)
         {
-            //draw current input
-            /*
-            oled.drawRoundRect(2, 12, SCREEN_WIDTH - 4, 8 + (2 * icon_spacing), radius, themecolour);
-            oled.setCursor(2 + icon_spacing, 12 + icon_spacing + 8);
-            oled.setTextColor(input_colour);
-            oled.fillRect(2 + icon_spacing, 12 + icon_spacing, SCREEN_WIDTH - 4 - (2 * icon_spacing), 10, BLACK);
-            oled.print(calculator_expression_thing);
-            */
-
-            //add space for top bar thing (10) and input display (8 + (3 * icon_spacing))
-            icon_ypos += 10;// + 8 + (3 * icon_spacing);
-
-            Serial.println("g");
+            //add space for top bar thing (watch2::top_thing_height) and input display (8 + (3 * icon_spacing))
+            icon_ypos += watch2::top_thing_height;// + 8 + (3 * icon_spacing);
 
             //calculate page of selected item
             int selected_item_column = selected_calc_button % total_icons_per_row;
@@ -416,6 +442,7 @@ void state_func_ir_remote()
                     if (icons.find(i) != icons.end())
                     {
                         //draw the icon
+                        //todo: this
                         //icons[i].draw(watch2::oled, icon_xpos, icon_ypos);
 
                         //print outline
@@ -431,11 +458,9 @@ void state_func_ir_remote()
                         //if a colour has been set for the text
                         if (colours.find(i) != colours.end())
                         {
-                            Serial.print("i don't ");
                             const auto colour = CSSColorParser::parse(std::string(colours[i]));
                             if (colour)
                             {
-                                Serial.print("know you");
                                 watch2::oled.setTextColor(watch2::oled.color565(colour->r, colour->g, colour->b), BLACK);
                             }
                             else watch2::oled.setTextColor(WHITE, BLACK);
@@ -448,7 +473,7 @@ void state_func_ir_remote()
                         
 
                         //print button text
-                        watch2::oled.setCursor(icon_xpos + (int)(icon_spacing / 2), icon_ypos + 8 + (int)(icon_spacing / 2));
+                        watch2::oled.setCursor(icon_xpos + (int)(icon_spacing / 2), icon_ypos + (int)(icon_spacing / 2));
                         watch2::oled.print(calc_buttons[i]);
 
                         //print outline
@@ -461,7 +486,7 @@ void state_func_ir_remote()
 
                     //calculate position of next item
                     icon_xpos += icon_width + icon_spacing;
-                    if ((icon_xpos + icon_width) > SCREEN_WIDTH)
+                    if ((item_column + 1) >= columns * (page_number + 1))
                     {
                         icon_xpos = icon_spacing;
                         icon_ypos += icon_height + icon_spacing;
@@ -493,5 +518,37 @@ void state_func_ir_remote()
             }
         }
 
+    }
+    else if (watch2::states[watch2::state].variant == 2) //ir receiver
+    {
+        if (!watch2::state_init)
+        {
+            irrecv.enableIRIn();
+        }
+
+        if (irrecv.decode(&results))
+        {
+            Serial.print("decoded ir thing: ");
+            Serial.print(results.decode_type);
+            Serial.print(results.value, HEX);
+            irrecv.resume();
+        }   
+
+        /*
+
+        hey idiot
+
+        the interrpits caused bu tje ir receivcer might be happeing when spi flash is being read or written
+        so maybe don't draw 1st frame whem switching state, or delay before switching state
+        or find esp32-specifici ir lib
+
+        */
+
+        //watch2::drawTopThing();
+
+        if (dpad_left_active())
+        {
+            watch2::switchState(watch2::state, 0);
+        }
     }
 }

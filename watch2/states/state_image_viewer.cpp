@@ -1,40 +1,5 @@
 #include "../src/watch2.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "../src/stb/stb_image.h"
-
-int img_read(void *user,  char *data, int size)
-{
-    Serial.println("    01");
-    File *f = static_cast<File*>(user);
-    Serial.println("    02");
-	int bytes_read = f->read(data, size);
-    Serial.println("    03");
-    Serial.printf("     read %d bytes\n", bytes_read);
-	return bytes_read;
-}
-
-void img_skip(void *user, int n)
-{
-    Serial.println("    10");
-    File *f = static_cast<File*>(user);
-    Serial.println("    11");
-	f->seekCur(n);
-    Serial.println("    12");
-}
-
-int img_eof(void *user)
-{
-    Serial.println("    20");
-    File *f = static_cast<File*>(user);
-    Serial.println("    21");
-    uint32_t help = f->available();
-    Serial.println("    22");
-    if (help == 0) return 1;
-    Serial.println("    23");
-    return 0;
-}
-
 void state_func_image_viewer()
 {
     if (!watch2::state_init)
@@ -46,9 +11,9 @@ void state_func_image_viewer()
         Serial.println("c");
 
         stbi_io_callbacks callbacks = {
-            img_read,
-            img_skip,
-            img_eof
+            watch2::img_read,
+            watch2::img_skip,
+            watch2::img_eof
         };
 
         Serial.println("d");

@@ -1,6 +1,9 @@
 #include "watch2.h"
 
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb/stb_image.h"
+
 
 
 namespace watch2
@@ -1068,6 +1071,43 @@ namespace watch2
     // These read 16- and 32-bit types from the SD card file.
     // BMP data is stored little-endian, Arduino is little-endian too.
     // May need to reverse subscript order if porting elsewhere.
+
+
+
+
+
+    //functions for stb_image
+    int img_read(void *user,  char *data, int size)
+    {
+        Serial.println("    01");
+        File *f = static_cast<File*>(user);
+        Serial.println("    02");
+        int bytes_read = f->read(data, size);
+        Serial.println("    03");
+        Serial.printf("     read %d bytes\n", bytes_read);
+        return bytes_read;
+    }
+
+    void img_skip(void *user, int n)
+    {
+        Serial.println("    10");
+        File *f = static_cast<File*>(user);
+        Serial.println("    11");
+        f->seekCur(n);
+        Serial.println("    12");
+    }
+
+    int img_eof(void *user)
+    {
+        Serial.println("    20");
+        File *f = static_cast<File*>(user);
+        Serial.println("    21");
+        uint32_t help = f->available();
+        Serial.println("    22");
+        if (help == 0) return 1;
+        Serial.println("    23");
+        return 0;
+    }
 
 }
 

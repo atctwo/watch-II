@@ -71,6 +71,7 @@
 #define BATTERY_DIVIDER_PIN 34
 #define TORCH_PIN 13
 #define IR_PIN 12
+#define IR_REC_PIN 16
 
 //button active macros
 #define KEY_REPEAT_DELAY    550     //time for key repeat to start, in ms [DAS]
@@ -340,6 +341,11 @@ namespace watch2
     uint16_t read16(fs::File &f);
     uint32_t read32(fs::File &f);
     void drawBmp(const char *filename, int16_t x, int16_t y);
+
+    //functions for stb_image
+    int img_read(void *user,  char *data, int size);
+    void img_skip(void *user, int n);
+    int img_eof(void *user);
 
 }
 
