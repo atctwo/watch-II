@@ -247,12 +247,12 @@ namespace watch2
         // 1 - increase brightness
         if (direction) for (uint16_t contrast = 0; contrast < screen_brightness + 1; contrast++)
         {
-            ledcWrite(1, contrast);
+            ledcWrite(TFTBL_PWM_CHANNEL, contrast);
             delay(std::max(pause_thing / screen_brightness, 1));
         }
         else for (uint16_t contrast = screen_brightness; contrast > 0; contrast--)
         {
-            ledcWrite(1, contrast);
+            ledcWrite(TFTBL_PWM_CHANNEL, contrast);
             delay(std::max(pause_thing / screen_brightness, 1));
         }
     }
@@ -1068,44 +1068,103 @@ namespace watch2
     bmpFS.close();
     }
 
+
+    imageData getImageData(const char *filename)
+    {
+
+        // this method currently uses stb_image for everything
+
+        stbi_io_callbacks callbacks = {
+            img_read,
+            img_skip,
+            img_eof
+        };
+
+        // open file
+        File f = SD.open(filename);
+        char buffer[255];
+        f.getName(buffer, 255);
+        Serial.println(buffer);
+
+        // read image
+        int img_w, img_h, img_n, x, y;
+        unsigned char *data = stbi_load_from_callbacks(&callbacks, &f, &img_w, &img_h, &img_n, 3);
+
+        // set up response struct
+        const char *error;
+        if (data == NULL) error = stbi_failure_reason();
+        else error = "";
+        imageData response = {
+            data,
+            img_w,
+            img_h,
+            error
+        };
+
+        // return data
+        f.close();
+        return response;
+    }
+
+    const char* drawImage(imageData data, int16_t img_x, int16_t img_y)
+    {
+        // numbers
+        unsigned long pixels = data.width * data.height * 3;//sizeof(data) / sizeof(unsigned char);
+        int x = img_x, y = img_y;
+
+        if (data.data == NULL)
+        {
+            return stbi_failure_reason();
+        }
+        else
+        {
+            // write image data
+            for (int i = 0; i < pixels; i+=3)
+            {
+                watch2::oled.drawPixel(x, y, watch2::oled.color565(data.data[i], data.data[i+1], data.data[i+2]));
+                x++;
+                if (x >= data.width + img_x)
+                {
+                    //watch2::oled.drawPixel(x-1, y, BLACK);
+                    x = img_x;
+                    y++;
+                }
+            }
+
+            stbi_image_free(data.data);
+            data.data = NULL;
+
+            return NULL;
+
+        }
+    }
+
+
+
+
     // These read 16- and 32-bit types from the SD card file.
     // BMP data is stored little-endian, Arduino is little-endian too.
     // May need to reverse subscript order if porting elsewhere.
 
-
-
-
-
     //functions for stb_image
     int img_read(void *user,  char *data, int size)
     {
-        Serial.println("    01");
         File *f = static_cast<File*>(user);
-        Serial.println("    02");
         int bytes_read = f->read(data, size);
-        Serial.println("    03");
-        Serial.printf("     read %d bytes\n", bytes_read);
         return bytes_read;
     }
 
     void img_skip(void *user, int n)
     {
-        Serial.println("    10");
         File *f = static_cast<File*>(user);
-        Serial.println("    11");
         f->seekCur(n);
-        Serial.println("    12");
     }
 
     int img_eof(void *user)
     {
-        Serial.println("    20");
         File *f = static_cast<File*>(user);
-        Serial.println("    21");
         uint32_t help = f->available();
-        Serial.println("    22");
         if (help == 0) return 1;
-        Serial.println("    23");
         return 0;
     }
 

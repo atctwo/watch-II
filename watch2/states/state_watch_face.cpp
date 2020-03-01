@@ -113,7 +113,7 @@ void state_func_watch_face()
             else if (selected_widget == 1) // brightness
             {
                 watch2::screen_brightness = std::max(watch2::screen_brightness - 10, 0);
-                ledcWrite(1, watch2::screen_brightness);
+                ledcWrite(TFTBL_PWM_CHANNEL, watch2::screen_brightness);
                 watch2::preferences.begin("watch2", false);      //open watch II preferences in RW mode
                 watch2::preferences.putUInt("brightness", watch2::screen_brightness);
                 watch2::preferences.end();
@@ -121,7 +121,7 @@ void state_func_watch_face()
             else if (selected_widget == 2) // torch
             {
                 watch2::torch_brightness = std::max(watch2::torch_brightness - 10, 0);
-                ledcWrite(0, watch2::torch_brightness);
+                ledcWrite(TFTBL_PWM_CHANNEL, watch2::torch_brightness);
             }
         }
         if (dpad_right_active())
@@ -138,7 +138,7 @@ void state_func_watch_face()
             else if (selected_widget == 1) // brightness
             {
                 watch2::screen_brightness = std::min(watch2::screen_brightness + 10, 255);
-                ledcWrite(1, watch2::screen_brightness);
+                ledcWrite(TFTBL_PWM_CHANNEL, watch2::screen_brightness);
                 watch2::preferences.begin("watch2", false);      //open watch II preferences in RW mode
                 watch2::preferences.putUInt("brightness", watch2::screen_brightness);
                 watch2::preferences.end();
@@ -146,7 +146,7 @@ void state_func_watch_face()
             else if (selected_widget == 2) // torch
             {
                 watch2::torch_brightness = std::min(watch2::torch_brightness + 10, 255);
-                ledcWrite(0, watch2::torch_brightness);
+                ledcWrite(TFTBL_PWM_CHANNEL, watch2::torch_brightness);
             }
         }
         if (dpad_up_active())

@@ -1,5 +1,5 @@
 The system uses a fork of IRRemote that adds ESP32 support (https://github.com/ExploreEmbedded/Arduino-IRremote).  In the file boarddefs.h, the
-value of TIMER_PWM_PIN (line 565) was changed to 12.
+value of TIMER_PWM_PIN (line 565) was changed from 5 to 12, and the value of TIMER_CHANNEL (line 563) was changed from 1 to 2.
 
 The TFT screen is controlled using Bodmer's wonderful TFT_eSPI library (https://github.com/Bodmer/TFT_eSPI).  This library is configured using a
 User setup header file in the library's source directory.  The file is cloned in the docs folder of this repo (it's called "Setup_watch2.h").

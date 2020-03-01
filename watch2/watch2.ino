@@ -66,14 +66,14 @@ void setup() {
     watch2::btn_dpad_enter.begin();
 
     //set up torch
-    ledcAttachPin(TORCH_PIN, 0);
-    ledcSetup(0, 4000, 8);
-    ledcWrite(0, 0);
+    ledcAttachPin(TORCH_PIN, TORCH_PWM_CHANNEL);
+    ledcSetup(TORCH_PWM_CHANNEL, 4000, 8);
+    ledcWrite(TORCH_PWM_CHANNEL, 0);
 
     //set up tft backlight
-    ledcAttachPin(tftbl, 1);
-    ledcSetup(1, 4000, tftbl_resolution);
-    ledcWrite(1, 2^tftbl_resolution);
+    ledcAttachPin(tftbl, TFTBL_PWM_CHANNEL);
+    ledcSetup(TFTBL_PWM_CHANNEL, 4000, tftbl_resolution);
+    ledcWrite(TFTBL_PWM_CHANNEL, 2^tftbl_resolution);
 
     //set up top thing
     watch2::top_thing.createSprite(SCREEN_WIDTH, watch2::oled.fontHeight() + 2);
@@ -129,7 +129,8 @@ void loop() {
 
     watch2::startLoop();
 
-    //run current state
+    // run current state
+
     if (watch2::timer_trigger_status == 0 && watch2::alarm_trigger_status == 0)
     {
         if ( watch2::state >= watch2::states.size() )
@@ -149,7 +150,10 @@ void loop() {
         else watch2::states[watch2::state].stateFunc();
 
     }
-    else if (watch2::timer_trigger_status != 0) //handle timers
+
+    // handle timers
+
+    else if (watch2::timer_trigger_status != 0)
     {
         if (watch2::timer_trigger_status == 1)
         {
@@ -184,7 +188,10 @@ void loop() {
             watch2::switchState(watch2::state);
         }
     }
-    else if (watch2::alarm_trigger_status != 0) //handle alarms
+
+    // handle alarms
+
+    else if (watch2::alarm_trigger_status != 0)
     {
 
         static bool selected_alarm_action = 0;

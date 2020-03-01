@@ -27,7 +27,10 @@ void state_func_calc()
 
 
 
-    if (dpad_left_active())
+    
+
+    if (dpad_up_active())
+    {if (dpad_left_active())
     {
         input_colour = WHITE;
         while(1)
@@ -50,9 +53,6 @@ void state_func_calc()
             if (calc_buttons[selected_calc_button] != "") break;
         }
     }
-
-    if (dpad_up_active())
-    {
         input_colour = WHITE;
 
         //get selected icon number

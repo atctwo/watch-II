@@ -25,12 +25,13 @@
 #include <WiFi.h>                   // wifi library
 #include <Preferences.h>            // for storing settings in nvs (allowing for persistance over power cycles)
 #include <tinyexpr.h>               // expression evaluator for calculator
+#include <cJSON.h>
 
+#include <sys/cdefs.h>
 #include <time.h>                   // used for system-level time keeping
 #include <sys/time.h>               // see above
 #include <TimeLib.h>                // used for managing time (see code note 1)
 #include <TimeAlarms.h>             //used for creating and managing alarms
-
 
 #include "watch2.h"                 // defines and function prototypes
 //#include "globals.h"                // declatations for global variables
@@ -72,6 +73,11 @@
 #define TORCH_PIN 13
 #define IR_PIN 12
 #define IR_REC_PIN 16
+
+//ledc channels
+#define TORCH_PWM_CHANNEL 0
+#define TFTBL_PWM_CHANNEL 1
+#define IR_PWM_CHANNEL 2
 
 //button active macros
 #define KEY_REPEAT_DELAY    550     //time for key repeat to start, in ms [DAS]
@@ -197,6 +203,15 @@ namespace watch2
 
     };
 
+    struct imageData {
+
+        unsigned char               *data;
+        uint16_t                    width;
+        uint16_t                    height;
+        const char                  *error;
+
+    };
+
     // type definitions
     typedef void (*func)(void);                                                         // function pointer type
 
@@ -234,6 +249,7 @@ namespace watch2
     //entering deep sleep.  This variable is only used when going in to or waking up
     //from sleep.  During active mode operation, selected_menu_icon is used,
     extern RTC_DATA_ATTR int boot_count;                                                        //no of times watch has woken up (including initial boot)
+    extern uint8_t top_thing_height;                                                            //the height of the top thing (plus a small buffer) in pixels
     extern int trans_mode;                                                                      //pretty colour scheme
     extern int short_timeout;                                                                   //timeout when looking at watch face
     extern int long_timeout;                                                                    //timeout (almost) everywhere else
@@ -318,8 +334,8 @@ namespace watch2
     void    dimScreen(bool direction, int pause_thing);
     void    switchState(int newState, int variant = 0, int dim_pause_thing = 250, int bright_pause_thing = 250, bool dont_draw_first_frame = false);
     void    deepSleep(int pause_thing=10);
-    void    drawMenu(int x, int y, int width, int height, std::vector<std::string> items, int selected, int colour);
-    void    drawSettingsMenu(int x, int y, int width, int height, std::vector<settingsMenuData> items, int selected, int colour);
+    void    drawMenu(int x, int y, int width, int height, std::vector<std::string> items, int selected, int colour=themecolour);
+    void    drawSettingsMenu(int x, int y, int width, int height, std::vector<settingsMenuData> items, int selected, int colour=themecolour);
 
     //method to return all the files in a directory (non-recursively)
     //path - the path of the directory to return files in
@@ -341,6 +357,8 @@ namespace watch2
     uint16_t read16(fs::File &f);
     uint32_t read32(fs::File &f);
     void drawBmp(const char *filename, int16_t x, int16_t y);
+    imageData getImageData(const char *filename);
+    const char* drawImage(imageData data, int16_t img_x, int16_t img_y, int16_t img_w, int16_t img_h);
 
     //functions for stb_image
     int img_read(void *user,  char *data, int size);
