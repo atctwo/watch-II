@@ -34,6 +34,7 @@ void setup() {
     }
 
     //set up oled
+    digitalWrite(cs, LOW);
     watch2::oled.begin();
     watch2::oled.fillScreen(0);
     watch2::setFont(MAIN_FONT);
@@ -80,8 +81,8 @@ void setup() {
     watch2::setFont(MAIN_FONT, watch2::top_thing);
 
     //set up framebuffer
-    watch2::framebuffer.createSprite(100, 100);
-    watch2::setFont(MAIN_FONT, watch2::framebuffer);
+    //watch2::framebuffer.createSprite(100, 100);
+    //watch2::setFont(MAIN_FONT, watch2::framebuffer);
 
     //set up time
     timeval tv;
@@ -129,7 +130,9 @@ void loop() {
 
     watch2::startLoop();
 
+    //---------------------------------------
     // run current state
+    //---------------------------------------
 
     if (watch2::timer_trigger_status == 0 && watch2::alarm_trigger_status == 0)
     {
@@ -151,7 +154,9 @@ void loop() {
 
     }
 
+    //---------------------------------------
     // handle timers
+    //---------------------------------------
 
     else if (watch2::timer_trigger_status != 0)
     {
@@ -168,10 +173,18 @@ void loop() {
             time_t time_left_sec = floor(duration % 3600 % 60);
 
             //draw message
-            //watch2::oled.setFreeFont(&SourceSansPro_Light8pt7b);
-            watch2::oled.setCursor(0, 20);
-            watch2::oled.printf("%02d hours,\n%02d minutes, and\n%02d seconds\n", time_left_hrs, time_left_min, time_left_sec);
+            watch2::setFont(MAIN_FONT);
+            watch2::oled.setTextColor(WHITE, BLACK);
+            watch2::oled.setCursor(2, watch2::top_thing_height);
+            watch2::oled.println("Time's up");
+
+            watch2::setFont(REALLY_BIG_FONT);
+            watch2::oled.setTextColor(watch2::themecolour, BLACK);
+            watch2::oled.printf("%02d:%02d:%02d\n", time_left_hrs, time_left_min, time_left_sec);
             //watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
+
+            watch2::setFont(MAIN_FONT);
+            watch2::oled.setTextColor(WHITE, BLACK);
             watch2::oled.print("have elapsed.  press any\nkey to continue");
 
             //brighten screen
@@ -189,7 +202,9 @@ void loop() {
         }
     }
 
+    //---------------------------------------
     // handle alarms
+    //---------------------------------------
 
     else if (watch2::alarm_trigger_status != 0)
     {
@@ -199,6 +214,11 @@ void loop() {
         static char text_aaaa[150];
         static int16_t x1, y1;
         static uint16_t w=0, h=0;
+        static uint16_t button_y;
+        static uint16_t button_w = 60;
+        static uint16_t button_h = 60;
+        static uint16_t button_r = 7;
+        static TFT_eSprite time_sprite = TFT_eSprite(&watch2::oled);
         //static GFXcanvas1 *canvas_time = new GFXcanvas1(SCREEN_WIDTH, 20);
         //0 - dismiss
         //anything else - sleep
@@ -214,6 +234,15 @@ void loop() {
 
             //set timer trigger status
             watch2::alarm_trigger_status = 2;
+
+            //calculate button y pos
+            watch2::setFont(REALLY_BIG_FONT);
+            button_y = watch2::top_thing_height + watch2::oled.fontHeight() + (watch2::oled.fontHeight() / 4);
+
+            //set up time buffer
+            watch2::setFont(REALLY_BIG_FONT, time_sprite);
+            time_sprite.createSprite(SCREEN_WIDTH, watch2::oled.fontHeight());
+            time_sprite.fillScreen(BLACK);
         }
 
         if (dpad_left_active() || dpad_right_active())
@@ -224,36 +253,35 @@ void loop() {
 
         if (now() != last_time)
         {
-            //canvas_time->setFreeFont(&SourceSansPro_Light12pt7b);
-            //canvas_time->setTextColor(WHITE);
-            //canvas_time->fillScreen(BLACK);
-            //canvas_time->setCursor(2, 16);
-            //canvas_time->printf("%02d:%02d:%02d", hour(), minute(), second());
-            //watch2::oled.drawBitmap(2, 16, canvas_time->getBuffer(), SCREEN_WIDTH, 20, watch2::themecolour, BLACK);
+            watch2::setFont(REALLY_BIG_FONT, time_sprite);
+            time_sprite.fillRect(0, 0, SCREEN_WIDTH, time_sprite.fontHeight(), BLACK);
+            time_sprite.setTextColor(watch2::themecolour, BLACK);
+            time_sprite.setCursor(2, 0);
+            time_sprite.printf("%02d:%02d:%02d", hour(), minute(), second());
+            time_sprite.pushSprite(0, watch2::top_thing_height);
             last_time = now();
         }
 
         //draw buttons
         if (dpad_any_active() || watch2::alarm_trigger_status == 2)
         {
+            uint16_t split_width = SCREEN_WIDTH / 4;
+
             //draw dismiss button
-            watch2::oled.drawRoundRect(24, 42, 28, 28, 4, (!selected_alarm_action) ? watch2::themecolour : BLACK);
-            //watch2::oled.drawRGBBitmap(26, 44, watch2::icons["dismiss"].data(), 24, 24);
+            watch2::oled.pushImage(split_width - (button_w / 2), button_y, button_w, button_h, watch2::icons["dismiss"].data());
+            watch2::oled.drawRoundRect(split_width - (button_w / 2), button_y, button_w, button_h, button_r, (!selected_alarm_action) ? watch2::themecolour : BLACK);
 
             //draw snooze button
-            watch2::oled.drawRoundRect(SCREEN_WIDTH - 26 - 26, 42, 28, 28, 4, (selected_alarm_action) ? watch2::themecolour : BLACK);
-            //watch2::oled.drawRGBBitmap(SCREEN_WIDTH - 26 - 24, 44, watch2::icons["bed"].data(), 24, 24);
+            watch2::oled.pushImage((split_width * 3) - (button_w / 2), button_y, button_w, button_h, watch2::icons["bed"].data());
+            watch2::oled.drawRoundRect((split_width * 3) - (button_w / 2), button_y, button_w, button_h, button_r, (selected_alarm_action) ? watch2::themecolour : BLACK);
 
             //draw button text
-            watch2::oled.fillRect(0, 71, SCREEN_WIDTH, SCREEN_HEIGHT - 71, BLACK);
-            //watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
+            watch2::oled.fillRect(0, button_y + button_h + (button_h / 4), SCREEN_WIDTH, watch2::oled.fontHeight(), BLACK);
+            watch2::setFont(MAIN_FONT);
+            watch2::oled.setTextDatum(TC_DATUM);
             String button = (selected_alarm_action) ? "Snooze" : "Dismiss";
-            //watch2::getTextBounds(button, 24, 80, &x1, &y1, &w, &h);
-            watch2::oled.setCursor(
-                ( SCREEN_WIDTH / 2 ) - ( w / 2 ),
-                80
-            );
-            watch2::oled.print(button);
+            watch2::oled.drawString(button, SCREEN_WIDTH / 2, button_y + button_h + (button_h / 4));
+            watch2::oled.setTextDatum(TL_DATUM);
 
             watch2::alarm_trigger_status = 3;  //hack hack hack hack
         }
@@ -274,6 +302,7 @@ void loop() {
                 Alarm.write(watch2::alarms[watch2::alarm_trigger_id].alarm_id, watch2::alarms[watch2::alarm_trigger_id].initial_time);
             }
 
+            time_sprite.deleteSprite();
             watch2::alarm_trigger_status = 0;
             watch2::switchState(watch2::state);
         }

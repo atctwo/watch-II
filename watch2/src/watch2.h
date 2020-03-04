@@ -105,6 +105,7 @@
 // font declarations
 #define MAIN_FONT       "HelvetiHand20"
 #define LARGE_FONT      "HelvetiHand36"
+#define REALLY_BIG_FONT "HelvetiHand60"
 
 // device info
 #define SCREEN_WIDTH            240
@@ -358,7 +359,7 @@ namespace watch2
     uint32_t read32(fs::File &f);
     void drawBmp(const char *filename, int16_t x, int16_t y);
     imageData getImageData(const char *filename);
-    const char* drawImage(imageData data, int16_t img_x, int16_t img_y, int16_t img_w, int16_t img_h);
+    const char* drawImage(imageData data, int16_t img_x, int16_t img_y);
 
     //functions for stb_image
     int img_read(void *user,  char *data, int size);
