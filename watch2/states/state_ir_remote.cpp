@@ -1,7 +1,6 @@
 #include "../src/watch2.h"
 #include "../src/csscolorparser/csscolorparser.hpp"
 #include <IRremote.h>
-#include <ArduinoJson.h>
 
 void state_func_ir_remote()
 {

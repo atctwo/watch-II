@@ -7,7 +7,7 @@
 #include "state_stopwatch.cpp"
 #include "state_timer.cpp"
 #include "state_alarms.cpp"
-#include "state_SDtest.cpp"
+#include "state_sdtest.cpp"
 #include "state_notepad.cpp"
 #include "state_ir_remote.cpp"
 #include "state_image_viewer.cpp"

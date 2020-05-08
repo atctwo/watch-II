@@ -13,7 +13,7 @@ namespace watch2
     TFT_eSPI oled = TFT_eSPI();
     Preferences preferences;
     SdFat SD(&*vspi);
-    Adafruit_ImageReader reader(SD);
+    //Adafruit_ImageReader reader(SD);
     TFT_eSprite top_thing = TFT_eSprite(&oled);
     TFT_eSprite framebuffer = TFT_eSprite(&oled);
 
@@ -34,7 +34,8 @@ namespace watch2
     RTC_DATA_ATTR int selected_menu_icon;
     RTC_DATA_ATTR int boot_count = 0;
     uint8_t top_thing_height = oled.fontHeight() + 20;
-    int trans_mode = 0;
+    uint16_t trans_mode = 0;
+    bool animate_watch_face = false;
     int short_timeout = 5000;
     int long_timeout = 30000;
     bool timeout = true;
@@ -44,6 +45,7 @@ namespace watch2
     uint8_t speaker_volume = 10;
     uint8_t torch_brightness = 0;
     int sd_state = 0;
+    bool spiffs_state = 0;
     int RTC_DATA_ATTR stopwatch_timing = 0;
     uint32_t RTC_DATA_ATTR stopwatch_epoch = 0;
     uint32_t RTC_DATA_ATTR stopwatch_paused_diff = 0;
@@ -216,6 +218,8 @@ namespace watch2
 
     void switchState(int newState, int variant, int dim_pause_thing, int bright_pause_thing, bool dont_draw_first_frame)
     {
+        Serial.printf("switching to new state: %d (%s)\n", newState, watch2::states[newState].stateName);
+
         if (dim_pause_thing > 0)
         dimScreen(0, dim_pause_thing);              //dim the screen
         oled.fillScreen(BLACK);                     //clear screen
@@ -979,6 +983,25 @@ namespace watch2
         *y1 = y;
         *w = oled.textWidth(str);
         *h = oled.fontHeight() * newlines;
+    }
+
+    // stolen from https://gist.github.com/dgoguerra/7194777
+    const char *humanSize(uint64_t bytes)
+    {
+        char *suffix[] = {"B", "KB", "MB", "GB", "TB"};
+        char length = sizeof(suffix) / sizeof(suffix[0]);
+
+        int i = 0;
+        double dblBytes = bytes;
+
+        if (bytes > 1024) {
+            for (i = 0; (bytes / 1024) > 0 && i<length-1; i++, bytes /= 1024)
+                dblBytes = bytes / 1024.0;
+        }
+
+        static char output[200];
+        sprintf(output, "%.02lf %s", dblBytes, suffix[i]);
+        return output;
     }
 
     // Bodmers BMP image rendering function

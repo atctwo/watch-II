@@ -15,12 +15,13 @@
 #include <string>                   // std::string
 #include <functional>               // std::function thing
 
+#include <Arduino.h>                // this will kind of be included anyway, it's just here to shut vscode up
 #include <SPI.h>                    // SPI library
 #include <SdFat.h>                     // sd card access library
 #include <sdios.h>
 #include <TFT_eSPI.h>
 #include <FS.h>
-#include <Adafruit_ImageReader.h>
+//#include <Adafruit_ImageReader.h>
 #include <JC_Button.h>              // button object
 #include <WiFi.h>                   // wifi library
 #include <Preferences.h>            // for storing settings in nvs (allowing for persistance over power cycles)
@@ -61,7 +62,7 @@
 //       3.3V           // Goes to TFT LED
 //       5v             // Goes to TFT Vcc
 //       Gnd            // Goes to TFT Gnd
-#define tftbl 17        //tft backlight
+#define tftbl 14        //tft backlight
 #define tftbl_resolution 8 //resolution of backlight pwm in bits
 
 #define dpad_up     33
@@ -103,9 +104,11 @@
 #define WHITE           0xFFFF
 
 // font declarations
-#define MAIN_FONT       "HelvetiHand20"
-#define LARGE_FONT      "HelvetiHand36"
-#define REALLY_BIG_FONT "HelvetiHand60"
+#define MAIN_FONT               "HelvetiHand20"
+#define SLIGHTLY_BIGGER_FONT    "HelvetiHand24"
+#define LARGE_FONT              "HelvetiHand36"
+#define REALLY_BIG_FONT         "HelvetiHand60"
+#define REALLY_REALLY_BIG_FONT  "HelvetiHand90"
 
 // device info
 #define SCREEN_WIDTH            240
@@ -221,8 +224,8 @@ namespace watch2
     extern TFT_eSPI oled;                                                              //hw spi (use vspi or &SPI)
     extern Preferences preferences;                                                            //wrapper for esp32 nvs used to store system settings
     extern SdFat SD;    
-    extern Adafruit_ImageReader reader;                                                                       //sdfat instance used for accessing sd card
-    extern Adafruit_ImageReader flash_reader;
+    //extern Adafruit_ImageReader reader;                                                                       //sdfat instance used for accessing sd card
+    //extern Adafruit_ImageReader flash_reader;
     extern TFT_eSprite top_thing;
     extern TFT_eSprite framebuffer;
 
@@ -251,7 +254,8 @@ namespace watch2
     //from sleep.  During active mode operation, selected_menu_icon is used,
     extern RTC_DATA_ATTR int boot_count;                                                        //no of times watch has woken up (including initial boot)
     extern uint8_t top_thing_height;                                                            //the height of the top thing (plus a small buffer) in pixels
-    extern int trans_mode;                                                                      //pretty colour scheme
+    extern uint16_t trans_mode;                                                                 //pretty colour scheme
+    extern bool animate_watch_face;                                                             //whether or not animate the watch face
     extern int short_timeout;                                                                   //timeout when looking at watch face
     extern int long_timeout;                                                                    //timeout (almost) everywhere else
     extern bool timeout;                                                                        //whether or not to go to sleep after timeout time has elapsed
@@ -264,6 +268,10 @@ namespace watch2
                                                                                                 //0 - not initalised (red)
                                                                                                 //1 - initalised with no errors (green)
                                                                                                 //2 - card not present (blue)
+    extern bool spiffs_state;                                                                   // the state of the spiffs
+                                                                                                // -1 - failed to initalise
+                                                                                                // 0 - not initalised
+                                                                                                // 1 - initalised successfully
     extern int RTC_DATA_ATTR stopwatch_timing;                                                  //stopwatch state
                                                                                                 //0 - stopped
                                                                                                 //1 - running
@@ -355,6 +363,7 @@ namespace watch2
 
     void getTextBounds(const char *string, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
     void getTextBounds(const String &str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
+    static const char *humanSize(uint64_t bytes);
     uint16_t read16(fs::File &f);
     uint32_t read32(fs::File &f);
     void drawBmp(const char *filename, int16_t x, int16_t y);

@@ -26,20 +26,31 @@ void setup() {
 
     //begin serial
     Serial.begin(115200);
+    Serial.print("\n\n");
 
     //set up spiffs
+    Serial.print("setting up spiffs: ");
     if (!SPIFFS.begin())
     {
-        Serial.println("[error] spiffs init failed");
+        Serial.println("spiffs init failed");
+        watch2::spiffs_state = -1;
+    }
+    else
+    {
+        Serial.println("initalised spiffs successfully");
+        watch2::spiffs_state = 1;
     }
 
     //set up oled
+    Serial.print("setting up display: ");
     digitalWrite(cs, LOW);
     watch2::oled.begin();
     watch2::oled.fillScreen(0);
     watch2::setFont(MAIN_FONT);
+    Serial.println("done");
 
     //set up SD card
+    Serial.print("setting up sd card: ");
     digitalWrite(cs, HIGH);
     digitalWrite(sdcs, LOW);
     
@@ -48,43 +59,56 @@ void setup() {
     digitalWrite(cs, LOW);
     digitalWrite(sdcs, HIGH);
     
-
     //set up preferences
+    Serial.print("setting up preferences: ");
     watch2::preferences.begin("watch2", false);      //open watch II preferences in RW mode
     watch2::timeout = watch2::preferences.getBool("timeout", false);
     watch2::short_timeout = watch2::preferences.getInt("short_timeout", 5000);
     watch2::long_timeout = watch2::preferences.getInt("long_timeout", 30000);
     watch2::themecolour = watch2::preferences.getInt("themecolour", BLUE);
-    watch2::trans_mode = watch2::preferences.getBool("trans_mode", false);
+    watch2::trans_mode = watch2::preferences.getUInt("trans_mode", 0);
+    watch2::animate_watch_face = watch2::preferences.getBool("animate_time", true);
     watch2::screen_brightness = watch2::preferences.getUInt("brightness", 2^tftbl_resolution);
     watch2::preferences.end();
+    Serial.print("done");
 
     //set up buttons
+    Serial.print("setting up buttons: ");
     watch2::btn_dpad_up.begin();
     watch2::btn_dpad_down.begin();
     watch2::btn_dpad_left.begin();
     watch2::btn_dpad_right.begin();
     watch2::btn_dpad_enter.begin();
+    Serial.println("done");
 
     //set up torch
+    Serial.print("setting up torch: ");
     ledcAttachPin(TORCH_PIN, TORCH_PWM_CHANNEL);
     ledcSetup(TORCH_PWM_CHANNEL, 4000, 8);
     ledcWrite(TORCH_PWM_CHANNEL, 0);
+    Serial.println("done");
 
     //set up tft backlight
+    Serial.print("setting up backlight: ");
     ledcAttachPin(tftbl, TFTBL_PWM_CHANNEL);
     ledcSetup(TFTBL_PWM_CHANNEL, 4000, tftbl_resolution);
     ledcWrite(TFTBL_PWM_CHANNEL, 2^tftbl_resolution);
+    Serial.println("done");
 
     //set up top thing
+    Serial.print("setting up top thing: ");
+    Serial.println("a");
     watch2::top_thing.createSprite(SCREEN_WIDTH, watch2::oled.fontHeight() + 2);
+    Serial.println("b");
     watch2::setFont(MAIN_FONT, watch2::top_thing);
+    Serial.println("done");
 
     //set up framebuffer
     //watch2::framebuffer.createSprite(100, 100);
     //watch2::setFont(MAIN_FONT, watch2::framebuffer);
 
     //set up time
+    Serial.print("setting up time: ");
     timeval tv;
     gettimeofday(&tv, NULL);
     setTime(tv.tv_sec);
@@ -96,11 +120,16 @@ void setup() {
         btStop();
 
     }
+    Serial.println("done");
 
-    //set up icons
+    // set up icons
+    Serial.print("setting up icons: ");
     registerAppIcons();
     registerSmallIcons();
+    Serial.println("done");
 
+    // set up state menu
+    Serial.print("setting up state menu: ");
     if (watch2::boot_count == 0)
     {
         //set selected menu icon to first non-hidden state
@@ -116,9 +145,11 @@ void setup() {
         }
     }
     //else selected_menu_icon = states.find(selected_state);
+    Serial.println("done");
 
     //finish up
     watch2::boot_count++;
+    Serial.println("setup finished!");
 
 }
 
@@ -319,6 +350,17 @@ void loop() {
 // system functions
 ////////////////////////////////////////
 
+extern "C"
+{
+    void vPortCleanUpTCB ( void *pxTCB ) {
+        // place clean up code here
+        // this isn't actually used.  this is just here to shut the compiler up if freertos is compiled with
+        // static allocation enabled (which it isn;t by default, so if you haven't gone out of your way to
+        // modify your esp32 core install, then this doesn't really do anything).
+        // see https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/kconfig.html#config-freertos-enable-static-task-clean-up
+        // for the deets.
+    }
+}
 
 /*
 void Adafruit_GFX::drawRainbowBitmap(int16_t x, int16_t y,
