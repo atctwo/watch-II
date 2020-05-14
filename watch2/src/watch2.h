@@ -337,8 +337,8 @@ namespace watch2
                                                                                         // of the system runs out of saved profiles.  if you set this variable, make sure to set
                                                                                         // initial_wifi_reconnect_attempts to the same value.
     extern uint8_t initial_wifi_reconnect_attempts;                                     // this variable should reflect that value that wifi_reconnect_attempts started off as.
-    extern uint16_t wifi_connect_timeout;                                               // how long to wait before giving up on connecting to a wifi network, in milliseconds
-    extern uint16_t wifi_connect_timeout_start;                                         // used to keep track of time when connecting to a wifi network
+    extern uint32_t wifi_connect_timeout;                                               // how long to wait before giving up on connecting to a wifi network, in milliseconds
+    extern uint32_t wifi_connect_timeout_start;                                         // used to keep track of time when connecting to a wifi network
 
     //these variables stop button presses affecting new states
     //when switching from a previous state.

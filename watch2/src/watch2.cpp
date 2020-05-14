@@ -79,8 +79,8 @@ namespace watch2
     uint8_t wifi_state = 0;
     uint8_t wifi_reconnect_attempts = 0;
     uint8_t initial_wifi_reconnect_attempts = 0;
-    uint16_t wifi_connect_timeout = 15000;
-    uint16_t wifi_connect_timeout_start = 0;
+    uint32_t wifi_connect_timeout = 15000;
+    uint32_t wifi_connect_timeout_start = 0;
 
     bool dpad_up_lock = false;
     bool dpad_down_lock = false;
@@ -171,7 +171,8 @@ namespace watch2
         if (wifi_state == 2) // connecting
         {
             // wifi connection timeout
-            if (millis() - wifi_connect_timeout_start > wifi_connect_timeout)
+            Serial.printf("if ( (%d - %d) > %d)\n", millis(), wifi_connect_timeout_start, wifi_connect_timeout);
+            if ((millis() - wifi_connect_timeout_start) > wifi_connect_timeout)
             {
                 Serial.println("[Wifi] connection timed out");
                 WiFi._setStatus(WL_CONNECT_FAILED);
@@ -1888,7 +1889,7 @@ namespace watch2
             WiFi._setStatus(WL_DISCONNECTED);
             wifi_state = 2; // enabled, connecting
             wifi_connect_timeout_start = millis();
-            Serial.println(wifi_connect_timeout_start);
+            Serial.printf("set wifi timeout: %d\n", wifi_connect_timeout_start);
         }
         
         // the system will check if the wifi has connected to an AP in the endLoop() method.
