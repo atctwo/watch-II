@@ -2,7 +2,7 @@
 
 void state_func_settings()
 {
-    static std::vector<std::string> panels = {"Time and Date", "Timeout", "Colour", "About"};
+    static std::vector<std::string> panels = {"Time and Date", "Timeout", "Colour", "WiFi", "About"};
     static int selected_panel = 0;
     static int last_selected_time = 0;
 
@@ -11,6 +11,11 @@ void state_func_settings()
     static int time_limits[6] = {23, 59, 59, 30, 12, 2106};
     const  int time_lower[6]  = {0,  0,  0,  1,  1,  1970};
     static int days_in_each_month[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+    static cJSON *profiles;
+    static cJSON *profile_array;
+    static cJSON *profile_list;
+    static uint16_t edit_profile_index = 0;
 
     static int16_t x1, y1;
     static uint16_t w=0, h=0;
@@ -35,7 +40,7 @@ void state_func_settings()
             {
                 // decrement selection
                 selected_panel--;
-                if (selected_panel < 0) selected_panel = panels.size();
+                if (selected_panel < 0) selected_panel = panels.size() - 1;
             }
             if (dpad_any_active() || !watch2::state_init)
             {
@@ -56,7 +61,7 @@ void state_func_settings()
             }
             break;
 
-        case 1: //time and date
+        case 20: // manually set time and date
 
             Serial.printf("0: %d\n", selected_time);
             if (!watch2::state_init)
@@ -137,7 +142,7 @@ void state_func_settings()
             {
                 // save time
                 setTime(temp_time[0], temp_time[1], temp_time[2], temp_time[3], temp_time[4], temp_time[5]);
-                watch2::switchState(watch2::state, 0);
+                watch2::switchState(watch2::state, 1);
             }
             //Serial.printf("7: %d\n", selected_time);
             //watch2::oled.setFreeFont(&SourceSansPro_Light8pt7b); // reset font
@@ -381,10 +386,10 @@ void state_func_settings()
 
             break;
 
-        case 4: //about
+        case 5: //about
 
             static int yoffset = 0;
-            const int about_height = 2000;
+            static const int about_height = 2000;
             static uint64_t chipid = ESP.getEfuseMac();
             static TFT_eSprite about_text = TFT_eSprite(&watch2::oled);
             
@@ -439,6 +444,547 @@ void state_func_settings()
             if (dpad_enter_active() || dpad_left_active())
             {
                 watch2::switchState(watch2::state, 0);
+            }
+
+            break;
+
+        case 1: // time and date menu
+
+            static std::vector<std::string> set_time_buttons = {"Set time manually", "Set time using Internet"};
+            static std::vector<watch2::settingsMenuData> ntp_settings = {
+                (watch2::settingsMenuData){"Timezone", watch2::timezone, {}, 24},
+                (watch2::settingsMenuData){"Set Internet time\non boot", watch2::ntp_boot_connect, {"No", "Yes"}, 24},
+                (watch2::settingsMenuData){"Set Internet time\non wakeup", watch2::ntp_wakeup_connect, {"No", "Yes"}, 24}
+            };
+            static uint8_t selected_item = 0;
+            static uint16_t ypos = watch2::top_thing_height;
+
+            if (dpad_up_active())
+            {
+                if (selected_item == 0) selected_item = 4;
+                else selected_item--;
+            }
+
+            if (dpad_down_active())
+            {
+                selected_item++;
+                if (selected_item > 4) selected_item = 0;
+            }
+
+            if (dpad_left_active())
+            {
+                switch(selected_item)
+                {
+                    case 2: // timezone
+                        watch2::timezone--;
+                        if (watch2::timezone < -12) watch2::timezone = 12;
+                        ntp_settings[selected_item-2].setting_value = watch2::timezone;
+                        break;
+                        
+                    case 4: // ntp on wakeup
+                        watch2::ntp_wakeup_connect = !watch2::ntp_wakeup_connect;
+                        ntp_settings[selected_item-2].setting_value = watch2::ntp_wakeup_connect;
+                        break;
+
+                    case 3: // ntp on boot
+                        watch2::ntp_boot_connect = !watch2::ntp_boot_connect;
+                        ntp_settings[selected_item-2].setting_value = watch2::ntp_boot_connect;
+                        break;
+                }
+            }
+
+            if (dpad_right_active())
+            {
+                switch(selected_item)
+                {
+                    case 2: // timezone
+                        watch2::timezone++;
+                        if (watch2::timezone > 12) watch2::timezone = -12;
+                        ntp_settings[selected_item-2].setting_value = watch2::timezone;
+                        break;
+                        
+                    case 4: // ntp on wakeup
+                        watch2::ntp_wakeup_connect = !watch2::ntp_wakeup_connect;
+                        ntp_settings[selected_item-2].setting_value = watch2::ntp_wakeup_connect;
+                        break;
+
+                    case 3: // ntp on boot
+                        watch2::ntp_boot_connect = !watch2::ntp_boot_connect;
+                        ntp_settings[selected_item-2].setting_value = watch2::ntp_boot_connect;
+                        break;
+                }
+            }
+
+            if (!watch2::state_init || dpad_any_active())
+            {
+
+                // draw "set time" buttons
+                ypos = watch2::top_thing_height;
+                watch2::drawMenu(
+                    2, ypos, 
+                    SCREEN_WIDTH-4, 24 + (watch2::oled.fontHeight() * 2), 
+                    set_time_buttons, selected_item, false
+                );
+                ypos += 24 + (watch2::oled.fontHeight() * 2);
+
+                // draw ntp settings
+                watch2::oled.setTextColor(WHITE, BLACK);
+                watch2::drawSettingsMenu(
+                    2, ypos,
+                    SCREEN_WIDTH - 4, SCREEN_HEIGHT - ypos,
+                    ntp_settings, selected_item - 2
+                );
+
+            }
+
+            if (dpad_enter_active())
+            {
+                // set time manually
+                if (selected_item == 0) watch2::switchState(watch2::state, 20);
+                
+                // set time using ntp
+                else if (selected_item == 1) watch2::getTimeFromNTP();
+                
+                // go back to the menu
+                else 
+                {
+                    watch2::preferences.begin("watch2");
+                    watch2::preferences.putUInt("timezone", watch2::timezone);
+                    watch2::preferences.putBool("ntp_wakeup", watch2::ntp_wakeup_connect);
+                    watch2::preferences.putBool("ntp_boot", watch2::ntp_boot_connect);
+                    watch2::preferences.end();
+                    watch2::switchState(watch2::state, 0);
+                }
+            }
+
+            break;
+
+        case 4: // wifi
+
+            static std::vector<watch2::settingsMenuData> wifi_settings = {
+                (watch2::settingsMenuData){"Wifi Enabled", watch2::wifi_state != 0, {"No", "Yes"}, 24},
+                (watch2::settingsMenuData){"Connect to wifi\non boot", watch2::wifi_boot_reconnect, {"No", "Yes"}, 24},
+                (watch2::settingsMenuData){"Connect to wifi\non wakeup", watch2::wifi_wakeup_reconnect, {"No", "Yes"}, 24}
+            };
+            static std::vector<std::string> wifi_buttons = {"Connect to an AP", "Edit Profiles"};
+            static uint8_t selected_item_wifi = 0;
+            static uint16_t ypos_wifi = watch2::top_thing_height;
+
+            if (dpad_up_active())
+            {
+                if (selected_item_wifi == 0) selected_item_wifi = 4;
+                else selected_item_wifi--;
+            }
+
+            if (dpad_down_active())
+            {
+                selected_item_wifi++;
+                if (selected_item_wifi > 4) selected_item_wifi = 0;
+            }
+
+            if (dpad_left_active() || dpad_right_active())
+            {
+                switch(selected_item_wifi)
+                {
+                    case 0: // wifi enabled
+                        
+                        if (watch2::wifi_state == 0)
+                        {
+                            watch2::enable_wifi();
+                            wifi_settings[0].setting_value = true;
+                        }
+                        else
+                        {
+                            watch2::disable_wifi();
+                            wifi_settings[0].setting_value = false;
+                        }
+                        
+                        break;
+
+                    case 2: // reconnect on wakeup
+
+                        watch2::wifi_wakeup_reconnect = !watch2::wifi_wakeup_reconnect;
+                        wifi_settings[2].setting_value = watch2::wifi_wakeup_reconnect;
+                        break;
+
+                    case 1: // reconnect on boot
+
+                        watch2::wifi_boot_reconnect = !watch2::wifi_boot_reconnect;
+                        wifi_settings[1].setting_value = watch2::wifi_boot_reconnect;
+                        break;
+                }
+            }
+
+            if (!watch2::state_init || dpad_any_active())
+            {
+                // draw wifi settings
+                ypos_wifi = watch2::top_thing_height;
+                watch2::oled.setTextColor(WHITE, BLACK);
+                watch2::drawSettingsMenu(
+                    2, ypos_wifi,
+                    SCREEN_WIDTH - 4, SCREEN_HEIGHT - ypos,
+                    wifi_settings, selected_item_wifi
+                );
+                ypos_wifi += (watch2::oled.fontHeight() * 5) * 42;
+
+                // draw wifi buttons
+                watch2::drawMenu(
+                    2, 150, 
+                    SCREEN_WIDTH-4, 24 + (watch2::oled.fontHeight() * 2), 
+                    wifi_buttons, selected_item_wifi - 3, false
+                );
+            }
+
+            if (dpad_enter_active())
+            {
+                if (selected_item_wifi == 3)
+                {
+                    // go to the ssid menu
+                    watch2::switchState(watch2::state, 21);
+                }
+                else if (selected_item_wifi == 4)
+                {
+                    // go to the edit profile menu
+                    watch2::switchState(watch2::state, 22);
+                }
+                else
+                {
+                    // go back to the menu
+                    watch2::preferences.begin("watch2");
+                    watch2::preferences.putBool("wifi_wakeup", watch2::wifi_wakeup_reconnect);
+                    watch2::preferences.putBool("wifi_boot", watch2::wifi_boot_reconnect);
+                    watch2::preferences.end();
+                    watch2::switchState(watch2::state, 0);
+                }
+            }
+
+            break;
+
+        case 21: // ssid menu
+
+            static std::vector<std::string> ssid_names = {"Cancel", "WPS"};
+            static uint8_t no_ssid = 0; // number of ssids found after scanning
+            static bool scanned = false;
+            static uint8_t selected_ssid = 0;
+
+            if (!watch2::state_init)
+            {
+                scanned = false;
+                watch2::oled.setTextColor(WHITE, BLACK);
+                watch2::oled.setCursor(0, watch2::top_thing_height);
+
+                // scan for aps
+                watch2::oled.println("Scanning for APs");
+                no_ssid = WiFi.scanNetworks();
+                scanned = true;
+
+                // add scanned aps to ssid list
+                ssid_names.clear();
+                ssid_names.push_back("Cancel");
+                ssid_names.push_back("WPS");
+                for (int i = 0; i < no_ssid; i++)
+                {
+                    ssid_names.push_back(WiFi.SSID(i).c_str());
+                }
+
+                // clear screen
+                watch2::oled.fillRect(0, watch2::top_thing_height, SCREEN_WIDTH, SCREEN_HEIGHT - watch2::top_thing_height, BLACK);
+            }
+
+            if (dpad_up_active())
+            {
+                if (selected_ssid == 0) selected_ssid = no_ssid - 1;
+                else selected_ssid--;
+            }
+
+            if (dpad_down_active())
+            {
+                selected_ssid++;
+                if (selected_ssid >= no_ssid) no_ssid = 0;
+            }
+
+            if (!watch2::state_init || dpad_any_active() || watch2::forceRedraw)
+            {
+                // draw ssids
+                watch2::drawMenu(
+                    2, watch2::top_thing_height,
+                    SCREEN_WIDTH - 4, SCREEN_HEIGHT - watch2::top_thing_height,
+                    ssid_names, selected_ssid
+                );
+                watch2::forceRedraw = false;
+            }
+
+            if (dpad_enter_active())
+            {
+                if (selected_ssid == 0) // cancel
+                {
+                    // return to wifi menu
+                    watch2::switchState(watch2::state, 4);
+                }
+                else if (selected_ssid == 1) // wps
+                {
+                    // wps connection
+                }
+                else
+                {
+                    // get wifi profiles
+                    cJSON *profiles = watch2::getWifiProfiles();
+
+                    // if the ap has a profile
+                    bool help = false;
+                    cJSON *profile;
+                    cJSON *profile_array = cJSON_GetObjectItem(profiles, "profiles");
+                    for (int i = 0; i < cJSON_GetArraySize(profile_array); i++)
+                    {
+                        profile = cJSON_GetArrayItem(profile_array, i);
+                        const char* ssid = cJSON_GetObjectItem(profile, "ssid")->valuestring;
+                        Serial.printf("checking ssid %s\n", ssid);
+                        if (strcmp(ssid, WiFi.SSID(selected_ssid-2).c_str()) == 0) // if profile ssid matches ap ssid
+                        {
+                            help = true;
+                            break;
+                        }
+                    }
+
+                    if (help) // the ap does have a profile
+                    {
+                        Serial.println("connecting using stored profile");
+                        watch2::wifi_encryption = (wifi_auth_mode_t) cJSON_GetObjectItem(profile, "encryption")->valueint;
+                        watch2::connectToWifiAP(
+                            cJSON_GetObjectItem(profile, "ssid")->valuestring,
+                            cJSON_GetObjectItem(profile, "password")->valuestring
+                        );
+                    }
+                    else // the ap doesn't have a profile
+                    {
+                        // connect to selected ssid
+                        Serial.println("no profile was found, so connecting based on user input");
+                        wifi_auth_mode_t ap_encryption = WiFi.encryptionType(selected_ssid - 2);
+                        std::string password = "none";
+
+                        if (ap_encryption == WIFI_AUTH_WEP || ap_encryption == WIFI_AUTH_WPA_PSK || ap_encryption == WIFI_AUTH_WPA2_PSK || ap_encryption == WIFI_AUTH_WPA_WPA2_PSK)
+                        {
+                            // get password
+                            password = watch2::textFieldDialogue(std::string("Password for\n").append(WiFi.SSID(selected_ssid-2).c_str()), "", '*');
+                        }
+
+                        if (!password.empty()) watch2::connectToWifiAP(WiFi.SSID(selected_ssid-2).c_str(), password.c_str());
+
+                    }
+
+                    // free memory
+                    cJSON_Delete(profiles);
+                }
+            }
+
+            break;
+
+        case 22: // edit profile menu
+
+            static std::vector<std::string> profiles_vector = {};
+            static uint16_t selected_profile = 0;
+
+            if (!watch2::state_init)
+            {
+                // get profiles
+                profiles = watch2::getWifiProfiles();
+                profile_array = cJSON_GetObjectItem(profiles, "profiles");
+
+                // populate profiles vector with profile ssids
+                profiles_vector.clear();
+                profiles_vector.push_back("Cancel");
+                for (int i = 0; i < cJSON_GetArraySize(profile_array); i++)
+                {
+                    cJSON *profile = cJSON_GetArrayItem(profile_array, i);
+                    profiles_vector.push_back(cJSON_GetObjectItem(profile, "ssid")->valuestring);
+                }
+
+            }
+
+            if (dpad_up_active())
+            {
+                if (selected_profile == 0) selected_profile = profiles_vector.size() - 1;
+                else selected_profile--;
+            }
+
+            if (dpad_down_active())
+            {
+                if (selected_profile == profiles_vector.size() - 1) selected_profile = 0;
+                else selected_profile++;
+            }
+
+            if (!watch2::state_init || dpad_any_active())
+            {
+                // draw profile menu
+                watch2::drawMenu(
+                    2, watch2::top_thing_height,
+                    SCREEN_WIDTH - 4, SCREEN_HEIGHT - watch2::top_thing_height,
+                    profiles_vector, selected_profile
+                );
+            }
+
+            if (dpad_enter_active())
+            {
+                if (selected_profile == 0) // cancel
+                {
+                    // go back to the wifi menu
+                    cJSON_Delete(profiles);
+                    watch2::switchState(watch2::state, 4);
+                }
+                else
+                {
+                    // go to the profile editor
+                    if (profile_array)
+                    {
+                        profile_list = profile_array;
+                        edit_profile_index = selected_profile - 1;
+                        watch2::switchState(watch2::state, 23);
+                    }
+                }
+            }
+
+            break;
+
+        case 23: // profile editor
+
+            static std::vector<std::string> profile_actions = {"Back", "Edit SSID", "Edit Password", "Delete Profile"};
+            static std::vector<watch2::settingsMenuData> profile_settings = {
+                (watch2::settingsMenuData){"Encryption", 0, 
+                {"Open", "WEP", "WPA", "WPA2", "WPA1/2", "WPA2E", "???"}, 24}
+            };
+            static uint8_t selected_profile_setting = 0;
+            static std::string ssid = "";
+            static std::string password = "";
+            static wifi_auth_mode_t encryption = WIFI_AUTH_OPEN;
+            static cJSON *edit_profile;
+
+            if (!watch2::state_init)
+            {
+                if (profile_list)
+                {
+                    edit_profile = cJSON_GetArrayItem(profile_list, edit_profile_index);
+                    ssid = cJSON_GetObjectItem(edit_profile, "ssid")->valuestring;
+                    password = cJSON_GetObjectItem(edit_profile, "password")->valuestring;
+                    encryption = (wifi_auth_mode_t) cJSON_GetObjectItem(edit_profile, "encryption")->valueint;
+
+                    profile_settings[0].setting_value = encryption;
+                }
+            }
+
+            if (dpad_up_active())
+            {
+                if (selected_profile_setting == 0) selected_profile_setting = 4;
+                else selected_profile_setting--;
+            }
+
+            if (dpad_down_active())
+            {
+                if (selected_profile_setting == 4) selected_profile_setting = 0;
+                else selected_profile_setting++;
+            }
+
+            if (!watch2::state_init || dpad_any_active() || watch2::forceRedraw)
+            {
+                // draw ssid
+                watch2::oled.fillRect(0, watch2::top_thing_height, SCREEN_WIDTH, watch2::oled.fontHeight(), BLACK);
+                watch2::oled.setTextColor(WHITE, BLACK);
+                watch2::oled.setCursor(2, watch2::top_thing_height);
+                watch2::oled.print(ssid.c_str());
+
+                // draw menu
+                uint16_t button_menu_y = watch2::top_thing_height + watch2::oled.fontHeight() + 5;
+                watch2::drawMenu(
+                    2, button_menu_y,
+                    SCREEN_WIDTH - 4, SCREEN_HEIGHT - watch2::top_thing_height,
+                    profile_actions, selected_profile_setting, false
+                );
+
+                // draw encryption menu
+                uint16_t settings_menu_y = button_menu_y + ( (12 + watch2::oled.fontHeight()) * profile_actions.size() );
+                watch2::oled.setTextColor(WHITE, BLACK);
+                watch2::drawSettingsMenu(
+                    2, settings_menu_y,
+                    SCREEN_WIDTH - 4, SCREEN_HEIGHT - settings_menu_y,
+                    profile_settings, selected_profile_setting - profile_actions.size()
+                );
+
+                watch2::forceRedraw = false;
+            }
+
+            if (dpad_enter_active())
+            {
+                std::string ssid2 = "", password2 = "";
+                switch (selected_profile_setting)
+                {
+                    case 0: // back
+                        // save settings
+                        if (edit_profile)
+                        {
+                            Serial.println("updating AP profile");
+                            cJSON_ReplaceItemInObject(edit_profile, "ssid", cJSON_CreateString(ssid.c_str()));
+                            cJSON_ReplaceItemInObject(edit_profile, "password", cJSON_CreateString(password.c_str()));
+                            cJSON_ReplaceItemInObject(edit_profile, "encryption", cJSON_CreateNumber(encryption));
+                            watch2::setWifiProfiles(profiles);
+                        }
+
+                        // clear settings
+                        ssid = "";
+                        password = "";
+                        encryption = WIFI_AUTH_MAX;
+
+                        // go back to profile menu
+                        watch2::switchState(watch2::state, 22);
+                        break;
+
+                    case 1: // ssid
+                        ssid2 = watch2::textFieldDialogue("SSID", ssid.c_str());
+                        if (!ssid2.empty()) ssid.assign(ssid2);
+                        break;
+
+                    case 2: // password
+                        password2 = watch2::textFieldDialogue("Password", password.c_str(), '*');
+                        if (!password2.empty()) password.assign(password2);
+                        break;
+
+                    case 3: // delete profile
+
+                        // todo: get user confirmation
+
+                        if (edit_profile)
+                        {
+                            Serial.println("deleting AP profile");
+
+                            // delete profile
+                            cJSON_DeleteItemFromArray(profile_array, edit_profile_index);
+
+                            // remove ssid from access index
+                            cJSON *access_index = cJSON_GetObjectItem(profiles, "access_index");
+                            int profile_index = -1;
+                            for (int i = 0; i < cJSON_GetArraySize(access_index); i++)
+                            {
+                                if (strcmp(ssid.c_str(), cJSON_GetArrayItem(access_index, i)->valuestring) == 0)
+                                {
+                                    profile_index = i;
+                                    break;
+                                }
+                            }
+                            if (profile_index > -1) cJSON_DeleteItemFromArray(access_index, profile_index);
+
+                            // save changes
+                            watch2::setWifiProfiles(profiles);
+                            selected_profile--; // this might be a bit hacky
+                        }
+
+                        // clear settings
+                        ssid = "";
+                        password = "";
+                        encryption = WIFI_AUTH_MAX;
+
+                        // go back to profile menu
+                        watch2::switchState(watch2::state, 22);
+                        break;
+                }
+
             }
 
             break;

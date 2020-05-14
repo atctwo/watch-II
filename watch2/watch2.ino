@@ -69,6 +69,12 @@ void setup() {
     watch2::trans_mode = watch2::preferences.getUInt("trans_mode", 0);
     watch2::animate_watch_face = watch2::preferences.getBool("animate_time", true);
     watch2::screen_brightness = watch2::preferences.getUInt("brightness", 2^tftbl_resolution);
+    watch2::timezone = watch2::preferences.getUInt("timezone", 0);
+    watch2::ntp_wakeup_connect = watch2::preferences.getBool("ntp_wakeup", true);
+    watch2::ntp_boot_connect = watch2::preferences.getBool("ntp_boot", true);
+    watch2::wifi_wakeup_reconnect = watch2::preferences.getBool("wifi_wakeup", true);
+    watch2::wifi_boot_reconnect = watch2::preferences.getBool("wifi_boot", true);
+    watch2::wifi_enabled = watch2::preferences.getBool("wifi_en", false);
     watch2::preferences.end();
     Serial.print("done");
 
@@ -107,8 +113,19 @@ void setup() {
     //watch2::framebuffer.createSprite(100, 100);
     //watch2::setFont(MAIN_FONT, watch2::framebuffer);
 
+    // set up wifi
+    if (watch2::wifi_enabled)
+    {
+        watch2::enable_wifi(false);
+        if (watch2::wifi_boot_reconnect) 
+        {
+            watch2::enable_wifi();
+        }
+    }
+
     //set up time
     Serial.print("setting up time: ");
+    if (watch2::ntp_boot_connect) watch2::ntp_boot_connected = false;
     timeval tv;
     gettimeofday(&tv, NULL);
     setTime(tv.tv_sec);

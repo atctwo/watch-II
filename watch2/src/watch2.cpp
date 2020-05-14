@@ -34,6 +34,7 @@ namespace watch2
     RTC_DATA_ATTR int selected_menu_icon;
     RTC_DATA_ATTR int boot_count = 0;
     uint8_t top_thing_height = oled.fontHeight() + 20;
+    bool forceRedraw = false;
     uint16_t trans_mode = 0;
     bool animate_watch_face = false;
     int short_timeout = 5000;
@@ -44,6 +45,14 @@ namespace watch2
     uint16_t screen_brightness = 2^tftbl_resolution;
     uint8_t speaker_volume = 10;
     uint8_t torch_brightness = 0;
+    int8_t timezone = 0;
+    bool ntp_wakeup_connect = true;
+    bool ntp_boot_connect = true;
+    bool ntp_boot_connected = true;
+    bool wifi_wakeup_reconnect = true;
+    bool wifi_boot_reconnect = true;
+    bool wifi_enabled = false;
+    wifi_auth_mode_t wifi_encryption = WIFI_AUTH_MAX;
     int sd_state = 0;
     bool spiffs_state = 0;
     int RTC_DATA_ATTR stopwatch_timing = 0;
@@ -66,6 +75,12 @@ namespace watch2
     int file_select_status = 0;
     std::string file_path = "/";
     bool file_select_dir_list_init = false;
+
+    uint8_t wifi_state = 0;
+    uint8_t wifi_reconnect_attempts = 0;
+    uint8_t initial_wifi_reconnect_attempts = 0;
+    uint16_t wifi_connect_timeout = 15000;
+    uint16_t wifi_connect_timeout_start = 0;
 
     bool dpad_up_lock = false;
     bool dpad_down_lock = false;
@@ -142,6 +157,150 @@ namespace watch2
             }
         }
 
+        // check the wifi connection status
+        if (wifi_state == 4) // pls connect asap
+        {
+            if (WiFi.status() != WL_CONNECTED) 
+            {
+                if (wifi_reconnect_attempts > 0) connectToWifiAP();
+                else wifi_state = 1;
+            }
+            else wifi_state = 3;
+        }
+
+        if (wifi_state == 2) // connecting
+        {
+            // wifi connection timeout
+            if (millis() - wifi_connect_timeout_start > wifi_connect_timeout)
+            {
+                Serial.println("[Wifi] connection timed out");
+                WiFi._setStatus(WL_CONNECT_FAILED);
+                Serial.println(millis());
+            }
+
+            if (WiFi.status() == WL_CONNECTED)
+            {
+
+                // update wifi profiles list
+                cJSON *profiles = getWifiProfiles();
+                if (profiles)
+                {
+                    // Serial.println("profile list before adding new profile");
+                    // Serial.println(cJSON_Print(profiles));
+
+                    // is ssid in profile list?
+                    bool help = false;
+                    cJSON *profile;
+                    cJSON *profile_array = cJSON_GetObjectItem(profiles, "profiles");
+                    for (int i = 0; i < cJSON_GetArraySize(profile_array); i++)
+                    {
+                        profile = cJSON_GetArrayItem(profile_array, i);
+                        const char* ssid = cJSON_GetObjectItem(profile, "ssid")->valuestring;
+                        if (strcmp(ssid, WiFi.SSID().c_str()) == 0) // if profile ssid matches connected ssid
+                        {
+                            help = true;
+                            break;
+                        }
+                    }
+
+                    // if there wasn't a match (the ap doesn't have a profile in the profile list)
+                    if (!help)
+                    {
+                        // create ap profile
+                        profile = cJSON_CreateObject();
+                        cJSON_AddStringToObject(profile, "ssid", WiFi.SSID().c_str());
+                        cJSON_AddStringToObject(profile, "password", WiFi.psk().c_str());
+                        cJSON_AddNumberToObject(profile, "encryption", wifi_encryption);
+
+                        // Serial.println("new profile");
+                        // Serial.println(cJSON_Print(profile));
+
+                        // add profile to profile list
+                        cJSON_AddItemToArray(profile_array, profile);
+                    }
+
+                    // Serial.println("profile list after adding new profile");
+                    // Serial.println(cJSON_Print(profiles));
+
+                    // update access index
+                    cJSON *access_index = cJSON_GetObjectItem(profiles, "access_index");
+                    if (access_index)
+                    {
+                        // linear search for ssid index
+                        int index = -1;
+                        for (int i = 0; i < cJSON_GetArraySize(access_index); i++)
+                        {
+                            const char *profile_ssid = cJSON_GetArrayItem(access_index, i)->valuestring;
+                            if (strcmp(profile_ssid, WiFi.SSID().c_str()) == 0)
+                            {
+                                index = i;
+                                break;
+                            }
+                        }
+
+                        // if the ssid is in the list
+                        if (index > -1)
+                        {
+                            // pop ssid from list
+                            cJSON_DeleteItemFromArray(access_index, index);
+                        }
+
+                        // push ssid to start of list
+                        cJSON_InsertItemInArray(access_index, 0, cJSON_CreateString(WiFi.SSID().c_str()));
+                    }
+                    else Serial.println("could not access access index");
+
+                    // Serial.println("profile list after updating access index");
+                    // Serial.println(cJSON_Print(profiles));
+
+                    // write update profile list to file
+                    setWifiProfiles(profiles);
+
+                    // clear up memory
+                    Serial.println("[Wifi] freeing memory for profiles");
+                    cJSON_Delete(profiles);
+                }
+                else Serial.println("[Wifi] couldn't access profile list");
+
+                // set wifi state
+                wifi_state = 3;
+                Serial.printf("[Wifi] connected to %s\n", WiFi.SSID().c_str());
+            }
+            
+            if (WiFi.status() == WL_CONNECT_FAILED || WiFi.status() == WL_CONNECTION_LOST || WiFi.status() == WL_NO_SSID_AVAIL)
+            {
+                if (wifi_reconnect_attempts == 0) // out of reconnect attempts
+                {
+                    WiFi.disconnect();
+                    wifi_state = 1;
+                    Serial.println("[WiFi] could not connect to AP");
+                }
+                else
+                {
+                    wifi_reconnect_attempts--;
+                    Serial.printf("[Wifi] failed to connect to AP, %d attempts remaining\n", wifi_reconnect_attempts);
+                    connectToWifiAP();
+                }
+            }
+        }
+
+        if (wifi_state == 3) // connected
+        {
+            // set ntp time
+            if (!watch2::ntp_boot_connected)
+            {
+                getTimeFromNTP();
+                watch2::ntp_boot_connected = true;
+            }
+
+            // if wifi disconnected
+            if (WiFi.status() == WL_DISCONNECTED || WiFi.status() == WL_CONNECT_FAILED || WiFi.status() == WL_CONNECTION_LOST || WiFi.status() == WL_NO_SSID_AVAIL)
+            {
+                wifi_state = 1;
+                Serial.println("[WiFi] disconnected from AP");
+            }
+        }
+
         // if the current state uses a framebuffer, draw it to the tft
         if (states[state].framebuffer) framebuffer.pushSprite(0, 0);
     }
@@ -149,9 +308,14 @@ namespace watch2
 
     void drawTopThing(bool light)
     {
+        static char text[4];
         static double batteryVoltage = 4.2;
         static double batteryPercentage = 0;
         static int last_battery_reading = millis() - 1000;
+        static uint16_t icon_size = 20;
+        static uint16_t icon_padding = 5;
+        uint16_t icon_xpos = SCREEN_WIDTH;
+        uint16_t milliseconds = 0;
 
         top_thing.fillRect(0, 0, top_thing.width(), top_thing.height(), BLACK);
 
@@ -176,8 +340,39 @@ namespace watch2
                 last_battery_reading = millis();
             }
 
-            top_thing.printf(" lipo:[%.0f%%]", batteryPercentage);
-            top_thing.printf(" ram:[%2.0f%%]", ((float)(ESP.getHeapSize() - ESP.getFreeHeap()) / ESP.getHeapSize()) * 100);
+            // print battery
+            sprintf(text, "%.0f", batteryPercentage);
+            icon_xpos -= (watch2::oled.textWidth(text) + icon_padding);
+            top_thing.setCursor(icon_xpos,1);
+            top_thing.setTextColor(WHITE, BLACK);
+            top_thing.printf(text);
+
+            icon_xpos -= (icon_size + icon_padding);
+            top_thing.drawBitmap(
+                icon_xpos,
+                1,
+                small_icons["small_battery"].data(),
+                icon_size,
+                icon_size,
+                WHITE
+            );
+            
+            // print ram usage
+            sprintf(text, "%2.0f", ((float)(ESP.getHeapSize() - ESP.getFreeHeap()) / ESP.getHeapSize()) * 100);
+            icon_xpos -= (watch2::oled.textWidth(text) + icon_padding);
+            top_thing.setCursor(icon_xpos,1);
+            top_thing.setTextColor(WHITE, BLACK);
+            top_thing.printf(text);
+
+            icon_xpos -= (icon_size + icon_padding);
+            top_thing.drawBitmap(
+                icon_xpos,
+                1,
+                small_icons["small_ram"].data(),
+                icon_size,
+                icon_size,
+                WHITE
+            );
 
         }
 
@@ -190,14 +385,70 @@ namespace watch2
             case 2: sd_colour = BLUE;          //sd card not present
         }
 
+        icon_xpos -= (icon_size + icon_padding);
         top_thing.drawBitmap(
-            SCREEN_WIDTH - 13,
+            icon_xpos,
             1,
             small_icons["small_sd"].data(),
-            11,
-            8,
+            icon_size,
+            icon_size,
             sd_colour
         );
+
+        // draw wifi icon
+        if (wifi_state > 0) // if wifi is enabled
+        {
+            icon_xpos -= (icon_size + icon_padding);
+            switch(wifi_state)
+            {
+                case 1: // enabled, disconnected
+                    
+                    top_thing.drawBitmap(
+                        icon_xpos,
+                        1,
+                        small_icons["small_wifi_complete"].data(),
+                        icon_size,
+                        icon_size,
+                        0x4A69
+                    );
+                    break;
+
+                case 2: // enabled, connecting
+                    
+                    milliseconds = millis() % 1000;
+
+                    // bar 0
+                    top_thing.drawBitmap(icon_xpos, 1, small_icons["small_wifi_0"].data(), icon_size, icon_size, (0 <= milliseconds && milliseconds <= 250) ? WHITE : 0x6B4D);
+                    
+                    // bar 1
+                    top_thing.drawBitmap(icon_xpos, 1, small_icons["small_wifi_1"].data(), icon_size, icon_size, (251 <= milliseconds && milliseconds <= 500) ? WHITE : 0x6B4D);
+
+                    // bar 2
+                    top_thing.drawBitmap(icon_xpos, 1, small_icons["small_wifi_2"].data(), icon_size, icon_size, (501 <= milliseconds && milliseconds <= 750) ? WHITE : 0x6B4D);
+
+                    // bar 3
+                    top_thing.drawBitmap(icon_xpos, 1, small_icons["small_wifi_3"].data(), icon_size, icon_size, (751 <= milliseconds && milliseconds <= 1000) ? WHITE : 0x6B4D);
+
+                    break;
+
+                case 3: // enabled, connected
+                    
+                    // draw the wifi symbol, but hightlight each "bar" depending on the wifi signal strength
+
+                    // bar 0
+                    top_thing.drawBitmap(icon_xpos, 1, small_icons["small_wifi_0"].data(), icon_size, icon_size, (WiFi.RSSI() >= -80) ? WHITE : 0x6B4D);
+                    
+                    // bar 1
+                    top_thing.drawBitmap(icon_xpos, 1, small_icons["small_wifi_1"].data(), icon_size, icon_size, (WiFi.RSSI() >= -70) ? WHITE : 0x6B4D);
+                    
+                    // bar 2
+                    top_thing.drawBitmap(icon_xpos, 1, small_icons["small_wifi_2"].data(), icon_size, icon_size, (WiFi.RSSI() >= -67) ? WHITE : 0x6B4D);
+                    
+                    // bar 3
+                    top_thing.drawBitmap(icon_xpos, 1, small_icons["small_wifi_3"].data(), icon_size, icon_size, (WiFi.RSSI() >= -30) ? WHITE : 0x6B4D);
+                    break;
+            }
+        }
 
         top_thing.pushSprite(0, 0);
     }
@@ -218,7 +469,7 @@ namespace watch2
 
     void switchState(int newState, int variant, int dim_pause_thing, int bright_pause_thing, bool dont_draw_first_frame)
     {
-        Serial.printf("switching to new state: %d (%s)\n", newState, watch2::states[newState].stateName);
+        Serial.printf("switching to new state: %d (%s)\n", newState, watch2::states[newState].stateName.c_str());
 
         if (dim_pause_thing > 0)
         dimScreen(0, dim_pause_thing);              //dim the screen
@@ -352,12 +603,21 @@ namespace watch2
         //init SD card
         initSD();
 
+        // reconnect to wifi
+        if (wifi_wakeup_reconnect)
+        {
+            enable_wifi();
+        }
+
+        // time??? what is it really?
+        if (watch2::ntp_wakeup_connect) watch2::ntp_boot_connected = false;
+
         //rtc_gpio_deinit(GPIO_NUM_26);
         if (next_alarm_time > -1) switchState(0, 0, 0, 0, true);
         else switchState(0);
     }
 
-    void drawMenu(int x, int y, int width, int height, std::vector<std::string> items, int selected, int colour)
+    void drawMenu(int x, int y, int width, int height, std::vector<std::string> items, int selected, bool scroll, int colour)
     {
         static int16_t x1, y1;
         static uint16_t w=0, w2=0, h=0, h2=0;
@@ -388,10 +648,14 @@ namespace watch2
         //calculate offset threshold based on selected item
         //if the selected item has a y index greater than this value, the offset will be non-zero
         int y_offset = 0;
-        if (selected_y_index > ((y + height) - (ht))) 
+        if (scroll) 
         {
-            y_offset = ht * (selected - threshold_items - 1);
-            Serial.println(y_offset);
+            if (selected_y_index > ((y + height) - (ht))) 
+            {
+                y_offset = ht * ((selected + 2) - onscreen_items);
+                Serial.printf("offset: %d\n", y_offset);
+                Serial.printf("items:  %d\n", onscreen_items);
+            }
         }
 
         //print each menu item
@@ -511,7 +775,7 @@ namespace watch2
 
             // determine settings value
             String final_setting_value;
-            if (i < items[i].text_map.size()) final_setting_value = items[i].text_map[items[i].setting_value];
+            if (items[i].setting_value < items[i].text_map.size()) final_setting_value = items[i].text_map[items[i].setting_value];
             else final_setting_value = String(items[i].setting_value);
 
             // clear previous settings value
@@ -799,6 +1063,324 @@ namespace watch2
             endLoop();
 
         }
+    }
+
+    std::string textFieldDialogue(std::string prompt, const char *default_input, const char mask, bool clear_screen)
+    {
+        /*
+        special keys (like caps lock, space, backspace, enter) are mapped to repurposed ASCII control codes.
+        the codes are interpreted by the system, so that no control codes are actually returned as part of 
+        the returned string.  i tried to pick control codes that match the function of the key as much as
+        possible.  the mappings are described in this table:
+
+        key             ascii (hex)     ascii description
+        blank           0x00            null
+        backspace       0x08            backspace
+        clear           0x0c            form feed
+        enter           0x04            end of transmission
+        cancel          0x18            cancel
+        cursor left     0x11            device control 1
+        cursor right    0x12            device control 2
+        space           0x20            space
+        caps lock       0x13            device control 3
+        symbols         0x0e            shift out
+        letters         0x0f            shift in
+        */
+
+        // get the number of newlines in the prompt
+        // adapted from https://stackoverflow.com/a/14266139/9195285
+        std::string delimiter = "\n";
+        size_t pos = 0;
+        uint8_t no_newlines = 0;
+        std::string token;
+        while ((pos = prompt.find(delimiter, pos)) != std::string::npos) {
+            pos++;
+            no_newlines++;
+        }
+
+        uint8_t key_h = oled.fontHeight();
+        uint8_t key_w = key_h;
+        uint8_t no_rows = 4;
+        uint8_t no_cols = 11;
+        uint8_t box_radius = 10;
+        uint8_t key_radius = 7;
+        bool finish_input = false;
+
+        bool caps_lock = false;
+        bool last_caps_lock = false;
+        uint8_t selected_row = 0;
+        uint8_t selected_col = 0;
+        uint8_t selected_page = 0;
+        uint8_t last_page = 0;
+        std::vector<std::vector<std::vector<char>>> keys = {
+            {
+                {'1',  '2', '3', '4', '5', '6', '7', '8', '9',  '0',  0x11},
+                {'q',  'w', 'e', 'r', 't', 'y', 'u', 'i', 'o',  'p',  0x12},
+                {0x13, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k',  'l',  0x20},
+                {0x0e, 'z', 'x', 'c', 'v', 'b', 'n', 'm', 0x08, 0x18, 0x04}
+            },
+            {
+                {'!',  '"', 0,   '$',  '%',  '^', '&', '*', '(',  ')',  0x11},
+                {':',  ';', '@', '\'', '~',  '#', '-', '_', '`',  0,    0x12},
+                {'.',  ',', '?', '/',  '\\', '|', '+', '=', 0,    0,    0x20},
+                {0x0f, '<', '>', '{',  '}',  '[', ']', 0,   0x08, 0x0c, 0x04}
+            }
+        };
+
+        uint16_t keyboard_w = SCREEN_WIDTH * 0.95;
+        uint16_t keyboard_a = (SCREEN_WIDTH - keyboard_w) / 2;
+        uint16_t keyboard_h = (no_rows * oled.fontHeight()) + (keyboard_w - (key_w * no_cols));
+        uint16_t keyboard_x = SCREEN_WIDTH - keyboard_a - keyboard_w;
+        uint16_t keyboard_y = SCREEN_HEIGHT - keyboard_a - keyboard_h;
+
+        uint16_t key_matrix_w = (key_w * no_cols);
+        uint16_t key_matrix_h = (key_h * no_rows);
+        uint16_t key_matrix_x = keyboard_x + ((keyboard_w - key_matrix_w) / 2);
+        uint16_t key_matrix_y = keyboard_y + ((keyboard_h - key_matrix_h) / 2);
+
+        uint16_t input_box_x = 15;
+        uint16_t input_box_y = top_thing_height;
+        uint16_t input_box_w = SCREEN_WIDTH - (input_box_x * 2);
+        uint16_t input_box_h = SCREEN_HEIGHT - (2 * keyboard_a) - keyboard_h - top_thing_height;
+
+        uint8_t input_field_padding = 2;
+        uint16_t input_field_w = input_box_w * 0.9;
+        uint16_t input_field_h = oled.fontHeight() + (input_field_padding * 2);
+        uint16_t input_group_h = input_field_h + (oled.fontHeight() * (no_newlines + 1));
+        uint16_t input_field_x = input_box_x + ((input_box_w - input_field_w) / 2);
+        uint16_t input_group_y = input_box_y + ((input_group_h - input_field_h) / 2);
+        uint16_t input_field_y = input_group_y + (oled.fontHeight() * (no_newlines + 1));
+
+        std::string input = default_input;
+
+        // draw input box
+        oled.fillRoundRect(input_box_x, input_box_y, input_box_w, input_box_h, box_radius, BLACK);
+        oled.drawRoundRect(input_box_x, input_box_y, input_box_w, input_box_h, box_radius, themecolour);
+
+        // draw input field
+        // also adapted from https://stackoverflow.com/a/14266139/9195285
+        pos = 0;
+        uint8_t line_num = 0;
+        while ((pos = prompt.find(delimiter)) != std::string::npos) {
+            token = prompt.substr(0, pos);
+            oled.setCursor(input_field_x, input_group_y + (oled.fontHeight() * line_num));
+            oled.setTextColor(WHITE, BLACK);
+            oled.print(token.c_str());
+            prompt.erase(0, pos + delimiter.length());
+            line_num++;
+        }
+        oled.setCursor(input_field_x, input_group_y + (oled.fontHeight() * line_num));
+        oled.setTextColor(WHITE, BLACK);
+        oled.print(prompt.c_str());
+        oled.drawRect(input_field_x, input_field_y, input_field_w, input_field_h, WHITE);
+
+        // draw keyboard box
+        oled.fillRoundRect(keyboard_x, keyboard_y, keyboard_w, keyboard_h, box_radius, BLACK);
+        oled.drawRoundRect(keyboard_x, keyboard_y, keyboard_w, keyboard_h, box_radius, themecolour);
+
+        // draw keys
+        auto draw_keys = [&]() {
+            //oled.drawRect(key_matrix_x, key_matrix_y, key_matrix_w, key_matrix_h, ORANGE);
+            uint8_t selected_key = selected_col + (no_cols * selected_row);
+            oled.setTextDatum(MC_DATUM);
+            for (int y = 0; y < no_rows; y++)
+            {
+                for (int x = 0; x < no_cols; x++)
+                {
+                    uint8_t index = x + (no_cols * y);
+                    char key = keys[selected_page][y][x];
+
+                    // clear screen
+                    if (last_page != selected_page || last_caps_lock != caps_lock) oled.fillRect(key_matrix_x + (x * key_w), key_matrix_y + (y * key_h), key_w, key_h, BLACK);
+
+                    // draw character
+                    if (0x21 <= key && key <= 0x7e) // if key is printable (excl. space because there is a space symbol)
+                    {
+                        char key2 = key;
+                        // if caps lock is on, and the key is a letter, print the key as a capital
+                        if (caps_lock && (0x61 <= key && key <= 0x7a)) key2 -= 32;
+                        oled.setTextColor(WHITE, BLACK);
+                        oled.drawString(
+                            String(key2),
+                            key_matrix_x + (x * key_w) + (key_w/2),
+                            key_matrix_y + (y * key_h) + (key_h/2)
+                        );
+                    }
+                    else if (key == 0) // blank
+                    {
+                        // do literally nothing
+                    }
+                    else // if key is a control character
+                    {
+                        std::string icon = "";
+                        switch(key)
+                        {
+                            case 0x08: // backspace
+                                icon = "key_backspace";
+                                break;
+
+                            case 0x0c: // clear
+                                icon = "key_clear";
+                                break;
+
+                            case 0x04: // enter
+                                icon = "key_tick";
+                                break;
+
+                            case 0x18: // cancel;
+                                icon = "key_cancel";
+                                break;
+
+                            case 0x11: // left
+                                icon = "key_move_left";
+                                break;
+
+                            case 0x12: // right
+                                icon = "key_move_right";
+                                break;
+
+                            case 0x20: // space
+                                icon = "key_space";
+                                break;
+
+                            case 0x13: // caps lock
+                                icon = (caps_lock) ? "key_caps_on" : "key_caps_off";
+                                break;
+
+                            case 0x0e: // symbols
+                                icon = "key_symbols";
+                                break;
+
+                            case 0x0f: // letters
+                                icon = "key_letters";
+                                break;
+                        }
+                        oled.drawBitmap(
+                            key_matrix_x + (x * key_w),
+                            key_matrix_y + (y * key_h),
+                            small_icons[icon].data(),
+                            key_w, key_h, WHITE
+                        );
+                    }
+                    
+
+                    // draw button outline
+                    oled.drawRoundRect(
+                        key_matrix_x + (x * key_w),
+                        key_matrix_y + (y * key_h),
+                        key_w, key_h, key_radius, (selected_key == index) ? themecolour : BLACK
+                    );
+                }
+            }
+            oled.setTextDatum(TL_DATUM);
+            last_page = selected_page;
+            last_caps_lock = caps_lock;
+        };
+        draw_keys();
+
+        while(true)
+        {
+            startLoop();
+
+            // print current input
+            oled.setTextColor(WHITE, BLACK);
+            oled.setCursor(input_field_x + input_field_padding, input_field_y + input_field_padding);
+            if (mask) for (int i = 0; i < input.size(); i++) oled.print(mask);
+            else oled.print(input.c_str());
+
+            if (dpad_enter_active())
+            {
+                switch(keys[selected_page][selected_row][selected_col])
+                {
+                    case 0x04: // enter
+                        finish_input = true;
+                        break;
+
+                    case 0x18: // cancel
+                        input = "";
+                        finish_input = true;
+                        break;
+
+                    case 0x0c: // clear input
+                        input = "";
+                        oled.fillRect(input_field_x, input_field_y, input_field_w, input_field_h, BLACK);
+                        oled.drawRect(input_field_x, input_field_y, input_field_w, input_field_h, WHITE);
+                        break;
+
+                    case 0x08: // backspace
+                        oled.fillRect(input_field_x, input_field_y, input_field_w, input_field_h, BLACK);
+                        oled.drawRect(input_field_x, input_field_y, input_field_w, input_field_h, WHITE);
+                        input = input.substr(0, input.size()-1);
+                        break;
+
+                    case 0x13: // caps lock
+                        caps_lock = !caps_lock;
+                        break;
+
+                    case 0x11: // move left
+                        break;
+
+                    case 0x12: // move right
+                        break;
+
+                    case 0x0e: // symbols
+                        selected_page = 1;
+                        break;
+
+                    case 0x0f: // letters
+                        selected_page = 0;
+                        break;
+
+                    case 0: // blank
+                        // do nothing
+                        break;
+
+                    default:
+                        char key2 = keys[selected_page][selected_row][selected_col];
+                        // if caps lock is on, and the key is a letter, print the key as a capital
+                        if (caps_lock && (0x61 <= key2 && key2 <= 0x7a)) key2 -= 32;
+                        input += key2;
+                        break;
+                }
+            }
+
+            if (dpad_left_active())
+            {
+                if (selected_col == 0) selected_col = no_cols - 1;
+                else selected_col--;
+            }
+
+            if (dpad_right_active())
+            {
+                if (selected_col == no_cols - 1) selected_col = 0;
+                else selected_col++;
+            }
+
+            if (dpad_up_active())
+            {
+                if (selected_row == 0) selected_row = no_rows - 1;
+                else selected_row--;
+            }
+
+            if (dpad_down_active())
+            {
+                if (selected_row == no_rows - 1) selected_row = 0;
+                else selected_row++;
+            }
+
+            if (dpad_any_active())
+            {
+                draw_keys();
+            }
+
+            if (finish_input) break;
+            drawTopThing();
+            endLoop();
+        }
+
+        forceRedraw = true;
+        if (clear_screen) oled.fillScreen(0);
+        return input;
     }
 
     int initSD(bool handleCS)
@@ -1163,6 +1745,239 @@ namespace watch2
     }
 
 
+    void enable_wifi(bool connect)
+    {
+        Serial.println("[Wifi] enabling wifi");
+        wifi_state = 1; // enabled, disconnected
+
+        // tell the system to enable wifi on boot
+        watch2::preferences.begin("watch2", false);
+        watch2::preferences.putBool("wifi_en", true);
+        watch2::preferences.end();
+
+        // connect to an access point
+        if (connect)
+        {
+            watch2::wifi_state = 4;
+            watch2::initial_wifi_reconnect_attempts = 3;
+            watch2::wifi_reconnect_attempts = watch2::initial_wifi_reconnect_attempts;
+        }
+    }
+
+    void disable_wifi()
+    {
+        Serial.println("[Wifi] disconnecting from wifi");
+        WiFi.disconnect();
+
+        // tell the system to disable wifi on boot
+        watch2::preferences.begin("watch2", false);
+        watch2::preferences.putBool("wifi_en", false);
+        watch2::preferences.end();
+        wifi_state = 0; // disabled
+    }
+
+    void connectToWifiAP(const char *ssid, const char *password)
+    {
+        Serial.println("[WiFi] connecting to AP");
+        WiFi.enableSTA(true);
+        WiFi.setSleep(true);
+        WiFi.setHostname("watch ii");
+
+        if (strcmp(ssid, "") == 0)
+        {
+            // automatically connect to internet
+            if (wifi_reconnect_attempts == 0)
+            {
+                WiFi.disconnect();
+                wifi_state = 1;
+            }
+            else
+            {
+                // get most recent profile
+                uint8_t profile_index = initial_wifi_reconnect_attempts - wifi_reconnect_attempts;
+                cJSON *profiles = getWifiProfiles();
+                
+                if (profiles)
+                {
+                    cJSON *profile_array = cJSON_GetObjectItem(profiles, "profiles");
+                    cJSON *access_index = cJSON_GetObjectItem(profiles, "access_index");
+
+                    // if there are profiles
+                    if (cJSON_GetArraySize(access_index) > 0)
+                    {
+
+                        if (access_index)
+                        {
+
+                            // if the profile index refers to a profile that doesn't exist
+                            // (if the profile index is greater than the number of elements in the access index - 1)
+                            if (profile_index > cJSON_GetArraySize(access_index) - 1)
+                            {
+                                // the profile list has been exhausted
+                                WiFi.disconnect();
+                                wifi_state = 1;
+                                wifi_reconnect_attempts = 0;
+                            }
+                            else
+                            {
+                                // the profile index refers to an access index element that does exist, so get the information for that profile
+                                const char *ssid = cJSON_GetArrayItem(access_index, profile_index)->valuestring;
+                                cJSON *profile;
+                                bool help = false;
+                                for (int i = 0; i < cJSON_GetArraySize(profile_array); i++)
+                                {
+                                    profile = cJSON_GetArrayItem(profile_array, i);
+                                    const char* profile_ssid = cJSON_GetObjectItem(profile, "ssid")->valuestring;
+                                    Serial.printf("checking ssid %s; profile ssid %s\n", ssid, profile_ssid);
+                                    if (strcmp(ssid, profile_ssid) == 0) // if profile ssid matches ap ssid
+                                    {
+                                        help = true;
+                                        break;
+                                    }
+                                }
+
+                                if (help) // the profile actually exists
+                                {
+                                    Serial.println("thingy profile exists");
+                                    WiFi.begin(
+                                        cJSON_GetObjectItem(profile, "ssid")->valuestring,
+                                        cJSON_GetObjectItem(profile, "password")->valuestring
+                                    );
+                                    WiFi._setStatus(WL_DISCONNECTED);
+                                    wifi_connect_timeout_start = millis();
+                                }
+                                // otherwise, the AP name exists in the access index, but doesn't actually have a profile, so skip to the next AP
+                                else 
+                                {
+                                    Serial.println("[Wifi] ssid was found in access index, but no matching profile was found");
+                                    wifi_reconnect_attempts--;
+                                }
+
+                                wifi_state = 2;
+                            }
+
+                        }
+                        else
+                        {
+                            Serial.println("[Wifi] couldn't access access index");
+                            wifi_reconnect_attempts = 0;
+                        }
+                    }
+                    else 
+                    {
+                        Serial.println("[Wifi] no profiles");
+                        wifi_reconnect_attempts = 0;
+                        WiFi.disconnect();
+                        WiFi._setStatus(WL_CONNECT_FAILED);
+                    }
+                    
+                    cJSON_Delete(profiles);
+
+                }
+                else
+                {
+                    Serial.println("[Wifi] couldn't access profile list");
+                    wifi_reconnect_attempts = 0;
+                }
+            }
+            
+        }
+        else
+        {
+            WiFi.begin(ssid, password);
+            WiFi._setStatus(WL_DISCONNECTED);
+            wifi_state = 2; // enabled, connecting
+            wifi_connect_timeout_start = millis();
+            Serial.println(wifi_connect_timeout_start);
+        }
+        
+        // the system will check if the wifi has connected to an AP in the endLoop() method.
+    }
+
+    void getTimeFromNTP()
+    {
+        Serial.println("setting time using ntp");
+        Serial.println(watch2::wifi_state);
+        configTime(watch2::timezone * 60 * 60, 0, NTP_SERVER);
+        struct tm timeinfo;
+        getLocalTime(&timeinfo);
+        Serial.println(&timeinfo, "retrieved time: %A, %B %d %Y %H:%M:%S");
+        Serial.printf(            "also time:      %d:%d:%d %d.%d.%d", timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec, timeinfo.tm_mday, timeinfo.tm_mon+1, timeinfo.tm_year + 1900);
+        setTime(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec, timeinfo.tm_mday, timeinfo.tm_mon+1, timeinfo.tm_year + 1900);
+    }
+
+    cJSON *getWifiProfiles()
+    {
+        Serial.println("[Wifi] getting profiles");
+        if (spiffs_state == 1) // if spiffs in initalised
+        {
+            cJSON *profiles;
+
+            // if profile file already exists
+            if (SPIFFS.exists(WIFI_PROFILES_FILENAME))
+            {
+                // get handle to profiles file
+                fs::File profiles_file = SPIFFS.open(WIFI_PROFILES_FILENAME);
+
+                // get profiles list
+                String profiles_list = profiles_file.readString();
+
+                // parse profiles
+                profiles = cJSON_Parse(profiles_list.c_str());
+
+                // Serial.println("help");
+                // Serial.println(profiles_list);
+                // Serial.println(cJSON_Print(profiles));
+
+                // close file
+                profiles_file.close();
+
+                // return profiles
+                return profiles;
+            }
+            //otherwise
+            else
+            {
+                // create profiles object
+                profiles = cJSON_CreateObject();
+                cJSON *profile_array = cJSON_AddArrayToObject(profiles, "profiles");
+                cJSON *access_index = cJSON_AddArrayToObject(profiles, "access_index");
+
+                // get handle to profiles file (it doesn't exist, so create it)
+                fs::File profiles_file = SPIFFS.open(WIFI_PROFILES_FILENAME, "w");
+
+                // write profiles object to file
+                profiles_file.print(cJSON_Print(profiles));
+
+                // close file
+                profiles_file.close();
+
+                // return profiles
+                return profiles;
+            }
+        }
+        else return nullptr;
+    }
+
+    void setWifiProfiles(cJSON *profiles)
+    {
+        Serial.println("[Wifi] setting profiles");
+        if (spiffs_state == 1) // if spiffs has been initalised
+        {
+            // open profiles file.  if the file doesn't exist, it will be created, and if it does exist,
+            // it will be truncated to zero bytes.
+            fs::File profiles_file = SPIFFS.open(WIFI_PROFILES_FILENAME, "w");
+
+            // get profile list as a string
+            const char *profile_string = cJSON_Print(profiles);
+
+            // write the profile object to the file
+            profiles_file.write((uint8_t*)profile_string, strlen(profile_string));
+            
+            // close file
+            profiles_file.close();
+        }
+    }
 
 
     // These read 16- and 32-bit types from the SD card file.

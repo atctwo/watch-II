@@ -203,6 +203,7 @@ void state_func_watch_face()
         static int last_button_widget = 3;
         static bool go_back_to_watch_face = false;
         static bool bt_test = false;
+        static uint8_t last_wifi_state = watch2::wifi_state;
 
         if (!watch2::state_init) go_back_to_watch_face = false;
 
@@ -228,7 +229,7 @@ void state_func_watch_face()
             else if (selected_widget == 2) // torch
             {
                 watch2::torch_brightness = std::max(watch2::torch_brightness - 10, 0);
-                ledcWrite(TFTBL_PWM_CHANNEL, watch2::torch_brightness);
+                ledcWrite(TORCH_PWM_CHANNEL, watch2::torch_brightness);
             }
         }
         if (dpad_right_active())
@@ -253,7 +254,7 @@ void state_func_watch_face()
             else if (selected_widget == 2) // torch
             {
                 watch2::torch_brightness = std::min(watch2::torch_brightness + 10, 255);
-                ledcWrite(TFTBL_PWM_CHANNEL, watch2::torch_brightness);
+                ledcWrite(TORCH_PWM_CHANNEL, watch2::torch_brightness);
             }
         }
         if (dpad_up_active())
@@ -285,10 +286,15 @@ void state_func_watch_face()
         }
         if (dpad_enter_active())
         {
-            bt_test = !bt_test;
+            if (selected_widget == 3)
+            {
+                if (watch2::wifi_state == 0) watch2::enable_wifi();
+                else watch2::disable_wifi();
+            }
+            if (selected_widget == 4) bt_test = !bt_test;
         }
 
-        if (!watch2::state_init || dpad_any_active())
+        if (!watch2::state_init || dpad_any_active() || (watch2::wifi_state != last_wifi_state))
         {
             int spacing = 10;
             int button_size = 30;
@@ -333,10 +339,16 @@ void state_func_watch_face()
             button_y += spacing + button_size;                                                                                                      //move cursor
 
             //draw wifi button
-            outline_colour = (selected_widget == 3) ? 0x867D : WHITE;
+            if (watch2::wifi_state == 3) background_colour = 0x867d; // enabled + connected
+            if (watch2::wifi_state == 2) background_colour = 0x6E5A; // enabled + connecting
+            if (watch2::wifi_state == 1) background_colour = 0x6E5A; // enabled + disconnected
+            if (watch2::wifi_state == 0) background_colour = BLACK;  // disabled
+            watch2::oled.fillRoundRect(button_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, background_colour);
+            outline_colour = ( !(selected_widget == 3) != !(watch2::wifi_state == 3) ) ? 0x867D : WHITE;
             watch2::oled.drawRoundRect(button_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, outline_colour);
-            watch2::oled.drawBitmap(button_x, button_y, watch2::small_icons["wifi"].data(), button_size, button_size, 0x867D);
+            watch2::oled.drawBitmap(button_x, button_y, watch2::small_icons["wifi"].data(), button_size, button_size, (watch2::wifi_state != 0) ? WHITE : 0x867D);
             button_x += spacing + button_size;
+            if (watch2::wifi_state != last_wifi_state) last_wifi_state = watch2::wifi_state;
 
             //draw bluetooth button  bluetooth blue
             background_colour = (bt_test) ? 0x041F : BLACK;

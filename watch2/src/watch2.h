@@ -119,10 +119,15 @@
                                         //make sure the battery voltage (when scaled) is not aboe 3.3v.
                                         //a LiPo that maxes out at 4.7v will be scaled to 2.35v, which is
                                         //fine for the ESP32.
-                                        //Calculator definitions
+#define NTP_SERVER              "pool.ntp.org"
+#define WIFI_PROFILES_FILENAME  "/wifi_profiles.json"
+//Calculator definitions
 #define CALC_CELL_WIDTH   25//27 for 4 chrs
 #define CALC_CELL_HEIGHT  12
 
+/**
+ * functions and variables that relate to the running of the watch ii system.
+ */
 namespace watch2
 {
     // struct definitions
@@ -254,6 +259,9 @@ namespace watch2
     //from sleep.  During active mode operation, selected_menu_icon is used,
     extern RTC_DATA_ATTR int boot_count;                                                        //no of times watch has woken up (including initial boot)
     extern uint8_t top_thing_height;                                                            //the height of the top thing (plus a small buffer) in pixels
+    extern bool forceRedraw;
+
+    // local stores of system preferences
     extern uint16_t trans_mode;                                                                 //pretty colour scheme
     extern bool animate_watch_face;                                                             //whether or not animate the watch face
     extern int short_timeout;                                                                   //timeout when looking at watch face
@@ -264,6 +272,18 @@ namespace watch2
     extern uint16_t screen_brightness;                                                           //brightness of screen, ranges from 0 (backlight off) to 15 (full brightness)
     extern uint8_t speaker_volume;                                                              //speaker volume, as controlled by audioI2S library.  ranges from 0 (no sound) to 21 (loudest)
     extern uint8_t torch_brightness;                                                            //brightness of the torch LED (pwm controlled, ranges from 0 (off) to 255 (fill brightnesss))
+    extern int8_t timezone;                                                                    // the user's timezone, in the format UTC+n
+    extern bool ntp_wakeup_connect;
+    extern bool ntp_boot_connect;
+    extern bool ntp_boot_connected;
+    extern bool wifi_wakeup_reconnect;                                                          // whether or not to attempt to reconnect to wifi on wake up (if not already connected)
+    extern bool wifi_boot_reconnect;                                                            // whether or not to attemp to connect to wifi on boot
+    extern bool wifi_enabled;                                                                   // whether or not wifi is enabled.  don't use this if you actually want to know if the system is
+                                                                                                // connected to wifi, for that use wifi_state.  this is only used to decide whether or not to enable
+                                                                                                // wifi automatically on boot
+    extern wifi_auth_mode_t wifi_encryption;                                                    // hack hack hack hack pls replace with a way to get the encryption type of the current AP
+
+    // fs states
     extern int sd_state;                                                                        //state of the sd card
                                                                                                 //0 - not initalised (red)
                                                                                                 //1 - initalised with no errors (green)
@@ -303,6 +323,22 @@ namespace watch2
     extern std::string file_path;                                                                   //if the file select menu is active, this is used to keep track of the current directory.
                                                                                         //otherwise, it is used to store the path of the file after file selection (or "canceled" if no file was selected)
     extern bool file_select_dir_list_init;                                                     //keeps track of whether or not the file list has been initalised for the current directory
+    
+    extern uint8_t wifi_state;                                                          // keeps track of whether or not the user has enabled the wifi
+                                                                                        // 0 - disabled by user
+                                                                                        // 1 - enabled by user, idle / disconnected
+                                                                                        // 2 - enabled by user, connecting
+                                                                                        // 3 - enabled by user, connected
+                                                                                        // 4 - enabled by user, pls connect asap (used when connecting to an AP after booting)
+    extern uint8_t wifi_reconnect_attempts;                                             // how many more times to attempt to connect to the next most recently connected AP.
+                                                                                        // if this isn't zero, and wifi state is set to 4, the system will try to connect to an AP, starting with
+                                                                                        // the one what was connected to most recently.  if the system can't connect to that AP, it will decrement
+                                                                                        // this number, and try to connect to the next most recently connected AP, until this number reaches zero,
+                                                                                        // of the system runs out of saved profiles.  if you set this variable, make sure to set
+                                                                                        // initial_wifi_reconnect_attempts to the same value.
+    extern uint8_t initial_wifi_reconnect_attempts;                                     // this variable should reflect that value that wifi_reconnect_attempts started off as.
+    extern uint16_t wifi_connect_timeout;                                               // how long to wait before giving up on connecting to a wifi network, in milliseconds
+    extern uint16_t wifi_connect_timeout_start;                                         // used to keep track of time when connecting to a wifi network
 
     //these variables stop button presses affecting new states
     //when switching from a previous state.
@@ -343,7 +379,7 @@ namespace watch2
     void    dimScreen(bool direction, int pause_thing);
     void    switchState(int newState, int variant = 0, int dim_pause_thing = 250, int bright_pause_thing = 250, bool dont_draw_first_frame = false);
     void    deepSleep(int pause_thing=10);
-    void    drawMenu(int x, int y, int width, int height, std::vector<std::string> items, int selected, int colour=themecolour);
+    void    drawMenu(int x, int y, int width, int height, std::vector<std::string> items, int selected, bool scroll=true, int colour=themecolour);
     void    drawSettingsMenu(int x, int y, int width, int height, std::vector<settingsMenuData> items, int selected, int colour=themecolour);
 
     //method to return all the files in a directory (non-recursively)
@@ -353,6 +389,7 @@ namespace watch2
     //open the file select dialogue.  this will pause the state until a file has been selected (or the operation has been cancelled)
     //path - the path to start the file selection at
     std::string beginFileSelect(std::string path = "/");
+    std::string textFieldDialogue(std::string prompt="", const char *default_input="", const char mask=0, bool clear_screen=true);
     int     initSD(bool handleCS = true);
     void    colour888(uint16_t colour, float *r, float *g, float *b);
     void    HSVtoRGB( float *r, float *g, float *b, float h, float s, float v );
@@ -369,6 +406,14 @@ namespace watch2
     void drawBmp(const char *filename, int16_t x, int16_t y);
     imageData getImageData(const char *filename);
     const char* drawImage(imageData data, int16_t img_x, int16_t img_y);
+
+    void enable_wifi(bool connect=true);
+    void disable_wifi();
+    void connectToWifiAP(const char *ssid="", const char *password="");
+    void getTimeFromNTP();
+
+    cJSON *getWifiProfiles();
+    void setWifiProfiles(cJSON *profiles);
 
     //functions for stb_image
     int img_read(void *user,  char *data, int size);
