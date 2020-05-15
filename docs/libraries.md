@@ -11,6 +11,8 @@ You won't have to manually install these, because they are included with the ESP
 - SPI library (`SPI.h`)
 - ESP32 FS library (`FS.h`)
 - WiFi library (`WiFi.h`)
+- Wifi secure client library (`WiFiClientSecure.h`)
+- HTTP client library (`HTTPClient.h`)
 - ESP32 Preferences library (`Preferences.h`)
 - [cJSON](https://github.com/DaveGamble/cJSON) (not Arduino or ESP32 specific, but bundled with the ESP32 core)
 
@@ -28,6 +30,8 @@ You won't have to manually install these libraries, because they are included wi
 
 The library csscolorparser included in the source directory isn't an Arduino library, so was included with the source.  It's GitHub repository can be found at https://github.com/mapbox/css-color-parser-cpp.
 
+The Wikipedia app uses Google's [gimbo-parser](https://github.com/google/gumbo-parser) to parse HTML.
+
 The system uses one of nothings' stb libraries (https://github.com/nothings/stb), specifically stb_image.  stb_image was modified slightly to shut the compiler up.  The modified library is included with the source.
 
 ## Modifications
@@ -40,10 +44,12 @@ The system will still compile if you don't perform these modifications, but you 
 
 The system uses a fork of IRRemote that adds ESP32 support (https://github.com/ExploreEmbedded/Arduino-IRremote).  In the file boarddefs.h, the value of TIMER_PWM_PIN (line 565) was changed from 5 to 12, and the value of TIMER_CHANNEL (line 563) was changed from 1 to 2.
 
-The TFT screen is controlled using Bodmer's wonderful TFT_eSPI library (https://github.com/Bodmer/TFT_eSPI).  This library is configured using a User setup header file in the library's source directory.  The file is cloned in the docs folder of this repo (it's called "Setup_watch2.h").  Make sure you only have one setup file included.
+The TFT screen is controlled using Bodmer's wonderful TFT_eSPI library (https://github.com/Bodmer/TFT_eSPI).  This library is configured using a User setup header file in the library's source directory.  The file is cloned in the extras folder of this repo (it's called "Setup_watch2.h").  Make sure you only have one setup file included.
 
 ### esp32 core modifications
 
 The ESP32 Arduino core was modified to enable C++17 support.  The modification concerns the file called `platform.txt` that is included with the ESP32 core.  Every Arduino core has a file with the same name that tells Arduino how to build sketches (among other things).  The file is usually located with the rest of the files that make up an Arduino core.  Arduino cores are usually located in a folder called "Arduino15".  On Windows, this can be found at `C:\Users\<username>\AppData\Local\Arduino15\`, and on Linux, it can be found at `~/.arduino15/`.  Go to `arduino15/packages/esp32/hardware/esp32/<version number>/`, and you will find `platform.txt`.  In this file, modify the section of code that starts `compiler.cpp.flags=` (in my install, it is on line 31).  Modify the flag `-std=gnu++11` to say `-std=gnu++17`, and save the file.
 
 The core was also modified to double the stack size of the loopTask.  This is the task that the ESP32 core sets up to run whatever is placed in the `loop()` function.  To make this modification, start in the ESP32 core directory (the folder where `platform.txt` lives).  Navigate to `cores/esp32/`, and find a file called `main.cpp`.  Open it, and look for a call to the function called `xTaskCreateUniversal`.  This modification concerns the third parameter, which sets the stack size of the main loop task.  By default it is set to 8192 bytes, but you can change it to anything else.  I changed it to 16384, which is twice the size of the original stack size.
+
+Some apps rely on HTTPS support, which is implemented using ARM's mbedTLS library.  This is built into the ESP32 core, but the watch system should be built using a recompiled version of the library that lets mbedTLS allocate memory from external PSRAM.  It was built using [esp32-arduino-lib-builder](https://github.com/espressif/esp32-arduino-lib-builder), and is included with this repo as `extras/libmbedtls.a`.

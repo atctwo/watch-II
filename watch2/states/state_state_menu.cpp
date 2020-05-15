@@ -154,7 +154,6 @@ void state_func_state_menu()
             if (!stateinfo.hidden)
             {
                 //draw app icon
-                Serial.println(stateinfo.stateIcon.c_str());
                 watch2::oled.setSwapBytes(true);
                 watch2::oled.pushImage(icon_xpos, icon_ypos - icon_yoffset, icon_size, icon_size, watch2::icons[stateinfo.stateIcon].data());
                 /*std::string icon_path = "/" + stateinfo.stateIcon;

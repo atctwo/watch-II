@@ -24,6 +24,8 @@
 //#include <Adafruit_ImageReader.h>
 #include <JC_Button.h>              // button object
 #include <WiFi.h>                   // wifi library
+#include <WiFiClientSecure.h>       // https client library
+#include <HTTPClient.h>
 #include <Preferences.h>            // for storing settings in nvs (allowing for persistance over power cycles)
 #include <tinyexpr.h>               // expression evaluator for calculator
 #include <cJSON.h>
@@ -35,7 +37,6 @@
 #include <TimeAlarms.h>             //used for creating and managing alarms
 
 #include "watch2.h"                 // defines and function prototypes
-//#include "globals.h"                // declatations for global variables
 
 // custom fonts
 /*
@@ -116,14 +117,20 @@
 #define WATCH_VER               "0.1"
 #define BATTERY_VOLTAGE_MAX     3.3     //max voltage of battery (when fully charged)
 #define BATTERY_VOLTAGE_SCALE   2       //scale factor of voltage divider
-                                        //make sure the battery voltage (when scaled) is not aboe 3.3v.
+                                        //make sure the battery voltage (when scaled) is not above 3.3v.
                                         //a LiPo that maxes out at 4.7v will be scaled to 2.35v, which is
                                         //fine for the ESP32.
 #define NTP_SERVER              "pool.ntp.org"
+#define PORT_HTTP               80
+#define PORT_HTTPS              443
 #define WIFI_PROFILES_FILENAME  "/wifi_profiles.json"
 //Calculator definitions
 #define CALC_CELL_WIDTH   25//27 for 4 chrs
 #define CALC_CELL_HEIGHT  12
+
+// root ca certs
+extern const char *root_ca_wikipedia;
+extern const char *root_ca_jigsaw;
 
 /**
  * functions and variables that relate to the running of the watch ii system.
@@ -233,6 +240,7 @@ namespace watch2
     //extern Adafruit_ImageReader flash_reader;
     extern TFT_eSprite top_thing;
     extern TFT_eSprite framebuffer;
+    extern WiFiClientSecure wifi_client;
 
     //button objects
     extern Button btn_dpad_up;

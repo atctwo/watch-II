@@ -11,6 +11,7 @@
 #include "state_notepad.cpp"
 #include "state_ir_remote.cpp"
 #include "state_image_viewer.cpp"
+#include "state_wiki.cpp"
 
 namespace watch2
 {
@@ -29,7 +30,8 @@ namespace watch2
         stateMeta("SD test", state_func_SDtest, "sd"),
         stateMeta("Notepad", state_func_notepad, "notepad"),
         stateMeta("IR remote", state_func_ir_remote, "ir remote"),
-        stateMeta("Image Viewer", state_func_image_viewer, "image_viewer")
+        stateMeta("Image Viewer", state_func_image_viewer, "image_viewer"),
+        stateMeta("Wikipedia", state_func_wiki, "wikipedia")
 
     };
 

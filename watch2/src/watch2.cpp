@@ -16,6 +16,7 @@ namespace watch2
     //Adafruit_ImageReader reader(SD);
     TFT_eSprite top_thing = TFT_eSprite(&oled);
     TFT_eSprite framebuffer = TFT_eSprite(&oled);
+    WiFiClientSecure wifi_client;
 
     //button objects
     Button btn_dpad_up(dpad_up, 25, false, false);
@@ -171,7 +172,6 @@ namespace watch2
         if (wifi_state == 2) // connecting
         {
             // wifi connection timeout
-            Serial.printf("if ( (%d - %d) > %d)\n", millis(), wifi_connect_timeout_start, wifi_connect_timeout);
             if ((millis() - wifi_connect_timeout_start) > wifi_connect_timeout)
             {
                 Serial.println("[Wifi] connection timed out");
@@ -690,17 +690,18 @@ namespace watch2
                 String itemtext = "";
 
                 //get the length of the text
-                watch2::getTextBounds(String(item.c_str()), x + padding, y + h + padding - y_offset, &x1, &y1, &w, &h2);
+                //watch2::getTextBounds(String(item.c_str()), x + padding, y + h + padding - y_offset, &x1, &y1, &w, &h2);
+                w = watch2::oled.textWidth(item.c_str());
 
                 //if the text is too long for the item button
-                if (w > (width - (padding * 4)))
+                if (w > (width - (padding * 6)))
                 {
 
                     //this is a _really_ inefficient idea
                     //iterate through each letter until the length of the button is reached
 
                     //find the width of the string "..." and store it in w2
-                    w = oled.textWidth("...");
+                    w2 = oled.textWidth("...");
                     h = oled.fontHeight();
 
                     //running value of item text length
@@ -710,17 +711,17 @@ namespace watch2
                     for (int i = 0; i < item.length(); i++)
                     {
                         //get width of character
-                        w = 7;//oled.textWidth(String(item[i][0]);
+                        w = oled.textWidth(String(item[i]).c_str());
 
                         //add width to running value
                         //really, the character width should be added to this value,
                         //but for some reason, the character width calculated by watch2::getTextBounds()
                         //above isn't correct
-                        text_length += 6;
+                        text_length += w;
 
                         //if the text would be too long (idk im tired)
                         //the limit is the width - padding - the length of "..."
-                        if (text_length > (width - (padding * 4) - w2))
+                        if (text_length > (width - (padding * 10) - w2))
                         {
                             //add "..." to the item text, and break the loop
                             itemtext += "...";
@@ -1889,7 +1890,6 @@ namespace watch2
             WiFi._setStatus(WL_DISCONNECTED);
             wifi_state = 2; // enabled, connecting
             wifi_connect_timeout_start = millis();
-            Serial.printf("set wifi timeout: %d\n", wifi_connect_timeout_start);
         }
         
         // the system will check if the wifi has connected to an AP in the endLoop() method.
@@ -1903,7 +1903,6 @@ namespace watch2
         struct tm timeinfo;
         getLocalTime(&timeinfo);
         Serial.println(&timeinfo, "retrieved time: %A, %B %d %Y %H:%M:%S");
-        Serial.printf(            "also time:      %d:%d:%d %d.%d.%d", timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec, timeinfo.tm_mday, timeinfo.tm_mon+1, timeinfo.tm_year + 1900);
         setTime(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec, timeinfo.tm_mday, timeinfo.tm_mon+1, timeinfo.tm_year + 1900);
     }
 
