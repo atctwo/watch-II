@@ -165,6 +165,13 @@ void state_func_wiki()
             if (!watch2::state_init)
             {
                 // actually search
+
+                // this check is required so that the program doesn't reperform the search every time this state is switched in to.
+                // we only want it to search if it is being switched into from the menu, but not if it's from the page variant.  When we
+                // leave this variant to go back to the menu, we set request_status to 102 (processing), so when this variant is switched
+                // back into, the following if statement evaluates as true, and the search is performed.  we don't reset the request_status
+                // when switching to the page variant, because that means when we switch from the page variant to this variant, the
+                // request_status will still be HTTP_CODE_OK, and the program won't resend the search.
                 if (request_status != HTTP_CODE_OK)
                 {
                     // set up search results vector
@@ -251,7 +258,7 @@ void state_func_wiki()
                     watch2::oled.setTextColor(WHITE, BLACK);
                     watch2::oled.setCursor(0, SCREEN_HEIGHT * 0.4);
                     watch2::oled.print("Request failed, error:\n");
-                    watch2::oled.print(http.errorToString(request_status));
+                    watch2::oled.print(http.errorToString(request_status).c_str());
                 }
 
                 // draw flavour text
@@ -310,97 +317,117 @@ void state_func_wiki()
                 line_offset = 0;
 
                 // actually get the page
-                if (page_request_status != HTTP_CODE_OK)
+                Serial.print("[Wiki] getting page with id ");
+                Serial.println(pageid);
+
+                //https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" + String(search_query.c_str()) + "&format=json
+                watch2::wifi_client.setCACert(root_ca_wikipedia);
+                String url = "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&formatversion=2&explaintext=1&pageids=" + String(pageid);
+                Serial.print("[Wiki] request url: ");
+                Serial.println(url);
+                if(http.begin(watch2::wifi_client, url))
                 {
-                    Serial.print("[Wiki] getting page with id ");
-                    Serial.println(pageid);
+                    Serial.println("[Wiki] connected to wikipedia");
+                    int http_code= http.GET();
 
-                    //https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" + String(search_query.c_str()) + "&format=json
-                    watch2::wifi_client.setCACert(root_ca_wikipedia);
-                    if(http.begin(watch2::wifi_client, "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&formatversion=2&explaintext=1&pageids=" + String(pageid)))
+                    if (http_code > 0)
                     {
-                        Serial.println("[Wiki] connected to wikipedia");
-                        int http_code= http.GET();
-
-                        if (http_code > 0)
+                        Serial.println("[Wiki] got response");
+                        Serial.printf ("       response code: %d\n", http_code);
+                        if (http_code == HTTP_CODE_OK)
                         {
-                            Serial.println("[Wiki] got response");
-                            Serial.printf ("       response code: %d\n", http_code);
-                            if (http_code == HTTP_CODE_OK)
+                            // get article contents
+                            String page_response_json = http.getString();
+                            Serial.println("[Wiki] json response: ");
+                            Serial.println(page_response_json);
+
+                            page_response = cJSON_Parse(page_response_json.c_str());
+                            page_query = cJSON_GetObjectItem(page_response, "query");
+                            page_pages = cJSON_GetObjectItem(page_query, "pages");
+                            page_object = cJSON_GetArrayItem(page_pages, 0);
+
+                            if (page_object)
                             {
-                                // get article contents
-                                page_response = cJSON_Parse(http.getString().c_str());
-                                page_query = cJSON_GetObjectItem(page_response, "query");
-                                page_pages = cJSON_GetObjectItem(page_query, "pages");
-                                page_object = cJSON_GetArrayItem(page_pages, 0);
-
-                                if (page_object)
+                                // parse article
+                                char *article_text = cJSON_GetObjectItem(page_object, "extract")->valuestring;
+                                // Serial.println("[Wiki] successful response:\n");
+                                // Serial.println(article_text);
+                                // Serial.println();
+                                
+                                // split article into lines
+                                lines.clear();
+                                lines.push_back( (article_lines) {"", {""}} );
+                                char *pch;
+                                uint16_t line_width = 0;
+                                uint16_t word_width = 0;
+                                uint16_t current_line = 0;
+                                pch = strtok(article_text, " ");
+                                while(pch != NULL)
                                 {
-                                    // parse article
-                                    char *article_text = cJSON_GetObjectItem(page_object, "extract")->valuestring;
-                                    //Serial.println(article_text);
-                                    
-                                    // split article into lines
-                                    lines.clear();
-                                    lines.push_back( (article_lines) {"", {""}} );
-                                    char *pch;
-                                    uint16_t line_width = 0;
-                                    uint16_t word_width = 0;
-                                    uint16_t current_line = 0;
-                                    pch = strtok(article_text, " ");
-                                    while(pch != NULL)
+                                    word_width = watch2::oled.textWidth(pch);
+                                    if ((line_width + word_width) > (SCREEN_WIDTH * 0.85))
                                     {
-                                        word_width = watch2::oled.textWidth(pch);
-                                        if ((line_width + word_width) > (SCREEN_WIDTH * 0.85))
-                                        {
-                                            // word wrap
-                                            // remove newlines from current line
-                                            lines[current_line].text.erase(std::remove(lines[current_line].text.begin(), lines[current_line].text.end(), '\n'), lines[current_line].text.end());
+                                        // word wrap
+                                        // remove newlines from current line
+                                        lines[current_line].text.erase(std::remove(lines[current_line].text.begin(), lines[current_line].text.end(), '\n'), lines[current_line].text.end());
 
-                                            // add new line
-                                            lines.push_back( (article_lines) {"", {""}} );
+                                        // add new line
+                                        lines.push_back( (article_lines) {"", {""}} );
 
-                                            // increment line counter
-                                            current_line++;
-                                            total_lines++;
+                                        // increment line counter
+                                        current_line++;
+                                        total_lines++;
 
-                                            // add word to new line
-                                            lines[current_line].text.append(pch);
-                                            lines[current_line].text.append(" ");
+                                        // add word to new line
+                                        lines[current_line].text.append(pch);
+                                        lines[current_line].text.append(" ");
 
-                                            // add word width to line width
-                                            line_width = word_width;
-                                        }
-                                        else
-                                        {
-                                            // word can be added to the current line without going over the line
-                                            line_width += word_width;
-                                            lines[current_line].text.append(pch);
-                                            lines[current_line].text.append(" "); // add space to line
-                                        }
-                                        pch = strtok(NULL, " ");
+                                        // add word width to line width
+                                        line_width = word_width;
                                     }
+                                    else
+                                    {
+                                        // word can be added to the current line without going over the line
+                                        line_width += word_width;
+                                        lines[current_line].text.append(pch);
+                                        lines[current_line].text.append(" "); // add space to line
+                                    }
+                                    pch = strtok(NULL, " ");
                                 }
                             }
+                            else
+                            {
+                                Serial.printf("[Wiki] error parsing response\n");
+                                lines.clear();
+                                lines.push_back((article_lines){"error parsing response", {}});
+                            }
                         }
-                        else 
+                        else
                         {
-                            Serial.printf("[Wiki] GET failed, error: %s\n", http.errorToString(http_code).c_str());
+                            Serial.printf("[Wiki] Request not ok, error: %s\n", http.errorToString(http_code).c_str());
                             lines.clear();
-                            lines.push_back((article_lines){"GET failed, error:", {}});
+                            lines.push_back((article_lines){"Request not ok, error:", {}});
                             lines.push_back((article_lines){http.errorToString(http_code).c_str(), {}});
                         }
-
-                        request_status = http_code;
-                        http.end();
                     }
                     else 
                     {
-                        Serial.printf("[Wiki] unable to connect to wikipedia\n");
+                        Serial.printf("[Wiki] GET failed, error: %s\n", http.errorToString(http_code).c_str());
                         lines.clear();
-                        lines.push_back((article_lines){"unable to connect to wikipedia", {}});
+                        lines.push_back((article_lines){"GET failed, error:", {}});
+                        lines.push_back((article_lines){http.errorToString(http_code).c_str(), {}});
                     }
+
+                    page_request_status = http_code;
+                    http.end();
                 }
+                else 
+                {
+                    Serial.printf("[Wiki] unable to connect to wikipedia\n");
+                    lines.clear();
+                    lines.push_back((article_lines){"unable to connect to wikipedia", {}});
+                }
+                
             }
 
             if (dpad_up_active())
@@ -438,6 +465,7 @@ void state_func_wiki()
             if (dpad_left_active())
             {
                 // go back to search page
+                page_request_status = HTTP_CODE_PROCESSING;
                 watch2::switchState(watch2::state, 1);
             }
 

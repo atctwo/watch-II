@@ -654,8 +654,6 @@ namespace watch2
             if (selected_y_index > ((y + height) - (ht))) 
             {
                 y_offset = ht * ((selected + 2) - onscreen_items);
-                Serial.printf("offset: %d\n", y_offset);
-                Serial.printf("items:  %d\n", onscreen_items);
             }
         }
 
