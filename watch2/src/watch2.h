@@ -26,6 +26,7 @@
 #include <WiFi.h>                   // wifi library
 #include <WiFiClientSecure.h>       // https client library
 #include <HTTPClient.h>
+#include <BleKeyboard.h>            // for connecting to a device over BLE, and sending keyboard keys
 #include <Preferences.h>            // for storing settings in nvs (allowing for persistance over power cycles)
 #include <tinyexpr.h>               // expression evaluator for calculator
 #include <cJSON.h>
@@ -242,6 +243,7 @@ namespace watch2
     extern TFT_eSprite top_thing;
     extern TFT_eSprite framebuffer;
     extern WiFiClientSecure wifi_client;
+    extern BleKeyboard *ble_keyboard;
 
     //button objects
     extern Button btn_dpad_up;
@@ -349,6 +351,12 @@ namespace watch2
     extern uint32_t wifi_connect_timeout;                                               // how long to wait before giving up on connecting to a wifi network, in milliseconds
     extern uint32_t wifi_connect_timeout_start;                                         // used to keep track of time when connecting to a wifi network
 
+    extern uint8_t bluetooth_state;                                                     // keeps track of the state of the bluetooth subsystem
+                                                                                        // 0 - disabled
+                                                                                        // 1 - enabling
+                                                                                        // 2 - enabled, disconnected
+                                                                                        // 3 - enabled, connected
+
     //these variables stop button presses affecting new states
     //when switching from a previous state.
     //when a user presses a button to go from the watch face to the menu,
@@ -423,6 +431,9 @@ namespace watch2
 
     cJSON *getWifiProfiles();
     void setWifiProfiles(cJSON *profiles);
+
+    void enable_bluetooth();
+    void disable_bluetooth();
 
     //functions for stb_image
     int img_read(void *user,  char *data, int size);
