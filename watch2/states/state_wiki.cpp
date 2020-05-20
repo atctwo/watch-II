@@ -61,7 +61,7 @@ static std::string cleantext(GumboNode* node) {
 
 void state_func_wiki()
 {
-    static std::string search_query = "cavetown";
+    static std::string search_query = "";
     static uint32_t pageid = 0;
     static bool connected_to_wikipeda = false;
 

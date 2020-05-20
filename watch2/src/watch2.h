@@ -131,6 +131,7 @@
 // root ca certs
 extern const char *root_ca_wikipedia;
 extern const char *root_ca_jigsaw;
+extern const char *root_ca_open_trivia_db;
 
 /**
  * functions and variables that relate to the running of the watch ii system.
