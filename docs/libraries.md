@@ -24,6 +24,7 @@ You will have to install these libraries yourself.
 - [Time](https://github.com/PaulStoffregen/Time) by Paul Stoffregen
 - [TimeAlarms](https://github.com/PaulStoffregen/TimeAlarms) by Paul Stoffregen
 - a fork of [IRremote](https://github.com/ExploreEmbedded/Arduino-IRremote) that adds ESP32 send support that was never merged back into the original IRremote
+- [ESP32 BLE Keyboard](https://github.com/T-vK/ESP32-BLE-Keyboard) by T-vK
 
 ### included with the repository
 You won't have to manually install these libraries, because they are included with the repository.
