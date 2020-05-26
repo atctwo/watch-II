@@ -1,0 +1,30 @@
+[submodule "main/css-color-parser-cpp"]
+	path = main/css-color-parser-cpp
+	url = https://github.com/mapbox/css-color-parser-cpp.git
+[submodule "main/gumbo-parser"]
+	path = main/gumbo-parser
+	url = https://github.com/google/gumbo-parser.git
+[submodule "main/libraries/JC_Button"]
+	path = main/libraries/JC_Button
+	url = https://github.com/JChristensen/JC_Button.git
+[submodule "main/libraries/Time"]
+	path = main/libraries/Time
+	url = https://github.com/PaulStoffregen/Time.git
+[submodule "main/libraries/TimeAlarms"]
+	path = main/libraries/TimeAlarms
+	url = https://github.com/PaulStoffregen/TimeAlarms.git
+[submodule "main/libraries/tinyexpr"]
+	path = main/libraries/tinyexpr
+	url = https://github.com/codeplea/tinyexpr.git
+[submodule "main/libraries/SdFat"]
+	path = main/libraries/SdFat
+	url = https://github.com/greiman/SdFat.git
+[submodule "main/libraries/Arduino-IRremote"]
+	path = main/libraries/Arduino-IRremote
+	url = https://github.com/ExploreEmbedded/Arduino-IRremote.git
+[submodule "main/libraries/TFT_eSPI"]
+	path = main/libraries/TFT_eSPI
+	url = https://github.com/Bodmer/TFT_eSPI.git
+[submodule "components/arduino-esp32"]
+	path = components/arduino-esp32
+	url = https://github.com/espressif/arduino-esp32.git

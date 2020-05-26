@@ -1,0 +1,144 @@
+# set up source files
+
+set(LIB_ARDUINO_IRREMOTE_SRCS
+    libraries/Arduino-IRremote/ir_Aiwa.cpp
+    libraries/Arduino-IRremote/ir_Denon.cpp
+    libraries/Arduino-IRremote/ir_Dish.cpp
+    libraries/Arduino-IRremote/ir_JVC.cpp
+    libraries/Arduino-IRremote/ir_Lego_PF.cpp
+    libraries/Arduino-IRremote/ir_LG.cpp
+    libraries/Arduino-IRremote/ir_Mitsubishi.cpp
+    libraries/Arduino-IRremote/ir_NEC.cpp
+    libraries/Arduino-IRremote/ir_Panasonic.cpp
+    libraries/Arduino-IRremote/ir_RC5_RC6.cpp
+    libraries/Arduino-IRremote/ir_Samsung.cpp
+    libraries/Arduino-IRremote/ir_Sanyo.cpp
+    libraries/Arduino-IRremote/ir_Sharp.cpp
+    libraries/Arduino-IRremote/ir_Sony.cpp
+    libraries/Arduino-IRremote/ir_Template.cpp
+    libraries/Arduino-IRremote/ir_Whynter.cpp
+    libraries/Arduino-IRremote/irPronto.cpp
+    libraries/Arduino-IRremote/irRecv.cpp
+    libraries/Arduino-IRremote/IRremote.cpp
+    libraries/Arduino-IRremote/irSend.cpp
+)
+
+set(LIB_SDFAT_SRCS
+    libraries/SdFat/src/MinimumSerial.cpp
+    libraries/SdFat/src/FatLib/FatFile.cpp
+    libraries/SdFat/src/FatLib/FatFileLFN.cpp
+    libraries/SdFat/src/FatLib/FatFilePrint.cpp
+    libraries/SdFat/src/FatLib/FatFileSFN.cpp
+    libraries/SdFat/src/FatLib/FatVolume.cpp
+    libraries/SdFat/src/FatLib/FmtNumber.cpp
+    libraries/SdFat/src/FatLib/fstream.cpp
+    libraries/SdFat/src/FatLib/istream.cpp
+    libraries/SdFat/src/FatLib/ostream.cpp
+    libraries/SdFat/src/FatLib/StdioStream.cpp
+    libraries/SdFat/src/SdCard/SdioCardEX.cpp
+    libraries/SdFat/src/SdCard/SdioTeensy.cpp
+    libraries/SdFat/src/SdCard/SdSpiCard.cpp
+    libraries/SdFat/src/SdCard/SdSpiCardEX.cpp
+    libraries/SdFat/src/SpiDriver/SdSpiESP8266.cpp
+    libraries/SdFat/src/SpiDriver/SdSpiParticle.cpp
+    libraries/SdFat/src/SpiDriver/SdSpiSAM3X.cpp
+    libraries/SdFat/src/SpiDriver/SdSpiSTM32.cpp
+    libraries/SdFat/src/SpiDriver/SdSpiTeensy3.cpp
+)
+
+set(LIB_ARDUINO_SRCS
+    libraries/JC_Button/src/JC_Button.cpp
+    libraries/Time/Time.cpp
+    libraries/Time/DateStrings.cpp
+    libraries/TimeAlarms/TimeAlarms.cpp
+    libraries/TFT_eSPI/TFT_eSPI.cpp
+    libraries/tinyexpr/src/tinyexpr.c
+)
+
+set(WATCH_SRCS
+    css-color-parser-cpp/csscolorparser.cpp
+    gumbo-parser/src/attribute.c
+    gumbo-parser/src/char_ref.c
+    gumbo-parser/src/error.c
+    gumbo-parser/src/parser.c
+    gumbo-parser/src/string_buffer.c
+    gumbo-parser/src/string_piece.c
+    gumbo-parser/src/tag.c
+    gumbo-parser/src/tokenizer.c
+    gumbo-parser/src/utf8.c
+    gumbo-parser/src/util.c
+    gumbo-parser/src/vector.c
+    root_store.cpp
+    watch2.cpp
+)
+
+set(STATE_SRCS 
+    states/state_alarms.cpp
+    states/state_calc.cpp
+    states/state_image_viewer.cpp
+    states/state_init.cpp
+    states/state_ir_remote.cpp
+    states/state_notepad.cpp
+    states/state_sdtest.cpp
+    states/state_settings.cpp
+    states/state_state_menu.cpp
+    states/state_stopwatch.cpp
+    states/state_timer.cpp
+    states/state_watch_face.cpp
+    states/state_wiki.cpp
+    states/states.cpp
+)
+
+set(COMPONENT_SRCS 
+    ${LIB_ARDUINO_SRCS}
+    ${LIB_ARDUINO_IRREMOTE_SRCS} 
+    ${LIB_SDFAT_SRCS} 
+    ${STATE_SRCS} 
+    ${WATCH_SRCS} 
+    "main.cpp"
+)
+
+
+# add includes
+
+set(COMPONENT_ADD_INCLUDEDIRS 
+    libraries/SdFat/src/ 			
+    libraries/JC_Button/src/ 	
+    libraries/Arduino-IRremote/ 	
+    libraries/TFT_eSPI/ 			
+    libraries/Time/ 				
+    libraries/TimeAlarms/ 			
+    libraries/tinyexpr/src/
+)
+
+register_component()
+
+set_source_files_properties(
+    "libraries/TFT_eSPI/TFT_eSPI.cpp"
+    PROPERTIES COMPILE_FLAGS
+    "-x c++ -std=gnu++17"
+)
+
+component_compile_options(-Wno-unused-variable)
+component_compile_options(-Wno-unused-value)
+component_compile_options(-Wno-unused-function)
+component_compile_options(-Wno-narrowing)
+component_compile_options(-Wno-address)
+component_compile_options(-Wno-format)
+component_compile_options(-Wno-char-subscripts)
+component_compile_options(-Wno-unused-but-set-variable)
+component_compile_options(-Wno-maybe-uninitialized)
+component_compile_options(-Wno-return-type)
+component_compile_options(-Wno-error)
+component_compile_options(-std=gnu++17)
+component_compile_options(-D_DEBUG)
+component_compile_options(-DUNICODE)
+component_compile_options(-D_UNICODE)
+component_compile_options(-DARDUINO=10900)
+component_compile_options(-DESP_PLATFORM)
+component_compile_options(-DESP32)
+component_compile_options(-DARDUINO_ESP32_DEV)
+component_compile_options(-DARDUINO_ARCH_ESP32)
+component_compile_options(-DARDUINO_BOARD=\"ESP32_DEV\")
+component_compile_options(-DMBEDTLS_CONFIG_FILE=\"mbedtls/esp_config.h\")
+component_compile_options(-DHAVE_CONFIG_H)
