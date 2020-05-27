@@ -52,7 +52,7 @@ set(LIB_ARDUINO_SRCS
     libraries/Time/DateStrings.cpp
     libraries/TimeAlarms/TimeAlarms.cpp
     libraries/TFT_eSPI/TFT_eSPI.cpp
-    libraries/tinyexpr/src/tinyexpr.c
+    libraries/tinyexpr/tinyexpr.c
 )
 
 set(WATCH_SRCS
@@ -108,7 +108,7 @@ set(COMPONENT_ADD_INCLUDEDIRS
     libraries/TFT_eSPI/ 			
     libraries/Time/ 				
     libraries/TimeAlarms/ 			
-    libraries/tinyexpr/src/
+    libraries/tinyexpr/
 )
 
 register_component()
