@@ -202,7 +202,7 @@ void state_func_watch_face()
         static int selected_widget = 3;
         static int last_button_widget = 3;
         static bool go_back_to_watch_face = false;
-        static bool bt_test = false;
+        static uint8_t last_bt_state = watch2::bluetooth_state;
         static uint8_t last_wifi_state = watch2::wifi_state;
 
         if (!watch2::state_init) go_back_to_watch_face = false;
@@ -291,7 +291,11 @@ void state_func_watch_face()
                 if (watch2::wifi_state == 0) watch2::enable_wifi();
                 else watch2::disable_wifi();
             }
-            if (selected_widget == 4) bt_test = !bt_test;
+            if (selected_widget == 4) 
+            {
+                //if (watch2::bluetooth_state == 0) watch2::enable_bluetooth();
+                //else watch2::disable_bluetooth();
+            }
         }
 
         if (!watch2::state_init || dpad_any_active() || (watch2::wifi_state != last_wifi_state))
@@ -351,11 +355,14 @@ void state_func_watch_face()
             if (watch2::wifi_state != last_wifi_state) last_wifi_state = watch2::wifi_state;
 
             //draw bluetooth button  bluetooth blue
-            background_colour = (bt_test) ? 0x041F : BLACK;
+            if (watch2::bluetooth_state == 3) background_colour = 0x041F; // enabled + connected
+            if (watch2::bluetooth_state == 2) background_colour = 0x743E; // enabled + disconnected
+            if (watch2::bluetooth_state == 1) background_colour = 0xA55C; // enabling
+            if (watch2::bluetooth_state == 0) background_colour = BLACK;  // disabled
             watch2::oled.fillRoundRect(button_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, background_colour);
-            outline_colour = ( !(selected_widget == 4) != !(bt_test) ) ? 0x041F : WHITE;
+            outline_colour = ( !(selected_widget == 4) != !(watch2::bluetooth_state == 3) ) ? 0x041F : WHITE;
             watch2::oled.drawRoundRect(button_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, outline_colour);
-            watch2::oled.drawBitmap(button_x, button_y, watch2::small_icons["bluetooth"].data(), button_size, button_size, (bt_test) ? WHITE : 0x041F);
+            watch2::oled.drawBitmap(button_x, button_y, watch2::small_icons["bluetooth"].data(), button_size, button_size, (watch2::bluetooth_state != 0) ? WHITE : 0x041F);
             button_x += spacing + button_size;
 
 

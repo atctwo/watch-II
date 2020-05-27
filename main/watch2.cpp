@@ -3,6 +3,7 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
+#include "esp_bt.h"
 
 
 
@@ -17,6 +18,7 @@ namespace watch2
     TFT_eSprite top_thing = TFT_eSprite(&oled);
     TFT_eSprite framebuffer = TFT_eSprite(&oled);
     WiFiClientSecure wifi_client;
+    BleKeyboard *ble_keyboard = NULL;
 
     //button objects
     Button btn_dpad_up(dpad_up, 25, false, false);
@@ -54,6 +56,7 @@ namespace watch2
     bool wifi_boot_reconnect = true;
     bool wifi_enabled = false;
     wifi_auth_mode_t wifi_encryption = WIFI_AUTH_MAX;
+    uint8_t bluetooth_state = 0;
     int sd_state = 0;
     bool spiffs_state = 0;
     int RTC_DATA_ATTR stopwatch_timing = 0;
@@ -108,6 +111,8 @@ namespace watch2
 
     void endLoop()
     {
+        Serial.printf("internal RAM: %2.4f%%\n", ((float)(ESP.getHeapSize() - ESP.getFreeHeap()) / ESP.getHeapSize()) * 100);
+
         //wip screenshot tool
         //this doesn't work yet
         if (btn_zero.pressedFor(1000))
@@ -158,6 +163,7 @@ namespace watch2
             }
         }
 
+        // wifi
         // check the wifi connection status
         if (wifi_state == 4) // pls connect asap
         {
@@ -299,6 +305,52 @@ namespace watch2
             {
                 wifi_state = 1;
                 Serial.println("[WiFi] disconnected from AP");
+            }
+        }
+
+        // bluetooth
+        if (bluetooth_state == 2 || bluetooth_state == 3)
+        {
+            if (ble_keyboard)
+            {
+                if (ble_keyboard->isConnected())
+                {
+                    Serial.println("[Bluetooth] connected");
+                    bluetooth_state = 3;
+                }
+                else
+                {
+                    Serial.println("[Bluetooth] disconnected");
+                    bluetooth_state = 2;
+                }
+                
+            }
+            else
+            {
+                Serial.println("[Bluetooth] BLE HID keyboard disabled");
+            }
+        }
+
+        // bluetooth
+        if (bluetooth_state == 2 || bluetooth_state == 3)
+        {
+            if (ble_keyboard)
+            {
+                if (ble_keyboard->isConnected())
+                {
+                    Serial.println("[Bluetooth] connected");
+                    bluetooth_state = 3;
+                }
+                else
+                {
+                    Serial.println("[Bluetooth] disconnected");
+                    bluetooth_state = 2;
+                }
+                
+            }
+            else
+            {
+                Serial.println("[Bluetooth] BLE HID keyboard disabled");
             }
         }
 
@@ -654,8 +706,6 @@ namespace watch2
             if (selected_y_index > ((y + height) - (ht))) 
             {
                 y_offset = ht * ((selected + 2) - onscreen_items);
-                Serial.printf("offset: %d\n", y_offset);
-                Serial.printf("items:  %d\n", onscreen_items);
             }
         }
 
@@ -1769,7 +1819,8 @@ namespace watch2
     void disable_wifi()
     {
         Serial.println("[Wifi] disconnecting from wifi");
-        WiFi.disconnect();
+        WiFi.disconnect(true);
+        WiFi.mode(WIFI_OFF);
 
         // tell the system to disable wifi on boot
         watch2::preferences.begin("watch2", false);
@@ -1897,13 +1948,19 @@ namespace watch2
 
     void getTimeFromNTP()
     {
-        Serial.println("setting time using ntp");
-        Serial.println(watch2::wifi_state);
+        Serial.println("[NTP] setting time using ntp");
         configTime(watch2::timezone * 60 * 60, 0, NTP_SERVER);
+<<<<<<< HEAD:main/watch2.cpp
         // struct timeval timeinfo;
         // getLocalTime(&timeinfo);
         // Serial.println(&timeinfo, "retrieved time: %A, %B %d %Y %H:%M:%S");
         // setTime(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec, timeinfo.tm_mday, timeinfo.tm_mon+1, timeinfo.tm_year + 1900);
+=======
+        struct tm timeinfo;
+        getLocalTime(&timeinfo);
+        Serial.println(&timeinfo, "[NTP] retrieved time: %A, %B %d %Y %H:%M:%S");
+        setTime(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec, timeinfo.tm_mday, timeinfo.tm_mon+1, timeinfo.tm_year + 1900);
+>>>>>>> f6cbc666898c87965ebe84b71b408c253afa64cf:watch2/src/watch2.cpp
     }
 
     cJSON *getWifiProfiles()
@@ -1977,6 +2034,39 @@ namespace watch2
             // close file
             profiles_file.close();
         }
+    }
+
+    void enable_bluetooth()
+    {
+        Serial.println("[Bluetooth] enabling bluetooth");
+        bluetooth_state = 1; // enabling
+
+        // enable ble keyboard
+        Serial.println("[Bluetooth] instantiating BLE HID keyboard");
+        ble_keyboard = new BleKeyboard("watch2", "atctwo");
+        Serial.println("[Bluetooth] starting BLE keyboard");
+        ble_keyboard->begin();
+
+        Serial.println("[Bluetooth] finished enabling bluetooth");
+        bluetooth_state = 2;
+    }
+
+    void disable_bluetooth()
+    {
+        Serial.println("[Bluetooth] disabling bluetooth");
+
+        // disable ble keyboard
+        Serial.println("[Bluetooth] ending BLE keyboard");
+        ble_keyboard->end();
+        Serial.println("[Bluetooth] destroying BLE keyboard");
+        delete(ble_keyboard);
+
+        // disable bluetooth controller + bluedroid
+        btStop();
+        esp_bt_mem_release(ESP_BT_MODE_BLE);
+
+        Serial.println("[Bluetooth] finished disabling bluetooth");
+        bluetooth_state = 0;
     }
 
 
