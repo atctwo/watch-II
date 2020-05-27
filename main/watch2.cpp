@@ -1950,17 +1950,10 @@ namespace watch2
     {
         Serial.println("[NTP] setting time using ntp");
         configTime(watch2::timezone * 60 * 60, 0, NTP_SERVER);
-<<<<<<< HEAD:main/watch2.cpp
         // struct timeval timeinfo;
         // getLocalTime(&timeinfo);
         // Serial.println(&timeinfo, "retrieved time: %A, %B %d %Y %H:%M:%S");
         // setTime(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec, timeinfo.tm_mday, timeinfo.tm_mon+1, timeinfo.tm_year + 1900);
-=======
-        struct tm timeinfo;
-        getLocalTime(&timeinfo);
-        Serial.println(&timeinfo, "[NTP] retrieved time: %A, %B %d %Y %H:%M:%S");
-        setTime(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec, timeinfo.tm_mday, timeinfo.tm_mon+1, timeinfo.tm_year + 1900);
->>>>>>> f6cbc666898c87965ebe84b71b408c253afa64cf:watch2/src/watch2.cpp
     }
 
     cJSON *getWifiProfiles()
