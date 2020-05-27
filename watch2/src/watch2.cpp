@@ -163,147 +163,47 @@ namespace watch2
             }
         }
 
-        // check the wifi connection status
-        if (wifi_state == 4) // pls connect asap
+        // wifi
+        if (wifi_state == 4)
         {
-            if (WiFi.status() != WL_CONNECTED) 
-            {
-                if (wifi_reconnect_attempts > 0) connectToWifiAP();
-                else wifi_state = 1;
-            }
-            else wifi_state = 3;
+            connectToWifiAP();
         }
 
-        if (wifi_state == 2) // connecting
+        if (wifi_state == 2 || wifi_state == 3)
         {
-            // wifi connection timeout
-            if ((millis() - wifi_connect_timeout_start) > wifi_connect_timeout)
-            {
-                Serial.println("[Wifi] connection timed out");
-                WiFi._setStatus(WL_CONNECT_FAILED);
-                Serial.println(millis());
-            }
-
             if (WiFi.status() == WL_CONNECTED)
             {
-
-                // update wifi profiles list
-                cJSON *profiles = getWifiProfiles();
-                if (profiles)
-                {
-                    // Serial.println("profile list before adding new profile");
-                    // Serial.println(cJSON_Print(profiles));
-
-                    // is ssid in profile list?
-                    bool help = false;
-                    cJSON *profile;
-                    cJSON *profile_array = cJSON_GetObjectItem(profiles, "profiles");
-                    for (int i = 0; i < cJSON_GetArraySize(profile_array); i++)
-                    {
-                        profile = cJSON_GetArrayItem(profile_array, i);
-                        const char* ssid = cJSON_GetObjectItem(profile, "ssid")->valuestring;
-                        if (strcmp(ssid, WiFi.SSID().c_str()) == 0) // if profile ssid matches connected ssid
-                        {
-                            help = true;
-                            break;
-                        }
-                    }
-
-                    // if there wasn't a match (the ap doesn't have a profile in the profile list)
-                    if (!help)
-                    {
-                        // create ap profile
-                        profile = cJSON_CreateObject();
-                        cJSON_AddStringToObject(profile, "ssid", WiFi.SSID().c_str());
-                        cJSON_AddStringToObject(profile, "password", WiFi.psk().c_str());
-                        cJSON_AddNumberToObject(profile, "encryption", wifi_encryption);
-
-                        // Serial.println("new profile");
-                        // Serial.println(cJSON_Print(profile));
-
-                        // add profile to profile list
-                        cJSON_AddItemToArray(profile_array, profile);
-                    }
-
-                    // Serial.println("profile list after adding new profile");
-                    // Serial.println(cJSON_Print(profiles));
-
-                    // update access index
-                    cJSON *access_index = cJSON_GetObjectItem(profiles, "access_index");
-                    if (access_index)
-                    {
-                        // linear search for ssid index
-                        int index = -1;
-                        for (int i = 0; i < cJSON_GetArraySize(access_index); i++)
-                        {
-                            const char *profile_ssid = cJSON_GetArrayItem(access_index, i)->valuestring;
-                            if (strcmp(profile_ssid, WiFi.SSID().c_str()) == 0)
-                            {
-                                index = i;
-                                break;
-                            }
-                        }
-
-                        // if the ssid is in the list
-                        if (index > -1)
-                        {
-                            // pop ssid from list
-                            cJSON_DeleteItemFromArray(access_index, index);
-                        }
-
-                        // push ssid to start of list
-                        cJSON_InsertItemInArray(access_index, 0, cJSON_CreateString(WiFi.SSID().c_str()));
-                    }
-                    else Serial.println("could not access access index");
-
-                    // Serial.println("profile list after updating access index");
-                    // Serial.println(cJSON_Print(profiles));
-
-                    // write update profile list to file
-                    setWifiProfiles(profiles);
-
-                    // clear up memory
-                    Serial.println("[Wifi] freeing memory for profiles");
-                    cJSON_Delete(profiles);
-                }
-                else Serial.println("[Wifi] couldn't access profile list");
-
-                // set wifi state
+                Serial.println("[Wifi] connected");
                 wifi_state = 3;
-                Serial.printf("[Wifi] connected to %s\n", WiFi.SSID().c_str());
             }
             
             if (WiFi.status() == WL_CONNECT_FAILED || WiFi.status() == WL_CONNECTION_LOST || WiFi.status() == WL_NO_SSID_AVAIL)
             {
-                if (wifi_reconnect_attempts == 0) // out of reconnect attempts
-                {
-                    WiFi.disconnect();
-                    wifi_state = 1;
-                    Serial.println("[WiFi] could not connect to AP");
-                }
-                else
-                {
-                    wifi_reconnect_attempts--;
-                    Serial.printf("[Wifi] failed to connect to AP, %d attempts remaining\n", wifi_reconnect_attempts);
-                    connectToWifiAP();
-                }
+                Serial.println("[Wifi] disconnected");
+                wifi_state = 1;
             }
         }
 
-        if (wifi_state == 3) // connected
+        // bluetooth
+        if (bluetooth_state == 2 || bluetooth_state == 3)
         {
-            // set ntp time
-            if (!watch2::ntp_boot_connected)
+            if (ble_keyboard)
             {
-                getTimeFromNTP();
-                watch2::ntp_boot_connected = true;
+                if (ble_keyboard->isConnected())
+                {
+                    Serial.println("[Bluetooth] connected");
+                    bluetooth_state = 3;
+                }
+                else
+                {
+                    Serial.println("[Bluetooth] disconnected");
+                    bluetooth_state = 2;
+                }
+                
             }
-
-            // if wifi disconnected
-            if (WiFi.status() == WL_DISCONNECTED || WiFi.status() == WL_CONNECT_FAILED || WiFi.status() == WL_CONNECTION_LOST || WiFi.status() == WL_NO_SSID_AVAIL)
+            else
             {
-                wifi_state = 1;
-                Serial.println("[WiFi] disconnected from AP");
+                Serial.println("[Bluetooth] BLE HID keyboard disabled");
             }
         }
 
@@ -1812,114 +1712,8 @@ namespace watch2
         WiFi.setSleep(true);
         WiFi.setHostname("watch ii");
 
-        if (strcmp(ssid, "") == 0)
-        {
-            // automatically connect to internet
-            if (wifi_reconnect_attempts == 0)
-            {
-                WiFi.disconnect();
-                wifi_state = 1;
-            }
-            else
-            {
-                // get most recent profile
-                uint8_t profile_index = initial_wifi_reconnect_attempts - wifi_reconnect_attempts;
-                cJSON *profiles = getWifiProfiles();
-                
-                if (profiles)
-                {
-                    cJSON *profile_array = cJSON_GetObjectItem(profiles, "profiles");
-                    cJSON *access_index = cJSON_GetObjectItem(profiles, "access_index");
-
-                    // if there are profiles
-                    if (cJSON_GetArraySize(access_index) > 0)
-                    {
-
-                        if (access_index)
-                        {
-
-                            // if the profile index refers to a profile that doesn't exist
-                            // (if the profile index is greater than the number of elements in the access index - 1)
-                            if (profile_index > cJSON_GetArraySize(access_index) - 1)
-                            {
-                                // the profile list has been exhausted
-                                WiFi.disconnect();
-                                wifi_state = 1;
-                                wifi_reconnect_attempts = 0;
-                            }
-                            else
-                            {
-                                // the profile index refers to an access index element that does exist, so get the information for that profile
-                                const char *ssid = cJSON_GetArrayItem(access_index, profile_index)->valuestring;
-                                cJSON *profile;
-                                bool help = false;
-                                for (int i = 0; i < cJSON_GetArraySize(profile_array); i++)
-                                {
-                                    profile = cJSON_GetArrayItem(profile_array, i);
-                                    const char* profile_ssid = cJSON_GetObjectItem(profile, "ssid")->valuestring;
-                                    Serial.printf("checking ssid %s; profile ssid %s\n", ssid, profile_ssid);
-                                    if (strcmp(ssid, profile_ssid) == 0) // if profile ssid matches ap ssid
-                                    {
-                                        help = true;
-                                        break;
-                                    }
-                                }
-
-                                if (help) // the profile actually exists
-                                {
-                                    Serial.println("thingy profile exists");
-                                    WiFi.begin(
-                                        cJSON_GetObjectItem(profile, "ssid")->valuestring,
-                                        cJSON_GetObjectItem(profile, "password")->valuestring
-                                    );
-                                    WiFi._setStatus(WL_DISCONNECTED);
-                                    wifi_connect_timeout_start = millis();
-                                }
-                                // otherwise, the AP name exists in the access index, but doesn't actually have a profile, so skip to the next AP
-                                else 
-                                {
-                                    Serial.println("[Wifi] ssid was found in access index, but no matching profile was found");
-                                    wifi_reconnect_attempts--;
-                                }
-
-                                wifi_state = 2;
-                            }
-
-                        }
-                        else
-                        {
-                            Serial.println("[Wifi] couldn't access access index");
-                            wifi_reconnect_attempts = 0;
-                        }
-                    }
-                    else 
-                    {
-                        Serial.println("[Wifi] no profiles");
-                        wifi_reconnect_attempts = 0;
-                        WiFi.disconnect();
-                        WiFi._setStatus(WL_CONNECT_FAILED);
-                    }
-                    
-                    cJSON_Delete(profiles);
-
-                }
-                else
-                {
-                    Serial.println("[Wifi] couldn't access profile list");
-                    wifi_reconnect_attempts = 0;
-                }
-            }
-            
-        }
-        else
-        {
-            WiFi.begin(ssid, password);
-            WiFi._setStatus(WL_DISCONNECTED);
-            wifi_state = 2; // enabled, connecting
-            wifi_connect_timeout_start = millis();
-        }
-        
-        // the system will check if the wifi has connected to an AP in the endLoop() method.
+        WiFi.begin("***REMOVED***", "***REMOVED***");
+        wifi_state = 2;
     }
 
     void getTimeFromNTP()
