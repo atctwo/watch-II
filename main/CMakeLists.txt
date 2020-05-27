@@ -53,6 +53,9 @@ set(LIB_ARDUINO_SRCS
     libraries/TimeAlarms/TimeAlarms.cpp
     libraries/TFT_eSPI/TFT_eSPI.cpp
     libraries/tinyexpr/tinyexpr.c
+    libraries/ESP32-BLE-Keyboard/BleKeyboard.cpp
+    libraries/ESP32-BLE-Keyboard/BleConnectionStatus.cpp
+    libraries/ESP32-BLE-Keyboard/KeyboardOutputCallbacks.cpp
 )
 
 set(WATCH_SRCS
@@ -109,6 +112,7 @@ set(COMPONENT_ADD_INCLUDEDIRS
     libraries/Time/ 				
     libraries/TimeAlarms/ 			
     libraries/tinyexpr/
+    libraries/ESP32-BLE-Keyboard/
 )
 
 register_component()

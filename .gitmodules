@@ -28,3 +28,6 @@
 [submodule "components/arduino-esp32"]
 	path = components/arduino-esp32
 	url = https://github.com/espressif/arduino-esp32.git
+[submodule "main/libraries/ESP32-BLE-Keyboard"]
+	path = main/libraries/ESP32-BLE-Keyboard
+	url = https://github.com/T-vK/ESP32-BLE-Keyboard.git

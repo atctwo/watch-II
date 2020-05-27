@@ -1,4 +1,4 @@
-#include "../src/watch2.h"
+#include "../watch2.h"
 
 cJSON *getQuestion()
 {
