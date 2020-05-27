@@ -111,7 +111,7 @@ namespace watch2
 
     void endLoop()
     {
-        Serial.printf("internal RAM: %2.4f%%\n", ((float)(ESP.getHeapSize() - ESP.getFreeHeap()) / ESP.getHeapSize()) * 100);
+        //Serial.printf("internal RAM: %2.4f%%\n", ((float)(ESP.getHeapSize() - ESP.getFreeHeap()) / ESP.getHeapSize()) * 100);
 
         //wip screenshot tool
         //this doesn't work yet
