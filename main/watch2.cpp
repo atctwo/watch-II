@@ -111,7 +111,8 @@ namespace watch2
 
     void endLoop()
     {
-        //Serial.printf("internal RAM: %2.4f%%\n", ((float)(ESP.getHeapSize() - ESP.getFreeHeap()) / ESP.getHeapSize()) * 100);
+        Serial.printf("internal RAM: %2.4f%%\n", ((float)(ESP.getHeapSize() - ESP.getFreeHeap()) / ESP.getHeapSize()) * 100);
+        Serial.printf("external RAM: %2.4f%%\n", ((float)(ESP.getPsramSize() - ESP.getFreePsram()) / ESP.getPsramSize()) * 100);
 
         //wip screenshot tool
         //this doesn't work yet
@@ -320,30 +321,7 @@ namespace watch2
                 }
                 else
                 {
-                    Serial.println("[Bluetooth] disconnected");
-                    bluetooth_state = 2;
-                }
-                
-            }
-            else
-            {
-                Serial.println("[Bluetooth] BLE HID keyboard disabled");
-            }
-        }
-
-        // bluetooth
-        if (bluetooth_state == 2 || bluetooth_state == 3)
-        {
-            if (ble_keyboard)
-            {
-                if (ble_keyboard->isConnected())
-                {
-                    Serial.println("[Bluetooth] connected");
-                    bluetooth_state = 3;
-                }
-                else
-                {
-                    Serial.println("[Bluetooth] disconnected");
+                    //Serial.println("[Bluetooth] disconnected");
                     bluetooth_state = 2;
                 }
                 

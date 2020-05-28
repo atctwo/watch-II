@@ -293,8 +293,8 @@ void state_func_watch_face()
             }
             if (selected_widget == 4) 
             {
-                //if (watch2::bluetooth_state == 0) watch2::enable_bluetooth();
-                //else watch2::disable_bluetooth();
+                if (watch2::bluetooth_state == 0) watch2::enable_bluetooth();
+                else watch2::disable_bluetooth();
             }
         }
 
