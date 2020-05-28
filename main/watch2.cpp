@@ -111,8 +111,8 @@ namespace watch2
 
     void endLoop()
     {
-        Serial.printf("internal RAM: %2.4f%%\n", ((float)(ESP.getHeapSize() - ESP.getFreeHeap()) / ESP.getHeapSize()) * 100);
-        Serial.printf("external RAM: %2.4f%%\n", ((float)(ESP.getPsramSize() - ESP.getFreePsram()) / ESP.getPsramSize()) * 100);
+        //Serial.printf("internal RAM: %2.4f%%\n", ((float)(ESP.getHeapSize() - ESP.getFreeHeap()) / ESP.getHeapSize()) * 100);
+        //Serial.printf("external RAM: %2.4f%%\n", ((float)(ESP.getPsramSize() - ESP.getFreePsram()) / ESP.getPsramSize()) * 100);
 
         //wip screenshot tool
         //this doesn't work yet
@@ -635,7 +635,7 @@ namespace watch2
         initSD();
 
         // reconnect to wifi
-        if (wifi_wakeup_reconnect)
+        if (wifi_state != 0 && wifi_wakeup_reconnect)
         {
             enable_wifi();
         }
@@ -2056,7 +2056,7 @@ namespace watch2
 
         // disable bluetooth controller + bluedroid
         btStop();
-        esp_bt_mem_release(ESP_BT_MODE_BLE);
+        //esp_bt_mem_release(ESP_BT_MODE_BLE);
 
         Serial.println("[Bluetooth] finished disabling bluetooth");
         bluetooth_state = 0;
