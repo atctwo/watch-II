@@ -1959,13 +1959,15 @@ namespace watch2
     cJSON *getWifiProfiles()
     {
         Serial.println("[Wifi] getting profiles");
-        if (spiffs_state == 1) // if spiffs in initalised
+        if (spiffs_state == 1) // if spiffs is initalised
         {
             cJSON *profiles;
 
             // if profile file already exists
             if (SPIFFS.exists(WIFI_PROFILES_FILENAME))
             {
+                Serial.println("[Wifi] profile exists");
+
                 // get handle to profiles file
                 fs::File profiles_file = SPIFFS.open(WIFI_PROFILES_FILENAME);
 
@@ -1974,6 +1976,20 @@ namespace watch2
 
                 // parse profiles
                 profiles = cJSON_Parse(profiles_list.c_str());
+
+                if (profiles)
+                {
+                    Serial.println("[Wifi] valid profile");
+                }
+                else
+                {
+                    Serial.println("[Wifi] invalid profile list, returning minimal profile object");
+
+                    // create profiles object
+                    profiles = cJSON_CreateObject();
+                    cJSON *profile_array = cJSON_AddArrayToObject(profiles, "profiles");
+                    cJSON *access_index = cJSON_AddArrayToObject(profiles, "access_index");
+                }
 
                 // Serial.println("help");
                 // Serial.println(profiles_list);
@@ -1988,6 +2004,8 @@ namespace watch2
             //otherwise
             else
             {
+                Serial.println("[Wifi] profile doesn't exist, creating");
+
                 // create profiles object
                 profiles = cJSON_CreateObject();
                 cJSON *profile_array = cJSON_AddArrayToObject(profiles, "profiles");
@@ -2006,7 +2024,11 @@ namespace watch2
                 return profiles;
             }
         }
-        else return nullptr;
+        else 
+        {
+            Serial.printf("[Wifi] can't access spiffs (state: %d)\n", spiffs_state);
+            return nullptr;
+        }
     }
 
     void setWifiProfiles(cJSON *profiles)
