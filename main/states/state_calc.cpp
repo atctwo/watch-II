@@ -30,29 +30,7 @@ void state_func_calc()
     
 
     if (dpad_up_active())
-    {if (dpad_left_active())
     {
-        input_colour = WHITE;
-        while(1)
-        {
-            if (selected_calc_button == 0)
-            selected_calc_button = calc_buttons.size()-1;
-            else selected_calc_button--;
-            if (calc_buttons[selected_calc_button] != "") break;
-        }
-    }
-
-    if (dpad_right_active())
-    {
-        input_colour = WHITE;
-        while(1)
-        {
-            selected_calc_button++;
-            if (selected_calc_button == calc_buttons.size())
-            selected_calc_button = 0;
-            if (calc_buttons[selected_calc_button] != "") break;
-        }
-    }
         input_colour = WHITE;
 
         //get selected icon number
@@ -83,6 +61,31 @@ void state_func_calc()
             if (calc_buttons[selected_calc_button] != "") break;
         }
     }
+        
+    if (dpad_left_active())
+    {
+        input_colour = WHITE;
+        while(1)
+        {
+            if (selected_calc_button == 0)
+            selected_calc_button = calc_buttons.size()-1;
+            else selected_calc_button--;
+            if (calc_buttons[selected_calc_button] != "") break;
+        }
+    }
+
+    if (dpad_right_active())
+    {
+        input_colour = WHITE;
+        while(1)
+        {
+            selected_calc_button++;
+            if (selected_calc_button == calc_buttons.size())
+            selected_calc_button = 0;
+            if (calc_buttons[selected_calc_button] != "") break;
+        }
+    }
+        
 
     if (dpad_down_active())
     {
