@@ -33,7 +33,7 @@ The library csscolorparser included in the source directory isn't an Arduino lib
 
 The Wikipedia app uses Google's [gimbo-parser](https://github.com/google/gumbo-parser) to parse HTML.
 
-The system uses one of nothings' stb libraries (https://github.com/nothings/stb), specifically stb_image.  stb_image was modified slightly to shut the compiler up.  The modified library is included with the source.
+The system uses two of nothings' stb libraries (https://github.com/nothings/stb), specifically stb_image.h and stb_image_resize.h.  stb_image was modified slightly to shut the compiler up.  The modified version is included with the source.
 
 ## Modifications
 
