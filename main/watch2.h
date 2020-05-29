@@ -422,7 +422,7 @@ namespace watch2
     uint32_t read32(fs::File &f);
     void drawBmp(const char *filename, int16_t x, int16_t y);
     imageData getImageData(const char *filename);
-    const char* drawImage(imageData data, int16_t img_x, int16_t img_y);
+    const char* drawImage(imageData data, int16_t img_x, int16_t img_y, uint16_t scaling=1);
 
     void enable_wifi(bool connect=true);
     void disable_wifi();

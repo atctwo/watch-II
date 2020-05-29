@@ -111,8 +111,8 @@ namespace watch2
 
     void endLoop()
     {
-        Serial.printf("internal RAM: %2.4f%%\n", ((float)(ESP.getHeapSize() - ESP.getFreeHeap()) / ESP.getHeapSize()) * 100);
-        Serial.printf("external RAM: %2.4f%%\n", ((float)(ESP.getPsramSize() - ESP.getFreePsram()) / ESP.getPsramSize()) * 100);
+        // Serial.printf("internal RAM: %2.4f%%\n", ((float)(ESP.getHeapSize() - ESP.getFreeHeap()) / ESP.getHeapSize()) * 100);
+        // Serial.printf("external RAM: %2.4f%%\n", ((float)(ESP.getPsramSize() - ESP.getFreePsram()) / ESP.getPsramSize()) * 100);
 
         //wip screenshot tool
         //this doesn't work yet
@@ -1741,7 +1741,7 @@ namespace watch2
         return response;
     }
 
-    const char* drawImage(imageData data, int16_t img_x, int16_t img_y)
+    const char* drawImage(imageData data, int16_t img_x, int16_t img_y, uint16_t scaling)
     {
         // numbers
         unsigned long pixels = data.width * data.height * 3;//sizeof(data) / sizeof(unsigned char);
@@ -1754,15 +1754,24 @@ namespace watch2
         else
         {
             // write image data
-            for (int i = 0; i < pixels; i+=3)
+            // for (int i = 0; i < pixels; i+=(3 * scaling))
+            // {
+            //     watch2::oled.drawPixel(x, y, watch2::oled.color565(data.data[i], data.data[i+1], data.data[i+2]));
+            //     x++;
+            //     if (x >= data.width + img_x)
+            //     {
+            //         //watch2::oled.drawPixel(x-1, y, BLACK);
+            //         x = img_x;
+            //         y++;
+            //     }
+            // }
+
+            for (uint16_t y = 0; y < data.height; y+=scaling)
             {
-                watch2::oled.drawPixel(x, y, watch2::oled.color565(data.data[i], data.data[i+1], data.data[i+2]));
-                x++;
-                if (x >= data.width + img_x)
+                for (uint16_t x = 0; x < data.width; x+=scaling)
                 {
-                    //watch2::oled.drawPixel(x-1, y, BLACK);
-                    x = img_x;
-                    y++;
+                    uint32_t pixel = ( x + (data.width * y) ) * 3;
+                    watch2::oled.drawPixel(x/scaling, y/scaling, watch2::oled.color565(data.data[pixel], data.data[pixel+1], data.data[pixel+2]));
                 }
             }
 
