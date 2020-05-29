@@ -2,6 +2,10 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
+
+#define STB_IMAGE_RESIZE_IMPLEMENTATION
+#include "stb/stb_image_resize.h"
+
 #include "esp_bt.h"
 #include <BLEDevice.h>
 #include <BLEUtils.h>
@@ -112,8 +116,8 @@ namespace watch2
 
     void endLoop()
     {
-        //Serial.printf("internal RAM: %2.4f%%\n", ((float)(ESP.getHeapSize() - ESP.getFreeHeap()) / ESP.getHeapSize()) * 100);
-        //Serial.printf("external RAM: %2.4f%%\n", ((float)(ESP.getPsramSize() - ESP.getFreePsram()) / ESP.getPsramSize()) * 100);
+        // Serial.printf("internal RAM: %2.4f%%\n", ((float)(ESP.getHeapSize() - ESP.getFreeHeap()) / ESP.getHeapSize()) * 100);
+        // Serial.printf("external RAM: %2.4f%%\n", ((float)(ESP.getPsramSize() - ESP.getFreePsram()) / ESP.getPsramSize()) * 100);
 
         //wip screenshot tool
         //this doesn't work yet
@@ -1088,6 +1092,30 @@ namespace watch2
         }
     }
 
+    std::string dir_name(std::string file_path_thing)
+    {
+        char path[file_path_thing.length()];
+        strcpy(path, file_path_thing.c_str());
+        char *pch;
+        std::string file_dir = "/";
+        
+        //get number of occurances of / character
+        int occurances = 0;
+        for (int i = 0; i < sizeof(path) / sizeof(char); i++) if (path[i] == '/') occurances++;
+        
+        //split the string
+        pch = strtok(path, "/");
+        
+        for (int i = 0; i < occurances - 2; i++)
+        {
+            file_dir += pch;
+            file_dir += "/";
+            pch = strtok(NULL, "/");
+        }
+
+        return file_dir;
+    }
+
     std::string textFieldDialogue(std::string prompt, const char *default_input, const char mask, bool clear_screen)
     {
         /*
@@ -1734,7 +1762,12 @@ namespace watch2
         return response;
     }
 
-    const char* drawImage(imageData data, int16_t img_x, int16_t img_y)
+    void freeImageData(unsigned char *data)
+    {
+        if (data) stbi_image_free(data);
+    }
+
+    const char* drawImage(imageData data, int16_t img_x, int16_t img_y, float scaling)
     {
         // numbers
         unsigned long pixels = data.width * data.height * 3;//sizeof(data) / sizeof(unsigned char);
@@ -1746,21 +1779,53 @@ namespace watch2
         }
         else
         {
-            // write image data
-            for (int i = 0; i < pixels; i+=3)
+            // scale image
+            unsigned char *actual_data;
+            uint16_t img_width = 0, img_height = 0;
+
+            if (scaling != 1)
             {
-                watch2::oled.drawPixel(x, y, watch2::oled.color565(data.data[i], data.data[i+1], data.data[i+2]));
-                x++;
-                if (x >= data.width + img_x)
+                img_width = data.width/scaling;
+                img_height = data.height/scaling;
+                stbir_resize_uint8(
+                    data.data, data.width, data.height, 0,
+                    actual_data, img_width, img_height, 0, 3
+                );
+            }
+            else
+            {
+                img_width = data.width;
+                img_height = data.height;
+                actual_data = data.data;
+            }
+
+            // write image data
+            // for (int i = 0; i < pixels; i+=(3 * scaling))
+            // {
+            //     watch2::oled.drawPixel(x, y, watch2::oled.color565(data.data[i], data.data[i+1], data.data[i+2]));
+            //     x++;
+            //     if (x >= data.width + img_x)
+            //     {
+            //         //watch2::oled.drawPixel(x-1, y, BLACK);
+            //         x = img_x;
+            //         y++;
+            //     }
+            // }
+
+            for (uint16_t y = 0; y < img_height; y+=1)
+            {
+                for (uint16_t x = 0; x < img_width; x+=1)
                 {
-                    //watch2::oled.drawPixel(x-1, y, BLACK);
-                    x = img_x;
-                    y++;
+                    uint32_t pixel = ( x + (img_width * y) ) * 3;
+                    watch2::oled.drawPixel(x, y, watch2::oled.color565(actual_data[pixel], actual_data[pixel+1], actual_data[pixel+2]));
                 }
             }
 
-            stbi_image_free(data.data);
-            data.data = NULL;
+            // if (actual_data) 
+            // {
+            //     Serial.println("[drawImage] freeing scaled image data");
+            //     stbi_image_free(actual_data);
+            // }
 
             return NULL;
 
@@ -1921,10 +1986,11 @@ namespace watch2
     {
         Serial.println("[NTP] setting time using ntp");
         configTime(watch2::timezone * 60 * 60, 0, NTP_SERVER);
-        struct timeval timeinfo;
-        gettimeofday(&timeinfo, NULL);
-        // Serial.println(&timeinfo, "retrieved time: %A, %B %d %Y %H:%M:%S");
-        setTime(timeinfo.tv_sec);
+
+        struct tm timeinfo;
+        getLocalTime(&timeinfo);
+        Serial.println(&timeinfo, "[NTP] retrieved time: %A, %B %d %Y %H:%M:%S");
+        setTime(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec, timeinfo.tm_mday, timeinfo.tm_mon+1, timeinfo.tm_year + 1900);
     }
 
     cJSON *getWifiProfiles()

@@ -407,6 +407,7 @@ namespace watch2
     //open the file select dialogue.  this will pause the state until a file has been selected (or the operation has been cancelled)
     //path - the path to start the file selection at
     std::string beginFileSelect(std::string path = "/");
+    std::string dir_name(std::string file_path_thing);
     std::string textFieldDialogue(std::string prompt="", const char *default_input="", const char mask=0, bool clear_screen=true);
     int     initSD(bool handleCS = true);
     void    colour888(uint16_t colour, float *r, float *g, float *b);
@@ -423,7 +424,8 @@ namespace watch2
     uint32_t read32(fs::File &f);
     void drawBmp(const char *filename, int16_t x, int16_t y);
     imageData getImageData(const char *filename);
-    const char* drawImage(imageData data, int16_t img_x, int16_t img_y);
+    void freeImageData(unsigned char *data);
+    const char* drawImage(imageData data, int16_t img_x, int16_t img_y, float scaling=1.0);
 
     void enable_wifi(bool connect=true);
     void disable_wifi();
