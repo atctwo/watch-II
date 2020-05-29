@@ -1,11 +1,11 @@
 #include "watch2.h"
 
-
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 #include "esp_bt.h"
-
-
+#include <BLEDevice.h>
+#include <BLEUtils.h>
+#include <BLEServer.h>
 
 namespace watch2
 {
@@ -18,7 +18,7 @@ namespace watch2
     TFT_eSprite top_thing = TFT_eSprite(&oled);
     TFT_eSprite framebuffer = TFT_eSprite(&oled);
     WiFiClientSecure wifi_client;
-    BleKeyboard *ble_keyboard = NULL;
+    BleKeyboard ble_keyboard("watch2", "atctwo");
 
     //button objects
     Button btn_dpad_up(dpad_up, 25, false, false);
@@ -57,6 +57,7 @@ namespace watch2
     bool wifi_enabled = false;
     wifi_auth_mode_t wifi_encryption = WIFI_AUTH_MAX;
     uint8_t bluetooth_state = 0;
+    bool ble_set_up = false;
     int sd_state = 0;
     bool spiffs_state = 0;
     int RTC_DATA_ATTR stopwatch_timing = 0;
@@ -312,23 +313,15 @@ namespace watch2
         // bluetooth
         if (bluetooth_state == 2 || bluetooth_state == 3)
         {
-            if (ble_keyboard)
+            if (ble_keyboard.isConnected())
             {
-                if (ble_keyboard->isConnected())
-                {
-                    Serial.println("[Bluetooth] connected");
-                    bluetooth_state = 3;
-                }
-                else
-                {
-                    //Serial.println("[Bluetooth] disconnected");
-                    bluetooth_state = 2;
-                }
-                
+                Serial.println("[Bluetooth] connected");
+                bluetooth_state = 3;
             }
             else
             {
-                Serial.println("[Bluetooth] BLE HID keyboard disabled");
+                //Serial.println("[Bluetooth] disconnected");
+                bluetooth_state = 2;
             }
         }
 
@@ -2035,10 +2028,45 @@ namespace watch2
         bluetooth_state = 1; // enabling
 
         // enable ble keyboard
-        Serial.println("[Bluetooth] instantiating BLE HID keyboard");
-        ble_keyboard = new BleKeyboard("watch2", "atctwo");
-        Serial.println("[Bluetooth] starting BLE keyboard");
-        ble_keyboard->begin();
+        // Serial.println("[Bluetooth] starting BLE keyboard");
+        // ble_keyboard.begin();
+
+        Serial.println("[BLE] ble device init");
+        BLEDevice::init("watch2");
+
+        if (ble_set_up)
+        {
+            Serial.println("[BLE] ble already set up, restarting bt");
+            btStart();
+        }
+        else
+        {
+            Serial.println("[BLE] create server");
+            BLEServer *pServer = BLEDevice::createServer();
+
+            Serial.println("[BLE] set up services");
+            BLEService *pService = pServer->createService("4fafc201-1fb5-459e-8fcc-c5c9c331914b");
+            BLECharacteristic *pCharacteristic = pService->createCharacteristic(
+                                                    "beb5483e-36e1-4688-b7f5-ea07361b26a8",
+                                                    BLECharacteristic::PROPERTY_READ |
+                                                    BLECharacteristic::PROPERTY_WRITE
+                                                );
+
+            pCharacteristic->setValue("Hello World says Neil");
+            pService->start();
+
+            Serial.println("[BLE] set up advertising");
+            // BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
+            BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
+            pAdvertising->addServiceUUID("4fafc201-1fb5-459e-8fcc-c5c9c331914b");
+            pAdvertising->setScanResponse(true);
+            pAdvertising->setMinPreferred(0x06);  // functions that help with iPhone connections issue
+            pAdvertising->setMinPreferred(0x12);
+            ble_set_up = true;
+        }
+
+        Serial.println("[BLE] starting advertising");
+        BLEDevice::startAdvertising();
 
         Serial.println("[Bluetooth] finished enabling bluetooth");
         bluetooth_state = 2;
@@ -2049,14 +2077,14 @@ namespace watch2
         Serial.println("[Bluetooth] disabling bluetooth");
 
         // disable ble keyboard
-        Serial.println("[Bluetooth] ending BLE keyboard");
-        ble_keyboard->end();
-        Serial.println("[Bluetooth] destroying BLE keyboard");
-        delete(ble_keyboard);
+        // Serial.println("[Bluetooth] ending BLE keyboard");
+        // ble_keyboard.end();
 
-        // disable bluetooth controller + bluedroid
-        btStop();
-        //esp_bt_mem_release(ESP_BT_MODE_BLE);
+        Serial.println("[BLE] stopping advertising");
+        BLEDevice::stopAdvertising();
+
+        Serial.println("[BLE] de-init ble device");
+        BLEDevice::deinit(false);
 
         Serial.println("[Bluetooth] finished disabling bluetooth");
         bluetooth_state = 0;

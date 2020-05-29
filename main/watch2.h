@@ -243,7 +243,7 @@ namespace watch2
     extern TFT_eSprite top_thing;
     extern TFT_eSprite framebuffer;
     extern WiFiClientSecure wifi_client;
-    extern BleKeyboard *ble_keyboard;
+    extern BleKeyboard ble_keyboard;
 
     //button objects
     extern Button btn_dpad_up;
@@ -356,6 +356,7 @@ namespace watch2
                                                                                         // 1 - enabling
                                                                                         // 2 - enabled, disconnected
                                                                                         // 3 - enabled, connected
+    extern bool ble_set_up;                                                             // has the ble server been created?
 
     //these variables stop button presses affecting new states
     //when switching from a previous state.
