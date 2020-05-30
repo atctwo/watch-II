@@ -31,3 +31,6 @@
 [submodule "main/libraries/ESP32-BLE-Keyboard"]
 	path = main/libraries/ESP32-BLE-Keyboard
 	url = https://github.com/T-vK/ESP32-BLE-Keyboard.git
+[submodule "main/libraries/ESP8266Audio"]
+	path = main/libraries/ESP8266Audio
+	url = https://github.com/earlephilhower/ESP8266Audio.git

@@ -46,6 +46,104 @@ set(LIB_SDFAT_SRCS
     libraries/SdFat/src/SpiDriver/SdSpiTeensy3.cpp
 )
 
+set (LIB_ESP8266AUDIO_SRCS
+    libraries/ESP8266Audio/src/driver/SinglePinI2SDriver.cpp
+    libraries/ESP8266Audio/src/AudioFileSourceBuffer.cpp
+    libraries/ESP8266Audio/src/AudioFileSourceFS.cpp
+    libraries/ESP8266Audio/src/AudioFileSourceHTTPStream.cpp
+    libraries/ESP8266Audio/src/AudioFileSourceICYStream.cpp
+    libraries/ESP8266Audio/src/AudioFileSourceID3.cpp
+    libraries/ESP8266Audio/src/AudioFileSourcePROGMEM.cpp
+    libraries/ESP8266Audio/src/AudioFileSourceSD.cpp
+    libraries/ESP8266Audio/src/AudioFileSourceSPIRAMBuffer.cpp
+    libraries/ESP8266Audio/src/AudioFileSourceSTDIO.cpp
+    libraries/ESP8266Audio/src/AudioFileStream.cpp
+    libraries/ESP8266Audio/src/AudioGeneratorAAC.cpp
+    libraries/ESP8266Audio/src/AudioGeneratorFLAC.cpp
+    libraries/ESP8266Audio/src/AudioGeneratorMIDI.cpp
+    libraries/ESP8266Audio/src/AudioGeneratorMOD.cpp
+    libraries/ESP8266Audio/src/AudioGeneratorMP3.cpp
+    libraries/ESP8266Audio/src/AudioGeneratorMP3a.cpp
+    libraries/ESP8266Audio/src/AudioGeneratorRTTTL.cpp
+    libraries/ESP8266Audio/src/AudioGeneratorTalkie.cpp
+    libraries/ESP8266Audio/src/AudioGeneratorWAV.cpp
+    libraries/ESP8266Audio/src/AudioLogger.cpp
+    libraries/ESP8266Audio/src/AudioOutputBuffer.cpp
+    libraries/ESP8266Audio/src/AudioOutputFilterDecimate.cpp
+    libraries/ESP8266Audio/src/AudioOutputI2S.cpp
+    libraries/ESP8266Audio/src/AudioOutputI2SNoDAC.cpp
+    libraries/ESP8266Audio/src/AudioOutputMixer.cpp
+    libraries/ESP8266Audio/src/AudioOutputSerialWAV.cpp
+    libraries/ESP8266Audio/src/AudioOutputSPDIF.cpp
+    libraries/ESP8266Audio/src/AudioOutputSPIFFSWAV.cpp
+    libraries/ESP8266Audio/src/AudioOutputSTDIO.cpp
+    libraries/ESP8266Audio/src/libflac/bitmath.c
+    libraries/ESP8266Audio/src/libflac/bitreader.c
+    libraries/ESP8266Audio/src/libflac/cpu.c
+    libraries/ESP8266Audio/src/libflac/crc.c
+    libraries/ESP8266Audio/src/libflac/fixed.c
+    libraries/ESP8266Audio/src/libflac/float.c
+    libraries/ESP8266Audio/src/libflac/format.c
+    libraries/ESP8266Audio/src/libflac/lpc.c
+    libraries/ESP8266Audio/src/libflac/md5.c
+    libraries/ESP8266Audio/src/libflac/memory.c
+    libraries/ESP8266Audio/src/libflac/stream_decoder.c
+    libraries/ESP8266Audio/src/libflac/window.c
+    libraries/ESP8266Audio/src/libhelix-aac/aacdec.c
+    libraries/ESP8266Audio/src/libhelix-aac/aactabs.c
+    libraries/ESP8266Audio/src/libhelix-aac/bitstream.c
+    libraries/ESP8266Audio/src/libhelix-aac/buffers.c
+    libraries/ESP8266Audio/src/libhelix-aac/dct4.c
+    libraries/ESP8266Audio/src/libhelix-aac/decelmnt.c
+    libraries/ESP8266Audio/src/libhelix-aac/dequant.c
+    libraries/ESP8266Audio/src/libhelix-aac/fft.c
+    libraries/ESP8266Audio/src/libhelix-aac/filefmt.c
+    libraries/ESP8266Audio/src/libhelix-aac/huffman.c
+    libraries/ESP8266Audio/src/libhelix-aac/hufftabs.c
+    libraries/ESP8266Audio/src/libhelix-aac/imdct.c
+    libraries/ESP8266Audio/src/libhelix-aac/noiseless.c
+    libraries/ESP8266Audio/src/libhelix-aac/pns.c
+    libraries/ESP8266Audio/src/libhelix-aac/sbr.c
+    libraries/ESP8266Audio/src/libhelix-aac/sbrfft.c
+    libraries/ESP8266Audio/src/libhelix-aac/sbrfreq.c
+    libraries/ESP8266Audio/src/libhelix-aac/sbrhfadj.c
+    libraries/ESP8266Audio/src/libhelix-aac/sbrhfgen.c
+    libraries/ESP8266Audio/src/libhelix-aac/sbrhuff.c
+    libraries/ESP8266Audio/src/libhelix-aac/sbrimdct.c
+    libraries/ESP8266Audio/src/libhelix-aac/sbrmath.c
+    libraries/ESP8266Audio/src/libhelix-aac/sbrqmf.c
+    libraries/ESP8266Audio/src/libhelix-aac/sbrside.c
+    libraries/ESP8266Audio/src/libhelix-aac/sbrtabs.c
+    libraries/ESP8266Audio/src/libhelix-aac/stproc.c
+    libraries/ESP8266Audio/src/libhelix-aac/tns.c
+    libraries/ESP8266Audio/src/libhelix-aac/trigtabs.c
+    libraries/ESP8266Audio/src/libhelix-mp3/bitstream.c
+    libraries/ESP8266Audio/src/libhelix-mp3/buffers.c
+    libraries/ESP8266Audio/src/libhelix-mp3/dct32.c
+    libraries/ESP8266Audio/src/libhelix-mp3/dequant.c
+    libraries/ESP8266Audio/src/libhelix-mp3/dqchan.c
+    libraries/ESP8266Audio/src/libhelix-mp3/huffman.c
+    libraries/ESP8266Audio/src/libhelix-mp3/hufftabs.c
+    libraries/ESP8266Audio/src/libhelix-mp3/imdct.c
+    libraries/ESP8266Audio/src/libhelix-mp3/mp3dec.c
+    libraries/ESP8266Audio/src/libhelix-mp3/mp3tabs.c
+    libraries/ESP8266Audio/src/libhelix-mp3/polyphase.c
+    libraries/ESP8266Audio/src/libhelix-mp3/scalfact.c
+    libraries/ESP8266Audio/src/libhelix-mp3/stproc.c
+    libraries/ESP8266Audio/src/libhelix-mp3/subband.c
+    libraries/ESP8266Audio/src/libhelix-mp3/trigtabs.c
+    libraries/ESP8266Audio/src/libmad/bit.c
+    libraries/ESP8266Audio/src/libmad/decoder.c
+    libraries/ESP8266Audio/src/libmad/fixed.c
+    libraries/ESP8266Audio/src/libmad/frame.c
+    libraries/ESP8266Audio/src/libmad/huffman.c
+    libraries/ESP8266Audio/src/libmad/layer3.c
+    libraries/ESP8266Audio/src/libmad/stream.c
+    libraries/ESP8266Audio/src/libmad/synth.c
+    libraries/ESP8266Audio/src/libmad/timer.c
+    libraries/ESP8266Audio/src/libmad/version.c
+)
+
 set(LIB_ARDUINO_SRCS
     libraries/JC_Button/src/JC_Button.cpp
     libraries/Time/Time.cpp
@@ -56,6 +154,9 @@ set(LIB_ARDUINO_SRCS
     libraries/ESP32-BLE-Keyboard/BleKeyboard.cpp
     libraries/ESP32-BLE-Keyboard/BleConnectionStatus.cpp
     libraries/ESP32-BLE-Keyboard/KeyboardOutputCallbacks.cpp
+    #libraries/ESP32-audioI2S/src/Audio.cpp
+    #libraries/ESP32-audioI2S/src/aac_decoder/aac_decoder.cpp
+    #libraries/ESP32-audioI2S/src/mp3_decoder/mp3_decoder.cpp
 )
 
 set(WATCH_SRCS
@@ -73,6 +174,7 @@ set(WATCH_SRCS
     gumbo-parser/src/vector.c
     root_store.cpp
     watch2.cpp
+    #SdFatFSWrapper.cpp
 )
 
 set(STATE_SRCS 
@@ -96,6 +198,7 @@ set(COMPONENT_SRCS
     ${LIB_ARDUINO_SRCS}
     ${LIB_ARDUINO_IRREMOTE_SRCS} 
     ${LIB_SDFAT_SRCS} 
+    ${LIB_ESP8266AUDIO_SRCS}
     ${STATE_SRCS} 
     ${WATCH_SRCS} 
     "main.cpp"
@@ -113,6 +216,8 @@ set(COMPONENT_ADD_INCLUDEDIRS
     libraries/TimeAlarms/ 			
     libraries/tinyexpr/
     libraries/ESP32-BLE-Keyboard/
+    libraries/ESP32-audioI2S/src/
+    libraries/ESP8266Audio/src/
 )
 
 register_component()
