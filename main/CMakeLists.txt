@@ -154,9 +154,6 @@ set(LIB_ARDUINO_SRCS
     libraries/ESP32-BLE-Keyboard/BleKeyboard.cpp
     libraries/ESP32-BLE-Keyboard/BleConnectionStatus.cpp
     libraries/ESP32-BLE-Keyboard/KeyboardOutputCallbacks.cpp
-    #libraries/ESP32-audioI2S/src/Audio.cpp
-    #libraries/ESP32-audioI2S/src/aac_decoder/aac_decoder.cpp
-    #libraries/ESP32-audioI2S/src/mp3_decoder/mp3_decoder.cpp
 )
 
 set(WATCH_SRCS
@@ -216,7 +213,6 @@ set(COMPONENT_ADD_INCLUDEDIRS
     libraries/TimeAlarms/ 			
     libraries/tinyexpr/
     libraries/ESP32-BLE-Keyboard/
-    libraries/ESP32-audioI2S/src/
     libraries/ESP8266Audio/src/
 )
 
