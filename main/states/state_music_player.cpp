@@ -2,9 +2,16 @@
 #include <FS.h>
 #include <SD.h>
 
+#include "driver/i2s.h"
 #include <AudioFileSourceHTTPStream.h>
 #include <AudioFileSourceFS.h>
+#include <AudioGeneratorAAC.h>
+#include <AudioGeneratorFLAC.h>
+#include <AudioGeneratorMIDI.h>
+#include <AudioGeneratorMOD.h>
 #include <AudioGeneratorMP3.h>
+#include <AudioGeneratorRTTTL.h>
+#include <AudioGeneratorWAV.cpp>
 #include <AudioOutputI2S.h>
 #include <AudioFileSourceBuffer.h>
 
@@ -42,66 +49,92 @@ void state_func_music_player()
 
     if (dpad_left_active()) 
     {
-        SD.end();
-        vTaskDelay(100);
-        watch2::switchState(2);
+        ESP.restart();
+        // SD.end();
+        // vTaskDelay(100);
+
+        // Serial.println("[music player] uninstalling i2s driver");
+        // i2s_driver_uninstall(I2S_NUM_1);
+        // delay(10);
+
+        // Serial.println("[music player] detatching vspi");
+        // watch2::vspi->end();
+        // delay(10);
+
+        // Serial.println("[music player] screen reset");
+        // digitalWrite(spi_rst, LOW);
+        // delay(5);
+        // digitalWrite(spi_rst, HIGH);
+        // delay(10);
+
+        // Serial.println("[music player] setting up display");
+        // digitalWrite(cs, LOW);
+        // watch2::oled.setAttribute(PSRAM_ENABLE, true);
+        // watch2::oled.begin();
+        // //watch2::oled.fillScreen(0);
+        // watch2::setFont(MAIN_FONT);
+        // delay(10);
+
+        // watch2::switchState(2);
     }
 }
 
 void audio_task(void *pvParameters)
 {
-    AudioGeneratorMP3 *mp3;
-    AudioFileSourceFS *file;
-    AudioFileSourceBuffer *buffer;
-    AudioOutputI2S *out;
+    const char *music_path = (const char*)pvParameters;
+    std::string extension = watch2::file_ext(std::string(music_path));
+
+    AudioFileSource             *file;
+    AudioFileSourceBuffer       *buffer;
+    AudioGenerator              *audio_generator;
+    AudioOutputI2S              *out;
     float gain = 0.2;
 
-    const char *music_path = (const char*)pvParameters;
     Serial.printf("[music player] Now Playing: %s\n", music_path);
 
+    // set up audio file source
     file = new AudioFileSourceFS(SD, music_path);
     //file = new AudioFileSourceHTTPStream("http://media-ice.musicradio.com:80/RadioXLondonMP3");
+    //file = new AudioFileSourceHTTPStream("http://bbcmedia.ic.llnwd.net/stream/bbcmedia_radio1_mf_p");
+    //file = new AudioFileSourceHTTPStream("http://bbcmedia.ic.llnwd.net/stream/bbcmedia_radio2_mf_p");
+    //file = new AudioFileSourceHTTPStream("http://media-ice.musicradio.com:80/RadioXLondonMP3");
     buffer = new AudioFileSourceBuffer(file, 2048);
-    out = new AudioOutputI2S();
+    
+    // set up audio output
+    out = new AudioOutputI2S(I2S_NUM_1);
     out->SetPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
     out->SetGain(gain);
-    mp3 = new AudioGeneratorMP3();
-    mp3->begin(buffer, out);
+
+    // set up audio generator
+    if      (extension == "aac") audio_generator = new AudioGeneratorAAC();
+    else if (extension == "fla") audio_generator = new AudioGeneratorFLAC();
+    else if (extension == "mid") audio_generator = new AudioGeneratorMIDI();
+    else if (extension == "rtt") audio_generator = new AudioGeneratorRTTTL();
+    else if (extension == "wav") audio_generator = new AudioGeneratorWAV();
+    else if (extension == "mp3") audio_generator = new AudioGeneratorMP3();
+    else if (extension == "mod" || extension == "it" || extension == "xm" || extension == "s3m") audio_generator = new AudioGeneratorMOD();
+    else {
+        Serial.println("[music player] invalid file format");
+        vTaskDelete(NULL);
+    }
+    audio_generator->begin(buffer, out);
 
     while(1)
     {
-        if (mp3->isRunning()) 
+        if (audio_generator->isRunning()) 
         {
             digitalWrite(cs, HIGH);
-            if (!mp3->loop()) 
+            if (!audio_generator->loop()) 
             {
-                mp3->stop(); 
-                Serial.println("mp3 stopped");
+                audio_generator->stop(); 
+                Serial.println("audio stopped");
             }
         }
         if (digitalRead(dpad_left)) 
         {
             Serial.println("[music player] ending playback");
-            mp3->stop();
+            audio_generator->stop();
             vTaskDelete(NULL);
-        }
-        if (digitalRead(dpad_up))
-        {
-            if (gain < 1.0) 
-            {
-                gain += 0.05;
-                out->SetGain(gain);
-                Serial.printf("gain: %f", gain);
-            }
-        }
-        if (digitalRead(dpad_down))
-        {
-            if (gain > 0.0) 
-            {
-                gain -= 0.05;
-                out->SetGain(gain);
-                Serial.printf("gain: %f", gain);
-            }
         }
         //vTaskDelay(1);
 

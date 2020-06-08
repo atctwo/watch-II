@@ -410,6 +410,7 @@ namespace watch2
     //path - the path to start the file selection at
     std::string beginFileSelect(std::string path = "/");
     std::string dir_name(std::string file_path_thing);
+    std::string file_ext(std::string file_path_thing);
     std::string textFieldDialogue(std::string prompt="", const char *default_input="", const char mask=0, bool clear_screen=true);
     int     initSD(bool handleCS = true);
     void    colour888(uint16_t colour, float *r, float *g, float *b);
