@@ -1,0 +1,41 @@
+GPIO	Direction	Usage
+0	in		bootstrap pin / screenshot
+1	out		tx
+2	out		led pin
+3	in		rx
+4	out		sd chip select
+5	out		tft chip select
+6			internal spi flash
+7			internal spi flash
+8			internal spi flash
+9			internal spi flash
+10			internal spi flash
+11			internal spi flash
+12	out		ir pin
+13	out		torch
+14	out		tft backlight
+15			<free>
+16	in		internal spi ram / ir receive pin
+17			internal spi ram
+18	out		vspi clk
+19	in		vspi miso
+20			nc
+21	out		vspi rst
+22	out		tft dc
+23	out		vspi mosi
+24			nc
+25	out		i2s dout
+26	out		i2s lrc
+27	out		i2s clock
+28			nc
+29			nc
+30			nc
+31			nc
+32	in		dpad left
+33	in		dpad up
+34	in only		battery divider
+35	in only		dpad right
+36	in only		dpad enter
+37			nc
+38			nc
+39	in only		dpad down
