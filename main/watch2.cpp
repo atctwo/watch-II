@@ -8,7 +8,7 @@
 #include "stb/stb_image_resize.h"
 
 #include "esp_bt.h"
-#include <Arduino.h>
+#include "Arduino.h"
 
 
 namespace watch2
@@ -1844,7 +1844,7 @@ namespace watch2
                 for (uint16_t x = 0; x < img_width; x+=1)
                 {
                     uint32_t pixel = ( x + (img_width * y) ) * 3;
-                    watch2::oled.drawPixel(x, y, watch2::oled.color565(actual_data[pixel], actual_data[pixel+1], actual_data[pixel+2]));
+                    watch2::oled.drawPixel(img_x + x, img_y + y, watch2::oled.color565(actual_data[pixel], actual_data[pixel+1], actual_data[pixel+2]));
                 }
             }
 
