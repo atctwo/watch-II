@@ -44,6 +44,7 @@ void setup() {
     //set up oled
     Serial.print("setting up display: ");
     digitalWrite(cs, LOW);
+    watch2::oled.setAttribute(PSRAM_ENABLE, true);
     watch2::oled.begin();
     watch2::oled.fillScreen(0);
     watch2::setFont(MAIN_FONT);
