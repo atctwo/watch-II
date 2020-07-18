@@ -10,6 +10,7 @@
 #include <BLEDevice.h>
 #include <BLEUtils.h>
 #include <BLEServer.h>
+#include "Arduino.h"
 
 namespace watch2
 {
@@ -561,7 +562,7 @@ namespace watch2
         settimeofday(&tv, NULL);
 
         //deep sleep setup
-        esp_sleep_enable_ext0_wakeup(GPIO_NUM_26, 1); //1 = High, 0 = Low
+        esp_sleep_enable_ext0_wakeup(GPIO_NUM_36, 1); //1 = High, 0 = Low
 
         esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_SLOW_MEM, ESP_PD_OPTION_ON);
         esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_FAST_MEM, ESP_PD_OPTION_ON);
@@ -1114,6 +1115,26 @@ namespace watch2
         }
 
         return file_dir;
+    }
+
+    std::string file_ext(std::string file_path_thing)
+    {
+        // adapted from https://stackoverflow.com/a/51992/9195285
+        std::string::size_type idx;
+        idx = file_path_thing.rfind('.');
+
+        if(idx != std::string::npos)
+        {
+            std::string extension = file_path_thing.substr(idx+1);
+            // adapted from https://stackoverflow.com/a/313990/9195285
+            std::transform(extension.begin(), extension.end(), extension.begin(), [](unsigned char c){ return std::tolower(c); });
+            return extension;
+        }
+        else
+        {
+            // No extension found
+            return "";
+        }
     }
 
     std::string textFieldDialogue(std::string prompt, const char *default_input, const char mask, bool clear_screen)
@@ -1817,7 +1838,7 @@ namespace watch2
                 for (uint16_t x = 0; x < img_width; x+=1)
                 {
                     uint32_t pixel = ( x + (img_width * y) ) * 3;
-                    watch2::oled.drawPixel(x, y, watch2::oled.color565(actual_data[pixel], actual_data[pixel+1], actual_data[pixel+2]));
+                    watch2::oled.drawPixel(img_x + x, img_y + y, watch2::oled.color565(actual_data[pixel], actual_data[pixel+1], actual_data[pixel+2]));
                 }
             }
 

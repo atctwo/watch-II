@@ -67,15 +67,18 @@
 #define tftbl 14        //tft backlight
 #define tftbl_resolution 8 //resolution of backlight pwm in bits
 
-#define dpad_up     33
-#define dpad_down   27
-#define dpad_left   32
-#define dpad_right  25
-#define dpad_enter  26
+#define dpad_up             33
+#define dpad_down           39
+#define dpad_left           32
+#define dpad_right          35
+#define dpad_enter          36
 #define BATTERY_DIVIDER_PIN 34
-#define TORCH_PIN 13
-#define IR_PIN 12
-#define IR_REC_PIN 16
+#define TORCH_PIN           13
+#define IR_PIN              12
+#define IR_REC_PIN          16
+#define I2S_DOUT            25
+#define I2S_BCLK            27
+#define I2S_LRC             26
 
 //ledc channels
 #define TORCH_PWM_CHANNEL 0
@@ -408,6 +411,7 @@ namespace watch2
     //path - the path to start the file selection at
     std::string beginFileSelect(std::string path = "/");
     std::string dir_name(std::string file_path_thing);
+    std::string file_ext(std::string file_path_thing);
     std::string textFieldDialogue(std::string prompt="", const char *default_input="", const char mask=0, bool clear_screen=true);
     int     initSD(bool handleCS = true);
     void    colour888(uint16_t colour, float *r, float *g, float *b);

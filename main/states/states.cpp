@@ -13,6 +13,7 @@
 #include "state_image_viewer.cpp"
 #include "state_wiki.cpp"
 #include "state_quiz.cpp"
+#include "state_music_player.cpp"
 
 namespace watch2
 {
@@ -28,12 +29,13 @@ namespace watch2
         stateMeta("Stopwatch", state_func_stopwatch, "stopwatch"),
         stateMeta("Timer", state_func_timer, "timer"),
         stateMeta("Alarms", state_func_alarms, "alarms"),
-        stateMeta("SD test", state_func_SDtest, "sd"),
+        stateMeta("SD test", state_func_SDtest, "file_browser"),
         stateMeta("Notepad", state_func_notepad, "notepad"),
-        stateMeta("IR remote", state_func_ir_remote, "ir remote"),
+        stateMeta("IR remote", state_func_ir_remote, "ir_remote"),
         stateMeta("Image Viewer", state_func_image_viewer, "image_viewer"),
         stateMeta("Wikipedia", state_func_wiki, "wikipedia"),
-        stateMeta("Quiz Thingy", state_func_quiz)
+        stateMeta("Quiz Thingy", state_func_quiz),
+        stateMeta("Music Player", state_func_music_player, "music_player")
 
     };
 
