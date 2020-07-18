@@ -298,7 +298,7 @@ void state_func_watch_face()
             }
         }
 
-        if (!watch2::state_init || dpad_any_active() || (watch2::wifi_state != last_wifi_state))
+        if (!watch2::state_init || dpad_any_active() || (watch2::wifi_state != last_wifi_state) || (watch2::bluetooth_state != last_bt_state))
         {
             int spacing = 10;
             int button_size = 30;
@@ -364,6 +364,7 @@ void state_func_watch_face()
             watch2::oled.drawRoundRect(button_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, outline_colour);
             watch2::oled.drawBitmap(button_x, button_y, watch2::small_icons["bluetooth"].data(), button_size, button_size, (watch2::bluetooth_state != 0) ? WHITE : 0x041F);
             button_x += spacing + button_size;
+            if (watch2::bluetooth_state != last_bt_state) last_bt_state = watch2::bluetooth_state;
 
 
         }
