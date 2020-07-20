@@ -413,6 +413,8 @@ namespace watch2
     std::string dir_name(std::string file_path_thing);
     std::string file_ext(std::string file_path_thing);
     std::string textFieldDialogue(std::string prompt="", const char *default_input="", const char mask=0, bool clear_screen=true);
+    uint8_t messageBox(const char* msg, std::vector<const char*> btns={"Ok"}, bool clear_screen=true, uint16_t colour=themecolour);
+
     int     initSD(bool handleCS = true);
     void    colour888(uint16_t colour, float *r, float *g, float *b);
     void    HSVtoRGB( float *r, float *g, float *b, float h, float s, float v );
