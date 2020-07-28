@@ -104,8 +104,7 @@ void state_func_state_menu()
 
 
 
-    if (dpad_any_active() || !watch2::state_init || watch2::forceRedraw)
-    {
+    draw(dpad_any_active(), {
         watch2::oled.fillRect(0, 86, SCREEN_WIDTH, 10, BLACK); //clear state name text
         icon_ypos += watch2::top_thing_height;                 //add space for top bar thing
 
@@ -198,7 +197,7 @@ void state_func_state_menu()
         watch2::oled.fillRect(0, SCREEN_HEIGHT - watch2::oled.fontHeight() - 8, SCREEN_WIDTH, watch2::oled.fontHeight() + 8, BLACK);
         watch2::oled.print(watch2::states[watch2::selected_menu_icon].stateName.c_str());
         watch2::forceRedraw = false;
-    }
+    });
 
     watch2::drawTopThing();
 

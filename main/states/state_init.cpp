@@ -41,10 +41,9 @@ void state_func_init()
             selected_option = !selected_option;
         }
 
-        if (dpad_any_active() || !watch2::state_init)
-        {
+        draw(dpad_any_active(), {
             watch2::drawMenu(2, 37, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 37, {"No", "Yes"}, selected_option, false, RED);
-        }
+        });
 
         if (dpad_enter_active())
         {

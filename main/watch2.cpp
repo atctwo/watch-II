@@ -43,6 +43,7 @@ namespace watch2
     RTC_DATA_ATTR int boot_count = 0;
     uint8_t top_thing_height = oled.fontHeight() + 20;
     bool forceRedraw = false;
+    bool forceRedrawLooped = false;
     uint16_t trans_mode = 0;
     bool animate_watch_face = false;
     int short_timeout = 5000;
@@ -122,23 +123,27 @@ namespace watch2
 
         //wip screenshot tool
         //this doesn't work yet
-        if (btn_zero.pressedFor(1000))
+        if (btn_zero.wasPressed())
         {
-            oled.drawPixel(0,0,BLUE);
-            
-            for (int y = 0; y < SCREEN_HEIGHT; y++)
-            {
-                for (int x = 0; x < SCREEN_WIDTH; x++)
-                {
-                    uint16_t colour[1];
-                    oled.readRect(x, y, 1, 1, colour);
-                    Serial.printf("%d ", colour[0]);
-                    //Serial.printf("%3d %3d\n", x, y);
-                }
-                Serial.println();
-            }
-            
+            messageBox("did i die?", {"yes", "yes"});
         }
+        // if (btn_zero.pressedFor(1000))
+        // {
+        //     oled.drawPixel(0,0,BLUE);
+            
+        //     for (int y = 0; y < SCREEN_HEIGHT; y++)
+        //     {
+        //         for (int x = 0; x < SCREEN_WIDTH; x++)
+        //         {
+        //             uint16_t colour[1];
+        //             oled.readRect(x, y, 1, 1, colour);
+        //             Serial.printf("%d ", colour[0]);
+        //             //Serial.printf("%3d %3d\n", x, y);
+        //         }
+        //         Serial.println();
+        //     }
+            
+        // }
 
         //reset button lock state
         if (btn_dpad_up.isReleased())       dpad_up_lock = false;
@@ -327,6 +332,20 @@ namespace watch2
             {
                 //Serial.println("[Bluetooth] disconnected");
                 bluetooth_state = 2;
+            }
+        }
+
+        // redraw stuff
+        if (forceRedraw)
+        {
+            if (forceRedrawLooped)
+            {
+                forceRedraw = false;
+                forceRedrawLooped = false;
+            }
+            else
+            {
+                forceRedrawLooped = true;
             }
         }
 
@@ -1081,8 +1100,10 @@ namespace watch2
             }
 
             //if file select list hasn't been initliased, or any button is pressed, redraw the menu
-            if (!file_select_dir_list_init || dpad_any_active())
-            drawMenu(2, top_thing_height, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 12, files2, selected_icon, themecolour);
+            if (watch2::forceRedraw || !file_select_dir_list_init || dpad_any_active())
+            {
+                drawMenu(2, top_thing_height, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 12, files2, selected_icon, themecolour);
+            };
 
             //finish file select list initilisation
             if (!file_select_dir_list_init) file_select_dir_list_init = true;
@@ -1453,6 +1474,128 @@ namespace watch2
         forceRedraw = true;
         if (clear_screen) oled.fillScreen(0);
         return input;
+    }
+
+    uint8_t messageBox(const char* msg, std::vector<const char*> btns, bool clear_screen, uint16_t colour)
+    {
+        Serial.printf("showing message box: %s\n", msg);
+        watch2::setFont(MAIN_FONT);
+
+        // The Numbers
+        uint16_t padding = 7;
+        uint8_t box_radius = 15;
+        uint8_t btn_radius = 7;
+        uint8_t selected_button = 0;
+        int16_t msg_x = 0, msg_y = 0;
+        uint16_t msg_w = 0, msg_h = 0;
+        getTextBounds(msg, 0, 0, &msg_x, &msg_y, &msg_w, &msg_h);
+
+        uint16_t dialogue_width = 195;
+        uint16_t dialogue_height = (padding * 5) + oled.fontHeight() + msg_h;
+
+        uint16_t dialogue_x = (SCREEN_WIDTH  / 2) - (dialogue_width  / 2);
+        uint16_t dialogue_y = (SCREEN_HEIGHT / 2) - (dialogue_height / 2);
+
+        uint16_t text_x = dialogue_x + (dialogue_width / 2);
+        uint16_t text_y = dialogue_y + padding;
+        Serial.printf("x: %d\ny: %d", text_x, text_y);
+
+        uint16_t btn_widths[btns.size()];
+        uint16_t total_btn_width = 0;
+        int16_t btn_x = 0, btn_y = 0;
+        uint16_t btn_w = 0, btn_h = 0;
+
+        // calculate the size of each button
+        for (uint8_t i = 0; i < btns.size(); i++)
+        {
+            getTextBounds(btns[i], 0, 0, &btn_x, &btn_y, &btn_w, &btn_h);
+            btn_widths[i] = btn_w + (padding * 2);
+            total_btn_width += btn_widths[i];
+        }
+
+        // finish calculating the size of all the buttons together
+        total_btn_width += padding * (btns.size() - 1);
+
+        // calculate the button position
+        btn_x = dialogue_x + ((dialogue_width / 2) - (total_btn_width / 2));
+        btn_y = (padding * 2) + msg_h + dialogue_y;
+        btn_w = 0;
+        btn_h = (padding * 2) + oled.fontHeight();
+
+        // get number of newlines in msg
+        // uint16_t newlines = 0;
+        // for(const char* str = msg; *str; ++str) newlines += (*str == '\n');
+
+        // draw dialogue thingy
+        oled.fillRoundRect(dialogue_x, dialogue_y, dialogue_width, dialogue_height, box_radius, BLACK);
+        oled.drawRoundRect(dialogue_x, dialogue_y, dialogue_width, dialogue_height, box_radius, colour);
+
+        // print message
+        // this splits the message using '\n' as a delimiter, and prints each segment of the message on a new line
+        oled.setTextColor(WHITE, BLACK);
+        oled.setTextDatum(TC_DATUM);
+        char* str = strdup(msg);
+        char* pch = strtok(str, "\n");
+        uint16_t newlines = 0;
+        while(pch != NULL)
+        {
+            oled.drawString(pch, text_x, text_y + (newlines * oled.fontHeight()));
+            pch = strtok(NULL, "\n");
+            newlines++;
+        }
+        free(str);
+        oled.setTextDatum(TL_DATUM);
+
+        // draw the buttons
+        uint16_t current_btn_x = btn_x;
+        for (uint8_t i = 0; i < btns.size(); i++)
+        {
+            uint16_t btn_colour = (i == selected_button) ? WHITE : colour;
+            oled.drawRoundRect(current_btn_x, btn_y, btn_widths[i], btn_h, btn_radius, btn_colour);
+            oled.drawString(btns[i], current_btn_x + padding, btn_y + padding);
+            current_btn_x += btn_widths[i] + padding;
+        }
+
+        while(1)
+        {
+            startLoop();
+
+            if (dpad_right_active())
+            {
+                if (selected_button == btns.size() - 1) selected_button = 0;
+                else selected_button++;
+            }
+
+            if (dpad_left_active())
+            {
+                if (selected_button == 0) selected_button = btns.size() - 1;
+                else selected_button--;
+            }
+
+            if (dpad_any_active())
+            {
+                // draw the buttons
+                uint16_t current_btn_x = btn_x;
+                for (uint8_t i = 0; i < btns.size(); i++)
+                {
+                    uint16_t btn_colour = (i == selected_button) ? WHITE : colour;
+                    oled.drawRoundRect(current_btn_x, btn_y, btn_widths[i], btn_h, btn_radius, btn_colour);
+                    oled.drawString(btns[i], current_btn_x + padding, btn_y + padding);
+                    current_btn_x += btn_widths[i] + padding;
+                }
+            }
+
+            if (dpad_enter_active())
+            {
+                break;
+            }
+
+            endLoop();
+        }
+
+        forceRedraw = true;
+        if (clear_screen) oled.fillScreen(0);
+        return selected_button;
     }
 
     int initSD(bool handleCS)

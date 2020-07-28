@@ -209,7 +209,7 @@ void loop() {
 
     else if (watch2::timer_trigger_status != 0)
     {
-        if (watch2::timer_trigger_status == 1)
+        if (watch2::timer_trigger_status == 1 || watch2::forceRedraw)
         {
             //dim screen
             watch2::dimScreen(0, 10);
@@ -272,7 +272,7 @@ void loop() {
         //0 - dismiss
         //anything else - sleep
 
-        if (watch2::alarm_trigger_status == 1)
+        if (watch2::alarm_trigger_status == 1 || watch2::forceRedraw)
         {
             //dim screen
             watch2::dimScreen(0, 10);
@@ -312,7 +312,7 @@ void loop() {
         }
 
         //draw buttons
-        if (dpad_any_active() || watch2::alarm_trigger_status == 2)
+        if (dpad_any_active() || watch2::alarm_trigger_status == 2 || watch2::forceRedraw)
         {
             uint16_t split_width = SCREEN_WIDTH / 4;
 

@@ -153,8 +153,7 @@ void state_func_alarms()
     }
 
     //draw alarms
-    if (dpad_any_active() || !watch2::state_init)
-    {
+    draw(dpad_any_active(), {
         int alarm_x = 2;
         int alarm_y = watch2::top_thing_height;
         int alarm_w = SCREEN_WIDTH - (alarm_x * 2);
@@ -167,8 +166,7 @@ void state_func_alarms()
         uint16_t working_button_colour = WHITE;
         uint16_t working_alarm_colour = WHITE;
 
-        if (!watch2::state_init || dpad_any_active())
-        {
+        draw(dpad_any_active(), {
 
             //set colour of row
             working_alarm_colour = (selected_alarm == -1) ? watch2::themecolour : WHITE;
@@ -219,7 +217,7 @@ void state_func_alarms()
                 icon_size,
                 working_alarm_colour
             );
-        }
+        });
 
         //draw alarms
         if (watch2::alarms.size() == 0)
@@ -247,9 +245,9 @@ void state_func_alarms()
             time_t alarm_time = Alarm.read(watch2::alarms[i].alarm_id);
             //if this is the state's first frame, or the time of the alarm has changed,
             //or this is the selected alarm and any button has been pressed,
-            //or this is the previouskly selected alarm and any button has been pressed
-            if (!watch2::state_init || alarm_time != watch2::alarms[i].last_value || dpad_any_active())
-            {
+            //or this is the previously selected alarm and any button has been pressed
+            draw(alarm_time != watch2::alarms[i].last_value || dpad_any_active(), {
+
                 //clear previous text
                 int wheeoo = (i == 0 && watch2::alarms.size() == 1) ?
                     ( SCREEN_WIDTH - alarm_x) :
@@ -349,11 +347,11 @@ void state_func_alarms()
 
                 watch2::alarms[i].last_value = alarm_time;
 
-            }
+            });
 
         }
 
-    }
+    });
 
     watch2::drawTopThing();
 

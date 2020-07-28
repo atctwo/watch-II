@@ -42,12 +42,11 @@ void state_func_settings()
                 selected_panel--;
                 if (selected_panel < 0) selected_panel = panels.size() - 1;
             }
-            if (dpad_any_active() || !watch2::state_init)
-            {
+            draw(dpad_any_active(), {
                 // draw menu
                 //watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
                 watch2::drawMenu(2, watch2::top_thing_height, SCREEN_WIDTH-4, SCREEN_HEIGHT-12, panels, selected_panel, watch2::themecolour);
-            }
+            });
             if (dpad_enter_active())
             {
                 // go to panel
@@ -114,8 +113,8 @@ void state_func_settings()
             }
             //Serial.printf("5: %d\n", selected_time);
 
-            if (dpad_any_active() || !watch2::state_init)
-            {
+            draw(dpad_any_active(), {
+
                 watch2::oled.setCursor(4, watch2::top_thing_height);
                 watch2::setFont(LARGE_FONT);
 
@@ -136,7 +135,7 @@ void state_func_settings()
                 }
 
                 watch2::setFont(MAIN_FONT);
-            }
+            });
 
             if (dpad_enter_active())
             {
@@ -215,12 +214,11 @@ void state_func_settings()
                 if (selected_timeout < 0 ) selected_timeout = timeout_data.size() - 1;
             }
 
-            if (dpad_any_active() || !watch2::state_init)
-            {
+            draw(dpad_any_active(), {
                 //watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
                 watch2::oled.setTextColor(WHITE, BLACK);
                 drawSettingsMenu(0, watch2::top_thing_height, SCREEN_WIDTH, SCREEN_HEIGHT - watch2::top_thing_height, timeout_data, selected_timeout, watch2::themecolour);
-            }
+            });
 
             if (dpad_enter_active())
             {
@@ -363,12 +361,11 @@ void state_func_settings()
                 if (selected_colour < 0 ) selected_colour = colour_data.size() - 1;
             }
 
-            if (dpad_any_active() || !watch2::state_init)
-            {
+            draw(dpad_any_active(), {
                 //watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
                 watch2::oled.setTextColor(WHITE, BLACK);
                 drawSettingsMenu(0, watch2::top_thing_height, SCREEN_WIDTH, SCREEN_HEIGHT - watch2::top_thing_height, colour_data, selected_colour, watch2::themecolour);
-            }
+            });
 
             if (dpad_enter_active())
             {
@@ -436,10 +433,9 @@ void state_func_settings()
                 watch2::oled.printf("Free PSRAM:  %s\n", watch2::humanSize(ESP.getFreePsram()));
             }
 
-            if (dpad_any_active() || !watch2::state_init)
-            {
+            draw(dpad_any_active(), {
                 //about_text.pushSprite(0, watch2::top_thing_height);
-            }
+            });
 
             if (dpad_enter_active() || dpad_left_active())
             {
@@ -515,8 +511,7 @@ void state_func_settings()
                 }
             }
 
-            if (!watch2::state_init || dpad_any_active())
-            {
+            draw(dpad_any_active(), {
 
                 // draw "set time" buttons
                 ypos = watch2::top_thing_height;
@@ -535,7 +530,7 @@ void state_func_settings()
                     ntp_settings, selected_item - 2
                 );
 
-            }
+            });
 
             if (dpad_enter_active())
             {
@@ -615,8 +610,7 @@ void state_func_settings()
                 }
             }
 
-            if (!watch2::state_init || dpad_any_active())
-            {
+            draw(dpad_any_active(), {
                 // draw wifi settings
                 ypos_wifi = watch2::top_thing_height;
                 watch2::oled.setTextColor(WHITE, BLACK);
@@ -633,7 +627,7 @@ void state_func_settings()
                     SCREEN_WIDTH-4, 24 + (watch2::oled.fontHeight() * 2), 
                     wifi_buttons, selected_item_wifi - 3, false
                 );
-            }
+            });
 
             if (dpad_enter_active())
             {
@@ -703,8 +697,7 @@ void state_func_settings()
                 if (selected_ssid >= no_ssid) no_ssid = 0;
             }
 
-            if (!watch2::state_init || dpad_any_active() || watch2::forceRedraw)
-            {
+            draw(dpad_any_active(), {
                 // draw ssids
                 watch2::drawMenu(
                     2, watch2::top_thing_height,
@@ -712,7 +705,7 @@ void state_func_settings()
                     ssid_names, selected_ssid
                 );
                 watch2::forceRedraw = false;
-            }
+            });
 
             if (dpad_enter_active())
             {
@@ -813,15 +806,14 @@ void state_func_settings()
                 else selected_profile++;
             }
 
-            if (!watch2::state_init || dpad_any_active())
-            {
+            draw(dpad_any_active(), {
                 // draw profile menu
                 watch2::drawMenu(
                     2, watch2::top_thing_height,
                     SCREEN_WIDTH - 4, SCREEN_HEIGHT - watch2::top_thing_height,
                     profiles_vector, selected_profile
                 );
-            }
+            });
 
             if (dpad_enter_active())
             {
@@ -883,8 +875,7 @@ void state_func_settings()
                 else selected_profile_setting++;
             }
 
-            if (!watch2::state_init || dpad_any_active() || watch2::forceRedraw)
-            {
+            draw(dpad_any_active(), {
                 // draw ssid
                 watch2::oled.fillRect(0, watch2::top_thing_height, SCREEN_WIDTH, watch2::oled.fontHeight(), BLACK);
                 watch2::oled.setTextColor(WHITE, BLACK);
@@ -909,7 +900,7 @@ void state_func_settings()
                 );
 
                 watch2::forceRedraw = false;
-            }
+            });
 
             if (dpad_enter_active())
             {

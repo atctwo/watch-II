@@ -75,8 +75,7 @@ void state_func_ir_remote()
         }
 
         // on state init, or if any key is pressed
-        if (!watch2::state_init || dpad_any_active())
-        {
+        draw(dpad_any_active(), {
             // draw profile menu
             watch2::drawMenu(
                 2,
@@ -86,7 +85,7 @@ void state_func_ir_remote()
                 profile_names,
                 selected_profile
             );
-        }
+        });
 
         // draw top thing
         watch2::drawTopThing();
@@ -237,7 +236,7 @@ void state_func_ir_remote()
         }
 
         // draw button contents
-        if (this_page_number != last_page_number)
+        if ((this_page_number != last_page_number) || watch2::forceRedraw)
         {
             if (watch2::state_init) watch2::dimScreen(false, 100);
             icon_ypos = watch2::top_thing_height;
@@ -338,8 +337,7 @@ void state_func_ir_remote()
         }
 
         // draw button outlines
-        if (dpad_any_active() || !watch2::state_init)
-        {
+        draw(dpad_any_active(), {
             icon_ypos = watch2::top_thing_height;
             for (int i = no_icons_separate_from_the_other_no_icons * this_page_number; i < no_icons_separate_from_the_other_no_icons * (this_page_number + 1); i++)
             {
@@ -366,7 +364,7 @@ void state_func_ir_remote()
 
             }
 
-        }
+        });
 
         if (dpad_enter_active())
         {

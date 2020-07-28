@@ -148,9 +148,7 @@ void state_func_calc()
 
 
 
-    if (dpad_up_active() || dpad_down_active() || dpad_left_active() ||
-        dpad_right_active() || dpad_enter_active() || !watch2::state_init)
-    {
+    draw(dpad_any_active(), {
         //draw current input
         watch2::oled.drawRoundRect(2, watch2::top_thing_height, SCREEN_WIDTH - 4, watch2::oled.fontHeight() + (2 * icon_spacing), radius, watch2::themecolour);
         watch2::oled.setCursor(2 + icon_spacing, watch2::top_thing_height + icon_spacing);
@@ -215,7 +213,7 @@ void state_func_calc()
 
             if (!watch2::state_init) no_icons++;
         }
-    }
+    });
 
     watch2::drawTopThing();
 

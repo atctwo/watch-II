@@ -96,6 +96,12 @@
 #define dpad_enter_active() ( !watch2::dpad_enter_lock && (watch2::btn_dpad_enter.wasPressed() || ( watch2::btn_dpad_enter.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD < 10 ) ) ) )
 #define dpad_any_active()   ( dpad_up_active() || dpad_down_active() || dpad_left_active() || dpad_right_active() || dpad_enter_active() )
 
+#define draw(conditions, ...)                                       \      
+    if (!watch2::state_init || watch2::forceRedraw || conditions)   \
+    {                                                               \
+        __VA_ARGS__                                                 \
+    }
+
 // Color definitions
 #define	BLACK           0x0000
 #define	BLUE            0x001F
@@ -274,7 +280,7 @@ namespace watch2
     extern RTC_DATA_ATTR int boot_count;                                                        //no of times watch has woken up (including initial boot)
     extern uint8_t top_thing_height;                                                            //the height of the top thing (plus a small buffer) in pixels
     extern bool forceRedraw;
-
+    extern bool forceRedrawLooped;
     // local stores of system preferences
     extern uint16_t trans_mode;                                                                 //pretty colour scheme
     extern bool animate_watch_face;                                                             //whether or not animate the watch face
@@ -413,6 +419,8 @@ namespace watch2
     std::string dir_name(std::string file_path_thing);
     std::string file_ext(std::string file_path_thing);
     std::string textFieldDialogue(std::string prompt="", const char *default_input="", const char mask=0, bool clear_screen=true);
+    uint8_t messageBox(const char* msg, std::vector<const char*> btns={"Ok"}, bool clear_screen=true, uint16_t colour=themecolour);
+
     int     initSD(bool handleCS = true);
     void    colour888(uint16_t colour, float *r, float *g, float *b);
     void    HSVtoRGB( float *r, float *g, float *b, float h, float s, float v );
