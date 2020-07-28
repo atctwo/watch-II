@@ -92,8 +92,7 @@ void state_func_wiki()
                 connected_to_wikipeda = true;
             }
 
-            if (!watch2::state_init || dpad_any_active() || watch2::forceRedraw)
-            {
+            draw(dpad_any_active(), {
                 watch2::oled.pushImage(0, watch2::top_thing_height,240, 40, watch2::icons["wikipedia_text"].data());
                 watch2::oled.setTextColor(WHITE, BLACK);
                 watch2::oled.setTextDatum(TC_DATUM);
@@ -120,7 +119,7 @@ void state_func_wiki()
                 }
                 
                 watch2::forceRedraw = false;
-            }
+            });
 
             if (dpad_enter_active())
             {
@@ -216,8 +215,7 @@ void state_func_wiki()
                 }
             }
 
-            if (!watch2::state_init || dpad_any_active() || watch2::forceRedraw)
-            {
+            draw(dpad_any_active(), {
                 // set flavour text
                 if (wiki_selected_search_result == 0) flavour_text = "";
                 else {
@@ -272,7 +270,7 @@ void state_func_wiki()
                 }
                 
                 watch2::forceRedraw = false;
-            }
+            });
 
             if (dpad_enter_active())
             {
@@ -440,8 +438,7 @@ void state_func_wiki()
                 if ((line_offset + 1) < total_lines) line_offset++;
             }
 
-            if (dpad_any_active() || !watch2::state_init)
-            {
+            draw(dpad_any_active(), {
                 // ???
                 uint16_t lines_that_can_fit_on_screen_at_one_time = (SCREEN_HEIGHT / watch2::oled.fontHeight());
                 uint16_t text_height = 0;
@@ -460,7 +457,7 @@ void state_func_wiki()
                         text_height += watch2::oled.fontHeight();
                     }
                 }
-            }
+            });
 
             if (dpad_left_active())
             {

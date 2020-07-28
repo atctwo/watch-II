@@ -172,8 +172,7 @@ void state_func_timer()
         uint16_t working_button_colour = WHITE;
         uint16_t working_timer_colour = WHITE;
 
-        if (!watch2::state_init || dpad_any_active())
-        {
+        draw(dpad_any_active(), {
 
             //set colour of row
             working_timer_colour = (selected_timer == -1) ? watch2::themecolour : WHITE;
@@ -224,7 +223,7 @@ void state_func_timer()
                 icon_size,
                 working_timer_colour
             );
-        }
+        });
 
         //draw timers
         for (int i = 0; i < watch2::timers.size(); i++)
@@ -234,8 +233,7 @@ void state_func_timer()
             time_t current_time = (watch2::timers[i].alarm_id == 255) ? watch2::timers[i].duration : ( watch2::timers[i].time_started + Alarm.read(watch2::timers[i].alarm_id ) ) - now();
             //if this is the state's first frame, or the time of the timer has changed,
             //or this is the selected timer and any button has been pressed
-            if (!watch2::state_init || dpad_any_active() || current_time != watch2::timers[i].last_value)
-            {
+            draw(dpad_any_active() || current_time != watch2::timers[i].last_value, {
                 //clear previous text
                 watch2::oled.fillRect(timer_x, timer_y, timer_w - (icon_spacing * 6) - (icon_size * 2), watch2::oled.fontHeight(), BLACK);
 
@@ -331,7 +329,7 @@ void state_func_timer()
 
                 watch2::timers[i].last_value = (watch2::timers[i].alarm_id == 255) ? watch2::timers[i].duration : ( watch2::timers[i].time_started + Alarm.read(watch2::timers[i].alarm_id ) ) - now();
 
-            }
+            });
 
         }
 

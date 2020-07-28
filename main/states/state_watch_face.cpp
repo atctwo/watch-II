@@ -79,8 +79,7 @@ void state_func_watch_face()
         }
 
         // draw time
-        if (minute() != last_minute || !watch2::state_init)
-        {
+        draw(minute() != last_minute, {
             time_sprite.fillScreen(BLACK);
             time_sprite.setTextDatum(MC_DATUM);
             sprintf(buffer, "%02d:%02d", hour(), minute());
@@ -128,11 +127,10 @@ void state_func_watch_face()
             }
 
             last_minute = now();
-        }
+        });
 
         //draw seconds
-        if (second() != last_second || !watch2::state_init)
-        {
+        draw(second() != last_second, {
             second_sprite.fillScreen(BLACK);
             second_sprite.setTextDatum(TL_DATUM);
             sprintf(buffer, " %02d", second());
@@ -143,11 +141,10 @@ void state_func_watch_face()
 
             second_sprite.pushSprite(0, watch2::top_thing_height + time_sprite.height());
             last_second = second();
-        }
+        });
 
         // draw date
-        if (day() != last_day || !watch2::state_init)
-        {
+        draw(day() != last_day, {
             day_sprite.fillScreen(BLACK);
             day_sprite.setTextDatum(TC_DATUM);
             sprintf(buffer, "%s %02d.%02d.%04d", dayShortStr(dayOfWeek(day())), day(), month(), year());
@@ -155,7 +152,7 @@ void state_func_watch_face()
             uint16_t start_height = watch2::top_thing_height + time_sprite.height() + second_sprite.height();
             day_sprite.pushSprite(0, start_height + ((SCREEN_HEIGHT - start_height) / 2));
             last_day = day();
-        }
+        });
 
         //draw minimal top thing
         watch2::drawTopThing(true);
@@ -298,8 +295,7 @@ void state_func_watch_face()
             }
         }
 
-        if (!watch2::state_init || dpad_any_active() || (watch2::wifi_state != last_wifi_state) || (watch2::bluetooth_state != last_bt_state))
-        {
+        draw(dpad_any_active() || (watch2::wifi_state != last_wifi_state) || (watch2::bluetooth_state != last_bt_state), {
             int spacing = 10;
             int button_size = 30;
             int radius = 10;
@@ -367,7 +363,7 @@ void state_func_watch_face()
             if (watch2::bluetooth_state != last_bt_state) last_bt_state = watch2::bluetooth_state;
 
 
-        }
+        });
 
         if (dpad_down_active())
         {

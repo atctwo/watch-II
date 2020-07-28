@@ -43,6 +43,7 @@ namespace watch2
     RTC_DATA_ATTR int boot_count = 0;
     uint8_t top_thing_height = oled.fontHeight() + 20;
     bool forceRedraw = false;
+    bool forceRedrawLooped = false;
     uint16_t trans_mode = 0;
     bool animate_watch_face = false;
     int short_timeout = 5000;
@@ -122,23 +123,27 @@ namespace watch2
 
         //wip screenshot tool
         //this doesn't work yet
-        if (btn_zero.pressedFor(1000))
+        if (btn_zero.wasPressed())
         {
-            oled.drawPixel(0,0,BLUE);
-            
-            for (int y = 0; y < SCREEN_HEIGHT; y++)
-            {
-                for (int x = 0; x < SCREEN_WIDTH; x++)
-                {
-                    uint16_t colour[1];
-                    oled.readRect(x, y, 1, 1, colour);
-                    Serial.printf("%d ", colour[0]);
-                    //Serial.printf("%3d %3d\n", x, y);
-                }
-                Serial.println();
-            }
-            
+            messageBox("did i die?", {"yes", "yes"});
         }
+        // if (btn_zero.pressedFor(1000))
+        // {
+        //     oled.drawPixel(0,0,BLUE);
+            
+        //     for (int y = 0; y < SCREEN_HEIGHT; y++)
+        //     {
+        //         for (int x = 0; x < SCREEN_WIDTH; x++)
+        //         {
+        //             uint16_t colour[1];
+        //             oled.readRect(x, y, 1, 1, colour);
+        //             Serial.printf("%d ", colour[0]);
+        //             //Serial.printf("%3d %3d\n", x, y);
+        //         }
+        //         Serial.println();
+        //     }
+            
+        // }
 
         //reset button lock state
         if (btn_dpad_up.isReleased())       dpad_up_lock = false;
@@ -327,6 +332,20 @@ namespace watch2
             {
                 //Serial.println("[Bluetooth] disconnected");
                 bluetooth_state = 2;
+            }
+        }
+
+        // redraw stuff
+        if (forceRedraw)
+        {
+            if (forceRedrawLooped)
+            {
+                forceRedraw = false;
+                forceRedrawLooped = false;
+            }
+            else
+            {
+                forceRedrawLooped = true;
             }
         }
 
@@ -1081,8 +1100,10 @@ namespace watch2
             }
 
             //if file select list hasn't been initliased, or any button is pressed, redraw the menu
-            if (!file_select_dir_list_init || dpad_any_active())
-            drawMenu(2, top_thing_height, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 12, files2, selected_icon, themecolour);
+            if (watch2::forceRedraw || !file_select_dir_list_init || dpad_any_active())
+            {
+                drawMenu(2, top_thing_height, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 12, files2, selected_icon, themecolour);
+            };
 
             //finish file select list initilisation
             if (!file_select_dir_list_init) file_select_dir_list_init = true;
@@ -1458,6 +1479,7 @@ namespace watch2
     uint8_t messageBox(const char* msg, std::vector<const char*> btns, bool clear_screen, uint16_t colour)
     {
         Serial.printf("showing message box: %s\n", msg);
+        watch2::setFont(MAIN_FONT);
 
         // The Numbers
         uint16_t padding = 7;
