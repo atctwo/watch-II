@@ -492,6 +492,13 @@ void state_func_ir_remote()
             watch2::oled.print("IR Receiver    ");
             watch2::oled.setTextColor(RED, BLACK);
             watch2::oled.println("disabled");
+            watch2::oled.setTextColor(WHITE, BLACK);
+            watch2::oled.print("Press Enter to enable the \n"
+                                "IR receiver.  After you \n"
+                                "enable the receiver, you\n"
+                                "will need to disable it\n"
+                                "before you can leave \n"
+                                "the app");
         });
 
         if (ir_enabled)
