@@ -1,26 +1,31 @@
 # set up source files
 
 set(LIB_ARDUINO_IRREMOTE_SRCS
-    libraries/Arduino-IRremote/ir_Aiwa.cpp
-    libraries/Arduino-IRremote/ir_Denon.cpp
-    libraries/Arduino-IRremote/ir_Dish.cpp
-    libraries/Arduino-IRremote/ir_JVC.cpp
-    libraries/Arduino-IRremote/ir_Lego_PF.cpp
-    libraries/Arduino-IRremote/ir_LG.cpp
-    libraries/Arduino-IRremote/ir_Mitsubishi.cpp
-    libraries/Arduino-IRremote/ir_NEC.cpp
-    libraries/Arduino-IRremote/ir_Panasonic.cpp
-    libraries/Arduino-IRremote/ir_RC5_RC6.cpp
-    libraries/Arduino-IRremote/ir_Samsung.cpp
-    libraries/Arduino-IRremote/ir_Sanyo.cpp
-    libraries/Arduino-IRremote/ir_Sharp.cpp
-    libraries/Arduino-IRremote/ir_Sony.cpp
-    libraries/Arduino-IRremote/ir_Template.cpp
-    libraries/Arduino-IRremote/ir_Whynter.cpp
-    libraries/Arduino-IRremote/irPronto.cpp
-    libraries/Arduino-IRremote/irRecv.cpp
-    libraries/Arduino-IRremote/IRremote.cpp
-    libraries/Arduino-IRremote/irSend.cpp
+    libraries/Arduino-IRremote/src/ir_Aiwa.cpp
+    libraries/Arduino-IRremote/src/ir_BoseWave.cpp
+    libraries/Arduino-IRremote/src/ir_Denon.cpp
+    libraries/Arduino-IRremote/src/ir_Dish.cpp
+    libraries/Arduino-IRremote/src/ir_JVC.cpp
+    libraries/Arduino-IRremote/src/ir_Lego_PF.cpp
+    libraries/Arduino-IRremote/src/ir_LG.cpp
+    libraries/Arduino-IRremote/src/ir_MagiQuest.cpp
+    libraries/Arduino-IRremote/src/ir_Mitsubishi.cpp
+    libraries/Arduino-IRremote/src/ir_NEC.cpp
+    libraries/Arduino-IRremote/src/ir_Panasonic.cpp
+    libraries/Arduino-IRremote/src/ir_RC5_RC6.cpp
+    libraries/Arduino-IRremote/src/ir_Samsung.cpp
+    libraries/Arduino-IRremote/src/ir_Sanyo.cpp
+    libraries/Arduino-IRremote/src/ir_Sharp.cpp
+    libraries/Arduino-IRremote/src/ir_Sharp_alt.cpp
+    libraries/Arduino-IRremote/src/ir_Sony.cpp
+    libraries/Arduino-IRremote/src/ir_Template.cpp
+    libraries/Arduino-IRremote/src/ir_Whynter.cpp
+    libraries/Arduino-IRremote/src/irPronto.cpp
+    libraries/Arduino-IRremote/src/irRecv.cpp
+    libraries/Arduino-IRremote/src/IRremote.cpp
+    libraries/Arduino-IRremote/src/irSend.cpp
+    libraries/Arduino-IRremote/src/sam.cpp
+    libraries/Arduino-IRremote/src/esp32.cpp
 )
 
 set(LIB_SDFAT_SRCS
@@ -207,7 +212,7 @@ set(COMPONENT_SRCS
 set(COMPONENT_ADD_INCLUDEDIRS 
     libraries/SdFat/src/ 			
     libraries/JC_Button/src/ 	
-    libraries/Arduino-IRremote/ 	
+    libraries/Arduino-IRremote/src/	
     libraries/TFT_eSPI/ 			
     libraries/Time/ 				
     libraries/TimeAlarms/ 			

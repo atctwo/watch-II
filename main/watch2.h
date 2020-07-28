@@ -54,8 +54,8 @@
 #include "regret.h"
 
 //pin declarations
-#define cs   5          // goes to TFT CS
-#define sdcs 4          //sd card chip select
+#define cs   5         // goes to TFT CS
+#define sdcs 13          //sd card chip select
 #define spi_dc   22     // goes to TFT DC
 #define spi_mosi 23     // goes to TFT MOSI
 #define spi_sclk 18     // goes to TFT SCK/CLK
@@ -64,26 +64,26 @@
 //       3.3V           // Goes to TFT LED
 //       5v             // Goes to TFT Vcc
 //       Gnd            // Goes to TFT Gnd
-#define tftbl 14        //tft backlight
+#define tftbl 33        //tft backlight
 #define tftbl_resolution 8 //resolution of backlight pwm in bits
 
-#define dpad_up             33
+#define dpad_up             34
 #define dpad_down           39
 #define dpad_left           32
 #define dpad_right          35
 #define dpad_enter          36
 #define BATTERY_DIVIDER_PIN 34
-#define TORCH_PIN           13
-#define IR_PIN              12
-#define IR_REC_PIN          16
+#define TORCH_PIN           14
+#define IR_PIN              4
+#define IR_REC_PIN          12
 #define I2S_DOUT            25
 #define I2S_BCLK            27
 #define I2S_LRC             26
 
 //ledc channels
-#define TORCH_PWM_CHANNEL 0
+#define TORCH_PWM_CHANNEL 2
 #define TFTBL_PWM_CHANNEL 1
-#define IR_PWM_CHANNEL 2
+#define IR_PWM_CHANNEL 0
 
 //button active macros
 #define KEY_REPEAT_DELAY    550     //time for key repeat to start, in ms [DAS]

@@ -383,8 +383,8 @@ namespace watch2
             if ( millis() - last_battery_reading > 1000)
             {
                 //batteryVoltage = ( (ReadVoltage(BATTERY_DIVIDER_PIN) * 3.3 ) / 4095.0 ) * 2;
-                batteryVoltage = ReadVoltage(BATTERY_DIVIDER_PIN) * BATTERY_VOLTAGE_SCALE;
-                batteryPercentage = ( batteryVoltage / BATTERY_VOLTAGE_MAX ) * 100.0;
+                //batteryVoltage = ReadVoltage(BATTERY_DIVIDER_PIN) * BATTERY_VOLTAGE_SCALE;
+                batteryPercentage = 69.0; ( batteryVoltage / BATTERY_VOLTAGE_MAX ) * 100.0;
                 last_battery_reading = millis();
             }
 

@@ -431,10 +431,13 @@ void state_func_ir_remote()
                         //if (strcmp(protocol, "sanyo") == 0)              irsend.sendSanyo(ir_code, ir_code_size->valueint);
                         //if (strcmp(protocol, "mitsubishi") == 0)         irsend.sendMitsubishi(ir_code, ir_code_size->valueint);
                         if (strcmp(protocol, "dish") == 0)               irsend.sendDISH(ir_code, ir_code_size->valueint);
-                        //if (strcmp(protocol, "sharp") == 0)              irsend.sendSharp(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "sharp") == 0)              irsend.sendSharpRaw(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "sharp alt") == 0)          irsend.sendSharpAltRaw(ir_code, ir_code_size->valueint);
                         if (strcmp(protocol, "denon") == 0)              irsend.sendDenon(ir_code, ir_code_size->valueint);
                         //if (strcmp(protocol, "pronto") == 0)             irsend.sendPronto(ir_code_object->valuestring, false, false);
                         if (strcmp(protocol, "lego pf") == 0)            irsend.sendLegoPowerFunctions(ir_code, false);
+                        if (strcmp(protocol, "bose wave") == 0)          irsend.sendBoseWave(ir_code);
+                        //if (strcmp(protocol, "magiquest") == 0)          irsend.sendMagiQuest()
                     }
                     else
                     {
@@ -459,61 +462,114 @@ void state_func_ir_remote()
     if (watch2::states[watch2::state].variant == 2)
     {
 
-        if (!watch2::state_init)
-        {
-            watch2::oled.setCursor(2, watch2::top_thing_height);
-            watch2::oled.print("IR Receiver\ncurrently very broken\nuse with caution\npress enter to enable ir\nreception.  results will be \nprinted over serial.  if you \nexit this screen after \nenabling reception, the \nwatch will crash\nsorry!");  
-            watch2::setFont(LARGE_FONT);        
-        }
-
         if (dpad_enter_active())
         {
-            // start the receiver
-            irrecv.enableIRIn();
-            ir_enabled = true;  
+            if (!ir_enabled)
+            {
+                // start the receiver
+                watch2::oled.fillScreen(BLACK);
+                watch2::oled.setCursor(2, watch2::top_thing_height);
+                watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                watch2::oled.print("IR Receiver    ");
+                watch2::oled.setTextColor(GREEN, BLACK);
+                watch2::oled.println("enabled");
+
+                irrecv.enableIRIn();
+                ir_enabled = true;  
+            }
+            else
+            {
+                // disable the receiver
+                irrecv.disableIRIn();
+                ir_enabled = false;
+            }
         }
 
+        draw((!ir_enabled && dpad_enter_active()), {
+            watch2::oled.fillScreen(BLACK);
+            watch2::oled.setCursor(2, watch2::top_thing_height);
+            watch2::oled.setTextColor(watch2::themecolour, BLACK);
+            watch2::oled.print("IR Receiver    ");
+            watch2::oled.setTextColor(RED, BLACK);
+            watch2::oled.println("disabled");
+        });
+
         if (ir_enabled)
-        if (irrecv.decode(&ir_recv_results))
+        if (irrecv.decode(&ir_recv_results) || watch2::forceRedraw)
         {
-            //watch2::oled.setCursor(2, watch2::top_thing_height + watch2::oled.fontHeight());
-            //watch2::oled.println(ir_recv_results.value, HEX);
+            irrecv.disableIRIn();
+            delay(100);
+            uint16_t code_info_y = watch2::top_thing_height + watch2::oled.fontHeight();
+            watch2::oled.fillRect( 0, code_info_y, SCREEN_WIDTH, SCREEN_HEIGHT - code_info_y, BLACK);
 
             // print code info
-            Serial.print("Protocol: ");
+            watch2::oled.setCursor(0, code_info_y);
+            watch2::oled.setTextColor(watch2::themecolour, BLACK);
+            watch2::oled.print("\nProtocol: ");
+            watch2::oled.setTextColor(WHITE, BLACK);
             switch(ir_recv_results.decode_type)
             {
-                case -1: Serial.println("Unknown");              break;
-                case 0:  Serial.println("Unused");               break;
-                case 1:  Serial.println("RC5");                  break;
-                case 2:  Serial.println("RC6");                  break;
-                case 3:  Serial.println("NEC");                  break;
-                case 4:  Serial.println("Sony");                 break;
-                case 5:  Serial.println("Panasonic");            break;
-                case 6:  Serial.println("JVC");                  break;
-                case 7:  Serial.println("Samsung");              break;
-                case 8:  Serial.println("Whynter");              break;
-                case 9:  Serial.println("Aiwa RC T501");         break;
-                case 10: Serial.println("LG");                   break;
-                case 11: Serial.println("Sanyo");                break;
-                case 12: Serial.println("Mitsubishi");           break;
-                case 13: Serial.println("Dish");                 break;
-                case 14: Serial.println("Sharp");                break;
-                case 15: Serial.println("Denon");                break;
-                case 16: Serial.println("Pronto");               break;
-                case 17: Serial.println("LEGO Power Functions"); break;
+                case -1: watch2::oled.println("Unknown");              break;
+                case 0:  watch2::oled.println("Unused");               break;
+                case 1:  watch2::oled.println("RC5");                  break;
+                case 2:  watch2::oled.println("RC6");                  break;
+                case 3:  watch2::oled.println("NEC");                  break;
+                case 4:  watch2::oled.println("Sony");                 break;
+                case 5:  watch2::oled.println("Panasonic");            break;
+                case 6:  watch2::oled.println("JVC");                  break;
+                case 7:  watch2::oled.println("Samsung");              break;
+                case 8:  watch2::oled.println("Whynter");              break;
+                case 9:  watch2::oled.println("Aiwa RC T501");         break;
+                case 10: watch2::oled.println("LG");                   break;
+                case 11: watch2::oled.println("Sanyo");                break;
+                case 12: watch2::oled.println("Mitsubishi");           break;
+                case 13: watch2::oled.println("Dish");                 break;
+                case 14: watch2::oled.println("Sharp");                break;
+                case 15: watch2::oled.println("Sharp Alt");            break;
+                case 16: watch2::oled.println("Denon");                break;
+                case 17: watch2::oled.println("LEGO Power Functions"); break;
+                case 18: watch2::oled.println("Bose Wave");            break;
+                case 19: watch2::oled.println("MagiQuest");            break;
             }
-            Serial.print("Value:    0x");
-            Serial.println(ir_recv_results.value, HEX);
-            Serial.print("No. bits: ");
-            Serial.println(ir_recv_results.bits);
-            Serial.println();
+
+            watch2::oled.setTextColor(watch2::themecolour, BLACK);
+            watch2::oled.print("Value:    ");
+            watch2::oled.setTextColor(WHITE, BLACK);
+            watch2::oled.print("0x");
+            watch2::oled.println(ir_recv_results.value, HEX);
+
+            watch2::oled.setTextColor(watch2::themecolour, BLACK);
+            watch2::oled.print("No. bits: ");
+            watch2::oled.setTextColor(WHITE, BLACK);
+            watch2::oled.println(ir_recv_results.bits);
+            
+
+            if (ir_recv_results.decode_type == PANASONIC || ir_recv_results.decode_type == SHARP)
+            {
+                watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                watch2::oled.print("Address:  ");
+                watch2::oled.setTextColor(WHITE, BLACK);
+                watch2::oled.print("0x");
+                watch2::oled.println(ir_recv_results.address);
+            }
+            if (ir_recv_results.decode_type == MAGIQUEST)
+            {
+                watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                watch2::oled.print("Magnitude:");
+                watch2::oled.setTextColor(WHITE, BLACK);
+                watch2::oled.print("0x");
+                watch2::oled.println(ir_recv_results.magnitude);
+            }
+            watch2::oled.println();
+
+            
+            irrecv.enableIRIn();
             irrecv.resume();
         }
 
         //watch2::drawTopThing();
 
-        if (dpad_left_active())
+        if (!ir_enabled && dpad_left_active())
         {
             watch2::setFont(MAIN_FONT);
             watch2::switchState(watch2::state, 0);
