@@ -595,15 +595,102 @@ void state_func_ir_remote()
 
     if (watch2::states[watch2::state].variant == 3)
     {
-        if (!watch2::state_init)
-        {
+        draw(false, {
             watch2::oled.setCursor(2, watch2::top_thing_height);
-            watch2::oled.print("Serial thing");
-        }
+            watch2::oled.setTextColor(watch2::themecolour, BLACK);
+            watch2::oled.println("Serial thing");
+            watch2::oled.setTextColor(WHITE, BLACK);
+            watch2::oled.println("Send commands over\n"
+                                 "serial to send them \n"
+                                 "using the IR LED.\n"
+                                 "Use the format\n"
+                                 "cmd;protocol;code;size\n");
+        });
 
         watch2::drawTopThing();
 
-        if (dpad_any_active())
+        if (Serial.available())
+        {
+
+            //Serial.printf("received data: 0x%x\n", Serial.read());
+            
+            const char *protocol;
+            uint32_t code;
+            uint8_t size;
+            char *pch;
+
+            // get thing from serial
+            char thing[50];// = "cmd;nec;0xfe50af;32";
+            Serial.readBytesUntil(0x0A, thing, 50); // terminator is line feed
+            Serial.printf("received string: %s\n", thing);
+
+            if (thing[0] == 'c' && thing[1] == 'm' && thing[2] == 'd')
+            {
+
+                // split string
+                char *str = strdup(thing);
+                pch = strtok(str, ";");
+                pch = strtok(NULL, ";"); // skip "cmd" header
+
+                protocol = strdup(pch); // store protocol
+                Serial.printf("protocol: %s\n", protocol);
+                pch = strtok(NULL, ";");
+
+                code = strtoul(pch, NULL, 0); // store code
+                Serial.printf("code: 0x%x\n", code);
+                Serial.printf("raw code: %s\n", pch);
+                pch = strtok(NULL, ";");
+
+                size = strtol(pch, NULL, 0); // store size
+                Serial.printf("size: %d bits\n", size);
+                Serial.printf("raw size: %s\n", pch);
+
+                // print details
+                uint16_t code_info_y = watch2::top_thing_height + watch2::oled.fontHeight();
+                watch2::oled.fillRect( 0, code_info_y, SCREEN_WIDTH, SCREEN_HEIGHT - code_info_y, BLACK);
+
+                watch2::oled.setCursor(0, code_info_y);
+                watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                watch2::oled.print("Protocol: ");
+                watch2::oled.setTextColor(WHITE, BLACK);
+                watch2::oled.println(protocol);
+
+                watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                watch2::oled.printf("Code:      0x");
+                watch2::oled.setTextColor(WHITE, BLACK);
+                watch2::oled.println(code, HEX);
+
+                watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                watch2::oled.printf("Size:       ");
+                watch2::oled.printf("%d bits\n", size);
+
+                // send code
+                delay(500);
+                if (strcmp(protocol, "rc5") == 0)                irsend.sendRC5(code, size);
+                if (strcmp(protocol, "rc6") == 0)                irsend.sendRC6(code, size);
+                if (strcmp(protocol, "nec") == 0)                irsend.sendNEC(0xfe50af, 24);
+                if (strcmp(protocol, "sony") == 0)               irsend.sendSony(code, size);
+                if (strcmp(protocol, "panasonic") == 0)          irsend.sendPanasonic(code, size);
+                if (strcmp(protocol, "jvc") == 0)                irsend.sendJVC(code, size, false);
+                if (strcmp(protocol, "samsung") == 0)            irsend.sendSAMSUNG(code, size);
+                if (strcmp(protocol, "whynter") == 0)            irsend.sendWhynter(code, size);
+                if (strcmp(protocol, "aiwa rc t501") == 0)       irsend.sendAiwaRCT501(code);
+                if (strcmp(protocol, "lg") == 0)                 irsend.sendLG(code, size);
+                //if (strcmp(protocol, "sanyo") == 0)              irsend.sendSanyo(code, size);
+                //if (strcmp(protocol, "mitsubishi") == 0)         irsend.sendMitsubishi(code, size);
+                if (strcmp(protocol, "dish") == 0)               irsend.sendDISH(code, size);
+                if (strcmp(protocol, "sharp") == 0)              irsend.sendSharpRaw(code, size);
+                if (strcmp(protocol, "sharp alt") == 0)          irsend.sendSharpAltRaw(code, size);
+                if (strcmp(protocol, "denon") == 0)              irsend.sendDenon(code, size);
+                //if (strcmp(protocol, "pronto") == 0)             irsend.sendPronto(ir_code_object->valuestring, false, false);
+                if (strcmp(protocol, "lego pf") == 0)            irsend.sendLegoPowerFunctions(code, false);
+                if (strcmp(protocol, "bose wave") == 0)          irsend.sendBoseWave(code);
+                if (strcmp(protocol, "magiquest") == 0)          irsend.sendMagiQuest(code, size);
+
+            }
+        }
+
+        if (dpad_left_active())
         {
             watch2::switchState(watch2::state, 0);
         }
