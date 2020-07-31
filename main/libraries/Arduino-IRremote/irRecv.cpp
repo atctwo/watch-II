@@ -162,6 +162,7 @@ void IRrecv::disableIRIn() {
     timerEnd(timer);
     timerDetachInterrupt(timer);
 #endif 
+
 }
 
 //+=============================================================================
