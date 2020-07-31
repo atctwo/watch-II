@@ -432,11 +432,11 @@ void state_func_ir_remote()
                         //if (strcmp(protocol, "mitsubishi") == 0)         irsend.sendMitsubishi(ir_code, ir_code_size->valueint);
                         if (strcmp(protocol, "dish") == 0)               irsend.sendDISH(ir_code, ir_code_size->valueint);
                         if (strcmp(protocol, "sharp") == 0)              irsend.sendSharpRaw(ir_code, ir_code_size->valueint);
-                        if (strcmp(protocol, "sharp alt") == 0)          irsend.sendSharpAltRaw(ir_code, ir_code_size->valueint);
+                        //if (strcmp(protocol, "sharp alt") == 0)          irsend.sendSharpAltRaw(ir_code, ir_code_size->valueint);
                         if (strcmp(protocol, "denon") == 0)              irsend.sendDenon(ir_code, ir_code_size->valueint);
                         //if (strcmp(protocol, "pronto") == 0)             irsend.sendPronto(ir_code_object->valuestring, false, false);
                         if (strcmp(protocol, "lego pf") == 0)            irsend.sendLegoPowerFunctions(ir_code, false);
-                        if (strcmp(protocol, "bose wave") == 0)          irsend.sendBoseWave(ir_code);
+                        //if (strcmp(protocol, "bose wave") == 0)          irsend.sendBoseWave(ir_code);
                         //if (strcmp(protocol, "magiquest") == 0)          irsend.sendMagiQuest()
                     }
                     else
@@ -516,7 +516,7 @@ void state_func_ir_remote()
             watch2::oled.setTextColor(WHITE, BLACK);
             switch(ir_recv_results.decode_type)
             {
-                case -1: watch2::oled.println("Unknown");              break;
+                default: watch2::oled.printf("Unknown (%d)\n", ir_recv_results.decode_type); break;
                 case 0:  watch2::oled.println("Unused");               break;
                 case 1:  watch2::oled.println("RC5");                  break;
                 case 2:  watch2::oled.println("RC6");                  break;
@@ -532,11 +532,9 @@ void state_func_ir_remote()
                 case 12: watch2::oled.println("Mitsubishi");           break;
                 case 13: watch2::oled.println("Dish");                 break;
                 case 14: watch2::oled.println("Sharp");                break;
-                case 15: watch2::oled.println("Sharp Alt");            break;
-                case 16: watch2::oled.println("Denon");                break;
+                case 15: watch2::oled.println("Denon");                break;
+                case 16: watch2::oled.println("Pronto");               break;
                 case 17: watch2::oled.println("LEGO Power Functions"); break;
-                case 18: watch2::oled.println("Bose Wave");            break;
-                case 19: watch2::oled.println("MagiQuest");            break;
             }
 
             watch2::oled.setTextColor(watch2::themecolour, BLACK);
@@ -559,14 +557,14 @@ void state_func_ir_remote()
                 watch2::oled.print("0x");
                 watch2::oled.println(ir_recv_results.address);
             }
-            if (ir_recv_results.decode_type == MAGIQUEST)
-            {
-                watch2::oled.setTextColor(watch2::themecolour, BLACK);
-                watch2::oled.print("Magnitude:");
-                watch2::oled.setTextColor(WHITE, BLACK);
-                watch2::oled.print("0x");
-                watch2::oled.println(ir_recv_results.magnitude);
-            }
+            // if (ir_recv_results.decode_type == MAGIQUEST)
+            // {
+            //     watch2::oled.setTextColor(watch2::themecolour, BLACK);
+            //     watch2::oled.print("Magnitude:");
+            //     watch2::oled.setTextColor(WHITE, BLACK);
+            //     watch2::oled.print("0x");
+            //     watch2::oled.println(ir_recv_results.magnitude);
+            // }
             watch2::oled.println();
 
             
@@ -680,12 +678,12 @@ void state_func_ir_remote()
                 //if (strcmp(protocol, "mitsubishi") == 0)         irsend.sendMitsubishi(code, size);
                 if (strcmp(protocol, "dish") == 0)               irsend.sendDISH(code, size);
                 if (strcmp(protocol, "sharp") == 0)              irsend.sendSharpRaw(code, size);
-                if (strcmp(protocol, "sharp alt") == 0)          irsend.sendSharpAltRaw(code, size);
+                //if (strcmp(protocol, "sharp alt") == 0)          irsend.sendSharpAltRaw(code, size);
                 if (strcmp(protocol, "denon") == 0)              irsend.sendDenon(code, size);
                 //if (strcmp(protocol, "pronto") == 0)             irsend.sendPronto(ir_code_object->valuestring, false, false);
                 if (strcmp(protocol, "lego pf") == 0)            irsend.sendLegoPowerFunctions(code, false);
-                if (strcmp(protocol, "bose wave") == 0)          irsend.sendBoseWave(code);
-                if (strcmp(protocol, "magiquest") == 0)          irsend.sendMagiQuest(code, size);
+                //if (strcmp(protocol, "bose wave") == 0)          irsend.sendBoseWave(code);
+                //if (strcmp(protocol, "magiquest") == 0)          irsend.sendMagiQuest(code, size);
 
             }
         }

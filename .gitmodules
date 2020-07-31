@@ -31,6 +31,3 @@
 [submodule "main/libraries/ESP8266Audio"]
 	path = main/libraries/ESP8266Audio
 	url = https://github.com/earlephilhower/ESP8266Audio.git
-[submodule "main/libraries/Arduino-IRremote"]
-	path = main/libraries/Arduino-IRremote
-	url = https://github.com/z3t0/Arduino-IRremote.git
