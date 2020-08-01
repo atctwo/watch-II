@@ -173,7 +173,7 @@ void state_func_ir_remote()
                 uint8_t row  = cJSON_GetObjectItem(code, "row")->valueint;
                 uint8_t col  = cJSON_GetObjectItem(code, "col")->valueint;
 
-                code_indices[page][row][col] = code_index;
+                code_indices[page][row][col] = code_index + 1;
                 code_index++;
             }
 
@@ -184,7 +184,7 @@ void state_func_ir_remote()
             cJSON_AddItemToObjectCS(devices_btn, "text", devices_btn_text);
 
             cJSON_AddItemToArray(codes, devices_btn);
-            code_indices[0][0][0] = code_index;
+            code_indices[0][0][0] = code_index + 1;
 
             // set page number
             last_page_number = 255;
@@ -256,68 +256,73 @@ void state_func_ir_remote()
                 uint8_t relative_index = i - (this_page_number * rows * columns);
                 uint8_t row = div(relative_index, columns).quot;
                 uint8_t col = relative_index % columns;
+                int code_index = code_indices[this_page_number][row][col];
 
                 Serial.printf("\tpage: %d\n", this_page_number);
                 Serial.printf("\trow:  %d\n", row);
                 Serial.printf("\tcol:  %d\n", col);
-                Serial.printf("\tcode index: %d\n", code_indices[this_page_number][row][col]);
+                Serial.printf("\tcode index: %d\n", code_index - 1);
 
                 //get button data
-                cJSON *btn = cJSON_GetArrayItem(codes, code_indices[this_page_number][row][col]);
-                if (btn)
+                if (code_index > 0)
                 {
-
-                    Serial.println("\tfound button entry in json file");
-
-                    // check if the button has an icon
-                    cJSON *btn_icon_object = cJSON_GetObjectItem(btn, "icon");
-                    if (btn_icon_object)
-                    {
-                        // get image data
-                        Serial.println(btn_icon_object->valuestring);
-                        watch2::imageData data = watch2::getImageData(btn_icon_object->valuestring);
-
-                        // if image loaded successfully
-                        if (data.data != NULL)
-                        {
-                            watch2::drawImage(data, icon_xpos, icon_ypos);
-                        }
-                        else 
-                        {
-                            Serial.print("\t");
-                            Serial.println(data.error);
-                        }
-                    }
-                    // no icon was found, so use text
-                    else
+                    cJSON *btn = cJSON_GetArrayItem(codes, code_index - 1);
+                    if (btn)
                     {
 
-                        // print the button text
-                        cJSON *btn_text_object = cJSON_GetObjectItem(btn, "text");
-                        if (btn_text_object)
+                        Serial.println("\tfound button entry in json file");
+
+                        // check if the button has an icon
+                        cJSON *btn_icon_object = cJSON_GetObjectItem(btn, "icon");
+                        if (btn_icon_object)
                         {
-                            // determine button colour
-                            cJSON *btn_colour_object = cJSON_GetObjectItem(btn, "colour");
-                            uint16_t btn_colour = WHITE;
-                            if (btn_colour_object)
+                            // get image data
+                            Serial.println(btn_icon_object->valuestring);
+                            watch2::imageData data = watch2::getImageData(btn_icon_object->valuestring);
+
+                            // if image loaded successfully
+                            if (data.data != NULL)
                             {
-                                CSSColorParser::optional<CSSColorParser::Color> btn_colour_css = CSSColorParser::parse(btn_colour_object->valuestring);
-                                if (btn_colour_css) btn_colour = watch2::oled.color565(btn_colour_css->r, btn_colour_css->g, btn_colour_css->b);
-                                Serial.printf("\tcolour: %s (0x%x)\n", btn_colour_object->valuestring, btn_colour);
+                                watch2::drawImage(data, icon_xpos, icon_ypos);
                             }
-                            //free(btn_colour_object);
-
-                            // print button text
-                            watch2::oled.setTextDatum(MC_DATUM);
-                            watch2::oled.setTextColor(btn_colour, BLACK);
-                            watch2::oled.drawString(btn_text_object->valuestring, icon_xpos + (icon_width / 2), icon_ypos + (icon_height / 2));
-                            Serial.printf("\tbutton text: %s\n", btn_text_object->valuestring);
+                            else 
+                            {
+                                Serial.print("\t");
+                                Serial.println(data.error);
+                            }
                         }
-                        //free(btn_text_object);
+                        // no icon was found, so use text
+                        else
+                        {
 
+                            // print the button text
+                            cJSON *btn_text_object = cJSON_GetObjectItem(btn, "text");
+                            if (btn_text_object)
+                            {
+                                // determine button colour
+                                cJSON *btn_colour_object = cJSON_GetObjectItem(btn, "colour");
+                                uint16_t btn_colour = WHITE;
+                                if (btn_colour_object)
+                                {
+                                    CSSColorParser::optional<CSSColorParser::Color> btn_colour_css = CSSColorParser::parse(btn_colour_object->valuestring);
+                                    if (btn_colour_css) btn_colour = watch2::oled.color565(btn_colour_css->r, btn_colour_css->g, btn_colour_css->b);
+                                    Serial.printf("\tcolour: %s (0x%x)\n", btn_colour_object->valuestring, btn_colour);
+                                }
+                                //free(btn_colour_object);
+
+                                // print button text
+                                watch2::oled.setTextDatum(MC_DATUM);
+                                watch2::oled.setTextColor(btn_colour, BLACK);
+                                watch2::oled.drawString(btn_text_object->valuestring, icon_xpos + (icon_width / 2), icon_ypos + (icon_height / 2));
+                                Serial.printf("\tbutton text: %s\n", btn_text_object->valuestring);
+                            }
+                            //free(btn_text_object);
+
+                        }
                     }
+                    else Serial.println("\tcode index doesn't point to a button");
                 }
-                else Serial.println("\tdidn't find button in json file");
+                else Serial.println("\tbutton doesn't have any IR data");
                 //free(btn);
                 
 
@@ -391,7 +396,7 @@ void state_func_ir_remote()
                 Serial.println("sending ir code: ");
 
                 // get code object
-                cJSON *code = cJSON_GetArrayItem(codes, code_indices[this_page_number][selected_row][selected_col]);
+                cJSON *code = cJSON_GetArrayItem(codes, code_indices[this_page_number][selected_row][selected_col] - 1);
                 if (code)
                 {
 
