@@ -396,8 +396,9 @@ void state_func_ir_remote()
                 Serial.println("sending ir code: ");
 
                 // get code object
-                cJSON *code = cJSON_GetArrayItem(codes, code_indices[this_page_number][selected_row][selected_col] - 1);
-                if (code)
+                int code_index = code_indices[this_page_number][selected_row][selected_col];
+                cJSON *code = cJSON_GetArrayItem(codes, code_index - 1);
+                if ((code_index > 0) && code)
                 {
 
                     // get ir protocol
