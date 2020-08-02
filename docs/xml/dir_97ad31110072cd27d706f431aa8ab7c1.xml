@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="dir_97ad31110072cd27d706f431aa8ab7c1" kind="dir">
+    <compoundname>main/custom_fonts</compoundname>
+    <innerfile refid="lato-regular-6_8h">lato-regular-6.h</innerfile>
+    <innerfile refid="sourcesanspro-light-12_8h">sourcesanspro-light-12.h</innerfile>
+    <innerfile refid="sourcesanspro-light-16_8h">sourcesanspro-light-16.h</innerfile>
+    <innerfile refid="sourcesanspro-light-24_8h">sourcesanspro-light-24.h</innerfile>
+    <innerfile refid="sourcesanspro-light-6_8h">sourcesanspro-light-6.h</innerfile>
+    <innerfile refid="sourcesanspro-light-8_8h">sourcesanspro-light-8.h</innerfile>
+    <innerfile refid="sourcesanspro-regular-16_8h">sourcesanspro-regular-16.h</innerfile>
+    <innerfile refid="sourcesanspro-regular-20_8h">sourcesanspro-regular-20.h</innerfile>
+    <innerfile refid="sourcesanspro-regular-24_8h">sourcesanspro-regular-24.h</innerfile>
+    <innerfile refid="sourcesanspro-regular-6_8h">sourcesanspro-regular-6.h</innerfile>
+    <innerfile refid="sourcesanspro-regular-8_8h">sourcesanspro-regular-8.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="main/custom_fonts/"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,462 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="states_8cpp" kind="file" language="C++">
+    <compoundname>states.cpp</compoundname>
+    <includes refid="watch2_8h" local="yes">../watch2.h</includes>
+    <includes refid="state__init_8cpp" local="yes">state_init.cpp</includes>
+    <includes refid="state__watch__face_8cpp" local="yes">state_watch_face.cpp</includes>
+    <includes refid="state__state__menu_8cpp" local="yes">state_state_menu.cpp</includes>
+    <includes refid="state__settings_8cpp" local="yes">state_settings.cpp</includes>
+    <includes refid="state__calc_8cpp" local="yes">state_calc.cpp</includes>
+    <includes refid="state__stopwatch_8cpp" local="yes">state_stopwatch.cpp</includes>
+    <includes refid="state__timer_8cpp" local="yes">state_timer.cpp</includes>
+    <includes refid="state__alarms_8cpp" local="yes">state_alarms.cpp</includes>
+    <includes refid="state__sdtest_8cpp" local="yes">state_sdtest.cpp</includes>
+    <includes refid="state__notepad_8cpp" local="yes">state_notepad.cpp</includes>
+    <includes refid="state__ir__remote_8cpp" local="yes">state_ir_remote.cpp</includes>
+    <includes refid="state__image__viewer_8cpp" local="yes">state_image_viewer.cpp</includes>
+    <includes refid="state__wiki_8cpp" local="yes">state_wiki.cpp</includes>
+    <includes refid="state__quiz_8cpp" local="yes">state_quiz.cpp</includes>
+    <includes refid="state__music__player_8cpp" local="yes">state_music_player.cpp</includes>
+    <incdepgraph>
+      <node id="65">
+        <label>AudioGeneratorWAV.cpp</label>
+      </node>
+      <node id="50">
+        <label>stdbool.h</label>
+      </node>
+      <node id="55">
+        <label>SD.h</label>
+      </node>
+      <node id="10">
+        <label>functional</label>
+      </node>
+      <node id="47">
+        <label>state_image_viewer.cpp</label>
+        <link refid="state__image__viewer_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="16">
+        <label>FS.h</label>
+      </node>
+      <node id="37">
+        <label>state_stopwatch.cpp</label>
+        <link refid="state__stopwatch_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="42">
+        <label>state_ir_remote.cpp</label>
+        <link refid="state__ir__remote_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="43" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="44" relation="include">
+        </childnode>
+        <childnode refid="45" relation="include">
+        </childnode>
+        <childnode refid="46" relation="include">
+        </childnode>
+      </node>
+      <node id="12">
+        <label>SPI.h</label>
+      </node>
+      <node id="38">
+        <label>state_timer.cpp</label>
+        <link refid="state__timer_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="61">
+        <label>AudioGeneratorMIDI.h</label>
+      </node>
+      <node id="29">
+        <label>TimeAlarms.h</label>
+      </node>
+      <node id="2">
+        <label>../watch2.h</label>
+        <link refid="watch2_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+      </node>
+      <node id="52">
+        <label>/run/media/alice/ATCMS82/programming/arduino/watch2/main/libraries/gumbo-parser/src/tag_enum.h</label>
+      </node>
+      <node id="53">
+        <label>state_quiz.cpp</label>
+        <link refid="state__quiz_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>main/states/states.cpp</label>
+        <link refid="states_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="32" relation="include">
+        </childnode>
+        <childnode refid="33" relation="include">
+        </childnode>
+        <childnode refid="34" relation="include">
+        </childnode>
+        <childnode refid="35" relation="include">
+        </childnode>
+        <childnode refid="36" relation="include">
+        </childnode>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="38" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+        <childnode refid="40" relation="include">
+        </childnode>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="42" relation="include">
+        </childnode>
+        <childnode refid="47" relation="include">
+        </childnode>
+        <childnode refid="48" relation="include">
+        </childnode>
+        <childnode refid="53" relation="include">
+        </childnode>
+        <childnode refid="54" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>stdint.h</label>
+      </node>
+      <node id="21">
+        <label>BleKeyboard.h</label>
+      </node>
+      <node id="44">
+        <label>cmath</label>
+      </node>
+      <node id="62">
+        <label>AudioGeneratorMOD.h</label>
+      </node>
+      <node id="54">
+        <label>state_music_player.cpp</label>
+        <link refid="state__music__player_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="55" relation="include">
+        </childnode>
+        <childnode refid="56" relation="include">
+        </childnode>
+        <childnode refid="57" relation="include">
+        </childnode>
+        <childnode refid="58" relation="include">
+        </childnode>
+        <childnode refid="59" relation="include">
+        </childnode>
+        <childnode refid="60" relation="include">
+        </childnode>
+        <childnode refid="61" relation="include">
+        </childnode>
+        <childnode refid="62" relation="include">
+        </childnode>
+        <childnode refid="63" relation="include">
+        </childnode>
+        <childnode refid="64" relation="include">
+        </childnode>
+        <childnode refid="65" relation="include">
+        </childnode>
+        <childnode refid="66" relation="include">
+        </childnode>
+        <childnode refid="67" relation="include">
+        </childnode>
+      </node>
+      <node id="19">
+        <label>WiFiClientSecure.h</label>
+      </node>
+      <node id="43">
+        <label>../libraries/css-color-parser-cpp/csscolorparser.hpp</label>
+      </node>
+      <node id="9">
+        <label>string</label>
+      </node>
+      <node id="67">
+        <label>AudioFileSourceBuffer.h</label>
+      </node>
+      <node id="60">
+        <label>AudioGeneratorFLAC.h</label>
+      </node>
+      <node id="7">
+        <label>map</label>
+      </node>
+      <node id="57">
+        <label>AudioFileSourceHTTPStream.h</label>
+      </node>
+      <node id="39">
+        <label>state_alarms.cpp</label>
+        <link refid="state__alarms_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="64">
+        <label>AudioGeneratorRTTTL.h</label>
+      </node>
+      <node id="48">
+        <label>state_wiki.cpp</label>
+        <link refid="state__wiki_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="49" relation="include">
+        </childnode>
+        <childnode refid="50" relation="include">
+        </childnode>
+        <childnode refid="51" relation="include">
+        </childnode>
+        <childnode refid="52" relation="include">
+        </childnode>
+      </node>
+      <node id="51">
+        <label>stddef.h</label>
+      </node>
+      <node id="20">
+        <label>HTTPClient.h</label>
+      </node>
+      <node id="41">
+        <label>state_notepad.cpp</label>
+        <link refid="state__notepad_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>cJSON.h</label>
+      </node>
+      <node id="14">
+        <label>sdios.h</label>
+      </node>
+      <node id="33">
+        <label>state_watch_face.cpp</label>
+        <link refid="state__watch__face_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="28">
+        <label>TimeLib.h</label>
+      </node>
+      <node id="31">
+        <label>regret.h</label>
+        <link refid="regret_8h"/>
+      </node>
+      <node id="13">
+        <label>SdFat.h</label>
+      </node>
+      <node id="63">
+        <label>AudioGeneratorMP3.h</label>
+      </node>
+      <node id="6">
+        <label>stack</label>
+      </node>
+      <node id="59">
+        <label>AudioGeneratorAAC.h</label>
+      </node>
+      <node id="15">
+        <label>TFT_eSPI.h</label>
+      </node>
+      <node id="66">
+        <label>AudioOutputI2S.h</label>
+      </node>
+      <node id="22">
+        <label>Preferences.h</label>
+      </node>
+      <node id="32">
+        <label>state_init.cpp</label>
+        <link refid="state__init_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>time.h</label>
+      </node>
+      <node id="11">
+        <label>Arduino.h</label>
+      </node>
+      <node id="34">
+        <label>state_state_menu.cpp</label>
+        <link refid="state__state__menu_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="40">
+        <label>state_sdtest.cpp</label>
+        <link refid="state__sdtest_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="27">
+        <label>sys/time.h</label>
+      </node>
+      <node id="35">
+        <label>state_settings.cpp</label>
+        <link refid="state__settings_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>unordered_map</label>
+      </node>
+      <node id="56">
+        <label>driver/i2s.h</label>
+      </node>
+      <node id="23">
+        <label>tinyexpr.h</label>
+      </node>
+      <node id="25">
+        <label>sys/cdefs.h</label>
+      </node>
+      <node id="36">
+        <label>state_calc.cpp</label>
+        <link refid="state__calc_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="45">
+        <label>experimental/optional</label>
+      </node>
+      <node id="46">
+        <label>IRremote.h</label>
+      </node>
+      <node id="30">
+        <label>coolcrab.h</label>
+        <link refid="coolcrab_8h"/>
+      </node>
+      <node id="17">
+        <label>JC_Button.h</label>
+      </node>
+      <node id="5">
+        <label>algorithm</label>
+      </node>
+      <node id="58">
+        <label>AudioFileSourceFS.h</label>
+      </node>
+      <node id="18">
+        <label>WiFi.h</label>
+      </node>
+      <node id="3">
+        <label>stdio.h</label>
+      </node>
+      <node id="49">
+        <label>../libraries/gumbo-parser/src/gumbo.h</label>
+      </node>
+    </incdepgraph>
+    <innernamespace refid="namespacewatch2">watch2</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#include<sp/>&quot;../watch2.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="state__init_8cpp" kindref="compound">state_init.cpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="3"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="state__watch__face_8cpp" kindref="compound">state_watch_face.cpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="4"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="state__state__menu_8cpp" kindref="compound">state_state_menu.cpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="state__settings_8cpp" kindref="compound">state_settings.cpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="state__calc_8cpp" kindref="compound">state_calc.cpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="state__stopwatch_8cpp" kindref="compound">state_stopwatch.cpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="state__timer_8cpp" kindref="compound">state_timer.cpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="state__alarms_8cpp" kindref="compound">state_alarms.cpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="state__sdtest_8cpp" kindref="compound">state_sdtest.cpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="state__notepad_8cpp" kindref="compound">state_notepad.cpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="state__ir__remote_8cpp" kindref="compound">state_ir_remote.cpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="state__image__viewer_8cpp" kindref="compound">state_image_viewer.cpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="state__wiki_8cpp" kindref="compound">state_wiki.cpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="state__quiz_8cpp" kindref="compound">state_quiz.cpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="state__music__player_8cpp" kindref="compound">state_music_player.cpp</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight></codeline>
+<codeline lineno="18" refid="namespacewatch2" refkind="compound"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacewatch2" kindref="compound">watch2</ref></highlight></codeline>
+<codeline lineno="19"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight></codeline>
+<codeline lineno="21" refid="namespacewatch2_1a51f311bab5fe7476b7f9608e21c03386" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/>std::vector&lt;stateMeta&gt;<sp/><ref refid="namespacewatch2_1a51f311bab5fe7476b7f9608e21c03386" kindref="member">states</ref><sp/>=<sp/>{</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structwatch2_1_1stateMeta" kindref="compound">stateMeta</ref>(</highlight><highlight class="stringliteral">&quot;Initial<sp/>State&quot;</highlight><highlight class="normal">,<sp/><ref refid="state__init_8cpp_1ad4625f1d437bfb66de76d248102d5c45" kindref="member">state_func_init</ref>,<sp/></highlight><highlight class="stringliteral">&quot;init.bmp&quot;</highlight><highlight class="normal">,<sp/>0,<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">),</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structwatch2_1_1stateMeta" kindref="compound">stateMeta</ref>(</highlight><highlight class="stringliteral">&quot;Watch<sp/>Face&quot;</highlight><highlight class="normal">,<sp/><ref refid="state__watch__face_8cpp_1a43c4bb0bd90eb0eb3cf78314f18f547a" kindref="member">state_func_watch_face</ref>,<sp/></highlight><highlight class="stringliteral">&quot;watch&quot;</highlight><highlight class="normal">),</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structwatch2_1_1stateMeta" kindref="compound">stateMeta</ref>(</highlight><highlight class="stringliteral">&quot;State<sp/>Menu&quot;</highlight><highlight class="normal">,<sp/><ref refid="state__state__menu_8cpp_1ad6baf7bb265ab86b424079c0345445d3" kindref="member">state_func_state_menu</ref>,<sp/></highlight><highlight class="stringliteral">&quot;menu&quot;</highlight><highlight class="normal">,<sp/>0,<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">),</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structwatch2_1_1stateMeta" kindref="compound">stateMeta</ref>(</highlight><highlight class="stringliteral">&quot;Settings&quot;</highlight><highlight class="normal">,<sp/><ref refid="state__settings_8cpp_1a65c8a495323427e2f4a6ae13fa5c0c9b" kindref="member">state_func_settings</ref>,<sp/></highlight><highlight class="stringliteral">&quot;settings&quot;</highlight><highlight class="normal">),</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structwatch2_1_1stateMeta" kindref="compound">stateMeta</ref>(</highlight><highlight class="stringliteral">&quot;Calculator&quot;</highlight><highlight class="normal">,<sp/><ref refid="state__calc_8cpp_1aba0ae7f98dc709246167c0e3ea4332bc" kindref="member">state_func_calc</ref>,<sp/></highlight><highlight class="stringliteral">&quot;calculator&quot;</highlight><highlight class="normal">),</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structwatch2_1_1stateMeta" kindref="compound">stateMeta</ref>(</highlight><highlight class="stringliteral">&quot;Stopwatch&quot;</highlight><highlight class="normal">,<sp/><ref refid="state__stopwatch_8cpp_1a96d7f47fc76fd003856d51a823912878" kindref="member">state_func_stopwatch</ref>,<sp/></highlight><highlight class="stringliteral">&quot;stopwatch&quot;</highlight><highlight class="normal">),</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structwatch2_1_1stateMeta" kindref="compound">stateMeta</ref>(</highlight><highlight class="stringliteral">&quot;Timer&quot;</highlight><highlight class="normal">,<sp/><ref refid="state__timer_8cpp_1ae594c76b5d11cf19ed5959704e8f5efb" kindref="member">state_func_timer</ref>,<sp/></highlight><highlight class="stringliteral">&quot;timer&quot;</highlight><highlight class="normal">),</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structwatch2_1_1stateMeta" kindref="compound">stateMeta</ref>(</highlight><highlight class="stringliteral">&quot;Alarms&quot;</highlight><highlight class="normal">,<sp/><ref refid="state__alarms_8cpp_1aafffcb3f333a28bbb3dcd7ec0cd36053" kindref="member">state_func_alarms</ref>,<sp/></highlight><highlight class="stringliteral">&quot;alarms&quot;</highlight><highlight class="normal">),</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structwatch2_1_1stateMeta" kindref="compound">stateMeta</ref>(</highlight><highlight class="stringliteral">&quot;SD<sp/>test&quot;</highlight><highlight class="normal">,<sp/><ref refid="state__sdtest_8cpp_1a34a6ea6d79fee5f939fd43f2f7fa5542" kindref="member">state_func_SDtest</ref>,<sp/></highlight><highlight class="stringliteral">&quot;file_browser&quot;</highlight><highlight class="normal">),</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structwatch2_1_1stateMeta" kindref="compound">stateMeta</ref>(</highlight><highlight class="stringliteral">&quot;Notepad&quot;</highlight><highlight class="normal">,<sp/><ref refid="state__notepad_8cpp_1afdd4a674b2092f23421c327d2841ba31" kindref="member">state_func_notepad</ref>,<sp/></highlight><highlight class="stringliteral">&quot;notepad&quot;</highlight><highlight class="normal">),</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structwatch2_1_1stateMeta" kindref="compound">stateMeta</ref>(</highlight><highlight class="stringliteral">&quot;IR<sp/>remote&quot;</highlight><highlight class="normal">,<sp/><ref refid="state__ir__remote_8cpp_1a5727c9128fc7c66c63a0cdea9dac71e8" kindref="member">state_func_ir_remote</ref>,<sp/></highlight><highlight class="stringliteral">&quot;ir_remote&quot;</highlight><highlight class="normal">),</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structwatch2_1_1stateMeta" kindref="compound">stateMeta</ref>(</highlight><highlight class="stringliteral">&quot;Image<sp/>Viewer&quot;</highlight><highlight class="normal">,<sp/><ref refid="state__image__viewer_8cpp_1a41d5d62717ec417b606e92ddf252aff5" kindref="member">state_func_image_viewer</ref>,<sp/></highlight><highlight class="stringliteral">&quot;image_viewer&quot;</highlight><highlight class="normal">),</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structwatch2_1_1stateMeta" kindref="compound">stateMeta</ref>(</highlight><highlight class="stringliteral">&quot;Wikipedia&quot;</highlight><highlight class="normal">,<sp/><ref refid="state__wiki_8cpp_1a03fd1b5c442515ba98b0716744fb90e7" kindref="member">state_func_wiki</ref>,<sp/></highlight><highlight class="stringliteral">&quot;wikipedia&quot;</highlight><highlight class="normal">),</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structwatch2_1_1stateMeta" kindref="compound">stateMeta</ref>(</highlight><highlight class="stringliteral">&quot;Quiz<sp/>Thingy&quot;</highlight><highlight class="normal">,<sp/><ref refid="state__quiz_8cpp_1a2ad83dcdd91b1e55ec471eb0ecb4951a" kindref="member">state_func_quiz</ref>),</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="structwatch2_1_1stateMeta" kindref="compound">stateMeta</ref>(</highlight><highlight class="stringliteral">&quot;Music<sp/>Player&quot;</highlight><highlight class="normal">,<sp/><ref refid="state__music__player_8cpp_1a5c4adb6516a9c054a41f752e2149dd5b" kindref="member">state_func_music_player</ref>,<sp/></highlight><highlight class="stringliteral">&quot;music_player&quot;</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal">}</highlight></codeline>
+    </programlisting>
+    <location file="main/states/states.cpp"/>
+  </compounddef>
+</doxygen>

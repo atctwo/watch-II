@@ -1,0 +1,203 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="structwatch2_1_1stateMeta" kind="struct" language="C++" prot="public">
+    <compoundname>watch2::stateMeta</compoundname>
+    <includes refid="watch2_8h" local="no">watch2.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structwatch2_1_1stateMeta_1ad3c30f4fa37ea1998e6fc71517f506c5" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string watch2::stateMeta::stateName</definition>
+        <argsstring></argsstring>
+        <name>stateName</name>
+        <briefdescription>
+<para>the name of the state </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/watch2.h" line="147" column="33" bodyfile="main/watch2.h" bodystart="147" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structwatch2_1_1stateMeta_1a44649402f6e28da4dfd611b1a145bc88" prot="public" static="no" mutable="no">
+        <type>std::function&lt; void()&gt;</type>
+        <definition>std::function&lt;void()&gt; watch2::stateMeta::stateFunc</definition>
+        <argsstring></argsstring>
+        <name>stateFunc</name>
+        <briefdescription>
+<para>the function that is executed when the state is loaded </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/watch2.h" line="148" column="25" bodyfile="main/watch2.h" bodystart="148" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structwatch2_1_1stateMeta_1ab5716503551135b6cace80e6308fb906" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string watch2::stateMeta::stateIcon</definition>
+        <argsstring></argsstring>
+        <name>stateIcon</name>
+        <briefdescription>
+<para>the name of the icon that is used for the state </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/watch2.h" line="149" column="33" bodyfile="main/watch2.h" bodystart="149" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structwatch2_1_1stateMeta_1abbd4922c36f65346bf13d4eb654af027" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int watch2::stateMeta::variant</definition>
+        <argsstring></argsstring>
+        <name>variant</name>
+        <briefdescription>
+<para>the current state variant </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/watch2.h" line="150" column="33" bodyfile="main/watch2.h" bodystart="150" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structwatch2_1_1stateMeta_1ab5f1b53a2e4a186c35a2d97ae74ff1f4" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool watch2::stateMeta::framebuffer</definition>
+        <argsstring></argsstring>
+        <name>framebuffer</name>
+        <briefdescription>
+<para>whether or not the state uses a framebuffer (this doesn&apos;t do anything yet) </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/watch2.h" line="151" column="33" bodyfile="main/watch2.h" bodystart="151" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structwatch2_1_1stateMeta_1a75cc336873012ef14a520f379622cb6a" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool watch2::stateMeta::hidden</definition>
+        <argsstring></argsstring>
+        <name>hidden</name>
+        <briefdescription>
+<para>if this is true, the state won&apos;t show up on the state menu </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/watch2.h" line="152" column="33" bodyfile="main/watch2.h" bodystart="152" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="structwatch2_1_1stateMeta_1a9871e7f0665f62f6f0d9ff095626088a" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>watch2::stateMeta::stateMeta</definition>
+        <argsstring>(std::string stateName, std::function&lt; void()&gt; stateFunc, std::string stateIcon=&quot;what&quot;, int variant=0, bool framebuffer=false, bool hidden=false)</argsstring>
+        <name>stateMeta</name>
+        <param>
+          <type>std::string</type>
+          <declname>stateName</declname>
+        </param>
+        <param>
+          <type>std::function&lt; void()&gt;</type>
+          <declname>stateFunc</declname>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>stateIcon</declname>
+          <defval>&quot;what&quot;</defval>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>variant</declname>
+          <defval>0</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>framebuffer</declname>
+          <defval>false</defval>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>hidden</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+<para><ref refid="structwatch2_1_1stateMeta" kindref="compound">stateMeta</ref> constructor </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>stateName</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the name of the state </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>stateFunc</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the function that is executed when the state is loaded </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>stateIcon</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the name of the icon that is used for the state </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>variant</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>the current state variant </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>framebuffer</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>whether or not the state uses a framebuffer (this doesn&apos;t do anything yet) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>hidden</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>if this is true, the state won&apos;t show up on the state menu </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/watch2.h" line="164" column="9" bodyfile="main/watch2.h" bodystart="164" bodyend="178"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>describes state metadata </para>
+    </briefdescription>
+    <detaileddescription>
+<para>this struct stores lots of data about states. </para>
+    </detaileddescription>
+    <location file="main/watch2.h" line="145" column="5" bodyfile="main/watch2.h" bodystart="145" bodyend="179"/>
+    <listofallmembers>
+      <member refid="structwatch2_1_1stateMeta_1ab5f1b53a2e4a186c35a2d97ae74ff1f4" prot="public" virt="non-virtual"><scope>watch2::stateMeta</scope><name>framebuffer</name></member>
+      <member refid="structwatch2_1_1stateMeta_1a75cc336873012ef14a520f379622cb6a" prot="public" virt="non-virtual"><scope>watch2::stateMeta</scope><name>hidden</name></member>
+      <member refid="structwatch2_1_1stateMeta_1a44649402f6e28da4dfd611b1a145bc88" prot="public" virt="non-virtual"><scope>watch2::stateMeta</scope><name>stateFunc</name></member>
+      <member refid="structwatch2_1_1stateMeta_1ab5716503551135b6cace80e6308fb906" prot="public" virt="non-virtual"><scope>watch2::stateMeta</scope><name>stateIcon</name></member>
+      <member refid="structwatch2_1_1stateMeta_1a9871e7f0665f62f6f0d9ff095626088a" prot="public" virt="non-virtual"><scope>watch2::stateMeta</scope><name>stateMeta</name></member>
+      <member refid="structwatch2_1_1stateMeta_1ad3c30f4fa37ea1998e6fc71517f506c5" prot="public" virt="non-virtual"><scope>watch2::stateMeta</scope><name>stateName</name></member>
+      <member refid="structwatch2_1_1stateMeta_1abbd4922c36f65346bf13d4eb654af027" prot="public" virt="non-virtual"><scope>watch2::stateMeta</scope><name>variant</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

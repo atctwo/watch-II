@@ -162,18 +162,18 @@ set(LIB_ARDUINO_SRCS
 )
 
 set(WATCH_SRCS
-    css-color-parser-cpp/csscolorparser.cpp
-    gumbo-parser/src/attribute.c
-    gumbo-parser/src/char_ref.c
-    gumbo-parser/src/error.c
-    gumbo-parser/src/parser.c
-    gumbo-parser/src/string_buffer.c
-    gumbo-parser/src/string_piece.c
-    gumbo-parser/src/tag.c
-    gumbo-parser/src/tokenizer.c
-    gumbo-parser/src/utf8.c
-    gumbo-parser/src/util.c
-    gumbo-parser/src/vector.c
+    libraries/css-color-parser-cpp/csscolorparser.cpp
+    libraries/gumbo-parser/src/attribute.c
+    libraries/gumbo-parser/src/char_ref.c
+    libraries/gumbo-parser/src/error.c
+    libraries/gumbo-parser/src/parser.c
+    libraries/gumbo-parser/src/string_buffer.c
+    libraries/gumbo-parser/src/string_piece.c
+    libraries/gumbo-parser/src/tag.c
+    libraries/gumbo-parser/src/tokenizer.c
+    libraries/gumbo-parser/src/utf8.c
+    libraries/gumbo-parser/src/util.c
+    libraries/gumbo-parser/src/vector.c
     root_store.cpp
     watch2.cpp
     #SdFatFSWrapper.cpp

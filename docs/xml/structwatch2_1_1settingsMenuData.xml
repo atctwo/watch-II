@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="structwatch2_1_1settingsMenuData" kind="struct" language="C++" prot="public">
+    <compoundname>watch2::settingsMenuData</compoundname>
+    <includes refid="watch2_8h" local="no">watch2.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structwatch2_1_1settingsMenuData_1a2e6b220cd4d2e16c7dad1d29cec192d5" prot="public" static="no" mutable="no">
+        <type>String</type>
+        <definition>String watch2::settingsMenuData::setting_title</definition>
+        <argsstring></argsstring>
+        <name>setting_title</name>
+        <briefdescription>
+<para>the setting prompt or name or title </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/watch2.h" line="193" column="37" bodyfile="main/watch2.h" bodystart="193" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structwatch2_1_1settingsMenuData_1ad6e57dc0833c58f1e6dc730314cd54fe" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int watch2::settingsMenuData::setting_value</definition>
+        <argsstring></argsstring>
+        <name>setting_value</name>
+        <briefdescription>
+<para>the current setting value, or index of <computeroutput>text_map</computeroutput> </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/watch2.h" line="194" column="37" bodyfile="main/watch2.h" bodystart="194" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structwatch2_1_1settingsMenuData_1abba67469cacda4d07beb52ac35202ff6" prot="public" static="no" mutable="no">
+        <type>std::vector&lt; String &gt;</type>
+        <definition>std::vector&lt;String&gt; watch2::settingsMenuData::text_map</definition>
+        <argsstring></argsstring>
+        <name>text_map</name>
+        <briefdescription>
+<para>an array of <computeroutput>String</computeroutput>s that can represent different spinner options </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/watch2.h" line="195" column="29" bodyfile="main/watch2.h" bodystart="195" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structwatch2_1_1settingsMenuData_1aa267ba2b0bebe9f87f74bfaa8674ae1c" prot="public" static="no" mutable="no">
+        <type>int</type>
+        <definition>int watch2::settingsMenuData::min_field_width</definition>
+        <argsstring></argsstring>
+        <name>min_field_width</name>
+        <briefdescription>
+<para>the mimimum width of the spinner </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/watch2.h" line="196" column="37" bodyfile="main/watch2.h" bodystart="196" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>data for entries menus drawn using <computeroutput><ref refid="namespacewatch2_1a64d58e09651a56337743fd4a604875bf" kindref="member">drawSettingsMenu()</ref></computeroutput>. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>Settings entries have a title, which is shown beside a spinner that lets the user select between different options. Each entry is represented using a <computeroutput><ref refid="structwatch2_1_1settingsMenuData" kindref="compound">settingsMenuData</ref></computeroutput> struct, which is passed to <computeroutput><ref refid="namespacewatch2_1a64d58e09651a56337743fd4a604875bf" kindref="member">drawSettingsMenu()</ref></computeroutput> in an array of <computeroutput><ref refid="structwatch2_1_1settingsMenuData" kindref="compound">settingsMenuData</ref></computeroutput>s. The currently selected option for the entry is specified using the <computeroutput>setting_value</computeroutput> member. <computeroutput>text_map</computeroutput> can be used to specify text that corresponds to each possible setting value. For example, if <computeroutput>setting_value</computeroutput> is 0, and <computeroutput>text_map</computeroutput> has a 0th element, the spinner will show whatever <computeroutput>text_map[0]</computeroutput> is, instead of <computeroutput>0</computeroutput>.</para>
+<para>The spinner will try to only take up as much space as needed, but you can specify a mimimum width using <computeroutput>min_field_width</computeroutput>. </para>
+    </detaileddescription>
+    <location file="main/watch2.h" line="191" column="5" bodyfile="main/watch2.h" bodystart="191" bodyend="198"/>
+    <listofallmembers>
+      <member refid="structwatch2_1_1settingsMenuData_1aa267ba2b0bebe9f87f74bfaa8674ae1c" prot="public" virt="non-virtual"><scope>watch2::settingsMenuData</scope><name>min_field_width</name></member>
+      <member refid="structwatch2_1_1settingsMenuData_1a2e6b220cd4d2e16c7dad1d29cec192d5" prot="public" virt="non-virtual"><scope>watch2::settingsMenuData</scope><name>setting_title</name></member>
+      <member refid="structwatch2_1_1settingsMenuData_1ad6e57dc0833c58f1e6dc730314cd54fe" prot="public" virt="non-virtual"><scope>watch2::settingsMenuData</scope><name>setting_value</name></member>
+      <member refid="structwatch2_1_1settingsMenuData_1abba67469cacda4d07beb52ac35202ff6" prot="public" virt="non-virtual"><scope>watch2::settingsMenuData</scope><name>text_map</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
