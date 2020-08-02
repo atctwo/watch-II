@@ -173,7 +173,7 @@ void state_func_ir_remote()
                 uint8_t row  = cJSON_GetObjectItem(code, "row")->valueint;
                 uint8_t col  = cJSON_GetObjectItem(code, "col")->valueint;
 
-                code_indices[page][row][col] = code_index;
+                code_indices[page][row][col] = code_index + 1;
                 code_index++;
             }
 
@@ -184,7 +184,7 @@ void state_func_ir_remote()
             cJSON_AddItemToObjectCS(devices_btn, "text", devices_btn_text);
 
             cJSON_AddItemToArray(codes, devices_btn);
-            code_indices[0][0][0] = code_index;
+            code_indices[0][0][0] = code_index + 1;
 
             // set page number
             last_page_number = 255;
@@ -256,68 +256,73 @@ void state_func_ir_remote()
                 uint8_t relative_index = i - (this_page_number * rows * columns);
                 uint8_t row = div(relative_index, columns).quot;
                 uint8_t col = relative_index % columns;
+                int code_index = code_indices[this_page_number][row][col];
 
                 Serial.printf("\tpage: %d\n", this_page_number);
                 Serial.printf("\trow:  %d\n", row);
                 Serial.printf("\tcol:  %d\n", col);
-                Serial.printf("\tcode index: %d\n", code_indices[this_page_number][row][col]);
+                Serial.printf("\tcode index: %d\n", code_index - 1);
 
                 //get button data
-                cJSON *btn = cJSON_GetArrayItem(codes, code_indices[this_page_number][row][col]);
-                if (btn)
+                if (code_index > 0)
                 {
-
-                    Serial.println("\tfound button entry in json file");
-
-                    // check if the button has an icon
-                    cJSON *btn_icon_object = cJSON_GetObjectItem(btn, "icon");
-                    if (btn_icon_object)
-                    {
-                        // get image data
-                        Serial.println(btn_icon_object->valuestring);
-                        watch2::imageData data = watch2::getImageData(btn_icon_object->valuestring);
-
-                        // if image loaded successfully
-                        if (data.data != NULL)
-                        {
-                            watch2::drawImage(data, icon_xpos, icon_ypos);
-                        }
-                        else 
-                        {
-                            Serial.print("\t");
-                            Serial.println(data.error);
-                        }
-                    }
-                    // no icon was found, so use text
-                    else
+                    cJSON *btn = cJSON_GetArrayItem(codes, code_index - 1);
+                    if (btn)
                     {
 
-                        // print the button text
-                        cJSON *btn_text_object = cJSON_GetObjectItem(btn, "text");
-                        if (btn_text_object)
+                        Serial.println("\tfound button entry in json file");
+
+                        // check if the button has an icon
+                        cJSON *btn_icon_object = cJSON_GetObjectItem(btn, "icon");
+                        if (btn_icon_object)
                         {
-                            // determine button colour
-                            cJSON *btn_colour_object = cJSON_GetObjectItem(btn, "colour");
-                            uint16_t btn_colour = WHITE;
-                            if (btn_colour_object)
+                            // get image data
+                            Serial.println(btn_icon_object->valuestring);
+                            watch2::imageData data = watch2::getImageData(btn_icon_object->valuestring);
+
+                            // if image loaded successfully
+                            if (data.data != NULL)
                             {
-                                CSSColorParser::optional<CSSColorParser::Color> btn_colour_css = CSSColorParser::parse(btn_colour_object->valuestring);
-                                if (btn_colour_css) btn_colour = watch2::oled.color565(btn_colour_css->r, btn_colour_css->g, btn_colour_css->b);
-                                Serial.printf("\tcolour: %s (0x%x)\n", btn_colour_object->valuestring, btn_colour);
+                                watch2::drawImage(data, icon_xpos, icon_ypos);
                             }
-                            //free(btn_colour_object);
-
-                            // print button text
-                            watch2::oled.setTextDatum(MC_DATUM);
-                            watch2::oled.setTextColor(btn_colour, BLACK);
-                            watch2::oled.drawString(btn_text_object->valuestring, icon_xpos + (icon_width / 2), icon_ypos + (icon_height / 2));
-                            Serial.printf("\tbutton text: %s\n", btn_text_object->valuestring);
+                            else 
+                            {
+                                Serial.print("\t");
+                                Serial.println(data.error);
+                            }
                         }
-                        //free(btn_text_object);
+                        // no icon was found, so use text
+                        else
+                        {
 
+                            // print the button text
+                            cJSON *btn_text_object = cJSON_GetObjectItem(btn, "text");
+                            if (btn_text_object)
+                            {
+                                // determine button colour
+                                cJSON *btn_colour_object = cJSON_GetObjectItem(btn, "colour");
+                                uint16_t btn_colour = WHITE;
+                                if (btn_colour_object)
+                                {
+                                    CSSColorParser::optional<CSSColorParser::Color> btn_colour_css = CSSColorParser::parse(btn_colour_object->valuestring);
+                                    if (btn_colour_css) btn_colour = watch2::oled.color565(btn_colour_css->r, btn_colour_css->g, btn_colour_css->b);
+                                    Serial.printf("\tcolour: %s (0x%x)\n", btn_colour_object->valuestring, btn_colour);
+                                }
+                                //free(btn_colour_object);
+
+                                // print button text
+                                watch2::oled.setTextDatum(MC_DATUM);
+                                watch2::oled.setTextColor(btn_colour, BLACK);
+                                watch2::oled.drawString(btn_text_object->valuestring, icon_xpos + (icon_width / 2), icon_ypos + (icon_height / 2));
+                                Serial.printf("\tbutton text: %s\n", btn_text_object->valuestring);
+                            }
+                            //free(btn_text_object);
+
+                        }
                     }
+                    else Serial.println("\tcode index doesn't point to a button");
                 }
-                else Serial.println("\tdidn't find button in json file");
+                else Serial.println("\tbutton doesn't have any IR data");
                 //free(btn);
                 
 
@@ -391,8 +396,9 @@ void state_func_ir_remote()
                 Serial.println("sending ir code: ");
 
                 // get code object
-                cJSON *code = cJSON_GetArrayItem(codes, code_indices[this_page_number][selected_row][selected_col]);
-                if (code)
+                int code_index = code_indices[this_page_number][selected_row][selected_col];
+                cJSON *code = cJSON_GetArrayItem(codes, code_index - 1);
+                if ((code_index > 0) && code)
                 {
 
                     // get ir protocol
@@ -431,10 +437,13 @@ void state_func_ir_remote()
                         //if (strcmp(protocol, "sanyo") == 0)              irsend.sendSanyo(ir_code, ir_code_size->valueint);
                         //if (strcmp(protocol, "mitsubishi") == 0)         irsend.sendMitsubishi(ir_code, ir_code_size->valueint);
                         if (strcmp(protocol, "dish") == 0)               irsend.sendDISH(ir_code, ir_code_size->valueint);
-                        //if (strcmp(protocol, "sharp") == 0)              irsend.sendSharp(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "sharp") == 0)              irsend.sendSharpRaw(ir_code, ir_code_size->valueint);
+                        //if (strcmp(protocol, "sharp alt") == 0)          irsend.sendSharpAltRaw(ir_code, ir_code_size->valueint);
                         if (strcmp(protocol, "denon") == 0)              irsend.sendDenon(ir_code, ir_code_size->valueint);
                         //if (strcmp(protocol, "pronto") == 0)             irsend.sendPronto(ir_code_object->valuestring, false, false);
                         if (strcmp(protocol, "lego pf") == 0)            irsend.sendLegoPowerFunctions(ir_code, false);
+                        //if (strcmp(protocol, "bose wave") == 0)          irsend.sendBoseWave(ir_code);
+                        //if (strcmp(protocol, "magiquest") == 0)          irsend.sendMagiQuest()
                     }
                     else
                     {
@@ -459,61 +468,119 @@ void state_func_ir_remote()
     if (watch2::states[watch2::state].variant == 2)
     {
 
-        if (!watch2::state_init)
-        {
-            watch2::oled.setCursor(2, watch2::top_thing_height);
-            watch2::oled.print("IR Receiver\ncurrently very broken\nuse with caution\npress enter to enable ir\nreception.  results will be \nprinted over serial.  if you \nexit this screen after \nenabling reception, the \nwatch will crash\nsorry!");  
-            watch2::setFont(LARGE_FONT);        
-        }
-
         if (dpad_enter_active())
         {
-            // start the receiver
-            irrecv.enableIRIn();
-            ir_enabled = true;  
+            if (!ir_enabled)
+            {
+                // start the receiver
+                watch2::oled.fillScreen(BLACK);
+                watch2::oled.setCursor(2, watch2::top_thing_height);
+                watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                watch2::oled.print("IR Receiver    ");
+                watch2::oled.setTextColor(GREEN, BLACK);
+                watch2::oled.println("enabled");
+
+                irrecv.enableIRIn();
+                ir_enabled = true;  
+            }
+            else
+            {
+                // disable the receiver
+                irrecv.disableIRIn();
+                ir_enabled = false;
+            }
         }
 
+        draw((!ir_enabled && dpad_enter_active()), {
+            watch2::oled.fillScreen(BLACK);
+            watch2::oled.setCursor(2, watch2::top_thing_height);
+            watch2::oled.setTextColor(watch2::themecolour, BLACK);
+            watch2::oled.print("IR Receiver    ");
+            watch2::oled.setTextColor(RED, BLACK);
+            watch2::oled.println("disabled");
+            watch2::oled.setTextColor(WHITE, BLACK);
+            watch2::oled.print("Press Enter to enable the \n"
+                                "IR receiver.  After you \n"
+                                "enable the receiver, you\n"
+                                "will need to disable it\n"
+                                "before you can leave \n"
+                                "the app");
+        });
+
         if (ir_enabled)
-        if (irrecv.decode(&ir_recv_results))
+        if (irrecv.decode(&ir_recv_results) || watch2::forceRedraw)
         {
-            //watch2::oled.setCursor(2, watch2::top_thing_height + watch2::oled.fontHeight());
-            //watch2::oled.println(ir_recv_results.value, HEX);
+            irrecv.disableIRIn();
+            delay(100);
+            uint16_t code_info_y = watch2::top_thing_height + watch2::oled.fontHeight();
+            watch2::oled.fillRect( 0, code_info_y, SCREEN_WIDTH, SCREEN_HEIGHT - code_info_y, BLACK);
 
             // print code info
-            Serial.print("Protocol: ");
+            watch2::oled.setCursor(0, code_info_y);
+            watch2::oled.setTextColor(watch2::themecolour, BLACK);
+            watch2::oled.print("\nProtocol: ");
+            watch2::oled.setTextColor(WHITE, BLACK);
             switch(ir_recv_results.decode_type)
             {
-                case -1: Serial.println("Unknown");              break;
-                case 0:  Serial.println("Unused");               break;
-                case 1:  Serial.println("RC5");                  break;
-                case 2:  Serial.println("RC6");                  break;
-                case 3:  Serial.println("NEC");                  break;
-                case 4:  Serial.println("Sony");                 break;
-                case 5:  Serial.println("Panasonic");            break;
-                case 6:  Serial.println("JVC");                  break;
-                case 7:  Serial.println("Samsung");              break;
-                case 8:  Serial.println("Whynter");              break;
-                case 9:  Serial.println("Aiwa RC T501");         break;
-                case 10: Serial.println("LG");                   break;
-                case 11: Serial.println("Sanyo");                break;
-                case 12: Serial.println("Mitsubishi");           break;
-                case 13: Serial.println("Dish");                 break;
-                case 14: Serial.println("Sharp");                break;
-                case 15: Serial.println("Denon");                break;
-                case 16: Serial.println("Pronto");               break;
-                case 17: Serial.println("LEGO Power Functions"); break;
+                default: watch2::oled.printf("Unknown (%d)\n", ir_recv_results.decode_type); break;
+                case 0:  watch2::oled.println("Unused");               break;
+                case 1:  watch2::oled.println("RC5");                  break;
+                case 2:  watch2::oled.println("RC6");                  break;
+                case 3:  watch2::oled.println("NEC");                  break;
+                case 4:  watch2::oled.println("Sony");                 break;
+                case 5:  watch2::oled.println("Panasonic");            break;
+                case 6:  watch2::oled.println("JVC");                  break;
+                case 7:  watch2::oled.println("Samsung");              break;
+                case 8:  watch2::oled.println("Whynter");              break;
+                case 9:  watch2::oled.println("Aiwa RC T501");         break;
+                case 10: watch2::oled.println("LG");                   break;
+                case 11: watch2::oled.println("Sanyo");                break;
+                case 12: watch2::oled.println("Mitsubishi");           break;
+                case 13: watch2::oled.println("Dish");                 break;
+                case 14: watch2::oled.println("Sharp");                break;
+                case 15: watch2::oled.println("Denon");                break;
+                case 16: watch2::oled.println("Pronto");               break;
+                case 17: watch2::oled.println("LEGO Power Functions"); break;
             }
-            Serial.print("Value:    0x");
-            Serial.println(ir_recv_results.value, HEX);
-            Serial.print("No. bits: ");
-            Serial.println(ir_recv_results.bits);
-            Serial.println();
+
+            watch2::oled.setTextColor(watch2::themecolour, BLACK);
+            watch2::oled.print("Value:    ");
+            watch2::oled.setTextColor(WHITE, BLACK);
+            watch2::oled.print("0x");
+            watch2::oled.println(ir_recv_results.value, HEX);
+
+            watch2::oled.setTextColor(watch2::themecolour, BLACK);
+            watch2::oled.print("No. bits: ");
+            watch2::oled.setTextColor(WHITE, BLACK);
+            watch2::oled.println(ir_recv_results.bits);
+            
+
+            if (ir_recv_results.decode_type == PANASONIC || ir_recv_results.decode_type == SHARP)
+            {
+                watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                watch2::oled.print("Address:  ");
+                watch2::oled.setTextColor(WHITE, BLACK);
+                watch2::oled.print("0x");
+                watch2::oled.println(ir_recv_results.address);
+            }
+            // if (ir_recv_results.decode_type == MAGIQUEST)
+            // {
+            //     watch2::oled.setTextColor(watch2::themecolour, BLACK);
+            //     watch2::oled.print("Magnitude:");
+            //     watch2::oled.setTextColor(WHITE, BLACK);
+            //     watch2::oled.print("0x");
+            //     watch2::oled.println(ir_recv_results.magnitude);
+            // }
+            watch2::oled.println();
+
+            
+            irrecv.enableIRIn();
             irrecv.resume();
         }
 
         //watch2::drawTopThing();
 
-        if (dpad_left_active())
+        if (!ir_enabled && dpad_left_active())
         {
             watch2::setFont(MAIN_FONT);
             watch2::switchState(watch2::state, 0);
@@ -532,15 +599,102 @@ void state_func_ir_remote()
 
     if (watch2::states[watch2::state].variant == 3)
     {
-        if (!watch2::state_init)
-        {
+        draw(false, {
             watch2::oled.setCursor(2, watch2::top_thing_height);
-            watch2::oled.print("Serial thing");
-        }
+            watch2::oled.setTextColor(watch2::themecolour, BLACK);
+            watch2::oled.println("Serial thing");
+            watch2::oled.setTextColor(WHITE, BLACK);
+            watch2::oled.println("Send commands over\n"
+                                 "serial to send them \n"
+                                 "using the IR LED.\n"
+                                 "Use the format\n"
+                                 "cmd;protocol;code;size\n");
+        });
 
         watch2::drawTopThing();
 
-        if (dpad_any_active())
+        if (Serial.available())
+        {
+
+            //Serial.printf("received data: 0x%x\n", Serial.read());
+            
+            const char *protocol;
+            uint32_t code;
+            uint8_t size;
+            char *pch;
+
+            // get thing from serial
+            char thing[50];// = "cmd;nec;0xfe50af;32";
+            Serial.readBytesUntil(0x0A, thing, 50); // terminator is line feed
+            Serial.printf("received string: %s\n", thing);
+
+            if (thing[0] == 'c' && thing[1] == 'm' && thing[2] == 'd')
+            {
+
+                // split string
+                char *str = strdup(thing);
+                pch = strtok(str, ";");
+                pch = strtok(NULL, ";"); // skip "cmd" header
+
+                protocol = strdup(pch); // store protocol
+                Serial.printf("protocol: %s\n", protocol);
+                pch = strtok(NULL, ";");
+
+                code = strtoul(pch, NULL, 0); // store code
+                Serial.printf("code: 0x%x\n", code);
+                Serial.printf("raw code: %s\n", pch);
+                pch = strtok(NULL, ";");
+
+                size = strtol(pch, NULL, 0); // store size
+                Serial.printf("size: %d bits\n", size);
+                Serial.printf("raw size: %s\n", pch);
+
+                // print details
+                uint16_t code_info_y = watch2::top_thing_height + watch2::oled.fontHeight();
+                watch2::oled.fillRect( 0, code_info_y, SCREEN_WIDTH, SCREEN_HEIGHT - code_info_y, BLACK);
+
+                watch2::oled.setCursor(0, code_info_y);
+                watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                watch2::oled.print("Protocol: ");
+                watch2::oled.setTextColor(WHITE, BLACK);
+                watch2::oled.println(protocol);
+
+                watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                watch2::oled.printf("Code:      0x");
+                watch2::oled.setTextColor(WHITE, BLACK);
+                watch2::oled.println(code, HEX);
+
+                watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                watch2::oled.printf("Size:       ");
+                watch2::oled.printf("%d bits\n", size);
+
+                // send code
+                delay(500);
+                if (strcmp(protocol, "rc5") == 0)                irsend.sendRC5(code, size);
+                if (strcmp(protocol, "rc6") == 0)                irsend.sendRC6(code, size);
+                if (strcmp(protocol, "nec") == 0)                irsend.sendNEC(0xfe50af, 24);
+                if (strcmp(protocol, "sony") == 0)               irsend.sendSony(code, size);
+                if (strcmp(protocol, "panasonic") == 0)          irsend.sendPanasonic(code, size);
+                if (strcmp(protocol, "jvc") == 0)                irsend.sendJVC(code, size, false);
+                if (strcmp(protocol, "samsung") == 0)            irsend.sendSAMSUNG(code, size);
+                if (strcmp(protocol, "whynter") == 0)            irsend.sendWhynter(code, size);
+                if (strcmp(protocol, "aiwa rc t501") == 0)       irsend.sendAiwaRCT501(code);
+                if (strcmp(protocol, "lg") == 0)                 irsend.sendLG(code, size);
+                //if (strcmp(protocol, "sanyo") == 0)              irsend.sendSanyo(code, size);
+                //if (strcmp(protocol, "mitsubishi") == 0)         irsend.sendMitsubishi(code, size);
+                if (strcmp(protocol, "dish") == 0)               irsend.sendDISH(code, size);
+                if (strcmp(protocol, "sharp") == 0)              irsend.sendSharpRaw(code, size);
+                //if (strcmp(protocol, "sharp alt") == 0)          irsend.sendSharpAltRaw(code, size);
+                if (strcmp(protocol, "denon") == 0)              irsend.sendDenon(code, size);
+                //if (strcmp(protocol, "pronto") == 0)             irsend.sendPronto(ir_code_object->valuestring, false, false);
+                if (strcmp(protocol, "lego pf") == 0)            irsend.sendLegoPowerFunctions(code, false);
+                //if (strcmp(protocol, "bose wave") == 0)          irsend.sendBoseWave(code);
+                //if (strcmp(protocol, "magiquest") == 0)          irsend.sendMagiQuest(code, size);
+
+            }
+        }
+
+        if (dpad_left_active())
         {
             watch2::switchState(watch2::state, 0);
         }
