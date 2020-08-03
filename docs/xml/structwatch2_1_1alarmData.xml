@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="structwatch2_1_1alarmData" kind="struct" language="C++" prot="public">
+    <compoundname>watch2::alarmData</compoundname>
+    <includes refid="watch2_8h" local="no">watch2.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structwatch2_1_1alarmData_1adcbb0cea20a2b70dc828f3f6dfff5606" prot="public" static="no" mutable="no">
+        <type>AlarmID_t</type>
+        <definition>AlarmID_t watch2::alarmData::alarm_id</definition>
+        <argsstring></argsstring>
+        <name>alarm_id</name>
+        <briefdescription>
+<para>the alarm ID </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/watch2.h" line="262" column="37" bodyfile="main/watch2.h" bodystart="262" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structwatch2_1_1alarmData_1a16730dbe483ffbdaebffc58bc4f0f66d" prot="public" static="no" mutable="no">
+        <type>time_t</type>
+        <definition>time_t watch2::alarmData::initial_time</definition>
+        <argsstring></argsstring>
+        <name>initial_time</name>
+        <briefdescription>
+<para>the time the alarm was originally set to when the alarm was started </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/watch2.h" line="263" column="37" bodyfile="main/watch2.h" bodystart="263" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structwatch2_1_1alarmData_1aec01478e4d5abf5490ceee0adf6a57b2" prot="public" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool watch2::alarmData::paused</definition>
+        <argsstring></argsstring>
+        <name>paused</name>
+        <briefdescription>
+<para>whether or not the alarm is paused </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/watch2.h" line="264" column="37" bodyfile="main/watch2.h" bodystart="264" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structwatch2_1_1alarmData_1a74075a577af24f71f6dadc3ccf633314" prot="public" static="no" mutable="no">
+        <type>time_t</type>
+        <definition>time_t watch2::alarmData::last_value</definition>
+        <argsstring></argsstring>
+        <name>last_value</name>
+        <briefdescription>
+<para>used when drawing the alarm time </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/watch2.h" line="265" column="37" bodyfile="main/watch2.h" bodystart="265" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>data for alarms </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="main/watch2.h" line="260" column="5" bodyfile="main/watch2.h" bodystart="260" bodyend="267"/>
+    <listofallmembers>
+      <member refid="structwatch2_1_1alarmData_1adcbb0cea20a2b70dc828f3f6dfff5606" prot="public" virt="non-virtual"><scope>watch2::alarmData</scope><name>alarm_id</name></member>
+      <member refid="structwatch2_1_1alarmData_1a16730dbe483ffbdaebffc58bc4f0f66d" prot="public" virt="non-virtual"><scope>watch2::alarmData</scope><name>initial_time</name></member>
+      <member refid="structwatch2_1_1alarmData_1a74075a577af24f71f6dadc3ccf633314" prot="public" virt="non-virtual"><scope>watch2::alarmData</scope><name>last_value</name></member>
+      <member refid="structwatch2_1_1alarmData_1aec01478e4d5abf5490ceee0adf6a57b2" prot="public" virt="non-virtual"><scope>watch2::alarmData</scope><name>paused</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

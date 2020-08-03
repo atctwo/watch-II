@@ -9,7 +9,7 @@
 */
 
 #include "../watch2.h"
-#include "../gumbo-parser/src/gumbo.h"
+#include "../libraries/gumbo-parser/src/gumbo.h"
 
 struct article_lines{
 

@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="structwatch2_1_1timerData" kind="struct" language="C++" prot="public">
+    <compoundname>watch2::timerData</compoundname>
+    <includes refid="watch2_8h" local="no">watch2.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structwatch2_1_1timerData_1aaf0cc35c1fd63060c365b7824d1d8807" prot="public" static="no" mutable="no">
+        <type>time_t</type>
+        <definition>time_t watch2::timerData::duration</definition>
+        <argsstring></argsstring>
+        <name>duration</name>
+        <briefdescription>
+<para>the time left on a timer (in seconds). <linebreak/>
+ </para>
+        </briefdescription>
+        <detaileddescription>
+<para>this is only updated when the timer is paused, so don&apos;t rely on this for when the timer is not paused. when the timer is paused, the Alarm ID is freed, and timer (at least according to the TimeAlarms lib) ceases to exist. this duration value is used to create a new timer when the timer is resumed. this makes it look like the timer is actually paused. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/watch2.h" line="216" column="37" bodyfile="main/watch2.h" bodystart="216" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structwatch2_1_1timerData_1aaee812c250b616a54beca3d5536f1702" prot="public" static="no" mutable="no">
+        <type>time_t</type>
+        <definition>time_t watch2::timerData::initial_duration</definition>
+        <argsstring></argsstring>
+        <name>initial_duration</name>
+        <briefdescription>
+<para>the original time that the timer was set to when it was started </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/watch2.h" line="222" column="37" bodyfile="main/watch2.h" bodystart="222" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structwatch2_1_1timerData_1a8dfd47ae23b88621d07f9afbd37218fe" prot="public" static="no" mutable="no">
+        <type>AlarmID_t</type>
+        <definition>AlarmID_t watch2::timerData::alarm_id</definition>
+        <argsstring></argsstring>
+        <name>alarm_id</name>
+        <briefdescription>
+<para>the id of the timer. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>if the timer is not paused, then it will be associated with a TimeAlarms timer. this member stores the id of the timer. when the timer is paused, the TimeAlarms timer does not exist (see above), so this variable is set to 255. this can be used to check whether or not the timer is paused. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/watch2.h" line="232" column="37" bodyfile="main/watch2.h" bodystart="232" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structwatch2_1_1timerData_1ae0746adeaf3afe9c1b829f0c9f9940cd" prot="public" static="no" mutable="no">
+        <type>time_t</type>
+        <definition>time_t watch2::timerData::time_started</definition>
+        <argsstring></argsstring>
+        <name>time_started</name>
+        <briefdescription>
+<para>the time at which the TimeAlarms timer is started. <linebreak/>
+ </para>
+        </briefdescription>
+        <detaileddescription>
+<para>if the timer is paused and resumed, this member stored the time at which the timer was resumed. should be 255 if the timer has not yet started, or the timer is paused. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/watch2.h" line="241" column="37" bodyfile="main/watch2.h" bodystart="241" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structwatch2_1_1timerData_1aa7bf85415834a99ed34f9cd7ac500258" prot="public" static="no" mutable="no">
+        <type>OnTick_t</type>
+        <definition>OnTick_t watch2::timerData::on_tick_handler</definition>
+        <argsstring></argsstring>
+        <name>on_tick_handler</name>
+        <briefdescription>
+<para>the function to execute once the timer has completed </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/watch2.h" line="247" column="37" bodyfile="main/watch2.h" bodystart="247" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structwatch2_1_1timerData_1a1335f1a83d44d5e4efd52f29689dd209" prot="public" static="no" mutable="no">
+        <type>time_t</type>
+        <definition>time_t watch2::timerData::last_value</definition>
+        <argsstring></argsstring>
+        <name>last_value</name>
+        <briefdescription>
+<para>the previous value of the timer. this is used for redrawing a timer to the screen. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/watch2.h" line="252" column="37" bodyfile="main/watch2.h" bodystart="252" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>data for timers </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="main/watch2.h" line="204" column="5" bodyfile="main/watch2.h" bodystart="204" bodyend="254"/>
+    <listofallmembers>
+      <member refid="structwatch2_1_1timerData_1a8dfd47ae23b88621d07f9afbd37218fe" prot="public" virt="non-virtual"><scope>watch2::timerData</scope><name>alarm_id</name></member>
+      <member refid="structwatch2_1_1timerData_1aaf0cc35c1fd63060c365b7824d1d8807" prot="public" virt="non-virtual"><scope>watch2::timerData</scope><name>duration</name></member>
+      <member refid="structwatch2_1_1timerData_1aaee812c250b616a54beca3d5536f1702" prot="public" virt="non-virtual"><scope>watch2::timerData</scope><name>initial_duration</name></member>
+      <member refid="structwatch2_1_1timerData_1a1335f1a83d44d5e4efd52f29689dd209" prot="public" virt="non-virtual"><scope>watch2::timerData</scope><name>last_value</name></member>
+      <member refid="structwatch2_1_1timerData_1aa7bf85415834a99ed34f9cd7ac500258" prot="public" virt="non-virtual"><scope>watch2::timerData</scope><name>on_tick_handler</name></member>
+      <member refid="structwatch2_1_1timerData_1ae0746adeaf3afe9c1b829f0c9f9940cd" prot="public" virt="non-virtual"><scope>watch2::timerData</scope><name>time_started</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

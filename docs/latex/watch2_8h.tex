@@ -1,0 +1,931 @@
+\hypertarget{watch2_8h}{}\doxysection{main/watch2.h File Reference}
+\label{watch2_8h}\index{main/watch2.h@{main/watch2.h}}
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdint.\+h$>$}\newline
+{\ttfamily \#include $<$algorithm$>$}\newline
+{\ttfamily \#include $<$stack$>$}\newline
+{\ttfamily \#include $<$map$>$}\newline
+{\ttfamily \#include $<$unordered\+\_\+map$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+{\ttfamily \#include $<$functional$>$}\newline
+{\ttfamily \#include $<$Arduino.\+h$>$}\newline
+{\ttfamily \#include $<$S\+P\+I.\+h$>$}\newline
+{\ttfamily \#include $<$Sd\+Fat.\+h$>$}\newline
+{\ttfamily \#include $<$sdios.\+h$>$}\newline
+{\ttfamily \#include $<$T\+F\+T\+\_\+e\+S\+P\+I.\+h$>$}\newline
+{\ttfamily \#include $<$F\+S.\+h$>$}\newline
+{\ttfamily \#include $<$J\+C\+\_\+\+Button.\+h$>$}\newline
+{\ttfamily \#include $<$Wi\+Fi.\+h$>$}\newline
+{\ttfamily \#include $<$Wi\+Fi\+Client\+Secure.\+h$>$}\newline
+{\ttfamily \#include $<$H\+T\+T\+P\+Client.\+h$>$}\newline
+{\ttfamily \#include $<$Ble\+Keyboard.\+h$>$}\newline
+{\ttfamily \#include $<$Preferences.\+h$>$}\newline
+{\ttfamily \#include $<$tinyexpr.\+h$>$}\newline
+{\ttfamily \#include $<$c\+J\+S\+O\+N.\+h$>$}\newline
+{\ttfamily \#include $<$sys/cdefs.\+h$>$}\newline
+{\ttfamily \#include $<$time.\+h$>$}\newline
+{\ttfamily \#include $<$sys/time.\+h$>$}\newline
+{\ttfamily \#include $<$Time\+Lib.\+h$>$}\newline
+{\ttfamily \#include $<$Time\+Alarms.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}watch2.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}coolcrab.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}regret.\+h\char`\"{}}\newline
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structwatch2_1_1stateMeta}{watch2\+::state\+Meta}}
+\item 
+struct \mbox{\hyperlink{structwatch2_1_1settingsMenuData}{watch2\+::settings\+Menu\+Data}}
+\item 
+struct \mbox{\hyperlink{structwatch2_1_1timerData}{watch2\+::timer\+Data}}
+\item 
+struct \mbox{\hyperlink{structwatch2_1_1alarmData}{watch2\+::alarm\+Data}}
+\item 
+struct \mbox{\hyperlink{structwatch2_1_1imageData}{watch2\+::image\+Data}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespacewatch2}{watch2}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{watch2_8h_aba8902900fa07ff44dbb4a739c0e5163}{cs}}~5
+\item 
+\#define \mbox{\hyperlink{watch2_8h_aadf9daa84cd538db17f0e4de8f0ffd7a}{sdcs}}~13
+\item 
+\#define \mbox{\hyperlink{watch2_8h_acbb253d58d8673aa8f9df002a979e6c8}{spi\+\_\+dc}}~22
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a7b1d545c5f9947dc82d3b235127b30b0}{spi\+\_\+mosi}}~23
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a7eea346d100862b6880af512ea723c50}{spi\+\_\+sclk}}~18
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a5c14e975eff3fb7b1c35f3432d6dfa0b}{spi\+\_\+rst}}~21
+\item 
+\#define \mbox{\hyperlink{watch2_8h_af9c675db0ea8bd5356488ae55805f3b9}{spi\+\_\+miso}}~19
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a425039eba66ffa902bacb163eb21b721}{tftbl}}~33
+\item 
+\#define \mbox{\hyperlink{watch2_8h_af87c395b63eae5c0f059628ece124a99}{tftbl\+\_\+resolution}}~8
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a47d68905fb8bc1a85644b4e8007b7b0c}{dpad\+\_\+up}}~34
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a20184c372e573af3754fc360d9fc8976}{dpad\+\_\+down}}~39
+\item 
+\#define \mbox{\hyperlink{watch2_8h_aa1410a5a4a63f9e503347a0e44723379}{dpad\+\_\+left}}~32
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a968c324db648adac2aa07cc0b2e2708e}{dpad\+\_\+right}}~35
+\item 
+\#define \mbox{\hyperlink{watch2_8h_abe777e85a3a317207c3cc75dc83430e3}{dpad\+\_\+enter}}~36
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a5de264d3f944d10ecead0d1a2bcd5d15}{B\+A\+T\+T\+E\+R\+Y\+\_\+\+D\+I\+V\+I\+D\+E\+R\+\_\+\+P\+IN}}~34
+\item 
+\#define \mbox{\hyperlink{watch2_8h_aed7e12ea5b73006c0eaef97bd620ec24}{T\+O\+R\+C\+H\+\_\+\+P\+IN}}~14
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a3b0a1d1d72b10a9c0c95adeb235d19f4}{I\+R\+\_\+\+P\+IN}}~12
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a033985d96eb8d6f5e92dac14e657ecc7}{I\+R\+\_\+\+R\+E\+C\+\_\+\+P\+IN}}~4
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a7e4b916b58b0737d949d2d335c31552e}{I2\+S\+\_\+\+D\+O\+UT}}~25
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a70b8935619178318d99117188dbcaf83}{I2\+S\+\_\+\+B\+C\+LK}}~27
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a93aef9c6f74b75248da7d5f3b894f4b1}{I2\+S\+\_\+\+L\+RC}}~26
+\item 
+\#define \mbox{\hyperlink{watch2_8h_ace0f79613799421255963505e2039875}{T\+O\+R\+C\+H\+\_\+\+P\+W\+M\+\_\+\+C\+H\+A\+N\+N\+EL}}~2
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a28faf5bfaeb0c190d5c34306b7eb430f}{T\+F\+T\+B\+L\+\_\+\+P\+W\+M\+\_\+\+C\+H\+A\+N\+N\+EL}}~1
+\item 
+\#define \mbox{\hyperlink{watch2_8h_ae3cb46892a7edbd5e225dc4e08ff2e06}{I\+R\+\_\+\+P\+W\+M\+\_\+\+C\+H\+A\+N\+N\+EL}}~0
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a2a0288cf7528206c9dd5b0007e2c9ac0}{K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+D\+E\+L\+AY}}~550
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a9835328bc3e31883ed7b5896162eefaa}{K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+P\+E\+R\+I\+OD}}~24
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a2d665aca3619cd86b1dfe184756fa1c4}{dpad\+\_\+up\+\_\+active}}()~( !\mbox{\hyperlink{namespacewatch2_ae8c26ee76d3b1e60257436c4392a6a43}{watch2\+::dpad\+\_\+up\+\_\+lock}} \&\&    (watch2\+::btn\+\_\+dpad\+\_\+up.\+was\+Pressed() $\vert$$\vert$ ( watch2\+::btn\+\_\+dpad\+\_\+up.\+pressed\+For(\mbox{\hyperlink{watch2_8h_a2a0288cf7528206c9dd5b0007e2c9ac0}{K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+D\+E\+L\+AY}}) \&\& ( millis() \% \mbox{\hyperlink{watch2_8h_a9835328bc3e31883ed7b5896162eefaa}{K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+P\+E\+R\+I\+OD}} $<$ 10 ) ) ) )
+\item 
+\#define \mbox{\hyperlink{watch2_8h_ad5ef942e8561d4b3c53ad44cb5d07969}{dpad\+\_\+down\+\_\+active}}()~( !\mbox{\hyperlink{namespacewatch2_a02564275e9ce28f87fefb6dae6a928d7}{watch2\+::dpad\+\_\+down\+\_\+lock}} \&\&  (watch2\+::btn\+\_\+dpad\+\_\+down.\+was\+Pressed() $\vert$$\vert$ ( watch2\+::btn\+\_\+dpad\+\_\+down.\+pressed\+For(\mbox{\hyperlink{watch2_8h_a2a0288cf7528206c9dd5b0007e2c9ac0}{K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+D\+E\+L\+AY}}) \&\& ( millis() \% \mbox{\hyperlink{watch2_8h_a9835328bc3e31883ed7b5896162eefaa}{K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+P\+E\+R\+I\+OD}} $<$ 10 ) ) ) )
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a5869283f0cb7e68c72fb1849d7bb68d7}{dpad\+\_\+left\+\_\+active}}()~( !\mbox{\hyperlink{namespacewatch2_aa9a118089c42b9bbf14f86b6a5928dda}{watch2\+::dpad\+\_\+left\+\_\+lock}} \&\&  (watch2\+::btn\+\_\+dpad\+\_\+left.\+was\+Pressed() $\vert$$\vert$ ( watch2\+::btn\+\_\+dpad\+\_\+left.\+pressed\+For(\mbox{\hyperlink{watch2_8h_a2a0288cf7528206c9dd5b0007e2c9ac0}{K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+D\+E\+L\+AY}}) \&\& ( millis() \% \mbox{\hyperlink{watch2_8h_a9835328bc3e31883ed7b5896162eefaa}{K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+P\+E\+R\+I\+OD}} $<$ 10 ) ) ) )
+\item 
+\#define \mbox{\hyperlink{watch2_8h_ad4b76bcc603410723945c08e4ef82811}{dpad\+\_\+right\+\_\+active}}()~( !\mbox{\hyperlink{namespacewatch2_a5d4921f0bd262bde4dc8fc45b9efea31}{watch2\+::dpad\+\_\+right\+\_\+lock}} \&\& (watch2\+::btn\+\_\+dpad\+\_\+right.\+was\+Pressed() $\vert$$\vert$ ( watch2\+::btn\+\_\+dpad\+\_\+right.\+pressed\+For(\mbox{\hyperlink{watch2_8h_a2a0288cf7528206c9dd5b0007e2c9ac0}{K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+D\+E\+L\+AY}}) \&\& ( millis() \% \mbox{\hyperlink{watch2_8h_a9835328bc3e31883ed7b5896162eefaa}{K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+P\+E\+R\+I\+OD}} $<$ 10 ) ) ) )
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a103b2e40d6f57da2f6a41ed4ee7bffe8}{dpad\+\_\+enter\+\_\+active}}()~( !\mbox{\hyperlink{namespacewatch2_a87ab5b186679667ed01a17475f8f21d9}{watch2\+::dpad\+\_\+enter\+\_\+lock}} \&\& (watch2\+::btn\+\_\+dpad\+\_\+enter.\+was\+Pressed() $\vert$$\vert$ ( watch2\+::btn\+\_\+dpad\+\_\+enter.\+pressed\+For(\mbox{\hyperlink{watch2_8h_a2a0288cf7528206c9dd5b0007e2c9ac0}{K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+D\+E\+L\+AY}}) \&\& ( millis() \% \mbox{\hyperlink{watch2_8h_a9835328bc3e31883ed7b5896162eefaa}{K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+P\+E\+R\+I\+OD}} $<$ 10 ) ) ) )
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a4ef7d6208f02d770d700dd7bdcc3b184}{dpad\+\_\+any\+\_\+active}}()~( \mbox{\hyperlink{watch2_8h_a2d665aca3619cd86b1dfe184756fa1c4}{dpad\+\_\+up\+\_\+active}}() $\vert$$\vert$ \mbox{\hyperlink{watch2_8h_ad5ef942e8561d4b3c53ad44cb5d07969}{dpad\+\_\+down\+\_\+active}}() $\vert$$\vert$ \mbox{\hyperlink{watch2_8h_a5869283f0cb7e68c72fb1849d7bb68d7}{dpad\+\_\+left\+\_\+active}}() $\vert$$\vert$ \mbox{\hyperlink{watch2_8h_ad4b76bcc603410723945c08e4ef82811}{dpad\+\_\+right\+\_\+active}}() $\vert$$\vert$ \mbox{\hyperlink{watch2_8h_a103b2e40d6f57da2f6a41ed4ee7bffe8}{dpad\+\_\+enter\+\_\+active}}() )
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a66985d8fefe0cba4188b8fdb31868104}{draw}}(conditions, ...)
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a7b3b25cba33b07c303f3060fe41887f6}{B\+L\+A\+CK}}~0x0000
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a79d10e672abb49ad63eeaa8aaef57c38}{B\+L\+UE}}~0x001F
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a8d23feea868a983c8c2b661e1e16972f}{R\+ED}}~0x\+F800
+\item 
+\#define \mbox{\hyperlink{watch2_8h_acfbc006ea433ad708fdee3e82996e721}{G\+R\+E\+EN}}~0x07\+E0
+\item 
+\#define \mbox{\hyperlink{watch2_8h_ad243f93c16bc4c1d3e0a13b84421d760}{C\+Y\+AN}}~0x07\+FF
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a6f699060902f800f12aaae150f3a708e}{M\+A\+G\+E\+N\+TA}}~0x\+F81F
+\item 
+\#define \mbox{\hyperlink{watch2_8h_abf681265909adf3d3e8116c93c0ba179}{Y\+E\+L\+L\+OW}}~0x\+F\+F\+E0
+\item 
+\#define \mbox{\hyperlink{watch2_8h_ac5b6e19bf06822021f35602c59658de3}{O\+R\+A\+N\+GE}}~0x\+F\+C00
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a0bb0b009e7a7390473ace4d98bd843c0}{P\+U\+R\+P\+LE}}~0x8010
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a87b537f5fa5c109d3c05c13d6b18f382}{W\+H\+I\+TE}}~0x\+F\+F\+FF
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a855ae364ef19f76001908138b6049a90}{M\+A\+I\+N\+\_\+\+F\+O\+NT}}~\char`\"{}Helveti\+Hand20\char`\"{}
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a3ab9338a5ec3cb45b17db1001ad954a5}{S\+L\+I\+G\+H\+T\+L\+Y\+\_\+\+B\+I\+G\+G\+E\+R\+\_\+\+F\+O\+NT}}~\char`\"{}Helveti\+Hand24\char`\"{}
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a8325b24e840d8c711da21c0817718f75}{L\+A\+R\+G\+E\+\_\+\+F\+O\+NT}}~\char`\"{}Helveti\+Hand36\char`\"{}
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a46772cfb2dbf8ab2817bdb0d5a7ff6d9}{R\+E\+A\+L\+L\+Y\+\_\+\+B\+I\+G\+\_\+\+F\+O\+NT}}~\char`\"{}Helveti\+Hand60\char`\"{}
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a14d24798f8d38fa5ef220c07509c2230}{R\+E\+A\+L\+L\+Y\+\_\+\+R\+E\+A\+L\+L\+Y\+\_\+\+B\+I\+G\+\_\+\+F\+O\+NT}}~\char`\"{}Helveti\+Hand90\char`\"{}
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a2cd109632a6dcccaa80b43561b1ab700}{S\+C\+R\+E\+E\+N\+\_\+\+W\+I\+D\+TH}}~240
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a6974d08a74da681b3957b2fead2608b8}{S\+C\+R\+E\+E\+N\+\_\+\+H\+E\+I\+G\+HT}}~240
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a56c2f31153aefb1a3722c16a91393ef8}{W\+A\+T\+C\+H\+\_\+\+V\+ER}}~\char`\"{}0.\+1\char`\"{}
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a2289d86d486facb0123dbaf0dcfe6ad0}{B\+A\+T\+T\+E\+R\+Y\+\_\+\+V\+O\+L\+T\+A\+G\+E\+\_\+\+M\+AX}}~3.\+3
+\item 
+\#define \mbox{\hyperlink{watch2_8h_ac0ea68234f023221f8e296215147e7d8}{B\+A\+T\+T\+E\+R\+Y\+\_\+\+V\+O\+L\+T\+A\+G\+E\+\_\+\+S\+C\+A\+LE}}~2
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a751e3f85cd240e89d390d18996089cd0}{N\+T\+P\+\_\+\+S\+E\+R\+V\+ER}}~\char`\"{}pool.\+ntp.\+org\char`\"{}
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a5158b1e31a4e7aa84de308e3d792a1de}{P\+O\+R\+T\+\_\+\+H\+T\+TP}}~80
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a054f94b51abab46052e1d78f0d1e03fd}{P\+O\+R\+T\+\_\+\+H\+T\+T\+PS}}~443
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a2d7aa4ddf95a5a971302ea86d743ee03}{W\+I\+F\+I\+\_\+\+P\+R\+O\+F\+I\+L\+E\+S\+\_\+\+F\+I\+L\+E\+N\+A\+ME}}~\char`\"{}/wifi\+\_\+profiles.\+json\char`\"{}
+\item 
+\#define \mbox{\hyperlink{watch2_8h_ac9d0c281df43aeffdeb3064b3fe316f9}{C\+A\+L\+C\+\_\+\+C\+E\+L\+L\+\_\+\+W\+I\+D\+TH}}~25
+\item 
+\#define \mbox{\hyperlink{watch2_8h_a31ca47034be218ca8aad9c549f459954}{C\+A\+L\+C\+\_\+\+C\+E\+L\+L\+\_\+\+H\+E\+I\+G\+HT}}~12
+\end{DoxyCompactItemize}
+\doxysubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef void($\ast$ \mbox{\hyperlink{namespacewatch2_aa87ecba8f47ac740569f637bb4ebfdb2}{watch2\+::func}}) (void)
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{watch2_8h_ad69f6526ade9968894662293e988133f}{if}} (!\mbox{\hyperlink{namespacewatch2_ac13451e2babb790100abd526133d3d96}{watch2\+::state\+\_\+init}}$\vert$$\vert$\mbox{\hyperlink{namespacewatch2_aec1d807c429ed612b9e2564d3f19fd61}{watch2\+::force\+Redraw}}$\vert$$\vert$conditions)
+\item 
+void \mbox{\hyperlink{namespacewatch2_ad93182730d153ab0ef41c7abeb0dd496}{watch2\+::start\+Loop}} ()
+\item 
+void \mbox{\hyperlink{namespacewatch2_a7dd335db221ae4468aca205f9503d701}{watch2\+::end\+Loop}} ()
+\item 
+void \mbox{\hyperlink{namespacewatch2_ad5f28b9617e94aa356abc56a2f7b438a}{watch2\+::draw\+Top\+Thing}} (bool light=false)
+\begin{DoxyCompactList}\small\item\em draw the status bar at the top of the page \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{namespacewatch2_a0f2f1e10687bcdb6c6d86245a31675b7}{watch2\+::register\+Icon}} (std\+::string icon\+Name, std\+::vector$<$ unsigned short int $>$ icon)
+\begin{DoxyCompactList}\small\item\em add an icon to the list of 16 bit colour icons. this icon store is usually used to store things like app icons. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{namespacewatch2_abf3f27c5409410bfcdbb0a9dda71cab1}{watch2\+::register\+Small\+Icon}} (std\+::string icon\+Name, std\+::vector$<$ unsigned char $>$ icon)
+\begin{DoxyCompactList}\small\item\em add an icon to the list of smaller 8 bit monochrome icons. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespacewatch2_a380f7785dd2e5ae7998aebd909b52450}{watch2\+::dim\+Screen}} (bool direction, int pause\+\_\+thing)
+\begin{DoxyCompactList}\small\item\em dim or make brighter the screen \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespacewatch2_a786f5e96c939f6465c2341a31cad1385}{watch2\+::switch\+State}} (int new\+State, int variant=0, int dim\+\_\+pause\+\_\+thing=250, int bright\+\_\+pause\+\_\+thing=250, bool dont\+\_\+draw\+\_\+first\+\_\+frame=false)
+\begin{DoxyCompactList}\small\item\em switch to a different state or app this method lets you switch from running the current state, to another state (or the current state, but using a different variant). \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespacewatch2_a16cecbbfc9e57a44177a0901dc479145}{watch2\+::deep\+Sleep}} (int pause\+\_\+thing)
+\item 
+void \mbox{\hyperlink{namespacewatch2_abd2995f24426dd29f66e02ee65704f98}{watch2\+::draw\+Menu}} (int x, int y, int width, int height, std\+::vector$<$ std\+::string $>$ items, int selected, bool scroll, int colour)
+\item 
+void \mbox{\hyperlink{namespacewatch2_a22f95674ff0b07d34a9b1ba552863dd3}{watch2\+::draw\+Settings\+Menu}} (int x, int y, int width, int height, std\+::vector$<$ settings\+Menu\+Data $>$ items, int selected, int colour)
+\item 
+std\+::vector$<$ std\+::string $>$ \mbox{\hyperlink{namespacewatch2_aaca631f9121ac7f12ad6ba982e9636a7}{watch2\+::get\+Dir\+Files}} (std\+::string path)
+\item 
+std\+::string \mbox{\hyperlink{namespacewatch2_a6cd75824e21d18cad986eadd101df902}{watch2\+::begin\+File\+Select}} (std\+::string path)
+\item 
+std\+::string \mbox{\hyperlink{namespacewatch2_a8a542732f9fd292a263048ef3abef5a7}{watch2\+::dir\+\_\+name}} (std\+::string file\+\_\+path\+\_\+thing)
+\item 
+std\+::string \mbox{\hyperlink{namespacewatch2_a16a76b7c1664159fb4e6ec58c237a8e4}{watch2\+::file\+\_\+ext}} (std\+::string file\+\_\+path\+\_\+thing)
+\item 
+std\+::string \mbox{\hyperlink{namespacewatch2_a6c79b088169ba9bec649c610676ab937}{watch2\+::text\+Field\+Dialogue}} (std\+::string prompt, const char $\ast$default\+\_\+input, const char mask, bool clear\+\_\+screen)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{namespacewatch2_ac6da32022230e671015919ae71750e3a}{watch2\+::message\+Box}} (const char $\ast$msg, std\+::vector$<$ const char $\ast$ $>$ btns, bool clear\+\_\+screen, uint16\+\_\+t colour)
+\item 
+int \mbox{\hyperlink{namespacewatch2_a18ef7ad56d571b6e443a6862ea0d6ed0}{watch2\+::init\+SD}} (bool handle\+CS)
+\item 
+void \mbox{\hyperlink{namespacewatch2_addb19db8b616c988a84dea81a594f1fd}{watch2\+::colour888}} (uint16\+\_\+t colour, float $\ast$r, float $\ast$g, float $\ast$b)
+\item 
+void \mbox{\hyperlink{namespacewatch2_ac4f3f79dee7cc0163d690a44213948c1}{watch2\+::\+H\+S\+Vto\+R\+GB}} (float $\ast$r, float $\ast$g, float $\ast$b, float h, float s, float v)
+\item 
+bool \mbox{\hyperlink{namespacewatch2_ae822581b232d1948a2ebc1a3b2759124}{watch2\+::get\+Heat\+Map\+Color}} (float value, float $\ast$red, float $\ast$green, float $\ast$blue)
+\item 
+double \mbox{\hyperlink{namespacewatch2_ac0c3990239dd1d485a9096afa590d22a}{watch2\+::\+Read\+Voltage}} (byte pin)
+\item 
+void \mbox{\hyperlink{namespacewatch2_af11d73a16e01df744a2129a0bad60a33}{watch2\+::set\+Font}} (const char $\ast$font, T\+F\+T\+\_\+e\+S\+PI \&tft, fs\+::\+FS \&ffs)
+\item 
+int \mbox{\hyperlink{namespacewatch2_ac3a8342f484fe1aa794c013aab54b811}{watch2\+::something}} (int x, int y)
+\item 
+void \mbox{\hyperlink{namespacewatch2_ada58194a8a047c601cd29bdf13e7e325}{watch2\+::get\+Text\+Bounds}} (const char $\ast$string, int16\+\_\+t x, int16\+\_\+t y, int16\+\_\+t $\ast$x1, int16\+\_\+t $\ast$y1, uint16\+\_\+t $\ast$w, uint16\+\_\+t $\ast$h)
+\item 
+void \mbox{\hyperlink{namespacewatch2_a9da273ddeb6f4f98293e7063039752d4}{watch2\+::get\+Text\+Bounds}} (const String \&str, int16\+\_\+t x, int16\+\_\+t y, int16\+\_\+t $\ast$x1, int16\+\_\+t $\ast$y1, uint16\+\_\+t $\ast$w, uint16\+\_\+t $\ast$h)
+\item 
+const char $\ast$ \mbox{\hyperlink{namespacewatch2_acaebebb7e9bbe265740d2f9a84159787}{watch2\+::human\+Size}} (uint64\+\_\+t bytes)
+\item 
+uint16\+\_\+t \mbox{\hyperlink{namespacewatch2_a489c0c4d7b16a33e8b5708c539042fe4}{watch2\+::read16}} (fs\+::\+File \&f)
+\item 
+uint32\+\_\+t \mbox{\hyperlink{namespacewatch2_a34f7cef11ad47a815feaa936fba3d162}{watch2\+::read32}} (fs\+::\+File \&f)
+\item 
+void \mbox{\hyperlink{namespacewatch2_a03e9dab5718c7bae6b30ae557c9e2358}{watch2\+::draw\+Bmp}} (const char $\ast$filename, int16\+\_\+t x, int16\+\_\+t y)
+\item 
+image\+Data \mbox{\hyperlink{namespacewatch2_ae470db9c3abba738785016d024eef32f}{watch2\+::get\+Image\+Data}} (const char $\ast$filename)
+\item 
+void \mbox{\hyperlink{namespacewatch2_a8aa5d601325d791b39966859c1eea4f1}{watch2\+::free\+Image\+Data}} (unsigned char $\ast$data)
+\item 
+const char $\ast$ \mbox{\hyperlink{namespacewatch2_a02d00c485a3cdb9724b27313c6c02007}{watch2\+::draw\+Image}} (image\+Data data, int16\+\_\+t img\+\_\+x, int16\+\_\+t img\+\_\+y, float scaling)
+\item 
+void \mbox{\hyperlink{namespacewatch2_ad3970a65119dd3134702c7ce59f7a65f}{watch2\+::enable\+\_\+wifi}} (bool connect)
+\item 
+void \mbox{\hyperlink{namespacewatch2_a25367843827215038654ac050b5812f7}{watch2\+::disable\+\_\+wifi}} ()
+\item 
+void \mbox{\hyperlink{namespacewatch2_a7d6990242f834d47f927686d073bffc4}{watch2\+::connect\+To\+Wifi\+AP}} (const char $\ast$ssid, const char $\ast$password)
+\item 
+void \mbox{\hyperlink{namespacewatch2_af5a3c9f52f30219f555568b732ce5902}{watch2\+::get\+Time\+From\+N\+TP}} ()
+\item 
+c\+J\+S\+ON $\ast$ \mbox{\hyperlink{namespacewatch2_a9be0a28802d0233a14adfff50b070b74}{watch2\+::get\+Wifi\+Profiles}} ()
+\item 
+void \mbox{\hyperlink{namespacewatch2_ad0db86ca6806523de4f44315a2c0f369}{watch2\+::set\+Wifi\+Profiles}} (c\+J\+S\+ON $\ast$profiles)
+\item 
+void \mbox{\hyperlink{namespacewatch2_adef01cca38314d783bb5984e45615227}{watch2\+::enable\+\_\+bluetooth}} ()
+\item 
+void \mbox{\hyperlink{namespacewatch2_a7f51f65ebfcc440f28bbf73f7f7cdd69}{watch2\+::disable\+\_\+bluetooth}} ()
+\item 
+int \mbox{\hyperlink{namespacewatch2_a7e22a93be8e05b4758375942744be6fa}{watch2\+::img\+\_\+read}} (void $\ast$user, char $\ast$data, int size)
+\item 
+void \mbox{\hyperlink{namespacewatch2_ae5eb542db272adbbcf39c78b79433821}{watch2\+::img\+\_\+skip}} (void $\ast$user, int n)
+\item 
+int \mbox{\hyperlink{namespacewatch2_a1300c9979708db7b12c6548d077d486d}{watch2\+::img\+\_\+eof}} (void $\ast$user)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const char $\ast$ \mbox{\hyperlink{watch2_8h_ae9bf8a60e5c01f521e2f375c2c6784b9}{root\+\_\+ca\+\_\+wikipedia}}
+\item 
+const char $\ast$ \mbox{\hyperlink{watch2_8h_a3f01c192456523ed114f511ed42304fb}{root\+\_\+ca\+\_\+jigsaw}}
+\item 
+const char $\ast$ \mbox{\hyperlink{watch2_8h_aea64abf24b3fded7c2fc512f9fe9b921}{root\+\_\+ca\+\_\+open\+\_\+trivia\+\_\+db}}
+\item 
+Sd\+Fat \mbox{\hyperlink{namespacewatch2_a9be4da23a4b1f3f997e1f37c38c898ce}{watch2\+::\+SD}}
+\item 
+Ble\+Keyboard \mbox{\hyperlink{namespacewatch2_ad29f2114a37239e2ea46b5f2d8389cf8}{watch2\+::ble\+\_\+keyboard}}
+\item 
+Button \mbox{\hyperlink{namespacewatch2_aede9a8b6e03a28632e12e9b256737af1}{watch2\+::btn\+\_\+dpad\+\_\+up}}
+\item 
+Button \mbox{\hyperlink{namespacewatch2_a58d4c19d81445654b5ce3a6fc0e119fa}{watch2\+::btn\+\_\+dpad\+\_\+down}}
+\item 
+Button \mbox{\hyperlink{namespacewatch2_a223e8a511c002ef6cb2a51510dd6a7d5}{watch2\+::btn\+\_\+dpad\+\_\+left}}
+\item 
+Button \mbox{\hyperlink{namespacewatch2_a16b4d3f6bd2989ed2baaa3685d5472aa}{watch2\+::btn\+\_\+dpad\+\_\+right}}
+\item 
+Button \mbox{\hyperlink{namespacewatch2_a9a4d61fc7c15f4470b7a1abda63cc186}{watch2\+::btn\+\_\+dpad\+\_\+enter}}
+\item 
+Button \mbox{\hyperlink{namespacewatch2_a71b6878ae2b4e2c47784b7d0d89caa2c}{watch2\+::btn\+\_\+zero}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{watch2_8h_a5de264d3f944d10ecead0d1a2bcd5d15}\label{watch2_8h_a5de264d3f944d10ecead0d1a2bcd5d15}} 
+\index{watch2.h@{watch2.h}!BATTERY\_DIVIDER\_PIN@{BATTERY\_DIVIDER\_PIN}}
+\index{BATTERY\_DIVIDER\_PIN@{BATTERY\_DIVIDER\_PIN}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{BATTERY\_DIVIDER\_PIN}{BATTERY\_DIVIDER\_PIN}}
+{\footnotesize\ttfamily \#define B\+A\+T\+T\+E\+R\+Y\+\_\+\+D\+I\+V\+I\+D\+E\+R\+\_\+\+P\+IN~34}
+
+
+
+Definition at line 76 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a2289d86d486facb0123dbaf0dcfe6ad0}\label{watch2_8h_a2289d86d486facb0123dbaf0dcfe6ad0}} 
+\index{watch2.h@{watch2.h}!BATTERY\_VOLTAGE\_MAX@{BATTERY\_VOLTAGE\_MAX}}
+\index{BATTERY\_VOLTAGE\_MAX@{BATTERY\_VOLTAGE\_MAX}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{BATTERY\_VOLTAGE\_MAX}{BATTERY\_VOLTAGE\_MAX}}
+{\footnotesize\ttfamily \#define B\+A\+T\+T\+E\+R\+Y\+\_\+\+V\+O\+L\+T\+A\+G\+E\+\_\+\+M\+AX~3.\+3}
+
+
+
+Definition at line 129 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_ac0ea68234f023221f8e296215147e7d8}\label{watch2_8h_ac0ea68234f023221f8e296215147e7d8}} 
+\index{watch2.h@{watch2.h}!BATTERY\_VOLTAGE\_SCALE@{BATTERY\_VOLTAGE\_SCALE}}
+\index{BATTERY\_VOLTAGE\_SCALE@{BATTERY\_VOLTAGE\_SCALE}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{BATTERY\_VOLTAGE\_SCALE}{BATTERY\_VOLTAGE\_SCALE}}
+{\footnotesize\ttfamily \#define B\+A\+T\+T\+E\+R\+Y\+\_\+\+V\+O\+L\+T\+A\+G\+E\+\_\+\+S\+C\+A\+LE~2}
+
+
+
+Definition at line 130 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a7b3b25cba33b07c303f3060fe41887f6}\label{watch2_8h_a7b3b25cba33b07c303f3060fe41887f6}} 
+\index{watch2.h@{watch2.h}!BLACK@{BLACK}}
+\index{BLACK@{BLACK}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{BLACK}{BLACK}}
+{\footnotesize\ttfamily \#define B\+L\+A\+CK~0x0000}
+
+
+
+Definition at line 107 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a79d10e672abb49ad63eeaa8aaef57c38}\label{watch2_8h_a79d10e672abb49ad63eeaa8aaef57c38}} 
+\index{watch2.h@{watch2.h}!BLUE@{BLUE}}
+\index{BLUE@{BLUE}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{BLUE}{BLUE}}
+{\footnotesize\ttfamily \#define B\+L\+UE~0x001F}
+
+
+
+Definition at line 108 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a31ca47034be218ca8aad9c549f459954}\label{watch2_8h_a31ca47034be218ca8aad9c549f459954}} 
+\index{watch2.h@{watch2.h}!CALC\_CELL\_HEIGHT@{CALC\_CELL\_HEIGHT}}
+\index{CALC\_CELL\_HEIGHT@{CALC\_CELL\_HEIGHT}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{CALC\_CELL\_HEIGHT}{CALC\_CELL\_HEIGHT}}
+{\footnotesize\ttfamily \#define C\+A\+L\+C\+\_\+\+C\+E\+L\+L\+\_\+\+H\+E\+I\+G\+HT~12}
+
+
+
+Definition at line 140 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_ac9d0c281df43aeffdeb3064b3fe316f9}\label{watch2_8h_ac9d0c281df43aeffdeb3064b3fe316f9}} 
+\index{watch2.h@{watch2.h}!CALC\_CELL\_WIDTH@{CALC\_CELL\_WIDTH}}
+\index{CALC\_CELL\_WIDTH@{CALC\_CELL\_WIDTH}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{CALC\_CELL\_WIDTH}{CALC\_CELL\_WIDTH}}
+{\footnotesize\ttfamily \#define C\+A\+L\+C\+\_\+\+C\+E\+L\+L\+\_\+\+W\+I\+D\+TH~25}
+
+
+
+Definition at line 139 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_aba8902900fa07ff44dbb4a739c0e5163}\label{watch2_8h_aba8902900fa07ff44dbb4a739c0e5163}} 
+\index{watch2.h@{watch2.h}!cs@{cs}}
+\index{cs@{cs}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{cs}{cs}}
+{\footnotesize\ttfamily \#define cs~5}
+
+
+
+Definition at line 58 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_ad243f93c16bc4c1d3e0a13b84421d760}\label{watch2_8h_ad243f93c16bc4c1d3e0a13b84421d760}} 
+\index{watch2.h@{watch2.h}!CYAN@{CYAN}}
+\index{CYAN@{CYAN}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{CYAN}{CYAN}}
+{\footnotesize\ttfamily \#define C\+Y\+AN~0x07\+FF}
+
+
+
+Definition at line 111 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a4ef7d6208f02d770d700dd7bdcc3b184}\label{watch2_8h_a4ef7d6208f02d770d700dd7bdcc3b184}} 
+\index{watch2.h@{watch2.h}!dpad\_any\_active@{dpad\_any\_active}}
+\index{dpad\_any\_active@{dpad\_any\_active}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{dpad\_any\_active}{dpad\_any\_active}}
+{\footnotesize\ttfamily \#define dpad\+\_\+any\+\_\+active(\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})~( \mbox{\hyperlink{watch2_8h_a2d665aca3619cd86b1dfe184756fa1c4}{dpad\+\_\+up\+\_\+active}}() $\vert$$\vert$ \mbox{\hyperlink{watch2_8h_ad5ef942e8561d4b3c53ad44cb5d07969}{dpad\+\_\+down\+\_\+active}}() $\vert$$\vert$ \mbox{\hyperlink{watch2_8h_a5869283f0cb7e68c72fb1849d7bb68d7}{dpad\+\_\+left\+\_\+active}}() $\vert$$\vert$ \mbox{\hyperlink{watch2_8h_ad4b76bcc603410723945c08e4ef82811}{dpad\+\_\+right\+\_\+active}}() $\vert$$\vert$ \mbox{\hyperlink{watch2_8h_a103b2e40d6f57da2f6a41ed4ee7bffe8}{dpad\+\_\+enter\+\_\+active}}() )}
+
+
+
+Definition at line 98 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a20184c372e573af3754fc360d9fc8976}\label{watch2_8h_a20184c372e573af3754fc360d9fc8976}} 
+\index{watch2.h@{watch2.h}!dpad\_down@{dpad\_down}}
+\index{dpad\_down@{dpad\_down}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{dpad\_down}{dpad\_down}}
+{\footnotesize\ttfamily \#define dpad\+\_\+down~39}
+
+
+
+Definition at line 72 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_ad5ef942e8561d4b3c53ad44cb5d07969}\label{watch2_8h_ad5ef942e8561d4b3c53ad44cb5d07969}} 
+\index{watch2.h@{watch2.h}!dpad\_down\_active@{dpad\_down\_active}}
+\index{dpad\_down\_active@{dpad\_down\_active}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{dpad\_down\_active}{dpad\_down\_active}}
+{\footnotesize\ttfamily \#define dpad\+\_\+down\+\_\+active(\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})~( !\mbox{\hyperlink{namespacewatch2_a02564275e9ce28f87fefb6dae6a928d7}{watch2\+::dpad\+\_\+down\+\_\+lock}} \&\&  (watch2\+::btn\+\_\+dpad\+\_\+down.\+was\+Pressed() $\vert$$\vert$ ( watch2\+::btn\+\_\+dpad\+\_\+down.\+pressed\+For(\mbox{\hyperlink{watch2_8h_a2a0288cf7528206c9dd5b0007e2c9ac0}{K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+D\+E\+L\+AY}}) \&\& ( millis() \% \mbox{\hyperlink{watch2_8h_a9835328bc3e31883ed7b5896162eefaa}{K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+P\+E\+R\+I\+OD}} $<$ 10 ) ) ) )}
+
+
+
+Definition at line 94 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_abe777e85a3a317207c3cc75dc83430e3}\label{watch2_8h_abe777e85a3a317207c3cc75dc83430e3}} 
+\index{watch2.h@{watch2.h}!dpad\_enter@{dpad\_enter}}
+\index{dpad\_enter@{dpad\_enter}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{dpad\_enter}{dpad\_enter}}
+{\footnotesize\ttfamily \#define dpad\+\_\+enter~36}
+
+
+
+Definition at line 75 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a103b2e40d6f57da2f6a41ed4ee7bffe8}\label{watch2_8h_a103b2e40d6f57da2f6a41ed4ee7bffe8}} 
+\index{watch2.h@{watch2.h}!dpad\_enter\_active@{dpad\_enter\_active}}
+\index{dpad\_enter\_active@{dpad\_enter\_active}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{dpad\_enter\_active}{dpad\_enter\_active}}
+{\footnotesize\ttfamily \#define dpad\+\_\+enter\+\_\+active(\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})~( !\mbox{\hyperlink{namespacewatch2_a87ab5b186679667ed01a17475f8f21d9}{watch2\+::dpad\+\_\+enter\+\_\+lock}} \&\& (watch2\+::btn\+\_\+dpad\+\_\+enter.\+was\+Pressed() $\vert$$\vert$ ( watch2\+::btn\+\_\+dpad\+\_\+enter.\+pressed\+For(\mbox{\hyperlink{watch2_8h_a2a0288cf7528206c9dd5b0007e2c9ac0}{K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+D\+E\+L\+AY}}) \&\& ( millis() \% \mbox{\hyperlink{watch2_8h_a9835328bc3e31883ed7b5896162eefaa}{K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+P\+E\+R\+I\+OD}} $<$ 10 ) ) ) )}
+
+
+
+Definition at line 97 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_aa1410a5a4a63f9e503347a0e44723379}\label{watch2_8h_aa1410a5a4a63f9e503347a0e44723379}} 
+\index{watch2.h@{watch2.h}!dpad\_left@{dpad\_left}}
+\index{dpad\_left@{dpad\_left}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{dpad\_left}{dpad\_left}}
+{\footnotesize\ttfamily \#define dpad\+\_\+left~32}
+
+
+
+Definition at line 73 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a5869283f0cb7e68c72fb1849d7bb68d7}\label{watch2_8h_a5869283f0cb7e68c72fb1849d7bb68d7}} 
+\index{watch2.h@{watch2.h}!dpad\_left\_active@{dpad\_left\_active}}
+\index{dpad\_left\_active@{dpad\_left\_active}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{dpad\_left\_active}{dpad\_left\_active}}
+{\footnotesize\ttfamily \#define dpad\+\_\+left\+\_\+active(\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})~( !\mbox{\hyperlink{namespacewatch2_aa9a118089c42b9bbf14f86b6a5928dda}{watch2\+::dpad\+\_\+left\+\_\+lock}} \&\&  (watch2\+::btn\+\_\+dpad\+\_\+left.\+was\+Pressed() $\vert$$\vert$ ( watch2\+::btn\+\_\+dpad\+\_\+left.\+pressed\+For(\mbox{\hyperlink{watch2_8h_a2a0288cf7528206c9dd5b0007e2c9ac0}{K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+D\+E\+L\+AY}}) \&\& ( millis() \% \mbox{\hyperlink{watch2_8h_a9835328bc3e31883ed7b5896162eefaa}{K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+P\+E\+R\+I\+OD}} $<$ 10 ) ) ) )}
+
+
+
+Definition at line 95 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a968c324db648adac2aa07cc0b2e2708e}\label{watch2_8h_a968c324db648adac2aa07cc0b2e2708e}} 
+\index{watch2.h@{watch2.h}!dpad\_right@{dpad\_right}}
+\index{dpad\_right@{dpad\_right}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{dpad\_right}{dpad\_right}}
+{\footnotesize\ttfamily \#define dpad\+\_\+right~35}
+
+
+
+Definition at line 74 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_ad4b76bcc603410723945c08e4ef82811}\label{watch2_8h_ad4b76bcc603410723945c08e4ef82811}} 
+\index{watch2.h@{watch2.h}!dpad\_right\_active@{dpad\_right\_active}}
+\index{dpad\_right\_active@{dpad\_right\_active}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{dpad\_right\_active}{dpad\_right\_active}}
+{\footnotesize\ttfamily \#define dpad\+\_\+right\+\_\+active(\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})~( !\mbox{\hyperlink{namespacewatch2_a5d4921f0bd262bde4dc8fc45b9efea31}{watch2\+::dpad\+\_\+right\+\_\+lock}} \&\& (watch2\+::btn\+\_\+dpad\+\_\+right.\+was\+Pressed() $\vert$$\vert$ ( watch2\+::btn\+\_\+dpad\+\_\+right.\+pressed\+For(\mbox{\hyperlink{watch2_8h_a2a0288cf7528206c9dd5b0007e2c9ac0}{K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+D\+E\+L\+AY}}) \&\& ( millis() \% \mbox{\hyperlink{watch2_8h_a9835328bc3e31883ed7b5896162eefaa}{K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+P\+E\+R\+I\+OD}} $<$ 10 ) ) ) )}
+
+
+
+Definition at line 96 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a47d68905fb8bc1a85644b4e8007b7b0c}\label{watch2_8h_a47d68905fb8bc1a85644b4e8007b7b0c}} 
+\index{watch2.h@{watch2.h}!dpad\_up@{dpad\_up}}
+\index{dpad\_up@{dpad\_up}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{dpad\_up}{dpad\_up}}
+{\footnotesize\ttfamily \#define dpad\+\_\+up~34}
+
+
+
+Definition at line 71 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a2d665aca3619cd86b1dfe184756fa1c4}\label{watch2_8h_a2d665aca3619cd86b1dfe184756fa1c4}} 
+\index{watch2.h@{watch2.h}!dpad\_up\_active@{dpad\_up\_active}}
+\index{dpad\_up\_active@{dpad\_up\_active}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{dpad\_up\_active}{dpad\_up\_active}}
+{\footnotesize\ttfamily \#define dpad\+\_\+up\+\_\+active(\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})~( !\mbox{\hyperlink{namespacewatch2_ae8c26ee76d3b1e60257436c4392a6a43}{watch2\+::dpad\+\_\+up\+\_\+lock}} \&\&    (watch2\+::btn\+\_\+dpad\+\_\+up.\+was\+Pressed() $\vert$$\vert$ ( watch2\+::btn\+\_\+dpad\+\_\+up.\+pressed\+For(\mbox{\hyperlink{watch2_8h_a2a0288cf7528206c9dd5b0007e2c9ac0}{K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+D\+E\+L\+AY}}) \&\& ( millis() \% \mbox{\hyperlink{watch2_8h_a9835328bc3e31883ed7b5896162eefaa}{K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+P\+E\+R\+I\+OD}} $<$ 10 ) ) ) )}
+
+
+
+Definition at line 93 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a66985d8fefe0cba4188b8fdb31868104}\label{watch2_8h_a66985d8fefe0cba4188b8fdb31868104}} 
+\index{watch2.h@{watch2.h}!draw@{draw}}
+\index{draw@{draw}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{draw}{draw}}
+{\footnotesize\ttfamily \#define draw(\begin{DoxyParamCaption}\item[{}]{conditions,  }\item[{}]{... }\end{DoxyParamCaption})}
+
+
+
+Definition at line 100 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_acfbc006ea433ad708fdee3e82996e721}\label{watch2_8h_acfbc006ea433ad708fdee3e82996e721}} 
+\index{watch2.h@{watch2.h}!GREEN@{GREEN}}
+\index{GREEN@{GREEN}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{GREEN}{GREEN}}
+{\footnotesize\ttfamily \#define G\+R\+E\+EN~0x07\+E0}
+
+
+
+Definition at line 110 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a70b8935619178318d99117188dbcaf83}\label{watch2_8h_a70b8935619178318d99117188dbcaf83}} 
+\index{watch2.h@{watch2.h}!I2S\_BCLK@{I2S\_BCLK}}
+\index{I2S\_BCLK@{I2S\_BCLK}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{I2S\_BCLK}{I2S\_BCLK}}
+{\footnotesize\ttfamily \#define I2\+S\+\_\+\+B\+C\+LK~27}
+
+
+
+Definition at line 81 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a7e4b916b58b0737d949d2d335c31552e}\label{watch2_8h_a7e4b916b58b0737d949d2d335c31552e}} 
+\index{watch2.h@{watch2.h}!I2S\_DOUT@{I2S\_DOUT}}
+\index{I2S\_DOUT@{I2S\_DOUT}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{I2S\_DOUT}{I2S\_DOUT}}
+{\footnotesize\ttfamily \#define I2\+S\+\_\+\+D\+O\+UT~25}
+
+
+
+Definition at line 80 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a93aef9c6f74b75248da7d5f3b894f4b1}\label{watch2_8h_a93aef9c6f74b75248da7d5f3b894f4b1}} 
+\index{watch2.h@{watch2.h}!I2S\_LRC@{I2S\_LRC}}
+\index{I2S\_LRC@{I2S\_LRC}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{I2S\_LRC}{I2S\_LRC}}
+{\footnotesize\ttfamily \#define I2\+S\+\_\+\+L\+RC~26}
+
+
+
+Definition at line 82 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a3b0a1d1d72b10a9c0c95adeb235d19f4}\label{watch2_8h_a3b0a1d1d72b10a9c0c95adeb235d19f4}} 
+\index{watch2.h@{watch2.h}!IR\_PIN@{IR\_PIN}}
+\index{IR\_PIN@{IR\_PIN}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{IR\_PIN}{IR\_PIN}}
+{\footnotesize\ttfamily \#define I\+R\+\_\+\+P\+IN~12}
+
+
+
+Definition at line 78 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_ae3cb46892a7edbd5e225dc4e08ff2e06}\label{watch2_8h_ae3cb46892a7edbd5e225dc4e08ff2e06}} 
+\index{watch2.h@{watch2.h}!IR\_PWM\_CHANNEL@{IR\_PWM\_CHANNEL}}
+\index{IR\_PWM\_CHANNEL@{IR\_PWM\_CHANNEL}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{IR\_PWM\_CHANNEL}{IR\_PWM\_CHANNEL}}
+{\footnotesize\ttfamily \#define I\+R\+\_\+\+P\+W\+M\+\_\+\+C\+H\+A\+N\+N\+EL~0}
+
+
+
+Definition at line 87 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a033985d96eb8d6f5e92dac14e657ecc7}\label{watch2_8h_a033985d96eb8d6f5e92dac14e657ecc7}} 
+\index{watch2.h@{watch2.h}!IR\_REC\_PIN@{IR\_REC\_PIN}}
+\index{IR\_REC\_PIN@{IR\_REC\_PIN}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{IR\_REC\_PIN}{IR\_REC\_PIN}}
+{\footnotesize\ttfamily \#define I\+R\+\_\+\+R\+E\+C\+\_\+\+P\+IN~4}
+
+
+
+Definition at line 79 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a2a0288cf7528206c9dd5b0007e2c9ac0}\label{watch2_8h_a2a0288cf7528206c9dd5b0007e2c9ac0}} 
+\index{watch2.h@{watch2.h}!KEY\_REPEAT\_DELAY@{KEY\_REPEAT\_DELAY}}
+\index{KEY\_REPEAT\_DELAY@{KEY\_REPEAT\_DELAY}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{KEY\_REPEAT\_DELAY}{KEY\_REPEAT\_DELAY}}
+{\footnotesize\ttfamily \#define K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+D\+E\+L\+AY~550}
+
+
+
+Definition at line 90 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a9835328bc3e31883ed7b5896162eefaa}\label{watch2_8h_a9835328bc3e31883ed7b5896162eefaa}} 
+\index{watch2.h@{watch2.h}!KEY\_REPEAT\_PERIOD@{KEY\_REPEAT\_PERIOD}}
+\index{KEY\_REPEAT\_PERIOD@{KEY\_REPEAT\_PERIOD}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{KEY\_REPEAT\_PERIOD}{KEY\_REPEAT\_PERIOD}}
+{\footnotesize\ttfamily \#define K\+E\+Y\+\_\+\+R\+E\+P\+E\+A\+T\+\_\+\+P\+E\+R\+I\+OD~24}
+
+
+
+Definition at line 91 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a8325b24e840d8c711da21c0817718f75}\label{watch2_8h_a8325b24e840d8c711da21c0817718f75}} 
+\index{watch2.h@{watch2.h}!LARGE\_FONT@{LARGE\_FONT}}
+\index{LARGE\_FONT@{LARGE\_FONT}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{LARGE\_FONT}{LARGE\_FONT}}
+{\footnotesize\ttfamily \#define L\+A\+R\+G\+E\+\_\+\+F\+O\+NT~\char`\"{}Helveti\+Hand36\char`\"{}}
+
+
+
+Definition at line 121 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a6f699060902f800f12aaae150f3a708e}\label{watch2_8h_a6f699060902f800f12aaae150f3a708e}} 
+\index{watch2.h@{watch2.h}!MAGENTA@{MAGENTA}}
+\index{MAGENTA@{MAGENTA}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{MAGENTA}{MAGENTA}}
+{\footnotesize\ttfamily \#define M\+A\+G\+E\+N\+TA~0x\+F81F}
+
+
+
+Definition at line 112 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a855ae364ef19f76001908138b6049a90}\label{watch2_8h_a855ae364ef19f76001908138b6049a90}} 
+\index{watch2.h@{watch2.h}!MAIN\_FONT@{MAIN\_FONT}}
+\index{MAIN\_FONT@{MAIN\_FONT}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{MAIN\_FONT}{MAIN\_FONT}}
+{\footnotesize\ttfamily \#define M\+A\+I\+N\+\_\+\+F\+O\+NT~\char`\"{}Helveti\+Hand20\char`\"{}}
+
+
+
+Definition at line 119 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a751e3f85cd240e89d390d18996089cd0}\label{watch2_8h_a751e3f85cd240e89d390d18996089cd0}} 
+\index{watch2.h@{watch2.h}!NTP\_SERVER@{NTP\_SERVER}}
+\index{NTP\_SERVER@{NTP\_SERVER}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{NTP\_SERVER}{NTP\_SERVER}}
+{\footnotesize\ttfamily \#define N\+T\+P\+\_\+\+S\+E\+R\+V\+ER~\char`\"{}pool.\+ntp.\+org\char`\"{}}
+
+
+
+Definition at line 134 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_ac5b6e19bf06822021f35602c59658de3}\label{watch2_8h_ac5b6e19bf06822021f35602c59658de3}} 
+\index{watch2.h@{watch2.h}!ORANGE@{ORANGE}}
+\index{ORANGE@{ORANGE}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{ORANGE}{ORANGE}}
+{\footnotesize\ttfamily \#define O\+R\+A\+N\+GE~0x\+F\+C00}
+
+
+
+Definition at line 114 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a5158b1e31a4e7aa84de308e3d792a1de}\label{watch2_8h_a5158b1e31a4e7aa84de308e3d792a1de}} 
+\index{watch2.h@{watch2.h}!PORT\_HTTP@{PORT\_HTTP}}
+\index{PORT\_HTTP@{PORT\_HTTP}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{PORT\_HTTP}{PORT\_HTTP}}
+{\footnotesize\ttfamily \#define P\+O\+R\+T\+\_\+\+H\+T\+TP~80}
+
+
+
+Definition at line 135 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a054f94b51abab46052e1d78f0d1e03fd}\label{watch2_8h_a054f94b51abab46052e1d78f0d1e03fd}} 
+\index{watch2.h@{watch2.h}!PORT\_HTTPS@{PORT\_HTTPS}}
+\index{PORT\_HTTPS@{PORT\_HTTPS}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{PORT\_HTTPS}{PORT\_HTTPS}}
+{\footnotesize\ttfamily \#define P\+O\+R\+T\+\_\+\+H\+T\+T\+PS~443}
+
+
+
+Definition at line 136 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a0bb0b009e7a7390473ace4d98bd843c0}\label{watch2_8h_a0bb0b009e7a7390473ace4d98bd843c0}} 
+\index{watch2.h@{watch2.h}!PURPLE@{PURPLE}}
+\index{PURPLE@{PURPLE}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{PURPLE}{PURPLE}}
+{\footnotesize\ttfamily \#define P\+U\+R\+P\+LE~0x8010}
+
+
+
+Definition at line 115 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a46772cfb2dbf8ab2817bdb0d5a7ff6d9}\label{watch2_8h_a46772cfb2dbf8ab2817bdb0d5a7ff6d9}} 
+\index{watch2.h@{watch2.h}!REALLY\_BIG\_FONT@{REALLY\_BIG\_FONT}}
+\index{REALLY\_BIG\_FONT@{REALLY\_BIG\_FONT}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{REALLY\_BIG\_FONT}{REALLY\_BIG\_FONT}}
+{\footnotesize\ttfamily \#define R\+E\+A\+L\+L\+Y\+\_\+\+B\+I\+G\+\_\+\+F\+O\+NT~\char`\"{}Helveti\+Hand60\char`\"{}}
+
+
+
+Definition at line 122 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a14d24798f8d38fa5ef220c07509c2230}\label{watch2_8h_a14d24798f8d38fa5ef220c07509c2230}} 
+\index{watch2.h@{watch2.h}!REALLY\_REALLY\_BIG\_FONT@{REALLY\_REALLY\_BIG\_FONT}}
+\index{REALLY\_REALLY\_BIG\_FONT@{REALLY\_REALLY\_BIG\_FONT}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{REALLY\_REALLY\_BIG\_FONT}{REALLY\_REALLY\_BIG\_FONT}}
+{\footnotesize\ttfamily \#define R\+E\+A\+L\+L\+Y\+\_\+\+R\+E\+A\+L\+L\+Y\+\_\+\+B\+I\+G\+\_\+\+F\+O\+NT~\char`\"{}Helveti\+Hand90\char`\"{}}
+
+
+
+Definition at line 123 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a8d23feea868a983c8c2b661e1e16972f}\label{watch2_8h_a8d23feea868a983c8c2b661e1e16972f}} 
+\index{watch2.h@{watch2.h}!RED@{RED}}
+\index{RED@{RED}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{RED}{RED}}
+{\footnotesize\ttfamily \#define R\+ED~0x\+F800}
+
+
+
+Definition at line 109 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a6974d08a74da681b3957b2fead2608b8}\label{watch2_8h_a6974d08a74da681b3957b2fead2608b8}} 
+\index{watch2.h@{watch2.h}!SCREEN\_HEIGHT@{SCREEN\_HEIGHT}}
+\index{SCREEN\_HEIGHT@{SCREEN\_HEIGHT}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{SCREEN\_HEIGHT}{SCREEN\_HEIGHT}}
+{\footnotesize\ttfamily \#define S\+C\+R\+E\+E\+N\+\_\+\+H\+E\+I\+G\+HT~240}
+
+
+
+Definition at line 127 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a2cd109632a6dcccaa80b43561b1ab700}\label{watch2_8h_a2cd109632a6dcccaa80b43561b1ab700}} 
+\index{watch2.h@{watch2.h}!SCREEN\_WIDTH@{SCREEN\_WIDTH}}
+\index{SCREEN\_WIDTH@{SCREEN\_WIDTH}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{SCREEN\_WIDTH}{SCREEN\_WIDTH}}
+{\footnotesize\ttfamily \#define S\+C\+R\+E\+E\+N\+\_\+\+W\+I\+D\+TH~240}
+
+
+
+Definition at line 126 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_aadf9daa84cd538db17f0e4de8f0ffd7a}\label{watch2_8h_aadf9daa84cd538db17f0e4de8f0ffd7a}} 
+\index{watch2.h@{watch2.h}!sdcs@{sdcs}}
+\index{sdcs@{sdcs}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{sdcs}{sdcs}}
+{\footnotesize\ttfamily \#define sdcs~13}
+
+
+
+Definition at line 59 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a3ab9338a5ec3cb45b17db1001ad954a5}\label{watch2_8h_a3ab9338a5ec3cb45b17db1001ad954a5}} 
+\index{watch2.h@{watch2.h}!SLIGHTLY\_BIGGER\_FONT@{SLIGHTLY\_BIGGER\_FONT}}
+\index{SLIGHTLY\_BIGGER\_FONT@{SLIGHTLY\_BIGGER\_FONT}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{SLIGHTLY\_BIGGER\_FONT}{SLIGHTLY\_BIGGER\_FONT}}
+{\footnotesize\ttfamily \#define S\+L\+I\+G\+H\+T\+L\+Y\+\_\+\+B\+I\+G\+G\+E\+R\+\_\+\+F\+O\+NT~\char`\"{}Helveti\+Hand24\char`\"{}}
+
+
+
+Definition at line 120 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_acbb253d58d8673aa8f9df002a979e6c8}\label{watch2_8h_acbb253d58d8673aa8f9df002a979e6c8}} 
+\index{watch2.h@{watch2.h}!spi\_dc@{spi\_dc}}
+\index{spi\_dc@{spi\_dc}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{spi\_dc}{spi\_dc}}
+{\footnotesize\ttfamily \#define spi\+\_\+dc~22}
+
+
+
+Definition at line 60 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_af9c675db0ea8bd5356488ae55805f3b9}\label{watch2_8h_af9c675db0ea8bd5356488ae55805f3b9}} 
+\index{watch2.h@{watch2.h}!spi\_miso@{spi\_miso}}
+\index{spi\_miso@{spi\_miso}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{spi\_miso}{spi\_miso}}
+{\footnotesize\ttfamily \#define spi\+\_\+miso~19}
+
+
+
+Definition at line 64 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a7b1d545c5f9947dc82d3b235127b30b0}\label{watch2_8h_a7b1d545c5f9947dc82d3b235127b30b0}} 
+\index{watch2.h@{watch2.h}!spi\_mosi@{spi\_mosi}}
+\index{spi\_mosi@{spi\_mosi}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{spi\_mosi}{spi\_mosi}}
+{\footnotesize\ttfamily \#define spi\+\_\+mosi~23}
+
+
+
+Definition at line 61 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a5c14e975eff3fb7b1c35f3432d6dfa0b}\label{watch2_8h_a5c14e975eff3fb7b1c35f3432d6dfa0b}} 
+\index{watch2.h@{watch2.h}!spi\_rst@{spi\_rst}}
+\index{spi\_rst@{spi\_rst}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{spi\_rst}{spi\_rst}}
+{\footnotesize\ttfamily \#define spi\+\_\+rst~21}
+
+
+
+Definition at line 63 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a7eea346d100862b6880af512ea723c50}\label{watch2_8h_a7eea346d100862b6880af512ea723c50}} 
+\index{watch2.h@{watch2.h}!spi\_sclk@{spi\_sclk}}
+\index{spi\_sclk@{spi\_sclk}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{spi\_sclk}{spi\_sclk}}
+{\footnotesize\ttfamily \#define spi\+\_\+sclk~18}
+
+
+
+Definition at line 62 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a425039eba66ffa902bacb163eb21b721}\label{watch2_8h_a425039eba66ffa902bacb163eb21b721}} 
+\index{watch2.h@{watch2.h}!tftbl@{tftbl}}
+\index{tftbl@{tftbl}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{tftbl}{tftbl}}
+{\footnotesize\ttfamily \#define tftbl~33}
+
+
+
+Definition at line 68 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a28faf5bfaeb0c190d5c34306b7eb430f}\label{watch2_8h_a28faf5bfaeb0c190d5c34306b7eb430f}} 
+\index{watch2.h@{watch2.h}!TFTBL\_PWM\_CHANNEL@{TFTBL\_PWM\_CHANNEL}}
+\index{TFTBL\_PWM\_CHANNEL@{TFTBL\_PWM\_CHANNEL}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{TFTBL\_PWM\_CHANNEL}{TFTBL\_PWM\_CHANNEL}}
+{\footnotesize\ttfamily \#define T\+F\+T\+B\+L\+\_\+\+P\+W\+M\+\_\+\+C\+H\+A\+N\+N\+EL~1}
+
+
+
+Definition at line 86 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_af87c395b63eae5c0f059628ece124a99}\label{watch2_8h_af87c395b63eae5c0f059628ece124a99}} 
+\index{watch2.h@{watch2.h}!tftbl\_resolution@{tftbl\_resolution}}
+\index{tftbl\_resolution@{tftbl\_resolution}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{tftbl\_resolution}{tftbl\_resolution}}
+{\footnotesize\ttfamily \#define tftbl\+\_\+resolution~8}
+
+
+
+Definition at line 69 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_aed7e12ea5b73006c0eaef97bd620ec24}\label{watch2_8h_aed7e12ea5b73006c0eaef97bd620ec24}} 
+\index{watch2.h@{watch2.h}!TORCH\_PIN@{TORCH\_PIN}}
+\index{TORCH\_PIN@{TORCH\_PIN}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{TORCH\_PIN}{TORCH\_PIN}}
+{\footnotesize\ttfamily \#define T\+O\+R\+C\+H\+\_\+\+P\+IN~14}
+
+
+
+Definition at line 77 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_ace0f79613799421255963505e2039875}\label{watch2_8h_ace0f79613799421255963505e2039875}} 
+\index{watch2.h@{watch2.h}!TORCH\_PWM\_CHANNEL@{TORCH\_PWM\_CHANNEL}}
+\index{TORCH\_PWM\_CHANNEL@{TORCH\_PWM\_CHANNEL}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{TORCH\_PWM\_CHANNEL}{TORCH\_PWM\_CHANNEL}}
+{\footnotesize\ttfamily \#define T\+O\+R\+C\+H\+\_\+\+P\+W\+M\+\_\+\+C\+H\+A\+N\+N\+EL~2}
+
+
+
+Definition at line 85 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a56c2f31153aefb1a3722c16a91393ef8}\label{watch2_8h_a56c2f31153aefb1a3722c16a91393ef8}} 
+\index{watch2.h@{watch2.h}!WATCH\_VER@{WATCH\_VER}}
+\index{WATCH\_VER@{WATCH\_VER}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{WATCH\_VER}{WATCH\_VER}}
+{\footnotesize\ttfamily \#define W\+A\+T\+C\+H\+\_\+\+V\+ER~\char`\"{}0.\+1\char`\"{}}
+
+
+
+Definition at line 128 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a87b537f5fa5c109d3c05c13d6b18f382}\label{watch2_8h_a87b537f5fa5c109d3c05c13d6b18f382}} 
+\index{watch2.h@{watch2.h}!WHITE@{WHITE}}
+\index{WHITE@{WHITE}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{WHITE}{WHITE}}
+{\footnotesize\ttfamily \#define W\+H\+I\+TE~0x\+F\+F\+FF}
+
+
+
+Definition at line 116 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_a2d7aa4ddf95a5a971302ea86d743ee03}\label{watch2_8h_a2d7aa4ddf95a5a971302ea86d743ee03}} 
+\index{watch2.h@{watch2.h}!WIFI\_PROFILES\_FILENAME@{WIFI\_PROFILES\_FILENAME}}
+\index{WIFI\_PROFILES\_FILENAME@{WIFI\_PROFILES\_FILENAME}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{WIFI\_PROFILES\_FILENAME}{WIFI\_PROFILES\_FILENAME}}
+{\footnotesize\ttfamily \#define W\+I\+F\+I\+\_\+\+P\+R\+O\+F\+I\+L\+E\+S\+\_\+\+F\+I\+L\+E\+N\+A\+ME~\char`\"{}/wifi\+\_\+profiles.\+json\char`\"{}}
+
+
+
+Definition at line 137 of file watch2.\+h.
+
+\mbox{\Hypertarget{watch2_8h_abf681265909adf3d3e8116c93c0ba179}\label{watch2_8h_abf681265909adf3d3e8116c93c0ba179}} 
+\index{watch2.h@{watch2.h}!YELLOW@{YELLOW}}
+\index{YELLOW@{YELLOW}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{YELLOW}{YELLOW}}
+{\footnotesize\ttfamily \#define Y\+E\+L\+L\+OW~0x\+F\+F\+E0}
+
+
+
+Definition at line 113 of file watch2.\+h.
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{watch2_8h_ad69f6526ade9968894662293e988133f}\label{watch2_8h_ad69f6526ade9968894662293e988133f}} 
+\index{watch2.h@{watch2.h}!if@{if}}
+\index{if@{if}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{if()}{if()}}
+{\footnotesize\ttfamily if (\begin{DoxyParamCaption}\item[{!\mbox{\hyperlink{namespacewatch2_ac13451e2babb790100abd526133d3d96}{watch2\+::state\+\_\+init}}$\vert$$\vert$\mbox{\hyperlink{namespacewatch2_aec1d807c429ed612b9e2564d3f19fd61}{watch2\+::force\+Redraw}}$\vert$$\vert$}]{conditions }\end{DoxyParamCaption})}
+
+
+
+Definition at line 100 of file watch2.\+h.
+
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{watch2_8h_a3f01c192456523ed114f511ed42304fb}\label{watch2_8h_a3f01c192456523ed114f511ed42304fb}} 
+\index{watch2.h@{watch2.h}!root\_ca\_jigsaw@{root\_ca\_jigsaw}}
+\index{root\_ca\_jigsaw@{root\_ca\_jigsaw}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{root\_ca\_jigsaw}{root\_ca\_jigsaw}}
+{\footnotesize\ttfamily const char$\ast$ root\+\_\+ca\+\_\+jigsaw}
+
+
+
+Definition at line 51 of file root\+\_\+store.\+cpp.
+
+\mbox{\Hypertarget{watch2_8h_aea64abf24b3fded7c2fc512f9fe9b921}\label{watch2_8h_aea64abf24b3fded7c2fc512f9fe9b921}} 
+\index{watch2.h@{watch2.h}!root\_ca\_open\_trivia\_db@{root\_ca\_open\_trivia\_db}}
+\index{root\_ca\_open\_trivia\_db@{root\_ca\_open\_trivia\_db}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{root\_ca\_open\_trivia\_db}{root\_ca\_open\_trivia\_db}}
+{\footnotesize\ttfamily const char$\ast$ root\+\_\+ca\+\_\+open\+\_\+trivia\+\_\+db}
+
+
+
+Definition at line 27 of file root\+\_\+store.\+cpp.
+
+\mbox{\Hypertarget{watch2_8h_ae9bf8a60e5c01f521e2f375c2c6784b9}\label{watch2_8h_ae9bf8a60e5c01f521e2f375c2c6784b9}} 
+\index{watch2.h@{watch2.h}!root\_ca\_wikipedia@{root\_ca\_wikipedia}}
+\index{root\_ca\_wikipedia@{root\_ca\_wikipedia}!watch2.h@{watch2.h}}
+\doxysubsubsection{\texorpdfstring{root\_ca\_wikipedia}{root\_ca\_wikipedia}}
+{\footnotesize\ttfamily const char$\ast$ root\+\_\+ca\+\_\+wikipedia}
+
+
+
+Definition at line 3 of file root\+\_\+store.\+cpp.
+

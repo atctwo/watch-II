@@ -1,0 +1,266 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="state__image__viewer_8cpp" kind="file" language="C++">
+    <compoundname>state_image_viewer.cpp</compoundname>
+    <includes refid="watch2_8h" local="yes">../watch2.h</includes>
+    <includedby refid="states_8cpp" local="yes">main/states/states.cpp</includedby>
+    <incdepgraph>
+      <node id="10">
+        <label>functional</label>
+      </node>
+      <node id="1">
+        <label>main/states/state_image_viewer.cpp</label>
+        <link refid="state__image__viewer_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="16">
+        <label>FS.h</label>
+      </node>
+      <node id="12">
+        <label>SPI.h</label>
+      </node>
+      <node id="29">
+        <label>TimeAlarms.h</label>
+      </node>
+      <node id="2">
+        <label>../watch2.h</label>
+        <link refid="watch2_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>stdint.h</label>
+      </node>
+      <node id="21">
+        <label>BleKeyboard.h</label>
+      </node>
+      <node id="19">
+        <label>WiFiClientSecure.h</label>
+      </node>
+      <node id="9">
+        <label>string</label>
+      </node>
+      <node id="7">
+        <label>map</label>
+      </node>
+      <node id="20">
+        <label>HTTPClient.h</label>
+      </node>
+      <node id="24">
+        <label>cJSON.h</label>
+      </node>
+      <node id="14">
+        <label>sdios.h</label>
+      </node>
+      <node id="28">
+        <label>TimeLib.h</label>
+      </node>
+      <node id="31">
+        <label>regret.h</label>
+        <link refid="regret_8h"/>
+      </node>
+      <node id="13">
+        <label>SdFat.h</label>
+      </node>
+      <node id="6">
+        <label>stack</label>
+      </node>
+      <node id="15">
+        <label>TFT_eSPI.h</label>
+      </node>
+      <node id="22">
+        <label>Preferences.h</label>
+      </node>
+      <node id="26">
+        <label>time.h</label>
+      </node>
+      <node id="11">
+        <label>Arduino.h</label>
+      </node>
+      <node id="27">
+        <label>sys/time.h</label>
+      </node>
+      <node id="8">
+        <label>unordered_map</label>
+      </node>
+      <node id="23">
+        <label>tinyexpr.h</label>
+      </node>
+      <node id="25">
+        <label>sys/cdefs.h</label>
+      </node>
+      <node id="30">
+        <label>coolcrab.h</label>
+        <link refid="coolcrab_8h"/>
+      </node>
+      <node id="17">
+        <label>JC_Button.h</label>
+      </node>
+      <node id="5">
+        <label>algorithm</label>
+      </node>
+      <node id="18">
+        <label>WiFi.h</label>
+      </node>
+      <node id="3">
+        <label>stdio.h</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1">
+        <label>main/states/state_image_viewer.cpp</label>
+        <link refid="state__image__viewer_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>main/states/states.cpp</label>
+        <link refid="states_8cpp"/>
+      </node>
+    </invincdepgraph>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="state__image__viewer_8cpp_1a41d5d62717ec417b606e92ddf252aff5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void state_func_image_viewer</definition>
+        <argsstring>()</argsstring>
+        <name>state_func_image_viewer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/states/state_image_viewer.cpp" line="3" column="6" bodyfile="main/states/state_image_viewer.cpp" bodystart="3" bodyend="63"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#include<sp/>&quot;../watch2.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight></codeline>
+<codeline lineno="3" refid="state__image__viewer_8cpp_1a41d5d62717ec417b606e92ddf252aff5" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="state__image__viewer_8cpp_1a41d5d62717ec417b606e92ddf252aff5" kindref="member">state_func_image_viewer</ref>()</highlight></codeline>
+<codeline lineno="4"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="5"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::string<sp/>filename;</highlight></codeline>
+<codeline lineno="6"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="structwatch2_1_1imageData" kindref="compound">watch2::imageData</ref><sp/>data;</highlight></codeline>
+<codeline lineno="7"><highlight class="normal"></highlight></codeline>
+<codeline lineno="8"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(!<ref refid="namespacewatch2_1ac13451e2babb790100abd526133d3d96" kindref="member">watch2::state_init</ref>)</highlight></codeline>
+<codeline lineno="9"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="10"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Serial.println(</highlight><highlight class="stringliteral">&quot;a&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="11"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>filename<sp/>=<sp/><ref refid="namespacewatch2_1ad3c8dbc95c3ea8d13157c707b402498d" kindref="member">watch2::beginFileSelect</ref>(<ref refid="namespacewatch2_1a8a542732f9fd292a263048ef3abef5a7" kindref="member">watch2::dir_name</ref>(filename).c_str());</highlight></codeline>
+<codeline lineno="12"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(filename<sp/>==<sp/></highlight><highlight class="stringliteral">&quot;canceled&quot;</highlight><highlight class="normal">)</highlight></codeline>
+<codeline lineno="13"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="14"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1a786f5e96c939f6465c2341a31cad1385" kindref="member">watch2::switchState</ref>(2);</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>data<sp/>=<sp/><ref refid="namespacewatch2_1ae470db9c3abba738785016d024eef32f" kindref="member">watch2::getImageData</ref>(filename.c_str());</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(data.<ref refid="structwatch2_1_1imageData_1a919c70cb8718584cc80f724f91481c60" kindref="member">data</ref><sp/>==<sp/>NULL)</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.setTextColor(<ref refid="watch2_8h_1a87b537f5fa5c109d3c05c13d6b18f382" kindref="member">WHITE</ref>,<sp/><ref refid="watch2_8h_1a7b3b25cba33b07c303f3060fe41887f6" kindref="member">BLACK</ref>);</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.setCursor(2,<sp/><ref refid="namespacewatch2_1a537e061d07d7b4e7ebec72b3c2cf2eeb" kindref="member">watch2::top_thing_height</ref>);</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.println(</highlight><highlight class="stringliteral">&quot;Error<sp/>loading<sp/>image:<sp/>&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.print(data.<ref refid="structwatch2_1_1imageData_1acbaae0ab2e2d69aa3914012ab7594034" kindref="member">error</ref>);</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>calculate<sp/>scaling</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>scaling<sp/>=<sp/>1;</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(data.<ref refid="structwatch2_1_1imageData_1a03ebdffa7ef6e42a73d684afa732cfa9" kindref="member">width</ref><sp/>&gt;=<sp/>data.<ref refid="structwatch2_1_1imageData_1a4d6d51b50ea61fdf7c7d8b5a71edb52c" kindref="member">height</ref>)<sp/></highlight><highlight class="comment">//<sp/>image<sp/>is<sp/>wider<sp/>than<sp/>it<sp/>is<sp/>tall</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(data.<ref refid="structwatch2_1_1imageData_1a03ebdffa7ef6e42a73d684afa732cfa9" kindref="member">width</ref><sp/>&gt;<sp/><ref refid="watch2_8h_1a2cd109632a6dcccaa80b43561b1ab700" kindref="member">SCREEN_WIDTH</ref>)<sp/>scaling<sp/>=<sp/>(float)data.<ref refid="structwatch2_1_1imageData_1a03ebdffa7ef6e42a73d684afa732cfa9" kindref="member">width</ref><sp/>/<sp/><ref refid="watch2_8h_1a2cd109632a6dcccaa80b43561b1ab700" kindref="member">SCREEN_WIDTH</ref>;</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>scaling<sp/>=<sp/>1.0;</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Serial.printf(</highlight><highlight class="stringliteral">&quot;[image<sp/>viewer]<sp/>image<sp/>is<sp/>wider,<sp/>scaling<sp/>factor<sp/>is<sp/>%f\n&quot;</highlight><highlight class="normal">,<sp/>scaling);</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="comment">//<sp/>image<sp/>is<sp/>taller<sp/>than<sp/>it<sp/>is<sp/>wide</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(data.<ref refid="structwatch2_1_1imageData_1a4d6d51b50ea61fdf7c7d8b5a71edb52c" kindref="member">height</ref><sp/>&gt;<sp/><ref refid="watch2_8h_1a6974d08a74da681b3957b2fead2608b8" kindref="member">SCREEN_HEIGHT</ref>)<sp/>scaling<sp/>=<sp/>(float)data.<ref refid="structwatch2_1_1imageData_1a4d6d51b50ea61fdf7c7d8b5a71edb52c" kindref="member">height</ref><sp/>/<sp/><ref refid="watch2_8h_1a6974d08a74da681b3957b2fead2608b8" kindref="member">SCREEN_HEIGHT</ref>;</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>scaling<sp/>=<sp/>1.0;</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Serial.printf(</highlight><highlight class="stringliteral">&quot;[image<sp/>viewer]<sp/>image<sp/>is<sp/>taller,<sp/>scaling<sp/>factor<sp/>is<sp/>%f\n&quot;</highlight><highlight class="normal">,<sp/>scaling);</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>draw<sp/>image</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae3d48e9966feb5abcc947912980b194e" kindref="member">watch2::drawImage</ref>(data,<sp/>(<ref refid="watch2_8h_1a2cd109632a6dcccaa80b43561b1ab700" kindref="member">SCREEN_WIDTH</ref><sp/>/<sp/>2)<sp/>-<sp/>(<sp/>(data.<ref refid="structwatch2_1_1imageData_1a03ebdffa7ef6e42a73d684afa732cfa9" kindref="member">width</ref><sp/>/<sp/>scaling)<sp/>/<sp/>2),<sp/><ref refid="namespacewatch2_1a537e061d07d7b4e7ebec72b3c2cf2eeb" kindref="member">watch2::top_thing_height</ref>,<sp/>scaling);</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/>}<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//watch2::drawTopThing();</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="watch2_8h_1a4ef7d6208f02d770d700dd7bdcc3b184" kindref="member">dpad_any_active</ref>())</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>free<sp/>image<sp/>data</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(data.<ref refid="structwatch2_1_1imageData_1a919c70cb8718584cc80f724f91481c60" kindref="member">data</ref>)<sp/></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Serial.println(</highlight><highlight class="stringliteral">&quot;[image<sp/>viewer]<sp/>freeing<sp/>original<sp/>image<sp/>data&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1a8aa5d601325d791b39966859c1eea4f1" kindref="member">watch2::freeImageData</ref>(data.<ref refid="structwatch2_1_1imageData_1a919c70cb8718584cc80f724f91481c60" kindref="member">data</ref>);</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>return<sp/>to<sp/>file<sp/>select</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1a786f5e96c939f6465c2341a31cad1385" kindref="member">watch2::switchState</ref>(<ref refid="namespacewatch2_1a9041b045415e4077f6046a01f9ee31be" kindref="member">watch2::state</ref>);</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="63"><highlight class="normal">}</highlight></codeline>
+    </programlisting>
+    <location file="main/states/state_image_viewer.cpp"/>
+  </compounddef>
+</doxygen>

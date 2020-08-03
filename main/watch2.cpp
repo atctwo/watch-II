@@ -1,10 +1,10 @@
 #include "watch2.h"
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb/stb_image.h"
+#include "libraries/stb/stb_image.h"
 
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
-#include "stb/stb_image_resize.h"
+#include "libraries/stb/stb_image_resize.h"
 
 #include "esp_bt.h"
 #include <BLEDevice.h>
@@ -1710,7 +1710,7 @@ namespace watch2
     }
 
     //from http://www.andrewnoske.com/wiki/Code_-_heatmaps_and_color_gradients
-    bool getHeatMapColor(float value, float *red, float *green, float *blue)
+    void getHeatMapColor(float value, float *red, float *green, float *blue)
     {
     const int NUM_COLORS = 5;
     static float color[NUM_COLORS][3] = { {0.333, 0.804, 0.988},

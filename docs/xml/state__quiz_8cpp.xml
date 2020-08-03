@@ -1,0 +1,264 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="state__quiz_8cpp" kind="file" language="C++">
+    <compoundname>state_quiz.cpp</compoundname>
+    <includes refid="watch2_8h" local="yes">../watch2.h</includes>
+    <includedby refid="states_8cpp" local="yes">main/states/states.cpp</includedby>
+    <incdepgraph>
+      <node id="10">
+        <label>functional</label>
+      </node>
+      <node id="16">
+        <label>FS.h</label>
+      </node>
+      <node id="12">
+        <label>SPI.h</label>
+      </node>
+      <node id="29">
+        <label>TimeAlarms.h</label>
+      </node>
+      <node id="2">
+        <label>../watch2.h</label>
+        <link refid="watch2_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>main/states/state_quiz.cpp</label>
+        <link refid="state__quiz_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>stdint.h</label>
+      </node>
+      <node id="21">
+        <label>BleKeyboard.h</label>
+      </node>
+      <node id="19">
+        <label>WiFiClientSecure.h</label>
+      </node>
+      <node id="9">
+        <label>string</label>
+      </node>
+      <node id="7">
+        <label>map</label>
+      </node>
+      <node id="20">
+        <label>HTTPClient.h</label>
+      </node>
+      <node id="24">
+        <label>cJSON.h</label>
+      </node>
+      <node id="14">
+        <label>sdios.h</label>
+      </node>
+      <node id="28">
+        <label>TimeLib.h</label>
+      </node>
+      <node id="31">
+        <label>regret.h</label>
+        <link refid="regret_8h"/>
+      </node>
+      <node id="13">
+        <label>SdFat.h</label>
+      </node>
+      <node id="6">
+        <label>stack</label>
+      </node>
+      <node id="15">
+        <label>TFT_eSPI.h</label>
+      </node>
+      <node id="22">
+        <label>Preferences.h</label>
+      </node>
+      <node id="26">
+        <label>time.h</label>
+      </node>
+      <node id="11">
+        <label>Arduino.h</label>
+      </node>
+      <node id="27">
+        <label>sys/time.h</label>
+      </node>
+      <node id="8">
+        <label>unordered_map</label>
+      </node>
+      <node id="23">
+        <label>tinyexpr.h</label>
+      </node>
+      <node id="25">
+        <label>sys/cdefs.h</label>
+      </node>
+      <node id="30">
+        <label>coolcrab.h</label>
+        <link refid="coolcrab_8h"/>
+      </node>
+      <node id="17">
+        <label>JC_Button.h</label>
+      </node>
+      <node id="5">
+        <label>algorithm</label>
+      </node>
+      <node id="18">
+        <label>WiFi.h</label>
+      </node>
+      <node id="3">
+        <label>stdio.h</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1">
+        <label>main/states/state_quiz.cpp</label>
+        <link refid="state__quiz_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>main/states/states.cpp</label>
+        <link refid="states_8cpp"/>
+      </node>
+    </invincdepgraph>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="state__quiz_8cpp_1a4bfac888a641a144d398b08545d44bae" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>cJSON *</type>
+        <definition>cJSON* getQuestion</definition>
+        <argsstring>()</argsstring>
+        <name>getQuestion</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/states/state_quiz.cpp" line="3" column="7" bodyfile="main/states/state_quiz.cpp" bodystart="3" bodyend="35"/>
+      </memberdef>
+      <memberdef kind="function" id="state__quiz_8cpp_1a2ad83dcdd91b1e55ec471eb0ecb4951a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void state_func_quiz</definition>
+        <argsstring>()</argsstring>
+        <name>state_func_quiz</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/states/state_quiz.cpp" line="37" column="6" bodyfile="main/states/state_quiz.cpp" bodystart="37" bodyend="48"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#include<sp/>&quot;../watch2.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight></codeline>
+<codeline lineno="3" refid="state__quiz_8cpp_1a4bfac888a641a144d398b08545d44bae" refkind="member"><highlight class="normal">cJSON<sp/>*<ref refid="state__quiz_8cpp_1a4bfac888a641a144d398b08545d44bae" kindref="member">getQuestion</ref>()</highlight></codeline>
+<codeline lineno="4"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="5"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>HTTPClient<sp/>http;</highlight></codeline>
+<codeline lineno="6"><highlight class="normal"></highlight></codeline>
+<codeline lineno="7"><highlight class="normal"><sp/><sp/><sp/><sp/>Serial.println(</highlight><highlight class="stringliteral">&quot;[Quiz]<sp/>getting<sp/>new<sp/>question&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="8"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*server<sp/>=<sp/></highlight><highlight class="stringliteral">&quot;postman-echo.com&quot;</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="9"><highlight class="normal"><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1a76bee8147b61edfd44b2aabd60aa12e5" kindref="member">watch2::wifi_client</ref>.setCACert(<ref refid="root__store_8cpp_1aea64abf24b3fded7c2fc512f9fe9b921" kindref="member">root_ca_open_trivia_db</ref>);</highlight></codeline>
+<codeline lineno="10"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"><sp/><sp/><sp/><sp/>Serial.println(</highlight><highlight class="stringliteral">&quot;[Quiz]<sp/>connecting<sp/>to<sp/>server&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="12"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(!http.begin(<ref refid="namespacewatch2_1a76bee8147b61edfd44b2aabd60aa12e5" kindref="member">watch2::wifi_client</ref>,<sp/></highlight><highlight class="stringliteral">&quot;https://opentdb.com/api.php?amount=10&quot;</highlight><highlight class="normal">))</highlight></codeline>
+<codeline lineno="13"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="14"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Serial.print(</highlight><highlight class="stringliteral">&quot;[Quiz]<sp/>connected<sp/>to<sp/>server&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>http_code<sp/>=<sp/>http.GET();</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Serial.printf(</highlight><highlight class="stringliteral">&quot;[Quiz]<sp/>http<sp/>code:<sp/>%d<sp/>(%s)\n&quot;</highlight><highlight class="normal">,<sp/>http_code,<sp/>http.errorToString(http_code));</highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(http_code<sp/>&gt;<sp/>0)</highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(http_code<sp/>==<sp/>HTTP_CODE_OK)</highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="22"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Serial.println(</highlight><highlight class="stringliteral">&quot;[Quiz]<sp/>response:&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Serial.println(http.getString().c_str());</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>Serial.println(</highlight><highlight class="stringliteral">&quot;[Quiz]<sp/>???&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Serial.println(</highlight><highlight class="stringliteral">&quot;[Quiz]<sp/>failed<sp/>to<sp/>connect&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/>Serial.println(</highlight><highlight class="stringliteral">&quot;[Quiz]<sp/>finished&quot;</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="35"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight></codeline>
+<codeline lineno="37" refid="state__quiz_8cpp_1a2ad83dcdd91b1e55ec471eb0ecb4951a" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="state__quiz_8cpp_1a2ad83dcdd91b1e55ec471eb0ecb4951a" kindref="member">state_func_quiz</ref>()</highlight></codeline>
+<codeline lineno="38"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(!<ref refid="namespacewatch2_1ac13451e2babb790100abd526133d3d96" kindref="member">watch2::state_init</ref>)</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>cJSON<sp/>*question<sp/>=<sp/><ref refid="state__quiz_8cpp_1a4bfac888a641a144d398b08545d44bae" kindref="member">getQuestion</ref>();</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="watch2_8h_1a5869283f0cb7e68c72fb1849d7bb68d7" kindref="member">dpad_left_active</ref>())</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1a786f5e96c939f6465c2341a31cad1385" kindref="member">watch2::switchState</ref>(2);</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="48"><highlight class="normal">}</highlight></codeline>
+    </programlisting>
+    <location file="main/states/state_quiz.cpp"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,287 @@
+\hypertarget{watch2_8cpp}{}\doxysection{main/watch2.cpp File Reference}
+\label{watch2_8cpp}\index{main/watch2.cpp@{main/watch2.cpp}}
+{\ttfamily \#include \char`\"{}watch2.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}libraries/stb/stb\+\_\+image.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}libraries/stb/stb\+\_\+image\+\_\+resize.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}esp\+\_\+bt.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$B\+L\+E\+Device.\+h$>$}\newline
+{\ttfamily \#include $<$B\+L\+E\+Utils.\+h$>$}\newline
+{\ttfamily \#include $<$B\+L\+E\+Server.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}Arduino.\+h\char`\"{}}\newline
+\doxysubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \mbox{\hyperlink{namespacewatch2}{watch2}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \mbox{\hyperlink{watch2_8cpp_a18372412ad2fc3ce1e3240b3cf0efe78}{S\+T\+B\+\_\+\+I\+M\+A\+G\+E\+\_\+\+I\+M\+P\+L\+E\+M\+E\+N\+T\+A\+T\+I\+ON}}
+\item 
+\#define \mbox{\hyperlink{watch2_8cpp_aa6a7b41350a14f718b619164bc2b8fdf}{S\+T\+B\+\_\+\+I\+M\+A\+G\+E\+\_\+\+R\+E\+S\+I\+Z\+E\+\_\+\+I\+M\+P\+L\+E\+M\+E\+N\+T\+A\+T\+I\+ON}}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+Ble\+Keyboard \mbox{\hyperlink{namespacewatch2_ab88fed9288b860dd9658ec25fc7c0314}{watch2\+::ble\+\_\+keyboard}} (\char`\"{}watch2\char`\"{}, \char`\"{}atctwo\char`\"{})
+\item 
+Button \mbox{\hyperlink{namespacewatch2_aa244b9902f9c0ba0c2c9593c051ffd04}{watch2\+::btn\+\_\+dpad\+\_\+up}} (\mbox{\hyperlink{watch2_8h_a47d68905fb8bc1a85644b4e8007b7b0c}{dpad\+\_\+up}}, 25, false, false)
+\item 
+Button \mbox{\hyperlink{namespacewatch2_ac6cc565666380c1c7669ba14cefb2835}{watch2\+::btn\+\_\+dpad\+\_\+down}} (\mbox{\hyperlink{watch2_8h_a20184c372e573af3754fc360d9fc8976}{dpad\+\_\+down}}, 25, false, false)
+\item 
+Button \mbox{\hyperlink{namespacewatch2_a0a9b5f353b04f234f3f6fdc035d6d33f}{watch2\+::btn\+\_\+dpad\+\_\+left}} (\mbox{\hyperlink{watch2_8h_aa1410a5a4a63f9e503347a0e44723379}{dpad\+\_\+left}}, 25, false, false)
+\item 
+Button \mbox{\hyperlink{namespacewatch2_af109e1e5be3c928634f2a339825d495d}{watch2\+::btn\+\_\+dpad\+\_\+right}} (\mbox{\hyperlink{watch2_8h_a968c324db648adac2aa07cc0b2e2708e}{dpad\+\_\+right}}, 25, false, false)
+\item 
+Button \mbox{\hyperlink{namespacewatch2_a50b26339dca0b7dd667fd5c8504c3c3d}{watch2\+::btn\+\_\+dpad\+\_\+enter}} (\mbox{\hyperlink{watch2_8h_abe777e85a3a317207c3cc75dc83430e3}{dpad\+\_\+enter}}, 25, false, false)
+\item 
+Button \mbox{\hyperlink{namespacewatch2_ae97f9f7dc2b55562ab0f9b5bb8920387}{watch2\+::btn\+\_\+zero}} (0)
+\item 
+void \mbox{\hyperlink{namespacewatch2_ad93182730d153ab0ef41c7abeb0dd496}{watch2\+::start\+Loop}} ()
+\item 
+void \mbox{\hyperlink{namespacewatch2_a7dd335db221ae4468aca205f9503d701}{watch2\+::end\+Loop}} ()
+\item 
+void \mbox{\hyperlink{namespacewatch2_ad5f28b9617e94aa356abc56a2f7b438a}{watch2\+::draw\+Top\+Thing}} (bool light=false)
+\begin{DoxyCompactList}\small\item\em draw the status bar at the top of the page \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{namespacewatch2_a0f2f1e10687bcdb6c6d86245a31675b7}{watch2\+::register\+Icon}} (std\+::string icon\+Name, std\+::vector$<$ unsigned short int $>$ icon)
+\begin{DoxyCompactList}\small\item\em add an icon to the list of 16 bit colour icons. this icon store is usually used to store things like app icons. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{namespacewatch2_abf3f27c5409410bfcdbb0a9dda71cab1}{watch2\+::register\+Small\+Icon}} (std\+::string icon\+Name, std\+::vector$<$ unsigned char $>$ icon)
+\begin{DoxyCompactList}\small\item\em add an icon to the list of smaller 8 bit monochrome icons. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespacewatch2_a786f5e96c939f6465c2341a31cad1385}{watch2\+::switch\+State}} (int new\+State, int variant=0, int dim\+\_\+pause\+\_\+thing=250, int bright\+\_\+pause\+\_\+thing=250, bool dont\+\_\+draw\+\_\+first\+\_\+frame=false)
+\begin{DoxyCompactList}\small\item\em switch to a different state or app this method lets you switch from running the current state, to another state (or the current state, but using a different variant). \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespacewatch2_a380f7785dd2e5ae7998aebd909b52450}{watch2\+::dim\+Screen}} (bool direction, int pause\+\_\+thing)
+\begin{DoxyCompactList}\small\item\em dim or make brighter the screen \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{namespacewatch2_a16cecbbfc9e57a44177a0901dc479145}{watch2\+::deep\+Sleep}} (int pause\+\_\+thing)
+\item 
+void \mbox{\hyperlink{namespacewatch2_abd2995f24426dd29f66e02ee65704f98}{watch2\+::draw\+Menu}} (int x, int y, int width, int height, std\+::vector$<$ std\+::string $>$ items, int selected, bool scroll, int colour)
+\item 
+void \mbox{\hyperlink{namespacewatch2_a22f95674ff0b07d34a9b1ba552863dd3}{watch2\+::draw\+Settings\+Menu}} (int x, int y, int width, int height, std\+::vector$<$ settings\+Menu\+Data $>$ items, int selected, int colour)
+\item 
+std\+::vector$<$ std\+::string $>$ \mbox{\hyperlink{namespacewatch2_aaca631f9121ac7f12ad6ba982e9636a7}{watch2\+::get\+Dir\+Files}} (std\+::string path)
+\item 
+std\+::string \mbox{\hyperlink{namespacewatch2_a6cd75824e21d18cad986eadd101df902}{watch2\+::begin\+File\+Select}} (std\+::string path)
+\item 
+std\+::string \mbox{\hyperlink{namespacewatch2_a8a542732f9fd292a263048ef3abef5a7}{watch2\+::dir\+\_\+name}} (std\+::string file\+\_\+path\+\_\+thing)
+\item 
+std\+::string \mbox{\hyperlink{namespacewatch2_a16a76b7c1664159fb4e6ec58c237a8e4}{watch2\+::file\+\_\+ext}} (std\+::string file\+\_\+path\+\_\+thing)
+\item 
+std\+::string \mbox{\hyperlink{namespacewatch2_a6c79b088169ba9bec649c610676ab937}{watch2\+::text\+Field\+Dialogue}} (std\+::string prompt, const char $\ast$default\+\_\+input, const char mask, bool clear\+\_\+screen)
+\item 
+uint8\+\_\+t \mbox{\hyperlink{namespacewatch2_ac6da32022230e671015919ae71750e3a}{watch2\+::message\+Box}} (const char $\ast$msg, std\+::vector$<$ const char $\ast$ $>$ btns, bool clear\+\_\+screen, uint16\+\_\+t colour)
+\item 
+int \mbox{\hyperlink{namespacewatch2_a18ef7ad56d571b6e443a6862ea0d6ed0}{watch2\+::init\+SD}} (bool handle\+CS)
+\item 
+void \mbox{\hyperlink{namespacewatch2_addb19db8b616c988a84dea81a594f1fd}{watch2\+::colour888}} (uint16\+\_\+t colour, float $\ast$r, float $\ast$g, float $\ast$b)
+\item 
+void \mbox{\hyperlink{namespacewatch2_ac4f3f79dee7cc0163d690a44213948c1}{watch2\+::\+H\+S\+Vto\+R\+GB}} (float $\ast$r, float $\ast$g, float $\ast$b, float h, float s, float v)
+\item 
+bool \mbox{\hyperlink{namespacewatch2_ae822581b232d1948a2ebc1a3b2759124}{watch2\+::get\+Heat\+Map\+Color}} (float value, float $\ast$red, float $\ast$green, float $\ast$blue)
+\item 
+double \mbox{\hyperlink{namespacewatch2_ac0c3990239dd1d485a9096afa590d22a}{watch2\+::\+Read\+Voltage}} (byte pin)
+\item 
+void \mbox{\hyperlink{namespacewatch2_af11d73a16e01df744a2129a0bad60a33}{watch2\+::set\+Font}} (const char $\ast$font, T\+F\+T\+\_\+e\+S\+PI \&tft, fs\+::\+FS \&ffs)
+\item 
+void \mbox{\hyperlink{namespacewatch2_ada58194a8a047c601cd29bdf13e7e325}{watch2\+::get\+Text\+Bounds}} (const char $\ast$string, int16\+\_\+t x, int16\+\_\+t y, int16\+\_\+t $\ast$x1, int16\+\_\+t $\ast$y1, uint16\+\_\+t $\ast$w, uint16\+\_\+t $\ast$h)
+\item 
+void \mbox{\hyperlink{namespacewatch2_a9da273ddeb6f4f98293e7063039752d4}{watch2\+::get\+Text\+Bounds}} (const String \&str, int16\+\_\+t x, int16\+\_\+t y, int16\+\_\+t $\ast$x1, int16\+\_\+t $\ast$y1, uint16\+\_\+t $\ast$w, uint16\+\_\+t $\ast$h)
+\item 
+const char $\ast$ \mbox{\hyperlink{namespacewatch2_acaebebb7e9bbe265740d2f9a84159787}{watch2\+::human\+Size}} (uint64\+\_\+t bytes)
+\item 
+uint16\+\_\+t \mbox{\hyperlink{namespacewatch2_a489c0c4d7b16a33e8b5708c539042fe4}{watch2\+::read16}} (fs\+::\+File \&f)
+\item 
+uint32\+\_\+t \mbox{\hyperlink{namespacewatch2_a34f7cef11ad47a815feaa936fba3d162}{watch2\+::read32}} (fs\+::\+File \&f)
+\item 
+void \mbox{\hyperlink{namespacewatch2_a03e9dab5718c7bae6b30ae557c9e2358}{watch2\+::draw\+Bmp}} (const char $\ast$filename, int16\+\_\+t x, int16\+\_\+t y)
+\item 
+image\+Data \mbox{\hyperlink{namespacewatch2_ae470db9c3abba738785016d024eef32f}{watch2\+::get\+Image\+Data}} (const char $\ast$filename)
+\item 
+void \mbox{\hyperlink{namespacewatch2_a8aa5d601325d791b39966859c1eea4f1}{watch2\+::free\+Image\+Data}} (unsigned char $\ast$data)
+\item 
+const char $\ast$ \mbox{\hyperlink{namespacewatch2_a02d00c485a3cdb9724b27313c6c02007}{watch2\+::draw\+Image}} (image\+Data data, int16\+\_\+t img\+\_\+x, int16\+\_\+t img\+\_\+y, float scaling)
+\item 
+void \mbox{\hyperlink{namespacewatch2_ad3970a65119dd3134702c7ce59f7a65f}{watch2\+::enable\+\_\+wifi}} (bool connect)
+\item 
+void \mbox{\hyperlink{namespacewatch2_a25367843827215038654ac050b5812f7}{watch2\+::disable\+\_\+wifi}} ()
+\item 
+void \mbox{\hyperlink{namespacewatch2_a7d6990242f834d47f927686d073bffc4}{watch2\+::connect\+To\+Wifi\+AP}} (const char $\ast$ssid, const char $\ast$password)
+\item 
+void \mbox{\hyperlink{namespacewatch2_af5a3c9f52f30219f555568b732ce5902}{watch2\+::get\+Time\+From\+N\+TP}} ()
+\item 
+c\+J\+S\+ON $\ast$ \mbox{\hyperlink{namespacewatch2_a9be0a28802d0233a14adfff50b070b74}{watch2\+::get\+Wifi\+Profiles}} ()
+\item 
+void \mbox{\hyperlink{namespacewatch2_ad0db86ca6806523de4f44315a2c0f369}{watch2\+::set\+Wifi\+Profiles}} (c\+J\+S\+ON $\ast$profiles)
+\item 
+void \mbox{\hyperlink{namespacewatch2_adef01cca38314d783bb5984e45615227}{watch2\+::enable\+\_\+bluetooth}} ()
+\item 
+void \mbox{\hyperlink{namespacewatch2_a7f51f65ebfcc440f28bbf73f7f7cdd69}{watch2\+::disable\+\_\+bluetooth}} ()
+\item 
+int \mbox{\hyperlink{namespacewatch2_a7e22a93be8e05b4758375942744be6fa}{watch2\+::img\+\_\+read}} (void $\ast$user, char $\ast$data, int size)
+\item 
+void \mbox{\hyperlink{namespacewatch2_ae5eb542db272adbbcf39c78b79433821}{watch2\+::img\+\_\+skip}} (void $\ast$user, int n)
+\item 
+int \mbox{\hyperlink{namespacewatch2_a1300c9979708db7b12c6548d077d486d}{watch2\+::img\+\_\+eof}} (void $\ast$user)
+\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+S\+P\+I\+Class $\ast$ \mbox{\hyperlink{namespacewatch2_aa9a5ddda9ffca2f987f47b38d0c2bae9}{watch2\+::vspi}} = new S\+P\+I\+Class(V\+S\+PI)
+\item 
+T\+F\+T\+\_\+e\+S\+PI \mbox{\hyperlink{namespacewatch2_ae6409853423f64360383769753ee7b8e}{watch2\+::oled}} = T\+F\+T\+\_\+e\+S\+PI()
+\item 
+Preferences \mbox{\hyperlink{namespacewatch2_a8be13348bd0da15ae712398954ef0b0f}{watch2\+::preferences}}
+\item 
+T\+F\+T\+\_\+e\+Sprite \mbox{\hyperlink{namespacewatch2_ab288b50bb5adac70cd29e5d78fab4eb2}{watch2\+::top\+\_\+thing}} = T\+F\+T\+\_\+e\+Sprite(\&oled)
+\item 
+T\+F\+T\+\_\+e\+Sprite \mbox{\hyperlink{namespacewatch2_a8bb81d8e9196db680d282d8c1eed143f}{watch2\+::framebuffer}} = T\+F\+T\+\_\+e\+Sprite(\&oled)
+\item 
+Wi\+Fi\+Client\+Secure \mbox{\hyperlink{namespacewatch2_a76bee8147b61edfd44b2aabd60aa12e5}{watch2\+::wifi\+\_\+client}}
+\item 
+std\+::map$<$ std\+::string, std\+::vector$<$ unsigned short int $>$ $>$ \mbox{\hyperlink{namespacewatch2_ae4c7ce4512c98733ca38c5137afd826e}{watch2\+::icons}}
+\item 
+std\+::map$<$ std\+::string, std\+::vector$<$ unsigned char $>$ $>$ \mbox{\hyperlink{namespacewatch2_aefa95280b68ef3a334b5ef0e5f0ff644}{watch2\+::small\+\_\+icons}}
+\item 
+int \mbox{\hyperlink{namespacewatch2_a9041b045415e4077f6046a01f9ee31be}{watch2\+::state}} = 0
+\item 
+int \mbox{\hyperlink{namespacewatch2_ac13451e2babb790100abd526133d3d96}{watch2\+::state\+\_\+init}} = 0
+\item 
+R\+T\+C\+\_\+\+D\+A\+T\+A\+\_\+\+A\+T\+TR int \mbox{\hyperlink{namespacewatch2_abb9f72959e5efa12ff8fff2cb0eca8cd}{watch2\+::selected\+\_\+menu\+\_\+icon}}
+\item 
+R\+T\+C\+\_\+\+D\+A\+T\+A\+\_\+\+A\+T\+TR int \mbox{\hyperlink{namespacewatch2_abe2d907be91c141718e7556b098afdb0}{watch2\+::boot\+\_\+count}} = 0
+\item 
+uint8\+\_\+t \mbox{\hyperlink{namespacewatch2_a537e061d07d7b4e7ebec72b3c2cf2eeb}{watch2\+::top\+\_\+thing\+\_\+height}} = oled.\+font\+Height() + 20
+\item 
+bool \mbox{\hyperlink{namespacewatch2_aec1d807c429ed612b9e2564d3f19fd61}{watch2\+::force\+Redraw}} = false
+\item 
+bool \mbox{\hyperlink{namespacewatch2_aa1253cad423cdac80308225ba70a548d}{watch2\+::force\+Redraw\+Looped}} = false
+\item 
+uint16\+\_\+t \mbox{\hyperlink{namespacewatch2_a66ed60516d502fb6a059e321ec4aedf4}{watch2\+::trans\+\_\+mode}} = 0
+\item 
+bool \mbox{\hyperlink{namespacewatch2_a9554987e1f8a736606e18f04234a41d3}{watch2\+::animate\+\_\+watch\+\_\+face}} = false
+\item 
+int \mbox{\hyperlink{namespacewatch2_af0f31f7a918c6487fab7f6b32281cd28}{watch2\+::short\+\_\+timeout}} = 5000
+\item 
+int \mbox{\hyperlink{namespacewatch2_a6740e1fc7a8ad0afca20315d6144e0c5}{watch2\+::long\+\_\+timeout}} = 30000
+\item 
+bool \mbox{\hyperlink{namespacewatch2_a2509cfea5337e3acc4868937f26c72c9}{watch2\+::timeout}} = true
+\item 
+int \mbox{\hyperlink{namespacewatch2_acaf0198d395f650241a2b89440c1fcf0}{watch2\+::themecolour}} = \mbox{\hyperlink{watch2_8h_a79d10e672abb49ad63eeaa8aaef57c38}{B\+L\+UE}}
+\item 
+time\+\_\+t \mbox{\hyperlink{namespacewatch2_a64d56a734ae2c70661dbe36604d06463}{watch2\+::alarm\+\_\+snooze\+\_\+time}} = 5$\ast$60
+\item 
+uint16\+\_\+t \mbox{\hyperlink{namespacewatch2_afde7e7844aa64c1211edf103dbeb7013}{watch2\+::screen\+\_\+brightness}} = 2$^\wedge$\mbox{\hyperlink{watch2_8h_af87c395b63eae5c0f059628ece124a99}{tftbl\+\_\+resolution}}
+\item 
+uint8\+\_\+t \mbox{\hyperlink{namespacewatch2_ad8211686a208f1ce1f5bc4b989d3bd38}{watch2\+::speaker\+\_\+volume}} = 10
+\item 
+uint8\+\_\+t \mbox{\hyperlink{namespacewatch2_a1e8107643e44ee85cf755ea41fb42be5}{watch2\+::torch\+\_\+brightness}} = 0
+\item 
+int8\+\_\+t \mbox{\hyperlink{namespacewatch2_a61a6b2ef4ca89690552361fae75caa58}{watch2\+::timezone}} = 0
+\item 
+bool \mbox{\hyperlink{namespacewatch2_a47317d180e2c6c025bdce795d051e537}{watch2\+::ntp\+\_\+wakeup\+\_\+connect}} = true
+\item 
+bool \mbox{\hyperlink{namespacewatch2_aaf3801873a811db92bb8c4f01384b5f8}{watch2\+::ntp\+\_\+boot\+\_\+connect}} = true
+\item 
+bool \mbox{\hyperlink{namespacewatch2_a42daca29a612a98a3eb574263ced8d08}{watch2\+::ntp\+\_\+boot\+\_\+connected}} = true
+\item 
+bool \mbox{\hyperlink{namespacewatch2_aafc46f375374472f54881395c08e9eae}{watch2\+::wifi\+\_\+wakeup\+\_\+reconnect}} = true
+\item 
+bool \mbox{\hyperlink{namespacewatch2_a21b1fb2980cdf754b51ddbfda2c947bc}{watch2\+::wifi\+\_\+boot\+\_\+reconnect}} = true
+\item 
+bool \mbox{\hyperlink{namespacewatch2_a67ee1941a7924bcd13da2619f884209e}{watch2\+::wifi\+\_\+enabled}} = false
+\item 
+wifi\+\_\+auth\+\_\+mode\+\_\+t \mbox{\hyperlink{namespacewatch2_a76d4a1ffa3d4cc1bc924a5cde5f7d969}{watch2\+::wifi\+\_\+encryption}} = W\+I\+F\+I\+\_\+\+A\+U\+T\+H\+\_\+\+M\+AX
+\item 
+uint8\+\_\+t \mbox{\hyperlink{namespacewatch2_a4815946828c48e88f07713b1d5ec7a48}{watch2\+::bluetooth\+\_\+state}} = 0
+\item 
+bool \mbox{\hyperlink{namespacewatch2_a7ccf8061985f2827c2ef349824540912}{watch2\+::ble\+\_\+set\+\_\+up}} = false
+\item 
+int \mbox{\hyperlink{namespacewatch2_ad16fa0185024051970215be8fc3f852d}{watch2\+::sd\+\_\+state}} = 0
+\item 
+bool \mbox{\hyperlink{namespacewatch2_a725ee65f85004596007089833f00a8f4}{watch2\+::spiffs\+\_\+state}} = 0
+\item 
+int R\+T\+C\+\_\+\+D\+A\+T\+A\+\_\+\+A\+T\+TR \mbox{\hyperlink{namespacewatch2_aef58f47536af7a57decc06deb486255c}{watch2\+::stopwatch\+\_\+timing}} = 0
+\item 
+uint32\+\_\+t R\+T\+C\+\_\+\+D\+A\+T\+A\+\_\+\+A\+T\+TR \mbox{\hyperlink{namespacewatch2_a699555f6792b055d017177f6e57d0932}{watch2\+::stopwatch\+\_\+epoch}} = 0
+\item 
+uint32\+\_\+t R\+T\+C\+\_\+\+D\+A\+T\+A\+\_\+\+A\+T\+TR \mbox{\hyperlink{namespacewatch2_abbeef3cdd7b201162eea9c34a9c9ab00}{watch2\+::stopwatch\+\_\+paused\+\_\+diff}} = 0
+\item 
+uint32\+\_\+t \mbox{\hyperlink{namespacewatch2_a2c60ff68ba05b03b77584b37b8d60726}{watch2\+::stopwatch\+\_\+time\+\_\+diff}} = 0
+\item 
+uint32\+\_\+t \mbox{\hyperlink{namespacewatch2_a61a1508035cc86581b9671c0b8ecd54f}{watch2\+::stopwatch\+\_\+last\+\_\+time\+\_\+diff}} = 0
+\item 
+uint32\+\_\+t \mbox{\hyperlink{namespacewatch2_ac38b97872a5767e32ac4c23bbadd6cd5}{watch2\+::stopwatch\+\_\+ms}} = 0
+\item 
+uint32\+\_\+t \mbox{\hyperlink{namespacewatch2_aec8f0b62a31a2f7fd0effcb8ec8e45fd}{watch2\+::stopwatch\+\_\+last\+\_\+ms}} = 0
+\item 
+uint32\+\_\+t \mbox{\hyperlink{namespacewatch2_afc91414b3ef869ba9f2b4ae88031ca41}{watch2\+::stopwatch\+\_\+s}} = 0
+\item 
+uint32\+\_\+t \mbox{\hyperlink{namespacewatch2_a2bec6f58b6f8c4a6ed52cfb52e138355}{watch2\+::stopwatch\+\_\+last\+\_\+s}} = 0
+\item 
+uint32\+\_\+t \mbox{\hyperlink{namespacewatch2_a6700f7606c3cac7d9a13026cde84e6cd}{watch2\+::stopwatch\+\_\+min}} = 0
+\item 
+uint32\+\_\+t \mbox{\hyperlink{namespacewatch2_a476169febfbb69900d8421da3783a510}{watch2\+::stopwatch\+\_\+last\+\_\+min}} = 0
+\item 
+uint32\+\_\+t \mbox{\hyperlink{namespacewatch2_a88c034a2d436630f706bd0efb4abe38a}{watch2\+::stopwatch\+\_\+hour}} = 0
+\item 
+uint32\+\_\+t \mbox{\hyperlink{namespacewatch2_a6686267ed78a023b73890a96a291a836}{watch2\+::stopwatch\+\_\+last\+\_\+hour}} = 0
+\item 
+std\+::vector$<$ timer\+Data $>$ \mbox{\hyperlink{namespacewatch2_acb28fa05bd9a254434da96319d23d0ef}{watch2\+::timers}}
+\item 
+std\+::vector$<$ alarm\+Data $>$ \mbox{\hyperlink{namespacewatch2_a61483a9da1862e9944de5beeb8dd0263}{watch2\+::alarms}}
+\item 
+int \mbox{\hyperlink{namespacewatch2_ac86eece4f0ab13d169bd0777abd490be}{watch2\+::timer\+\_\+trigger\+\_\+status}} = 0
+\item 
+int \mbox{\hyperlink{namespacewatch2_ae6855e665dadb06d4400e7bdb6a1c6e4}{watch2\+::timer\+\_\+trigger\+\_\+id}} = 255
+\item 
+int \mbox{\hyperlink{namespacewatch2_a62c221ef0bd8cc02607b01319f616818}{watch2\+::alarm\+\_\+trigger\+\_\+status}} = 0
+\item 
+int \mbox{\hyperlink{namespacewatch2_ac558b18a4bc10faabbbbf43fd3015e40}{watch2\+::alarm\+\_\+trigger\+\_\+id}} = 0
+\item 
+int \mbox{\hyperlink{namespacewatch2_a636529f423a7b5d4ce6b78c3b6a7d1f3}{watch2\+::file\+\_\+select\+\_\+status}} = 0
+\item 
+std\+::string \mbox{\hyperlink{namespacewatch2_ad027d41ccaa7343a8e6697ddb65dabd2}{watch2\+::file\+\_\+path}} = \char`\"{}/\char`\"{}
+\item 
+bool \mbox{\hyperlink{namespacewatch2_a48f9d0abe5f1f6481fb76a75471084fa}{watch2\+::file\+\_\+select\+\_\+dir\+\_\+list\+\_\+init}} = false
+\item 
+uint8\+\_\+t \mbox{\hyperlink{namespacewatch2_aff7ef1c423d87bd2b88d8e6840a4625d}{watch2\+::wifi\+\_\+state}} = 0
+\item 
+uint8\+\_\+t \mbox{\hyperlink{namespacewatch2_a356780c64b647870d29334a40b876f25}{watch2\+::wifi\+\_\+reconnect\+\_\+attempts}} = 0
+\item 
+uint8\+\_\+t \mbox{\hyperlink{namespacewatch2_ab762484d6b1e20e9c88f8eb221b8cfe7}{watch2\+::initial\+\_\+wifi\+\_\+reconnect\+\_\+attempts}} = 0
+\item 
+uint32\+\_\+t \mbox{\hyperlink{namespacewatch2_a661280a34de674636157f4afa93c7496}{watch2\+::wifi\+\_\+connect\+\_\+timeout}} = 15000
+\item 
+uint32\+\_\+t \mbox{\hyperlink{namespacewatch2_a34c26588d1e8aa56f6f9453b59160f7d}{watch2\+::wifi\+\_\+connect\+\_\+timeout\+\_\+start}} = 0
+\item 
+bool \mbox{\hyperlink{namespacewatch2_ae8c26ee76d3b1e60257436c4392a6a43}{watch2\+::dpad\+\_\+up\+\_\+lock}} = false
+\item 
+bool \mbox{\hyperlink{namespacewatch2_a02564275e9ce28f87fefb6dae6a928d7}{watch2\+::dpad\+\_\+down\+\_\+lock}} = false
+\item 
+bool \mbox{\hyperlink{namespacewatch2_aa9a118089c42b9bbf14f86b6a5928dda}{watch2\+::dpad\+\_\+left\+\_\+lock}} = false
+\item 
+bool \mbox{\hyperlink{namespacewatch2_a5d4921f0bd262bde4dc8fc45b9efea31}{watch2\+::dpad\+\_\+right\+\_\+lock}} = false
+\item 
+bool \mbox{\hyperlink{namespacewatch2_a87ab5b186679667ed01a17475f8f21d9}{watch2\+::dpad\+\_\+enter\+\_\+lock}} = false
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Macro Definition Documentation}
+\mbox{\Hypertarget{watch2_8cpp_a18372412ad2fc3ce1e3240b3cf0efe78}\label{watch2_8cpp_a18372412ad2fc3ce1e3240b3cf0efe78}} 
+\index{watch2.cpp@{watch2.cpp}!STB\_IMAGE\_IMPLEMENTATION@{STB\_IMAGE\_IMPLEMENTATION}}
+\index{STB\_IMAGE\_IMPLEMENTATION@{STB\_IMAGE\_IMPLEMENTATION}!watch2.cpp@{watch2.cpp}}
+\doxysubsubsection{\texorpdfstring{STB\_IMAGE\_IMPLEMENTATION}{STB\_IMAGE\_IMPLEMENTATION}}
+{\footnotesize\ttfamily \#define S\+T\+B\+\_\+\+I\+M\+A\+G\+E\+\_\+\+I\+M\+P\+L\+E\+M\+E\+N\+T\+A\+T\+I\+ON}
+
+
+
+Definition at line 4 of file watch2.\+cpp.
+
+\mbox{\Hypertarget{watch2_8cpp_aa6a7b41350a14f718b619164bc2b8fdf}\label{watch2_8cpp_aa6a7b41350a14f718b619164bc2b8fdf}} 
+\index{watch2.cpp@{watch2.cpp}!STB\_IMAGE\_RESIZE\_IMPLEMENTATION@{STB\_IMAGE\_RESIZE\_IMPLEMENTATION}}
+\index{STB\_IMAGE\_RESIZE\_IMPLEMENTATION@{STB\_IMAGE\_RESIZE\_IMPLEMENTATION}!watch2.cpp@{watch2.cpp}}
+\doxysubsubsection{\texorpdfstring{STB\_IMAGE\_RESIZE\_IMPLEMENTATION}{STB\_IMAGE\_RESIZE\_IMPLEMENTATION}}
+{\footnotesize\ttfamily \#define S\+T\+B\+\_\+\+I\+M\+A\+G\+E\+\_\+\+R\+E\+S\+I\+Z\+E\+\_\+\+I\+M\+P\+L\+E\+M\+E\+N\+T\+A\+T\+I\+ON}
+
+
+
+Definition at line 7 of file watch2.\+cpp.
+

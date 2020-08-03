@@ -1,0 +1,577 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.18">
+  <compounddef id="state__watch__face_8cpp" kind="file" language="C++">
+    <compoundname>state_watch_face.cpp</compoundname>
+    <includes refid="watch2_8h" local="yes">../watch2.h</includes>
+    <includedby refid="states_8cpp" local="yes">main/states/states.cpp</includedby>
+    <incdepgraph>
+      <node id="10">
+        <label>functional</label>
+      </node>
+      <node id="16">
+        <label>FS.h</label>
+      </node>
+      <node id="12">
+        <label>SPI.h</label>
+      </node>
+      <node id="29">
+        <label>TimeAlarms.h</label>
+      </node>
+      <node id="2">
+        <label>../watch2.h</label>
+        <link refid="watch2_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+        <childnode refid="29" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="30" relation="include">
+        </childnode>
+        <childnode refid="31" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>stdint.h</label>
+      </node>
+      <node id="21">
+        <label>BleKeyboard.h</label>
+      </node>
+      <node id="19">
+        <label>WiFiClientSecure.h</label>
+      </node>
+      <node id="9">
+        <label>string</label>
+      </node>
+      <node id="7">
+        <label>map</label>
+      </node>
+      <node id="20">
+        <label>HTTPClient.h</label>
+      </node>
+      <node id="24">
+        <label>cJSON.h</label>
+      </node>
+      <node id="14">
+        <label>sdios.h</label>
+      </node>
+      <node id="1">
+        <label>main/states/state_watch_face.cpp</label>
+        <link refid="state__watch__face_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="28">
+        <label>TimeLib.h</label>
+      </node>
+      <node id="31">
+        <label>regret.h</label>
+        <link refid="regret_8h"/>
+      </node>
+      <node id="13">
+        <label>SdFat.h</label>
+      </node>
+      <node id="6">
+        <label>stack</label>
+      </node>
+      <node id="15">
+        <label>TFT_eSPI.h</label>
+      </node>
+      <node id="22">
+        <label>Preferences.h</label>
+      </node>
+      <node id="26">
+        <label>time.h</label>
+      </node>
+      <node id="11">
+        <label>Arduino.h</label>
+      </node>
+      <node id="27">
+        <label>sys/time.h</label>
+      </node>
+      <node id="8">
+        <label>unordered_map</label>
+      </node>
+      <node id="23">
+        <label>tinyexpr.h</label>
+      </node>
+      <node id="25">
+        <label>sys/cdefs.h</label>
+      </node>
+      <node id="30">
+        <label>coolcrab.h</label>
+        <link refid="coolcrab_8h"/>
+      </node>
+      <node id="17">
+        <label>JC_Button.h</label>
+      </node>
+      <node id="5">
+        <label>algorithm</label>
+      </node>
+      <node id="18">
+        <label>WiFi.h</label>
+      </node>
+      <node id="3">
+        <label>stdio.h</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="2">
+        <label>main/states/states.cpp</label>
+        <link refid="states_8cpp"/>
+      </node>
+      <node id="1">
+        <label>main/states/state_watch_face.cpp</label>
+        <link refid="state__watch__face_8cpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="state__watch__face_8cpp_1a43c4bb0bd90eb0eb3cf78314f18f547a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void state_func_watch_face</definition>
+        <argsstring>()</argsstring>
+        <name>state_func_watch_face</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="main/states/state_watch_face.cpp" line="3" column="6" bodyfile="main/states/state_watch_face.cpp" bodystart="3" bodyend="374"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="preprocessor">#include<sp/>&quot;../watch2.h&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="2"><highlight class="normal"></highlight></codeline>
+<codeline lineno="3" refid="state__watch__face_8cpp_1a43c4bb0bd90eb0eb3cf78314f18f547a" refkind="member"><highlight class="normal"></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="state__watch__face_8cpp_1a43c4bb0bd90eb0eb3cf78314f18f547a" kindref="member">state_func_watch_face</ref>()</highlight></codeline>
+<codeline lineno="4"><highlight class="normal">{</highlight></codeline>
+<codeline lineno="5"><highlight class="normal"></highlight></codeline>
+<codeline lineno="6"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>last_minute<sp/>=<sp/>-1;</highlight></codeline>
+<codeline lineno="7"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>last_second<sp/>=<sp/>-1;</highlight></codeline>
+<codeline lineno="8"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>last_day<sp/>=<sp/>-1;</highlight></codeline>
+<codeline lineno="9"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>TFT_eSprite<sp/>time_sprite<sp/>=<sp/>TFT_eSprite(&amp;<ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>);</highlight></codeline>
+<codeline lineno="10"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>TFT_eSprite<sp/>second_sprite<sp/>=<sp/>TFT_eSprite(&amp;<ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>);</highlight></codeline>
+<codeline lineno="11"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>TFT_eSprite<sp/>day_sprite<sp/>=<sp/>TFT_eSprite(&amp;<ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>);</highlight></codeline>
+<codeline lineno="12"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>buffer[20];</highlight></codeline>
+<codeline lineno="13"><highlight class="normal"><sp/><sp/><sp/><sp/>uint16_t<sp/>row_colours[<ref refid="watch2_8h_1a2cd109632a6dcccaa80b43561b1ab700" kindref="member">SCREEN_WIDTH</ref>];</highlight></codeline>
+<codeline lineno="14"><highlight class="normal"><sp/><sp/><sp/><sp/>uint16_t<sp/>row_colour<sp/>=<sp/><ref refid="watch2_8h_1ad243f93c16bc4c1d3e0a13b84421d760" kindref="member">CYAN</ref>;</highlight></codeline>
+<codeline lineno="15"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">float</highlight><highlight class="normal"><sp/>r<sp/>=<sp/>0,<sp/>g<sp/>=<sp/>0,<sp/>b<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="16"><highlight class="normal"><sp/><sp/><sp/><sp/>uint16_t<sp/>phase_difference<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="namespacewatch2_1a51f311bab5fe7476b7f9608e21c03386" kindref="member">watch2::states</ref>[<ref refid="namespacewatch2_1a9041b045415e4077f6046a01f9ee31be" kindref="member">watch2::state</ref>].variant<sp/>==<sp/>0)<sp/></highlight><highlight class="comment">//actual<sp/>watch<sp/>face</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="22"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>//draw<sp/>introduction<sp/>message</highlight></codeline>
+<codeline lineno="23"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>watch2::oled.setCursor(2,<sp/>watch2::top_thing_height);</highlight></codeline>
+<codeline lineno="24"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>watch2::oled.setTextColor(WHITE,<sp/>BLACK);</highlight></codeline>
+<codeline lineno="25"><highlight class="comment"></highlight></codeline>
+<codeline lineno="26"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>watch2::oled.setTextSize(1);</highlight></codeline>
+<codeline lineno="27"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>watch2::oled.print(&quot;The<sp/>time<sp/>right<sp/>now<sp/>is&quot;);</highlight></codeline>
+<codeline lineno="28"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(!<ref refid="namespacewatch2_1ac13451e2babb790100abd526133d3d96" kindref="member">watch2::state_init</ref>)</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>set<sp/>up<sp/>time<sp/>sprite</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ace377d6649d42c5b76b9561c90559b4d" kindref="member">watch2::setFont</ref>(<ref refid="watch2_8h_1a14d24798f8d38fa5ef220c07509c2230" kindref="member">REALLY_REALLY_BIG_FONT</ref>);</highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>time_sprite.createSprite(<ref refid="watch2_8h_1a2cd109632a6dcccaa80b43561b1ab700" kindref="member">SCREEN_WIDTH</ref>,<sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.fontHeight());</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>time_sprite.fillScreen(<ref refid="watch2_8h_1a7b3b25cba33b07c303f3060fe41887f6" kindref="member">BLACK</ref>);</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ace377d6649d42c5b76b9561c90559b4d" kindref="member">watch2::setFont</ref>(<ref refid="watch2_8h_1a14d24798f8d38fa5ef220c07509c2230" kindref="member">REALLY_REALLY_BIG_FONT</ref>,<sp/>time_sprite);</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>set<sp/>up<sp/>seconds<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ace377d6649d42c5b76b9561c90559b4d" kindref="member">watch2::setFont</ref>(<ref refid="watch2_8h_1a46772cfb2dbf8ab2817bdb0d5a7ff6d9" kindref="member">REALLY_BIG_FONT</ref>);</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>second_sprite.createSprite(<ref refid="watch2_8h_1a2cd109632a6dcccaa80b43561b1ab700" kindref="member">SCREEN_WIDTH</ref>,<sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.fontHeight());</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>second_sprite.fillScreen(<ref refid="watch2_8h_1a7b3b25cba33b07c303f3060fe41887f6" kindref="member">BLACK</ref>);</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ace377d6649d42c5b76b9561c90559b4d" kindref="member">watch2::setFont</ref>(<ref refid="watch2_8h_1a46772cfb2dbf8ab2817bdb0d5a7ff6d9" kindref="member">REALLY_BIG_FONT</ref>,<sp/>second_sprite);</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>set<sp/>up<sp/>date<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ace377d6649d42c5b76b9561c90559b4d" kindref="member">watch2::setFont</ref>(<ref refid="watch2_8h_1a3ab9338a5ec3cb45b17db1001ad954a5" kindref="member">SLIGHTLY_BIGGER_FONT</ref>);</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>day_sprite.createSprite(<ref refid="watch2_8h_1a2cd109632a6dcccaa80b43561b1ab700" kindref="member">SCREEN_WIDTH</ref>,<sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.fontHeight());</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>day_sprite.fillScreen(<ref refid="watch2_8h_1a7b3b25cba33b07c303f3060fe41887f6" kindref="member">BLACK</ref>);</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ace377d6649d42c5b76b9561c90559b4d" kindref="member">watch2::setFont</ref>(<ref refid="watch2_8h_1a3ab9338a5ec3cb45b17db1001ad954a5" kindref="member">SLIGHTLY_BIGGER_FONT</ref>,<sp/>day_sprite);</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ace377d6649d42c5b76b9561c90559b4d" kindref="member">watch2::setFont</ref>(<ref refid="watch2_8h_1a855ae364ef19f76001908138b6049a90" kindref="member">MAIN_FONT</ref>);</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>set<sp/>phase<sp/>difference</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="namespacewatch2_1a9554987e1f8a736606e18f04234a41d3" kindref="member">watch2::animate_watch_face</ref>)<sp/>phase_difference<sp/>=<sp/>((millis()<sp/>%<sp/>60000)<sp/>*<sp/>6)/1000;</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>set<sp/>up<sp/>time<sp/>sprite<sp/>colour<sp/>things</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>i<sp/>=<sp/>0;<sp/>i<sp/>&lt;<sp/><ref refid="watch2_8h_1a2cd109632a6dcccaa80b43561b1ab700" kindref="member">SCREEN_WIDTH</ref>;<sp/>i++)</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">switch</highlight><highlight class="normal">(<ref refid="namespacewatch2_1a66ed60516d502fb6a059e321ec4aedf4" kindref="member">watch2::trans_mode</ref>)</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>0:<sp/></highlight><highlight class="comment">//<sp/>random</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//todo</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>1:<sp/></highlight><highlight class="comment">//<sp/>Gay™</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ac4f3f79dee7cc0163d690a44213948c1" kindref="member">watch2::HSVtoRGB</ref>(&amp;r,<sp/>&amp;g,<sp/>&amp;b,<sp/>fmodf(((((</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">)<sp/>i)<sp/>*<sp/>(360<sp/>/<sp/><ref refid="watch2_8h_1a2cd109632a6dcccaa80b43561b1ab700" kindref="member">SCREEN_WIDTH</ref>))<sp/>+<sp/>phase_difference),<sp/>(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">)360.0),<sp/>1.0,<sp/>1.0);</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>row_colour<sp/>=<sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.color565(r<sp/>*<sp/>255,<sp/>g<sp/>*<sp/>255,<sp/>b<sp/>*<sp/>255);</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">case</highlight><highlight class="normal"><sp/>2:<sp/></highlight><highlight class="comment">//<sp/>trans</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ada729a2b1f6039b4f314a42226df07a7" kindref="member">watch2::getHeatMapColor</ref>(<sp/>fmod(((</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">)i/(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">)<ref refid="watch2_8h_1a2cd109632a6dcccaa80b43561b1ab700" kindref="member">SCREEN_WIDTH</ref>)<sp/>+<sp/>(phase_difference/360.0),<sp/>(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">)1.0)<sp/>,<sp/>&amp;r,<sp/>&amp;g,<sp/>&amp;b);</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>row_colour<sp/>=<sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.color565(r<sp/>*<sp/>255,<sp/>g<sp/>*<sp/>255,<sp/>b<sp/>*<sp/>255);</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">default</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>row_colour<sp/>=<sp/><ref refid="watch2_8h_1ad243f93c16bc4c1d3e0a13b84421d760" kindref="member">CYAN</ref>;</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">break</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"></highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>row_colours[i]<sp/>=<sp/>row_colour;</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>draw<sp/>time</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="watch2_8h_1a66985d8fefe0cba4188b8fdb31868104" kindref="member">draw</ref>(minute()<sp/>!=<sp/>last_minute,<sp/>{</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>time_sprite.fillScreen(<ref refid="watch2_8h_1a7b3b25cba33b07c303f3060fe41887f6" kindref="member">BLACK</ref>);</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>time_sprite.setTextDatum(MC_DATUM);</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>sprintf(buffer,<sp/></highlight><highlight class="stringliteral">&quot;%02d:%02d&quot;</highlight><highlight class="normal">,<sp/>hour(),<sp/>minute());</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>if<sp/>watch<sp/>face<sp/>colour<sp/>is<sp/>3<sp/>(seconds)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="namespacewatch2_1a66ed60516d502fb6a059e321ec4aedf4" kindref="member">watch2::trans_mode</ref><sp/>==<sp/>3)<sp/></highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//float<sp/>seconds<sp/>=<sp/>second()<sp/>+<sp/>(millis()<sp/>/<sp/>1000);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint8_t<sp/>seconds<sp/>=<sp/>second();</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ac4f3f79dee7cc0163d690a44213948c1" kindref="member">watch2::HSVtoRGB</ref>(&amp;r,<sp/>&amp;g,<sp/>&amp;b,<sp/>fmodf(((((</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">)<sp/>seconds)<sp/>*<sp/>(360<sp/>/<sp/>60.0))),<sp/>(</highlight><highlight class="keywordtype">float</highlight><highlight class="normal">)360.0),<sp/>1.0,<sp/>1.0);</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>time_sprite.setTextColor(<sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.color565(r<sp/>*<sp/>255,<sp/>g<sp/>*<sp/>255,<sp/>b<sp/>*<sp/>255)<sp/>);</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"></highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>otherwise,<sp/>just<sp/>use<sp/>the<sp/>themecolour</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>time_sprite.setTextColor(<ref refid="namespacewatch2_1acaf0198d395f650241a2b89440c1fcf0" kindref="member">watch2::themecolour</ref>);</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>time_sprite.drawString(buffer,<sp/>time_sprite.width()<sp/>/<sp/>2,<sp/>time_sprite.height()<sp/>/<sp/>2);</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"></highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>if<sp/>watch<sp/>face<sp/>colour<sp/>is<sp/>4<sp/>(theme),<sp/>push<sp/>the<sp/>sprite<sp/>using<sp/>oled::pushSprite()</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="namespacewatch2_1a66ed60516d502fb6a059e321ec4aedf4" kindref="member">watch2::trans_mode</ref><sp/>==<sp/>4<sp/>||<sp/><ref refid="namespacewatch2_1a66ed60516d502fb6a059e321ec4aedf4" kindref="member">watch2::trans_mode</ref><sp/>==<sp/>3)</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>time_sprite.pushSprite(0,<sp/><ref refid="namespacewatch2_1a537e061d07d7b4e7ebec72b3c2cf2eeb" kindref="member">watch2::top_thing_height</ref>);</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"></highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>otherwise,<sp/>draw<sp/>the<sp/>time<sp/>using<sp/>a<sp/>gradient</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint16_t<sp/>*time_sprite_data<sp/>=<sp/>(uint16_t*)<sp/>time_sprite.frameBuffer(0);</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>int16_t<sp/>w<sp/>=<sp/>time_sprite.width();</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>int16_t<sp/>h<sp/>=<sp/>time_sprite.height();</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"></highlight></codeline>
+<codeline lineno="114"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.startWrite();</highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>y<sp/>=<sp/>0;<sp/>y<sp/>&lt;<sp/>h;<sp/>y++)</highlight></codeline>
+<codeline lineno="116"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="117"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">for</highlight><highlight class="normal"><sp/>(</highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>x<sp/>=<sp/>0;<sp/>x<sp/>&lt;<sp/>w;<sp/>x++)</highlight></codeline>
+<codeline lineno="118"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(*time_sprite_data++)<sp/>row_colour<sp/>=<sp/>row_colours[x];</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/>row_colour<sp/>=<sp/><ref refid="watch2_8h_1a7b3b25cba33b07c303f3060fe41887f6" kindref="member">BLACK</ref>;</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"></highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.setWindow(x,<sp/><ref refid="namespacewatch2_1a537e061d07d7b4e7ebec72b3c2cf2eeb" kindref="member">watch2::top_thing_height</ref><sp/>+<sp/>y,<sp/>1,<sp/>1);</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.pushBlock(row_colour,<sp/>1);</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.endWrite();</highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"></highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>last_minute<sp/>=<sp/>now();</highlight></codeline>
+<codeline lineno="130"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>});</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"></highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//draw<sp/>seconds</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="133"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="watch2_8h_1a66985d8fefe0cba4188b8fdb31868104" kindref="member">draw</ref>(second()<sp/>!=<sp/>last_second,<sp/>{</highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>second_sprite.fillScreen(<ref refid="watch2_8h_1a7b3b25cba33b07c303f3060fe41887f6" kindref="member">BLACK</ref>);</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>second_sprite.setTextDatum(TL_DATUM);</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>sprintf(buffer,<sp/></highlight><highlight class="stringliteral">&quot;<sp/>%02d&quot;</highlight><highlight class="normal">,<sp/>second());</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>second_sprite.drawString(buffer,<sp/>0,<sp/>0);</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"></highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>second_sprite.setTextDatum(TR_DATUM);</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>second_sprite.drawString(</highlight><highlight class="stringliteral">&quot;pm<sp/>&quot;</highlight><highlight class="normal">,<sp/>second_sprite.width(),<sp/>0);</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"></highlight></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>second_sprite.pushSprite(0,<sp/><ref refid="namespacewatch2_1a537e061d07d7b4e7ebec72b3c2cf2eeb" kindref="member">watch2::top_thing_height</ref><sp/>+<sp/>time_sprite.height());</highlight></codeline>
+<codeline lineno="143"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>last_second<sp/>=<sp/>second();</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>});</highlight></codeline>
+<codeline lineno="145"><highlight class="normal"></highlight></codeline>
+<codeline lineno="146"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>draw<sp/>date</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="147"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="watch2_8h_1a66985d8fefe0cba4188b8fdb31868104" kindref="member">draw</ref>(day()<sp/>!=<sp/>last_day,<sp/>{</highlight></codeline>
+<codeline lineno="148"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>day_sprite.fillScreen(<ref refid="watch2_8h_1a7b3b25cba33b07c303f3060fe41887f6" kindref="member">BLACK</ref>);</highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>day_sprite.setTextDatum(TC_DATUM);</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>sprintf(buffer,<sp/></highlight><highlight class="stringliteral">&quot;%s<sp/>%02d.%02d.%04d&quot;</highlight><highlight class="normal">,<sp/>dayShortStr(dayOfWeek(day())),<sp/>day(),<sp/>month(),<sp/>year());</highlight></codeline>
+<codeline lineno="151"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>day_sprite.drawString(buffer,<sp/>day_sprite.width()<sp/>/<sp/>2,<sp/>0);</highlight></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint16_t<sp/>start_height<sp/>=<sp/><ref refid="namespacewatch2_1a537e061d07d7b4e7ebec72b3c2cf2eeb" kindref="member">watch2::top_thing_height</ref><sp/>+<sp/>time_sprite.height()<sp/>+<sp/>second_sprite.height();</highlight></codeline>
+<codeline lineno="153"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>day_sprite.pushSprite(0,<sp/>start_height<sp/>+<sp/>((<ref refid="watch2_8h_1a6974d08a74da681b3957b2fead2608b8" kindref="member">SCREEN_HEIGHT</ref><sp/>-<sp/>start_height)<sp/>/<sp/>2));</highlight></codeline>
+<codeline lineno="154"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>last_day<sp/>=<sp/>day();</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>});</highlight></codeline>
+<codeline lineno="156"><highlight class="normal"></highlight></codeline>
+<codeline lineno="157"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//draw<sp/>minimal<sp/>top<sp/>thing</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="158"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ad5f28b9617e94aa356abc56a2f7b438a" kindref="member">watch2::drawTopThing</ref>(</highlight><highlight class="keyword">true</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="159"><highlight class="normal"></highlight></codeline>
+<codeline lineno="160"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//check<sp/>buttons</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="161"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="watch2_8h_1a103b2e40d6f57da2f6a41ed4ee7bffe8" kindref="member">dpad_enter_active</ref>()<sp/>||<sp/><ref refid="watch2_8h_1ad4b76bcc603410723945c08e4ef82811" kindref="member">dpad_right_active</ref>()<sp/>||<sp/><ref refid="watch2_8h_1a2d665aca3619cd86b1dfe184756fa1c4" kindref="member">dpad_up_active</ref>())</highlight></codeline>
+<codeline lineno="162"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="163"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>free<sp/>up<sp/>the<sp/>memory<sp/>used<sp/>by<sp/>the<sp/>sprites</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="164"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>time_sprite.deleteSprite();</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>second_sprite.deleteSprite();</highlight></codeline>
+<codeline lineno="166"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>day_sprite.deleteSprite();</highlight></codeline>
+<codeline lineno="167"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="168"><highlight class="normal"></highlight></codeline>
+<codeline lineno="169"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="watch2_8h_1a103b2e40d6f57da2f6a41ed4ee7bffe8" kindref="member">dpad_enter_active</ref>())</highlight></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="171"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ad1008a0c7100f3638c11445e9d27befd" kindref="member">watch2::deepSleep</ref>(31);</highlight></codeline>
+<codeline lineno="172"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="173"><highlight class="normal"></highlight></codeline>
+<codeline lineno="174"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="watch2_8h_1ad4b76bcc603410723945c08e4ef82811" kindref="member">dpad_right_active</ref>())</highlight></codeline>
+<codeline lineno="175"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="176"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1a786f5e96c939f6465c2341a31cad1385" kindref="member">watch2::switchState</ref>(2);</highlight></codeline>
+<codeline lineno="177"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="178"><highlight class="normal"></highlight></codeline>
+<codeline lineno="179"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="watch2_8h_1a2d665aca3619cd86b1dfe184756fa1c4" kindref="member">dpad_up_active</ref>())</highlight></codeline>
+<codeline lineno="180"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="181"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1a786f5e96c939f6465c2341a31cad1385" kindref="member">watch2::switchState</ref>(<ref refid="namespacewatch2_1a9041b045415e4077f6046a01f9ee31be" kindref="member">watch2::state</ref>,<sp/>1);</highlight></codeline>
+<codeline lineno="182"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="183"><highlight class="normal"></highlight></codeline>
+<codeline lineno="184"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="watch2_8h_1a5869283f0cb7e68c72fb1849d7bb68d7" kindref="member">dpad_left_active</ref>())</highlight></codeline>
+<codeline lineno="185"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="186"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>digitalWrite(<ref refid="watch2_8h_1aba8902900fa07ff44dbb4a739c0e5163" kindref="member">cs</ref>,<sp/>HIGH);</highlight></codeline>
+<codeline lineno="187"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>digitalWrite(<ref refid="watch2_8h_1aadf9daa84cd538db17f0e4de8f0ffd7a" kindref="member">sdcs</ref>,<sp/>LOW);</highlight></codeline>
+<codeline lineno="188"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight></codeline>
+<codeline lineno="189"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1aec6ededae906f13c332930a3b30040d8" kindref="member">watch2::initSD</ref>();</highlight></codeline>
+<codeline lineno="190"><highlight class="normal"></highlight></codeline>
+<codeline lineno="191"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>digitalWrite(<ref refid="watch2_8h_1aba8902900fa07ff44dbb4a739c0e5163" kindref="member">cs</ref>,<sp/>LOW);</highlight></codeline>
+<codeline lineno="192"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>digitalWrite(<ref refid="watch2_8h_1aadf9daa84cd538db17f0e4de8f0ffd7a" kindref="member">sdcs</ref>,<sp/>HIGH);</highlight></codeline>
+<codeline lineno="193"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="194"><highlight class="normal"></highlight></codeline>
+<codeline lineno="195"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="196"><highlight class="normal"><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="namespacewatch2_1a51f311bab5fe7476b7f9608e21c03386" kindref="member">watch2::states</ref>[<ref refid="namespacewatch2_1a9041b045415e4077f6046a01f9ee31be" kindref="member">watch2::state</ref>].variant<sp/>==<sp/>1)<sp/></highlight><highlight class="comment">//ripoff<sp/>control<sp/>centre</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="197"><highlight class="normal"><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="198"><highlight class="normal"></highlight></codeline>
+<codeline lineno="199"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>selected_widget<sp/>=<sp/>3;</highlight></codeline>
+<codeline lineno="200"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>last_button_widget<sp/>=<sp/>3;</highlight></codeline>
+<codeline lineno="201"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>go_back_to_watch_face<sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="202"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>uint8_t<sp/>last_bt_state<sp/>=<sp/><ref refid="namespacewatch2_1a4815946828c48e88f07713b1d5ec7a48" kindref="member">watch2::bluetooth_state</ref>;</highlight></codeline>
+<codeline lineno="203"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>uint8_t<sp/>last_wifi_state<sp/>=<sp/><ref refid="namespacewatch2_1aff7ef1c423d87bd2b88d8e6840a4625d" kindref="member">watch2::wifi_state</ref>;</highlight></codeline>
+<codeline lineno="204"><highlight class="normal"></highlight></codeline>
+<codeline lineno="205"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(!<ref refid="namespacewatch2_1ac13451e2babb790100abd526133d3d96" kindref="member">watch2::state_init</ref>)<sp/>go_back_to_watch_face<sp/>=<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="206"><highlight class="normal"></highlight></codeline>
+<codeline lineno="207"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="watch2_8h_1a5869283f0cb7e68c72fb1849d7bb68d7" kindref="member">dpad_left_active</ref>())</highlight></codeline>
+<codeline lineno="208"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="209"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(selected_widget<sp/>&gt;<sp/>2)</highlight></codeline>
+<codeline lineno="210"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="211"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>selected_widget--;</highlight></codeline>
+<codeline lineno="212"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(selected_widget<sp/>&lt;<sp/>3)<sp/>selected_widget<sp/>=<sp/>4;</highlight></codeline>
+<codeline lineno="213"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="214"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(selected_widget<sp/>==<sp/>0)<sp/></highlight><highlight class="comment">//<sp/>volume</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="215"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="216"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ad8211686a208f1ce1f5bc4b989d3bd38" kindref="member">watch2::speaker_volume</ref><sp/>=<sp/>std::max(<ref refid="namespacewatch2_1ad8211686a208f1ce1f5bc4b989d3bd38" kindref="member">watch2::speaker_volume</ref><sp/>-<sp/>1,<sp/>0);</highlight></codeline>
+<codeline lineno="217"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="218"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(selected_widget<sp/>==<sp/>1)<sp/></highlight><highlight class="comment">//<sp/>brightness</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="219"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="220"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1afde7e7844aa64c1211edf103dbeb7013" kindref="member">watch2::screen_brightness</ref><sp/>=<sp/>std::max(<ref refid="namespacewatch2_1afde7e7844aa64c1211edf103dbeb7013" kindref="member">watch2::screen_brightness</ref><sp/>-<sp/>10,<sp/>0);</highlight></codeline>
+<codeline lineno="221"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ledcWrite(<ref refid="watch2_8h_1a28faf5bfaeb0c190d5c34306b7eb430f" kindref="member">TFTBL_PWM_CHANNEL</ref>,<sp/><ref refid="namespacewatch2_1afde7e7844aa64c1211edf103dbeb7013" kindref="member">watch2::screen_brightness</ref>);</highlight></codeline>
+<codeline lineno="222"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1a8be13348bd0da15ae712398954ef0b0f" kindref="member">watch2::preferences</ref>.begin(</highlight><highlight class="stringliteral">&quot;watch2&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//open<sp/>watch<sp/>II<sp/>preferences<sp/>in<sp/>RW<sp/>mode</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="223"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1a8be13348bd0da15ae712398954ef0b0f" kindref="member">watch2::preferences</ref>.putUInt(</highlight><highlight class="stringliteral">&quot;brightness&quot;</highlight><highlight class="normal">,<sp/><ref refid="namespacewatch2_1afde7e7844aa64c1211edf103dbeb7013" kindref="member">watch2::screen_brightness</ref>);</highlight></codeline>
+<codeline lineno="224"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1a8be13348bd0da15ae712398954ef0b0f" kindref="member">watch2::preferences</ref>.end();</highlight></codeline>
+<codeline lineno="225"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="226"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(selected_widget<sp/>==<sp/>2)<sp/></highlight><highlight class="comment">//<sp/>torch</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="227"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="228"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1a1e8107643e44ee85cf755ea41fb42be5" kindref="member">watch2::torch_brightness</ref><sp/>=<sp/>std::max(<ref refid="namespacewatch2_1a1e8107643e44ee85cf755ea41fb42be5" kindref="member">watch2::torch_brightness</ref><sp/>-<sp/>10,<sp/>0);</highlight></codeline>
+<codeline lineno="229"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ledcWrite(<ref refid="watch2_8h_1ace0f79613799421255963505e2039875" kindref="member">TORCH_PWM_CHANNEL</ref>,<sp/><ref refid="namespacewatch2_1a1e8107643e44ee85cf755ea41fb42be5" kindref="member">watch2::torch_brightness</ref>);</highlight></codeline>
+<codeline lineno="230"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="231"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="232"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="watch2_8h_1ad4b76bcc603410723945c08e4ef82811" kindref="member">dpad_right_active</ref>())</highlight></codeline>
+<codeline lineno="233"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="234"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(selected_widget<sp/>&gt;<sp/>2)</highlight></codeline>
+<codeline lineno="235"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="236"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>selected_widget++;</highlight></codeline>
+<codeline lineno="237"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(selected_widget<sp/>&gt;<sp/>4)<sp/>selected_widget<sp/>=<sp/>3;</highlight></codeline>
+<codeline lineno="238"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="239"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(selected_widget<sp/>==<sp/>0)<sp/></highlight><highlight class="comment">//<sp/>volume</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="240"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="241"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ad8211686a208f1ce1f5bc4b989d3bd38" kindref="member">watch2::speaker_volume</ref><sp/>=<sp/>std::min(<ref refid="namespacewatch2_1ad8211686a208f1ce1f5bc4b989d3bd38" kindref="member">watch2::speaker_volume</ref><sp/>+<sp/>1,<sp/>21);</highlight></codeline>
+<codeline lineno="242"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="243"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(selected_widget<sp/>==<sp/>1)<sp/></highlight><highlight class="comment">//<sp/>brightness</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="244"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="245"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1afde7e7844aa64c1211edf103dbeb7013" kindref="member">watch2::screen_brightness</ref><sp/>=<sp/>std::min(<ref refid="namespacewatch2_1afde7e7844aa64c1211edf103dbeb7013" kindref="member">watch2::screen_brightness</ref><sp/>+<sp/>10,<sp/>255);</highlight></codeline>
+<codeline lineno="246"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ledcWrite(<ref refid="watch2_8h_1a28faf5bfaeb0c190d5c34306b7eb430f" kindref="member">TFTBL_PWM_CHANNEL</ref>,<sp/><ref refid="namespacewatch2_1afde7e7844aa64c1211edf103dbeb7013" kindref="member">watch2::screen_brightness</ref>);</highlight></codeline>
+<codeline lineno="247"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1a8be13348bd0da15ae712398954ef0b0f" kindref="member">watch2::preferences</ref>.begin(</highlight><highlight class="stringliteral">&quot;watch2&quot;</highlight><highlight class="normal">,<sp/></highlight><highlight class="keyword">false</highlight><highlight class="normal">);<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//open<sp/>watch<sp/>II<sp/>preferences<sp/>in<sp/>RW<sp/>mode</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="248"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1a8be13348bd0da15ae712398954ef0b0f" kindref="member">watch2::preferences</ref>.putUInt(</highlight><highlight class="stringliteral">&quot;brightness&quot;</highlight><highlight class="normal">,<sp/><ref refid="namespacewatch2_1afde7e7844aa64c1211edf103dbeb7013" kindref="member">watch2::screen_brightness</ref>);</highlight></codeline>
+<codeline lineno="249"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1a8be13348bd0da15ae712398954ef0b0f" kindref="member">watch2::preferences</ref>.end();</highlight></codeline>
+<codeline lineno="250"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="251"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(selected_widget<sp/>==<sp/>2)<sp/></highlight><highlight class="comment">//<sp/>torch</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="252"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="253"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1a1e8107643e44ee85cf755ea41fb42be5" kindref="member">watch2::torch_brightness</ref><sp/>=<sp/>std::min(<ref refid="namespacewatch2_1a1e8107643e44ee85cf755ea41fb42be5" kindref="member">watch2::torch_brightness</ref><sp/>+<sp/>10,<sp/>255);</highlight></codeline>
+<codeline lineno="254"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>ledcWrite(<ref refid="watch2_8h_1ace0f79613799421255963505e2039875" kindref="member">TORCH_PWM_CHANNEL</ref>,<sp/><ref refid="namespacewatch2_1a1e8107643e44ee85cf755ea41fb42be5" kindref="member">watch2::torch_brightness</ref>);</highlight></codeline>
+<codeline lineno="255"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="256"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="257"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="watch2_8h_1a2d665aca3619cd86b1dfe184756fa1c4" kindref="member">dpad_up_active</ref>())</highlight></codeline>
+<codeline lineno="258"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="259"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(selected_widget<sp/>&gt;<sp/>2)</highlight></codeline>
+<codeline lineno="260"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="261"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>last_button_widget<sp/>=<sp/>selected_widget;</highlight></codeline>
+<codeline lineno="262"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>selected_widget<sp/>=<sp/>2;</highlight></codeline>
+<codeline lineno="263"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="264"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="265"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="266"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>selected_widget--;</highlight></codeline>
+<codeline lineno="267"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(selected_widget<sp/>&lt;<sp/>0)<sp/>selected_widget<sp/>=<sp/>last_button_widget;</highlight></codeline>
+<codeline lineno="268"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="269"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="270"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="watch2_8h_1ad5ef942e8561d4b3c53ad44cb5d07969" kindref="member">dpad_down_active</ref>())</highlight></codeline>
+<codeline lineno="271"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="272"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(selected_widget<sp/>&gt;<sp/>2)</highlight></codeline>
+<codeline lineno="273"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="274"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//last_button_widget<sp/>=<sp/>selected_widget;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="275"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//selected_widget<sp/>=<sp/>0;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="276"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>go_back_to_watch_face<sp/>=<sp/></highlight><highlight class="keyword">true</highlight><highlight class="normal">;</highlight></codeline>
+<codeline lineno="277"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="278"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="279"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="280"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>selected_widget++;</highlight></codeline>
+<codeline lineno="281"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(selected_widget<sp/>&gt;<sp/>2)<sp/>selected_widget<sp/>=<sp/>last_button_widget;</highlight></codeline>
+<codeline lineno="282"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="283"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="284"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="watch2_8h_1a103b2e40d6f57da2f6a41ed4ee7bffe8" kindref="member">dpad_enter_active</ref>())</highlight></codeline>
+<codeline lineno="285"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="286"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(selected_widget<sp/>==<sp/>3)</highlight></codeline>
+<codeline lineno="287"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="288"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="namespacewatch2_1aff7ef1c423d87bd2b88d8e6840a4625d" kindref="member">watch2::wifi_state</ref><sp/>==<sp/>0)<sp/><ref refid="namespacewatch2_1aed15f8bdc27e942cf0763aaa8144aaf5" kindref="member">watch2::enable_wifi</ref>();</highlight></codeline>
+<codeline lineno="289"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/><ref refid="namespacewatch2_1a25367843827215038654ac050b5812f7" kindref="member">watch2::disable_wifi</ref>();</highlight></codeline>
+<codeline lineno="290"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="291"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(selected_widget<sp/>==<sp/>4)<sp/></highlight></codeline>
+<codeline lineno="292"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="293"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="namespacewatch2_1a4815946828c48e88f07713b1d5ec7a48" kindref="member">watch2::bluetooth_state</ref><sp/>==<sp/>0)<sp/><ref refid="namespacewatch2_1adef01cca38314d783bb5984e45615227" kindref="member">watch2::enable_bluetooth</ref>();</highlight></codeline>
+<codeline lineno="294"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">else</highlight><highlight class="normal"><sp/><ref refid="namespacewatch2_1a7f51f65ebfcc440f28bbf73f7f7cdd69" kindref="member">watch2::disable_bluetooth</ref>();</highlight></codeline>
+<codeline lineno="295"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="296"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="297"><highlight class="normal"></highlight></codeline>
+<codeline lineno="298"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="watch2_8h_1a66985d8fefe0cba4188b8fdb31868104" kindref="member">draw</ref>(<ref refid="watch2_8h_1a4ef7d6208f02d770d700dd7bdcc3b184" kindref="member">dpad_any_active</ref>()<sp/>||<sp/>(<ref refid="namespacewatch2_1aff7ef1c423d87bd2b88d8e6840a4625d" kindref="member">watch2::wifi_state</ref><sp/>!=<sp/>last_wifi_state)<sp/>||<sp/>(<ref refid="namespacewatch2_1a4815946828c48e88f07713b1d5ec7a48" kindref="member">watch2::bluetooth_state</ref><sp/>!=<sp/>last_bt_state),<sp/>{</highlight></codeline>
+<codeline lineno="299"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>spacing<sp/>=<sp/>10;</highlight></codeline>
+<codeline lineno="300"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>button_size<sp/>=<sp/>30;</highlight></codeline>
+<codeline lineno="301"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>radius<sp/>=<sp/>10;</highlight></codeline>
+<codeline lineno="302"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>outline_colour<sp/>=<sp/><ref refid="watch2_8h_1a87b537f5fa5c109d3c05c13d6b18f382" kindref="member">WHITE</ref>;</highlight></codeline>
+<codeline lineno="303"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>background_colour<sp/>=<sp/><ref refid="watch2_8h_1a7b3b25cba33b07c303f3060fe41887f6" kindref="member">BLACK</ref>;</highlight></codeline>
+<codeline lineno="304"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>button_x<sp/>=<sp/>spacing;</highlight></codeline>
+<codeline lineno="305"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>button_y<sp/>=<sp/>spacing;</highlight></codeline>
+<codeline lineno="306"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">int</highlight><highlight class="normal"><sp/>slider_x<sp/>=<sp/>0;</highlight></codeline>
+<codeline lineno="307"><highlight class="normal"></highlight></codeline>
+<codeline lineno="308"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//draw<sp/>volume<sp/>slider<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>jungle<sp/>green</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="309"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(selected_widget<sp/>==<sp/>0)<sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.fillRect(button_x<sp/>-<sp/>2,<sp/>button_y<sp/>-<sp/>2,<sp/><ref refid="watch2_8h_1a2cd109632a6dcccaa80b43561b1ab700" kindref="member">SCREEN_WIDTH</ref><sp/>-<sp/>button_x,<sp/>button_size<sp/>+<sp/>4,<sp/><ref refid="watch2_8h_1a7b3b25cba33b07c303f3060fe41887f6" kindref="member">BLACK</ref>);</highlight></codeline>
+<codeline lineno="310"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.drawRoundRect(button_x,<sp/>button_y<sp/>+<sp/>(button_size<sp/>/<sp/>3),<sp/><ref refid="watch2_8h_1a2cd109632a6dcccaa80b43561b1ab700" kindref="member">SCREEN_WIDTH</ref><sp/>-<sp/>spacing<sp/>-<sp/>button_x,<sp/>button_size<sp/>/<sp/>3,<sp/>(button_size<sp/>/<sp/>3)/2,<sp/><ref refid="watch2_8h_1a87b537f5fa5c109d3c05c13d6b18f382" kindref="member">WHITE</ref>);</highlight></codeline>
+<codeline lineno="311"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>slider_x<sp/>=<sp/>button_x<sp/>+<sp/>(<sp/><ref refid="namespacewatch2_1ad8211686a208f1ce1f5bc4b989d3bd38" kindref="member">watch2::speaker_volume</ref><sp/>*<sp/>(<sp/>(<sp/><ref refid="watch2_8h_1a2cd109632a6dcccaa80b43561b1ab700" kindref="member">SCREEN_WIDTH</ref><sp/>-<sp/>button_size<sp/>-<sp/>spacing<sp/>-<sp/>2<sp/>-<sp/>button_x<sp/>)<sp/>/<sp/>21.0<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="312"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.fillRect(slider_x<sp/>-<sp/>2,<sp/>button_y<sp/>-<sp/>2,<sp/>button_size<sp/>+<sp/>4,<sp/>button_size<sp/>+<sp/>4,<sp/><ref refid="watch2_8h_1a7b3b25cba33b07c303f3060fe41887f6" kindref="member">BLACK</ref>);</highlight></codeline>
+<codeline lineno="313"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.fillRoundRect(slider_x<sp/>-<sp/>2,<sp/>button_y<sp/>-<sp/>2,<sp/>button_size<sp/>+<sp/>4,<sp/>button_size<sp/>+<sp/>4,<sp/>radius,<sp/>0x2D50);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//background<sp/>thing</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="314"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>outline_colour<sp/>=<sp/>(selected_widget<sp/>==<sp/>0)<sp/>?<sp/><ref refid="watch2_8h_1a87b537f5fa5c109d3c05c13d6b18f382" kindref="member">WHITE</ref><sp/>:<sp/>0x2D50;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//determine<sp/>outline<sp/>colour</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="315"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.drawRoundRect(slider_x<sp/>-<sp/>2,<sp/>button_y<sp/>-<sp/>2,<sp/>button_size<sp/>+<sp/>4,<sp/>button_size<sp/>+<sp/>4,<sp/>radius,<sp/>outline_colour);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//draw<sp/>outline</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="316"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.drawBitmap(slider_x,<sp/>button_y,<sp/><ref refid="namespacewatch2_1aefa95280b68ef3a334b5ef0e5f0ff644" kindref="member">watch2::small_icons</ref>[</highlight><highlight class="stringliteral">&quot;volume&quot;</highlight><highlight class="normal">].data(),<sp/>button_size,<sp/>button_size,<sp/><ref refid="watch2_8h_1a87b537f5fa5c109d3c05c13d6b18f382" kindref="member">WHITE</ref>);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//draw<sp/>icon</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="317"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>button_y<sp/>+=<sp/>spacing<sp/>+<sp/>button_size;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//move<sp/>cursor</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="318"><highlight class="normal"></highlight></codeline>
+<codeline lineno="319"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//draw<sp/>brightness<sp/>slider<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>yellow</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="320"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(selected_widget<sp/>==<sp/>1)<sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.fillRect(button_x<sp/>-<sp/>2,<sp/>button_y<sp/>-<sp/>2,<sp/><ref refid="watch2_8h_1a2cd109632a6dcccaa80b43561b1ab700" kindref="member">SCREEN_WIDTH</ref><sp/>-<sp/>button_x,<sp/>button_size<sp/>+<sp/>4,<sp/><ref refid="watch2_8h_1a7b3b25cba33b07c303f3060fe41887f6" kindref="member">BLACK</ref>);</highlight></codeline>
+<codeline lineno="321"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.drawRoundRect(button_x,<sp/>button_y<sp/>+<sp/>(button_size<sp/>/<sp/>3),<sp/><ref refid="watch2_8h_1a2cd109632a6dcccaa80b43561b1ab700" kindref="member">SCREEN_WIDTH</ref><sp/>-<sp/>spacing<sp/>-<sp/>button_x,<sp/>button_size<sp/>/<sp/>3,<sp/>(button_size<sp/>/<sp/>3)/2,<sp/><ref refid="watch2_8h_1a87b537f5fa5c109d3c05c13d6b18f382" kindref="member">WHITE</ref>);</highlight></codeline>
+<codeline lineno="322"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>slider_x<sp/>=<sp/>button_x<sp/>+<sp/>(<sp/><ref refid="namespacewatch2_1afde7e7844aa64c1211edf103dbeb7013" kindref="member">watch2::screen_brightness</ref><sp/>*<sp/>(<sp/>(float)(<sp/><ref refid="watch2_8h_1a2cd109632a6dcccaa80b43561b1ab700" kindref="member">SCREEN_WIDTH</ref><sp/>-<sp/>button_size<sp/>-<sp/>spacing<sp/>-<sp/>2<sp/>-<sp/>button_x<sp/>)<sp/>/<sp/>(<sp/>255.0<sp/>)<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="323"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.fillRect(slider_x<sp/>-<sp/>2,<sp/>button_y<sp/>-<sp/>2,<sp/>button_size<sp/>+<sp/>4,<sp/>button_size<sp/>+<sp/>4,<sp/><ref refid="watch2_8h_1a7b3b25cba33b07c303f3060fe41887f6" kindref="member">BLACK</ref>);</highlight></codeline>
+<codeline lineno="324"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.fillRoundRect(slider_x<sp/>-<sp/>2,<sp/>button_y<sp/>-<sp/>2,<sp/>button_size<sp/>+<sp/>4,<sp/>button_size<sp/>+<sp/>4,<sp/>radius,<sp/>0xFEC0);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//background<sp/>thing</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="325"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>outline_colour<sp/>=<sp/>(selected_widget<sp/>==<sp/>1)<sp/>?<sp/><ref refid="watch2_8h_1a87b537f5fa5c109d3c05c13d6b18f382" kindref="member">WHITE</ref><sp/>:<sp/>0xFEC0;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//determine<sp/>outline<sp/>colour</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="326"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.drawRoundRect(slider_x<sp/>-<sp/>2,<sp/>button_y<sp/>-<sp/>2,<sp/>button_size<sp/>+<sp/>4,<sp/>button_size<sp/>+<sp/>4,<sp/>radius,<sp/>outline_colour);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//draw<sp/>outline</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="327"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.drawBitmap(slider_x,<sp/>button_y,<sp/><ref refid="namespacewatch2_1aefa95280b68ef3a334b5ef0e5f0ff644" kindref="member">watch2::small_icons</ref>[</highlight><highlight class="stringliteral">&quot;sun&quot;</highlight><highlight class="normal">].data(),<sp/>button_size,<sp/>button_size,<sp/><ref refid="watch2_8h_1a87b537f5fa5c109d3c05c13d6b18f382" kindref="member">WHITE</ref>);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//draw<sp/>icon</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="328"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>button_y<sp/>+=<sp/>spacing<sp/>+<sp/>button_size;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//move<sp/>cursor</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="329"><highlight class="normal"></highlight></codeline>
+<codeline lineno="330"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//draw<sp/>torch<sp/>slider<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>adafruit<sp/>yellow</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="331"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(selected_widget<sp/>==<sp/>2)<sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.fillRect(button_x<sp/>-<sp/>2,<sp/>button_y<sp/>-<sp/>2,<sp/><ref refid="watch2_8h_1a2cd109632a6dcccaa80b43561b1ab700" kindref="member">SCREEN_WIDTH</ref><sp/>-<sp/>button_x,<sp/>button_size<sp/>+<sp/>4,<sp/><ref refid="watch2_8h_1a7b3b25cba33b07c303f3060fe41887f6" kindref="member">BLACK</ref>);</highlight></codeline>
+<codeline lineno="332"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.drawRoundRect(button_x,<sp/>button_y<sp/>+<sp/>(button_size<sp/>/<sp/>3),<sp/><ref refid="watch2_8h_1a2cd109632a6dcccaa80b43561b1ab700" kindref="member">SCREEN_WIDTH</ref><sp/>-<sp/>spacing<sp/>-<sp/>button_x,<sp/>button_size<sp/>/<sp/>3,<sp/>(button_size<sp/>/<sp/>3)/2,<sp/><ref refid="watch2_8h_1a87b537f5fa5c109d3c05c13d6b18f382" kindref="member">WHITE</ref>);</highlight></codeline>
+<codeline lineno="333"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>slider_x<sp/>=<sp/>button_x<sp/>+<sp/>(<sp/><ref refid="namespacewatch2_1a1e8107643e44ee85cf755ea41fb42be5" kindref="member">watch2::torch_brightness</ref><sp/>*<sp/>(<sp/>(<sp/><ref refid="watch2_8h_1a2cd109632a6dcccaa80b43561b1ab700" kindref="member">SCREEN_WIDTH</ref><sp/>-<sp/>button_size<sp/>-<sp/>spacing<sp/>-<sp/>2<sp/>-<sp/>button_x<sp/>)<sp/>/<sp/>255.0<sp/>)<sp/>);</highlight></codeline>
+<codeline lineno="334"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.fillRect(slider_x<sp/>-<sp/>2,<sp/>button_y<sp/>-<sp/>2,<sp/>button_size<sp/>+<sp/>4,<sp/>button_size<sp/>+<sp/>4,<sp/><ref refid="watch2_8h_1a7b3b25cba33b07c303f3060fe41887f6" kindref="member">BLACK</ref>);</highlight></codeline>
+<codeline lineno="335"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.fillRoundRect(slider_x<sp/>-<sp/>2,<sp/>button_y<sp/>-<sp/>2,<sp/>button_size<sp/>+<sp/>4,<sp/>button_size<sp/>+<sp/>4,<sp/>radius,<sp/><ref refid="watch2_8h_1abf681265909adf3d3e8116c93c0ba179" kindref="member">YELLOW</ref>);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//background<sp/>thing</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="336"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>outline_colour<sp/>=<sp/>(selected_widget<sp/>==<sp/>2)<sp/>?<sp/><ref refid="watch2_8h_1a87b537f5fa5c109d3c05c13d6b18f382" kindref="member">WHITE</ref><sp/>:<sp/><ref refid="watch2_8h_1abf681265909adf3d3e8116c93c0ba179" kindref="member">YELLOW</ref>;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//determine<sp/>outline<sp/>colour</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="337"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.drawRoundRect(slider_x<sp/>-<sp/>2,<sp/>button_y<sp/>-<sp/>2,<sp/>button_size<sp/>+<sp/>4,<sp/>button_size<sp/>+<sp/>4,<sp/>radius,<sp/>outline_colour);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//draw<sp/>outline</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="338"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.drawBitmap(slider_x,<sp/>button_y,<sp/><ref refid="namespacewatch2_1aefa95280b68ef3a334b5ef0e5f0ff644" kindref="member">watch2::small_icons</ref>[</highlight><highlight class="stringliteral">&quot;torch_but_smaller&quot;</highlight><highlight class="normal">].data(),<sp/>button_size,<sp/>button_size,<sp/><ref refid="watch2_8h_1a87b537f5fa5c109d3c05c13d6b18f382" kindref="member">WHITE</ref>);<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//draw<sp/>icon</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="339"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>button_y<sp/>+=<sp/>spacing<sp/>+<sp/>button_size;<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//move<sp/>cursor</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="340"><highlight class="normal"></highlight></codeline>
+<codeline lineno="341"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//draw<sp/>wifi<sp/>button</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="342"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="namespacewatch2_1aff7ef1c423d87bd2b88d8e6840a4625d" kindref="member">watch2::wifi_state</ref><sp/>==<sp/>3)<sp/>background_colour<sp/>=<sp/>0x867d;<sp/></highlight><highlight class="comment">//<sp/>enabled<sp/>+<sp/>connected</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="343"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="namespacewatch2_1aff7ef1c423d87bd2b88d8e6840a4625d" kindref="member">watch2::wifi_state</ref><sp/>==<sp/>2)<sp/>background_colour<sp/>=<sp/>0x6E5A;<sp/></highlight><highlight class="comment">//<sp/>enabled<sp/>+<sp/>connecting</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="344"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="namespacewatch2_1aff7ef1c423d87bd2b88d8e6840a4625d" kindref="member">watch2::wifi_state</ref><sp/>==<sp/>1)<sp/>background_colour<sp/>=<sp/>0x6E5A;<sp/></highlight><highlight class="comment">//<sp/>enabled<sp/>+<sp/>disconnected</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="345"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="namespacewatch2_1aff7ef1c423d87bd2b88d8e6840a4625d" kindref="member">watch2::wifi_state</ref><sp/>==<sp/>0)<sp/>background_colour<sp/>=<sp/><ref refid="watch2_8h_1a7b3b25cba33b07c303f3060fe41887f6" kindref="member">BLACK</ref>;<sp/><sp/></highlight><highlight class="comment">//<sp/>disabled</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="346"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.fillRoundRect(button_x<sp/>-<sp/>2,<sp/>button_y<sp/>-<sp/>2,<sp/>button_size<sp/>+<sp/>4,<sp/>button_size<sp/>+<sp/>4,<sp/>radius,<sp/>background_colour);</highlight></codeline>
+<codeline lineno="347"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>outline_colour<sp/>=<sp/>(<sp/>!(selected_widget<sp/>==<sp/>3)<sp/>!=<sp/>!(<ref refid="namespacewatch2_1aff7ef1c423d87bd2b88d8e6840a4625d" kindref="member">watch2::wifi_state</ref><sp/>==<sp/>3)<sp/>)<sp/>?<sp/>0x867D<sp/>:<sp/><ref refid="watch2_8h_1a87b537f5fa5c109d3c05c13d6b18f382" kindref="member">WHITE</ref>;</highlight></codeline>
+<codeline lineno="348"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.drawRoundRect(button_x<sp/>-<sp/>2,<sp/>button_y<sp/>-<sp/>2,<sp/>button_size<sp/>+<sp/>4,<sp/>button_size<sp/>+<sp/>4,<sp/>radius,<sp/>outline_colour);</highlight></codeline>
+<codeline lineno="349"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.drawBitmap(button_x,<sp/>button_y,<sp/><ref refid="namespacewatch2_1aefa95280b68ef3a334b5ef0e5f0ff644" kindref="member">watch2::small_icons</ref>[</highlight><highlight class="stringliteral">&quot;wifi&quot;</highlight><highlight class="normal">].data(),<sp/>button_size,<sp/>button_size,<sp/>(<ref refid="namespacewatch2_1aff7ef1c423d87bd2b88d8e6840a4625d" kindref="member">watch2::wifi_state</ref><sp/>!=<sp/>0)<sp/>?<sp/><ref refid="watch2_8h_1a87b537f5fa5c109d3c05c13d6b18f382" kindref="member">WHITE</ref><sp/>:<sp/>0x867D);</highlight></codeline>
+<codeline lineno="350"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>button_x<sp/>+=<sp/>spacing<sp/>+<sp/>button_size;</highlight></codeline>
+<codeline lineno="351"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="namespacewatch2_1aff7ef1c423d87bd2b88d8e6840a4625d" kindref="member">watch2::wifi_state</ref><sp/>!=<sp/>last_wifi_state)<sp/>last_wifi_state<sp/>=<sp/><ref refid="namespacewatch2_1aff7ef1c423d87bd2b88d8e6840a4625d" kindref="member">watch2::wifi_state</ref>;</highlight></codeline>
+<codeline lineno="352"><highlight class="normal"></highlight></codeline>
+<codeline lineno="353"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//draw<sp/>bluetooth<sp/>button<sp/><sp/>bluetooth<sp/>blue</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="354"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="namespacewatch2_1a4815946828c48e88f07713b1d5ec7a48" kindref="member">watch2::bluetooth_state</ref><sp/>==<sp/>3)<sp/>background_colour<sp/>=<sp/>0x041F;<sp/></highlight><highlight class="comment">//<sp/>enabled<sp/>+<sp/>connected</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="355"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="namespacewatch2_1a4815946828c48e88f07713b1d5ec7a48" kindref="member">watch2::bluetooth_state</ref><sp/>==<sp/>2)<sp/>background_colour<sp/>=<sp/>0x743E;<sp/></highlight><highlight class="comment">//<sp/>enabled<sp/>+<sp/>disconnected</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="356"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="namespacewatch2_1a4815946828c48e88f07713b1d5ec7a48" kindref="member">watch2::bluetooth_state</ref><sp/>==<sp/>1)<sp/>background_colour<sp/>=<sp/>0xA55C;<sp/></highlight><highlight class="comment">//<sp/>enabling</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="357"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="namespacewatch2_1a4815946828c48e88f07713b1d5ec7a48" kindref="member">watch2::bluetooth_state</ref><sp/>==<sp/>0)<sp/>background_colour<sp/>=<sp/><ref refid="watch2_8h_1a7b3b25cba33b07c303f3060fe41887f6" kindref="member">BLACK</ref>;<sp/><sp/></highlight><highlight class="comment">//<sp/>disabled</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="358"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.fillRoundRect(button_x<sp/>-<sp/>2,<sp/>button_y<sp/>-<sp/>2,<sp/>button_size<sp/>+<sp/>4,<sp/>button_size<sp/>+<sp/>4,<sp/>radius,<sp/>background_colour);</highlight></codeline>
+<codeline lineno="359"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>outline_colour<sp/>=<sp/>(<sp/>!(selected_widget<sp/>==<sp/>4)<sp/>!=<sp/>!(<ref refid="namespacewatch2_1a4815946828c48e88f07713b1d5ec7a48" kindref="member">watch2::bluetooth_state</ref><sp/>==<sp/>3)<sp/>)<sp/>?<sp/>0x041F<sp/>:<sp/><ref refid="watch2_8h_1a87b537f5fa5c109d3c05c13d6b18f382" kindref="member">WHITE</ref>;</highlight></codeline>
+<codeline lineno="360"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.drawRoundRect(button_x<sp/>-<sp/>2,<sp/>button_y<sp/>-<sp/>2,<sp/>button_size<sp/>+<sp/>4,<sp/>button_size<sp/>+<sp/>4,<sp/>radius,<sp/>outline_colour);</highlight></codeline>
+<codeline lineno="361"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="namespacewatch2_1ae6409853423f64360383769753ee7b8e" kindref="member">watch2::oled</ref>.drawBitmap(button_x,<sp/>button_y,<sp/><ref refid="namespacewatch2_1aefa95280b68ef3a334b5ef0e5f0ff644" kindref="member">watch2::small_icons</ref>[</highlight><highlight class="stringliteral">&quot;bluetooth&quot;</highlight><highlight class="normal">].data(),<sp/>button_size,<sp/>button_size,<sp/>(<ref refid="namespacewatch2_1a4815946828c48e88f07713b1d5ec7a48" kindref="member">watch2::bluetooth_state</ref><sp/>!=<sp/>0)<sp/>?<sp/><ref refid="watch2_8h_1a87b537f5fa5c109d3c05c13d6b18f382" kindref="member">WHITE</ref><sp/>:<sp/>0x041F);</highlight></codeline>
+<codeline lineno="362"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>button_x<sp/>+=<sp/>spacing<sp/>+<sp/>button_size;</highlight></codeline>
+<codeline lineno="363"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="namespacewatch2_1a4815946828c48e88f07713b1d5ec7a48" kindref="member">watch2::bluetooth_state</ref><sp/>!=<sp/>last_bt_state)<sp/>last_bt_state<sp/>=<sp/><ref refid="namespacewatch2_1a4815946828c48e88f07713b1d5ec7a48" kindref="member">watch2::bluetooth_state</ref>;</highlight></codeline>
+<codeline lineno="364"><highlight class="normal"></highlight></codeline>
+<codeline lineno="365"><highlight class="normal"></highlight></codeline>
+<codeline lineno="366"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>});</highlight></codeline>
+<codeline lineno="367"><highlight class="normal"></highlight></codeline>
+<codeline lineno="368"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(<ref refid="watch2_8h_1ad5ef942e8561d4b3c53ad44cb5d07969" kindref="member">dpad_down_active</ref>())</highlight></codeline>
+<codeline lineno="369"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>{</highlight></codeline>
+<codeline lineno="370"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordflow">if</highlight><highlight class="normal"><sp/>(go_back_to_watch_face)<sp/><ref refid="namespacewatch2_1a786f5e96c939f6465c2341a31cad1385" kindref="member">watch2::switchState</ref>(<ref refid="namespacewatch2_1a9041b045415e4077f6046a01f9ee31be" kindref="member">watch2::state</ref>,<sp/>0);</highlight></codeline>
+<codeline lineno="371"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="372"><highlight class="normal"></highlight></codeline>
+<codeline lineno="373"><highlight class="normal"><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="374"><highlight class="normal">}</highlight></codeline>
+    </programlisting>
+    <location file="main/states/state_watch_face.cpp"/>
+  </compounddef>
+</doxygen>
