@@ -123,10 +123,6 @@ namespace watch2
 
         //wip screenshot tool
         //this doesn't work yet
-        if (btn_zero.wasPressed())
-        {
-            messageBox("did i die?", {"yes", "yes"});
-        }
         // if (btn_zero.pressedFor(1000))
         // {
         //     oled.drawPixel(0,0,BLUE);
@@ -665,7 +661,7 @@ namespace watch2
         else switchState(0);
     }
 
-    void drawMenu(int x, int y, int width, int height, std::vector<std::string> items, int selected, bool scroll, int colour)
+    void drawMenu(int x, int y, int width, int height, std::vector<std::string> items, int selected, bool scroll, bool centre, int colour)
     {
         static int16_t x1, y1;
         static uint16_t w=0, w2=0, h=0, h2=0;
@@ -784,8 +780,17 @@ namespace watch2
                 else itemtext = String(item.c_str());
 
                 //print the text
-                oled.setCursor(x + padding, y + padding - y_offset);
-                oled.print(itemtext);
+                if (centre)
+                {
+                    oled.setTextDatum(TC_DATUM);
+                    oled.drawString(itemtext, x + (width / 2), y + padding);
+                    oled.setTextDatum(TL_DATUM);
+                }
+                else
+                {
+                    oled.setCursor(x + padding, y + padding - y_offset);
+                    oled.print(itemtext);
+                }
 
                 y += ht;
 

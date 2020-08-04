@@ -31,3 +31,6 @@
 [submodule "main/libraries/ESP8266Audio"]
 	path = main/libraries/ESP8266Audio
 	url = https://github.com/earlephilhower/ESP8266Audio.git
+[submodule "main/libraries/libtris"]
+	path = main/libraries/libtris
+	url = https://github.com/atctwo/libtris.git

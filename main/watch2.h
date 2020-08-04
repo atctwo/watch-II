@@ -504,9 +504,10 @@ namespace watch2
      * @param items a vector or array of std::strings that make up the menu items
      * @param selected the index of the selected menu item
      * @param scroll whether or not the menu should scroll when the selected item is beyond a certain threshold that i can't remember
+     * @param centre if this is true, text will be drawn in the middle of the button
      * @param colour the colour the menu should be drawn.  by default, this will be the theme colour
      */
-    void    drawMenu(int x, int y, int width, int height, std::vector<std::string> items, int selected, bool scroll=true, int colour=themecolour);
+    void    drawMenu(int x, int y, int width, int height, std::vector<std::string> items, int selected, bool scroll=true, bool centre = false, int colour=themecolour);
 
     /**
      * @brief draws a settings menu.
