@@ -123,10 +123,6 @@ namespace watch2
 
         //wip screenshot tool
         //this doesn't work yet
-        if (btn_zero.wasPressed())
-        {
-            messageBox("did i die?", {"yes", "yes"});
-        }
         // if (btn_zero.pressedFor(1000))
         // {
         //     oled.drawPixel(0,0,BLUE);
@@ -665,7 +661,7 @@ namespace watch2
         else switchState(0);
     }
 
-    void drawMenu(int x, int y, int width, int height, std::vector<std::string> items, int selected, bool scroll, int colour)
+    void drawMenu(int x, int y, int width, int height, std::vector<std::string> items, int selected, bool scroll, bool centre, int colour)
     {
         static int16_t x1, y1;
         static uint16_t w=0, w2=0, h=0, h2=0;
@@ -784,8 +780,17 @@ namespace watch2
                 else itemtext = String(item.c_str());
 
                 //print the text
-                oled.setCursor(x + padding, y + padding - y_offset);
-                oled.print(itemtext);
+                if (centre)
+                {
+                    oled.setTextDatum(TC_DATUM);
+                    oled.drawString(itemtext, x + (width / 2), y + padding);
+                    oled.setTextDatum(TL_DATUM);
+                }
+                else
+                {
+                    oled.setCursor(x + padding, y + padding - y_offset);
+                    oled.print(itemtext);
+                }
 
                 y += ht;
 
@@ -1596,6 +1601,68 @@ namespace watch2
         forceRedraw = true;
         if (clear_screen) oled.fillScreen(0);
         return selected_button;
+    }
+
+    uint16_t popup_menu(const char *title, std::vector<std::string> items, uint16_t colour)
+    {
+        uint16_t selected_item = 0;
+        uint16_t padding = 4;
+        uint16_t item_height = (3 * padding) + oled.fontHeight();
+
+        uint16_t dialogue_w = 150;
+        uint16_t dialogue_h = (2 * padding) + oled.fontHeight() + (items.size() * item_height);
+        uint16_t dialogue_x = (SCREEN_WIDTH / 2) - (dialogue_w / 2);
+        uint16_t dialogue_y = (SCREEN_HEIGHT / 2) - (dialogue_h / 2);
+        uint16_t dialogue_r = 10;
+
+        oled.fillRoundRect(dialogue_x, dialogue_y, dialogue_w, dialogue_h, dialogue_r, BLACK);
+        oled.drawRoundRect(dialogue_x, dialogue_y, dialogue_w, dialogue_h, dialogue_r, colour);
+
+        oled.setTextDatum(TC_DATUM);
+        oled.drawString(title, dialogue_x + (dialogue_w / 2), dialogue_y + padding);
+
+        drawMenu(
+            dialogue_x + padding,
+            dialogue_y + padding + oled.fontHeight(),
+            dialogue_w - (padding * 2), item_height * items.size(),
+            items, selected_item, false, true, colour
+        );
+
+        while(1)
+        {
+            startLoop();
+
+            if (dpad_up_active())
+            {
+                if (selected_item == 0) selected_item = items.size() - 1;
+                else selected_item--;
+                
+            }
+
+            if (dpad_down_active())
+            {
+                if (selected_item == items.size() - 1) selected_item = 0;
+                else selected_item++;
+            }
+
+            if (dpad_any_active())
+            {
+                drawMenu(
+                    dialogue_x + padding,
+                    dialogue_y + padding + oled.fontHeight(),
+                    dialogue_w - (padding * 2), item_height * items.size(),
+                    items, selected_item, false, true, colour
+                );
+            }
+
+            if (dpad_enter_active()) break;
+
+            endLoop();
+        }
+
+        oled.fillScreen(BLACK);
+        forceRedraw = true;
+        return selected_item;
     }
 
     int initSD(bool handleCS)

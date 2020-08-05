@@ -504,9 +504,10 @@ namespace watch2
      * @param items a vector or array of std::strings that make up the menu items
      * @param selected the index of the selected menu item
      * @param scroll whether or not the menu should scroll when the selected item is beyond a certain threshold that i can't remember
+     * @param centre if this is true, text will be drawn in the middle of the button
      * @param colour the colour the menu should be drawn.  by default, this will be the theme colour
      */
-    void    drawMenu(int x, int y, int width, int height, std::vector<std::string> items, int selected, bool scroll=true, int colour=themecolour);
+    void    drawMenu(int x, int y, int width, int height, std::vector<std::string> items, int selected, bool scroll=true, bool centre = false, int colour=themecolour);
 
     /**
      * @brief draws a settings menu.
@@ -586,6 +587,16 @@ namespace watch2
      * @return uint8_t the index of whatever button is selected
      */
     uint8_t messageBox(const char* msg, std::vector<const char*> btns={"Ok"}, bool clear_screen=true, uint16_t colour=themecolour);
+
+    /**
+     * @brief opens a popup menu with a series of buttons
+     * 
+     * @param title the title that is displayed at the top of the dialogue
+     * @param items an array or vector of strings that represent the menu items
+     * @param colour the colour to draw the dialogue
+     * @return uint16_t the index of the selected menu item
+     */
+    uint16_t popup_menu(const char *title, std::vector<std::string> items, uint16_t colour=watch2::themecolour);
 
     /**
      * @brief initalises the SD card.
