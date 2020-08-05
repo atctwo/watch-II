@@ -589,6 +589,16 @@ namespace watch2
     uint8_t messageBox(const char* msg, std::vector<const char*> btns={"Ok"}, bool clear_screen=true, uint16_t colour=themecolour);
 
     /**
+     * @brief opens a popup menu with a series of buttons
+     * 
+     * @param title the title that is displayed at the top of the dialogue
+     * @param items an array or vector of strings that represent the menu items
+     * @param colour the colour to draw the dialogue
+     * @return uint16_t the index of the selected menu item
+     */
+    uint16_t popup_menu(const char *title, std::vector<std::string> items, uint16_t colour=watch2::themecolour);
+
+    /**
      * @brief initalises the SD card.
      * 
      * this will try and initalise the SD card and set up the watch's variables that track the SD card's state.  most watch 2 functions that work with the SD card

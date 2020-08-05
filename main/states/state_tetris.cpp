@@ -1,68 +1,6 @@
 #include "../watch2.h"
 #include "../libraries/libtris/src/libtris.h"
 
-uint16_t popup_menu(const char *title, std::vector<std::string> items, uint16_t colour=watch2::themecolour)
-{
-    uint16_t selected_item = 0;
-    uint16_t padding = 4;
-    uint16_t item_height = (3 * padding) + watch2::oled.fontHeight();
-
-    uint16_t dialogue_w = 150;
-    uint16_t dialogue_h = (2 * padding) + watch2::oled.fontHeight() + (items.size() * item_height);
-    uint16_t dialogue_x = (SCREEN_WIDTH / 2) - (dialogue_w / 2);
-    uint16_t dialogue_y = (SCREEN_HEIGHT / 2) - (dialogue_h / 2);
-    uint16_t dialogue_r = 10;
-
-    watch2::oled.fillRoundRect(dialogue_x, dialogue_y, dialogue_w, dialogue_h, dialogue_r, BLACK);
-    watch2::oled.drawRoundRect(dialogue_x, dialogue_y, dialogue_w, dialogue_h, dialogue_r, colour);
-
-    watch2::oled.setTextDatum(TC_DATUM);
-    watch2::oled.drawString(title, dialogue_x + (dialogue_w / 2), dialogue_y + padding);
-
-    watch2::drawMenu(
-        dialogue_x + padding,
-        dialogue_y + padding + watch2::oled.fontHeight(),
-        dialogue_w - (padding * 2), item_height * items.size(),
-        items, selected_item, false, true, colour
-    );
-
-    while(1)
-    {
-        watch2::startLoop();
-
-        if (dpad_up_active())
-        {
-            if (selected_item == 0) selected_item = items.size() - 1;
-            else selected_item--;
-            
-        }
-
-        if (dpad_down_active())
-        {
-            if (selected_item == items.size() - 1) selected_item = 0;
-            else selected_item++;
-        }
-
-        if (dpad_any_active())
-        {
-            watch2::drawMenu(
-                dialogue_x + padding,
-                dialogue_y + padding + watch2::oled.fontHeight(),
-                dialogue_w - (padding * 2), item_height * items.size(),
-                items, selected_item, false, true, colour
-            );
-        }
-
-        if (dpad_enter_active()) break;
-
-        watch2::endLoop();
-    }
-
-    watch2::oled.fillScreen(BLACK);
-    watch2::forceRedraw = true;
-    return selected_item;
-}
-
 void state_func_tetris()
 {
 
@@ -271,7 +209,7 @@ void state_func_tetris()
         
         if (watch2::btn_zero.wasPressed())
         {
-            uint8_t selected_menu_item = popup_menu("Paused", {"Resume", "Exit Game"});
+            uint8_t selected_menu_item = watch2::popup_menu("Paused", {"Resume", "Exit Game"});
             if (selected_menu_item == 1)
             {
                 watch2::switchState(watch2::state, 0);
