@@ -77,6 +77,7 @@ void state_func_tetris()
     static bool paused = false;
     static uint32_t last_score = 0;
     static uint16_t last_level = 0, last_lines = 0, last_combo = 0;
+    static uint16_t item_height = 12 + watch2::oled.fontHeight();
     static uint16_t tetrimino_colours[14] = {YELLOW, 0x87FF, ORANGE, BLUE, GREEN, RED, TFT_PURPLE, 0xfff0, 0xBFFF, 0xFF53, 0xB5BF, 0xBFF7, 0xFDF7, 0xDDFF};
     static libtris<uint16_t> tetris(matrix_width, matrix_height + vanish_zone_height, vanish_zone_height, 19, tetrimino_colours);
     block_info<uint16_t> **matrix = tetris.getMatrix();
@@ -84,6 +85,8 @@ void state_func_tetris()
 
     if (watch2::states[watch2::state].variant == 0) // menu
     {
+        static uint8_t selected_item = 0;
+
         if (!watch2::state_init)
         {
             // watch2::oled.setCursor(0, watch2::top_thing_height);
@@ -96,10 +99,26 @@ void state_func_tetris()
 
             watch2::oled.pushImage(35, 10, 170, 118, watch2::icons["tetris_logo"].data());
 
-            watch2::oled.setTextColor(WHITE, BLACK);
-            watch2::oled.setCursor(0, SCREEN_HEIGHT - (2 * watch2::oled.fontHeight()));
-            watch2::oled.print("press enter to start\npress left to exit");
+            
         }
+
+        if (dpad_up_active())
+        {
+            if (selected_item == 0) selected_item = 1;
+            else selected_item--;
+        }
+
+        if (dpad_down_active())
+        {
+            if (selected_item == 1) selected_item = 0;
+            else selected_item++;
+        }
+
+        draw(dpad_any_active(), {
+
+            watch2::drawMenu(20, 130, SCREEN_WIDTH - 40, SCREEN_HEIGHT - 118, {"Play", "Exit"}, selected_item, false, true);
+
+        });
 
         if (dpad_left_active())
         {
@@ -108,7 +127,20 @@ void state_func_tetris()
 
         if (dpad_enter_active())
         {
-            watch2::switchState(watch2::state, 1);
+            switch(selected_item)
+            {
+                case 0: // play
+                    watch2::switchState(watch2::state, 1);
+                    break;
+
+                // case 1: // settings
+                //     watch2::switchState(watch2::state, 2);
+                //     break;
+
+                case 1: // exit
+                    watch2::switchState(2);
+                    break;
+            }
         }
 
     }
@@ -248,6 +280,16 @@ void state_func_tetris()
 
         frame_end = millis();
         dt = frame_end - frame_start;
+    }
+
+    else if (watch2::states[watch2::state].variant == 2) // settings
+    {
+        
+        
+        if (dpad_left_active())
+        {
+            watch2::switchState(watch2::state, 0);
+        }
     }
 
 }
