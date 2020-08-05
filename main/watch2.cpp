@@ -562,8 +562,10 @@ namespace watch2
         dimScreen(0, pause_thing);
         oled.fillScreen(BLACK);
 
-        //turn off display
-        //oled.sendCommand(0xAE);
+        // turn off display
+        // https://www.rhydolabz.com/documents/33/ST7789.pdf, pg182
+        // https://github.com/adafruit/Adafruit-ST7735-Library/blob/master/Adafruit_ST77xx.h#L46
+        oled.writecommand(0x10);
 
         //save selected_state
         //selected_state = selected_menu_icon->first;
@@ -635,7 +637,7 @@ namespace watch2
         //when the esp is woken up, it will resume execution at this point
 
         Serial.println("awake");
-        //oled.sendCommand(0xAF);
+        oled.writecommand(0x11); // wake up screen
 
         //set up buttons
         btn_dpad_up.begin();
