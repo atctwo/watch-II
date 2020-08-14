@@ -1,8 +1,17 @@
 
 #define SPI_SPEED SD_SCK_MHZ(4)
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "esp_task_wdt.h"
 #include "watch2.h"
 #include "icons/app_icons.cpp"
 #include "icons/small_icons.cpp"
+
+// #define NO_QSTR
+// #include "py/compile.h"
+// #include "py/runtime.h"
+// #include "py/gc.h"
+// #include "py/stackctrl.h"
 
 ////////////////////////////////////////
 // setup function
@@ -165,6 +174,11 @@ void setup() {
     }
     //else selected_menu_icon = states.find(selected_state);
     Serial.println("done");
+
+    // micropython test
+    Serial.print("micropython test: ");
+    //G17mp_stack_set_limit(80000);
+    Serial.print("done!");
 
     //finish up
     watch2::boot_count++;
@@ -362,6 +376,32 @@ void loop() {
     watch2::endLoop();
     
 
+}
+
+
+
+
+
+TaskHandle_t loopTaskHandle = NULL;
+bool loopTaskWDTEnabled;
+
+void loopTask(void *pvParameters)
+{
+    setup();
+    for(;;) {
+        if(loopTaskWDTEnabled){
+            esp_task_wdt_reset();
+        }
+        loop();
+        if (serialEventRun) serialEventRun();
+    }
+}
+
+extern "C" void app_main()
+{
+    loopTaskWDTEnabled = false;
+    initArduino();
+    xTaskCreateUniversal(loopTask, "loopTask", 8192, NULL, 1, &loopTaskHandle, CONFIG_ARDUINO_RUNNING_CORE);
 }
 
 
