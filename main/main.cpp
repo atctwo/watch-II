@@ -7,12 +7,6 @@
 #include "icons/app_icons.cpp"
 #include "icons/small_icons.cpp"
 
-// #define NO_QSTR
-// #include "py/compile.h"
-// #include "py/runtime.h"
-// #include "py/gc.h"
-// #include "py/stackctrl.h"
-
 ////////////////////////////////////////
 // setup function
 ////////////////////////////////////////
@@ -177,7 +171,6 @@ void setup() {
 
     // micropython test
     Serial.print("micropython test: ");
-    //G17mp_stack_set_limit(80000);
     Serial.print("done!");
 
     //finish up
@@ -379,8 +372,13 @@ void loop() {
 }
 
 
+////////////////////////////////////////
+// esp32 entrypoint
+////////////////////////////////////////
 
-
+// this is the main entrypoint for the system when being compiled with ESP-IDF.
+// this was stolen from the arduino esp32 core:
+// https://github.com/espressif/arduino-esp32/blob/master/cores/esp32/main.cpp
 
 TaskHandle_t loopTaskHandle = NULL;
 bool loopTaskWDTEnabled;

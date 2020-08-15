@@ -219,7 +219,7 @@ set(COMPONENT_INCLUDEDIRS
     libraries/tinyexpr/
     libraries/ESP32-BLE-Keyboard/
     libraries/ESP8266Audio/src/
-    libraries/micropython/
+    #libraries/micropython/
 )
 
 idf_component_register(SRCS         ${COMPONENT_SRCS}
@@ -260,6 +260,5 @@ target_compile_options(${COMPONENT_LIB} PRIVATE -DMBEDTLS_CONFIG_FILE=\"mbedtls/
 target_compile_options(${COMPONENT_LIB} PRIVATE -DHAVE_CONFIG_H)
 
 # micropython
-# add_library(micropython STATIC IMPORTED)
-# set_property(TARGET micropython PROPERTY IMPORTED_LOCATION "${COMPONENT_PATH}/libraries/micropython/libmicropython.a")
-# target_link_libraries(${COMPONENT_TARGET} PUBLIC micropython)
+# add_prebuilt_library(micropython "${COMPONENT_PATH}/libraries/micropython/libmicropython.a")
+# target_link_libraries(${COMPONENT_LIB} PUBLIC micropython)
