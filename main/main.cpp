@@ -187,6 +187,8 @@ void loop() {
 
     watch2::startLoop();
 
+    //Serial.printf("capacitive touch on gpio 0: %d\n", touchRead(0));
+
     //---------------------------------------
     // run current state
     //---------------------------------------

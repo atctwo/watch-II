@@ -2328,7 +2328,7 @@ namespace watch2
 
         // enable ble keyboard
         // Serial.println("[Bluetooth] starting BLE keyboard");
-        // ble_keyboard.begin();
+        //ble_keyboard.begin();
 
         Serial.println("[BLE] ble device init");
         BLEDevice::init("watch2");
@@ -2366,6 +2366,7 @@ namespace watch2
 
         Serial.println("[BLE] starting advertising");
         BLEDevice::startAdvertising();
+        
 
         Serial.println("[Bluetooth] finished enabling bluetooth");
         bluetooth_state = 2;
@@ -2376,8 +2377,8 @@ namespace watch2
         Serial.println("[Bluetooth] disabling bluetooth");
 
         // disable ble keyboard
-        // Serial.println("[Bluetooth] ending BLE keyboard");
-        // ble_keyboard.end();
+        Serial.println("[Bluetooth] ending BLE keyboard");
+        //ble_keyboard.end();
 
         Serial.println("[BLE] stopping advertising");
         BLEDevice::stopAdvertising();
