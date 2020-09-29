@@ -209,7 +209,7 @@ set(COMPONENT_SRCS
 
 # add includes
 
-set(COMPONENT_ADD_INCLUDEDIRS 
+set(COMPONENT_INCLUDEDIRS 
     libraries/SdFat/src/ 			
     libraries/JC_Button/src/ 	
     libraries/Arduino-IRremote/
@@ -219,9 +219,12 @@ set(COMPONENT_ADD_INCLUDEDIRS
     libraries/tinyexpr/
     libraries/ESP32-BLE-Keyboard/
     libraries/ESP8266Audio/src/
+    #libraries/micropython/
 )
 
-register_component()
+idf_component_register(SRCS         ${COMPONENT_SRCS}
+                       INCLUDE_DIRS ${COMPONENT_INCLUDEDIRS}
+                        )
 
 set_source_files_properties(
     "libraries/TFT_eSPI/TFT_eSPI.cpp"
@@ -229,26 +232,33 @@ set_source_files_properties(
     "-x c++ -std=gnu++17"
 )
 
-component_compile_options(-Wno-unused-variable)
-component_compile_options(-Wno-unused-value)
-component_compile_options(-Wno-unused-function)
-component_compile_options(-Wno-narrowing)
-component_compile_options(-Wno-address)
-component_compile_options(-Wno-format)
-component_compile_options(-Wno-char-subscripts)
-component_compile_options(-Wno-unused-but-set-variable)
-component_compile_options(-Wno-maybe-uninitialized)
-component_compile_options(-Wno-return-type)
-component_compile_options(-Wno-error)
-component_compile_options(-std=gnu++17)
-component_compile_options(-D_DEBUG)
-component_compile_options(-DUNICODE)
-component_compile_options(-D_UNICODE)
-component_compile_options(-DARDUINO=10900)
-component_compile_options(-DESP_PLATFORM)
-component_compile_options(-DESP32)
-component_compile_options(-DARDUINO_ESP32_DEV)
-component_compile_options(-DARDUINO_ARCH_ESP32)
-component_compile_options(-DARDUINO_BOARD=\"ESP32_DEV\")
-component_compile_options(-DMBEDTLS_CONFIG_FILE=\"mbedtls/esp_config.h\")
-component_compile_options(-DHAVE_CONFIG_H)
+target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-unused-variable)
+target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-unused-value)
+target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-unused-function)
+target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-narrowing)
+target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-address)
+target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-format)
+target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-char-subscripts)
+target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-unused-but-set-variable)
+target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-maybe-uninitialized)
+target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-return-type)
+target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-misleading-indentation)
+target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-class-memaccess)
+target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-sizeof-pointer-div)
+target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-error)
+target_compile_options(${COMPONENT_LIB} PRIVATE -std=gnu++17)
+target_compile_options(${COMPONENT_LIB} PRIVATE -D_DEBUG)
+target_compile_options(${COMPONENT_LIB} PRIVATE -DUNICODE)
+target_compile_options(${COMPONENT_LIB} PRIVATE -D_UNICODE)
+target_compile_options(${COMPONENT_LIB} PRIVATE -DARDUINO=10900)
+target_compile_options(${COMPONENT_LIB} PRIVATE -DESP_PLATFORM)
+target_compile_options(${COMPONENT_LIB} PRIVATE -DESP32)
+target_compile_options(${COMPONENT_LIB} PRIVATE -DARDUINO_ESP32_DEV)
+target_compile_options(${COMPONENT_LIB} PRIVATE -DARDUINO_ARCH_ESP32)
+target_compile_options(${COMPONENT_LIB} PRIVATE -DARDUINO_BOARD=\"ESP32_DEV\")
+target_compile_options(${COMPONENT_LIB} PRIVATE -DMBEDTLS_CONFIG_FILE=\"mbedtls/esp_config.h\")
+target_compile_options(${COMPONENT_LIB} PRIVATE -DHAVE_CONFIG_H)
+
+# micropython
+# add_prebuilt_library(micropython "${COMPONENT_PATH}/libraries/micropython/libmicropython.a")
+# target_link_libraries(${COMPONENT_LIB} PUBLIC micropython)

@@ -61,8 +61,8 @@
 #define dpad_enter          36
 #define BATTERY_DIVIDER_PIN 34
 #define TORCH_PIN           14
-#define IR_PIN              12
-#define IR_REC_PIN          4
+#define IR_PIN              4
+#define IR_REC_PIN          12
 #define I2S_DOUT            25
 #define I2S_BCLK            27
 #define I2S_LRC             26
@@ -331,6 +331,7 @@ namespace watch2
     extern uint8_t top_thing_height;                                                            //!< the height of the top thing (plus a small buffer) in pixels
     extern bool forceRedraw;
     extern bool forceRedrawLooped;
+    extern bool showingControlCentre;                                                           //!< whether or not the ripoff control centre is being shown
     // local stores of system preferences
     extern uint16_t trans_mode;                                                                 //!< pretty colour scheme
     extern bool animate_watch_face;                                                             //!< whether or not animate the watch face
@@ -597,6 +598,12 @@ namespace watch2
      * @return uint16_t the index of the selected menu item
      */
     uint16_t popup_menu(const char *title, std::vector<std::string> items, uint16_t colour=watch2::themecolour);
+
+    /**
+     * @brief shows the ripoff control centre as a popup dialogue
+     * 
+     */
+    void controlCentreDialogue();
 
     /**
      * @brief initalises the SD card.

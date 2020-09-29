@@ -102,8 +102,10 @@ void audio_task(void *pvParameters)
     
     // set up audio output
     out = new AudioOutputI2S(I2S_NUM_1);
-    out->SetPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
+    bool set_pinout_success = out->SetPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
     out->SetGain(gain);
+
+    Serial.printf("[music player] SetPinout returned %d", set_pinout_success);
 
     // set up audio generator
     if      (extension == "aac") audio_generator = new AudioGeneratorAAC();

@@ -44,6 +44,7 @@ namespace watch2
     uint8_t top_thing_height = oled.fontHeight() + 20;
     bool forceRedraw = false;
     bool forceRedrawLooped = false;
+    bool showingControlCentre = false;
     uint16_t trans_mode = 0;
     bool animate_watch_face = false;
     int short_timeout = 5000;
@@ -140,6 +141,11 @@ namespace watch2
         //     }
             
         // }
+
+        if (btn_zero.wasPressed())
+        {
+            watch2::controlCentreDialogue();
+        }
 
         //reset button lock state
         if (btn_dpad_up.isReleased())       dpad_up_lock = false;
@@ -1667,6 +1673,288 @@ namespace watch2
         return selected_item;
     }
 
+    void controlCentreDialogue()
+    {
+        // if the control centre is already being shown, don't do anything
+        if (showingControlCentre) return;
+
+        int selected_widget = 3;
+        int last_button_widget = 3;
+        bool go_back_to_watch_face = false;
+        uint8_t last_bt_state = watch2::bluetooth_state;
+        uint8_t last_wifi_state = watch2::wifi_state;
+        int last_minute = 0;
+        bool init = false;
+
+        uint8_t dialogue_radius = 7;
+        uint16_t dialogue_width = SCREEN_WIDTH * 0.9;
+        uint16_t dialogue_height = SCREEN_HEIGHT * 0.95;
+        uint16_t dialogue_x = (SCREEN_WIDTH - dialogue_width) / 2;
+        uint16_t dialogue_y = 0;
+
+        // draw dialogue box
+        oled.fillRoundRect(dialogue_x, -dialogue_radius, dialogue_width, dialogue_height, dialogue_radius, BLACK);
+        oled.drawRoundRect(dialogue_x, -dialogue_radius, dialogue_width, dialogue_height, dialogue_radius, themecolour);
+
+        showingControlCentre = true;
+
+        while(1)
+        {
+            startLoop();
+            //Serial.println("aaaaaaaaaaaaaaaaaaaaa");
+
+            //------------------------
+            // handle value updating
+            //------------------------
+
+            if (dpad_left_active())
+            {
+                if (selected_widget > 2)
+                {
+                    selected_widget--;
+                    if (selected_widget < 3) selected_widget = 4;
+                }
+                else if (selected_widget == 0) // volume
+                {
+                    watch2::speaker_volume = std::max(watch2::speaker_volume - 1, 0);
+                }
+                else if (selected_widget == 1) // brightness
+                {
+                    watch2::screen_brightness = std::max(watch2::screen_brightness - 10, 0);
+                    ledcWrite(TFTBL_PWM_CHANNEL, watch2::screen_brightness);
+                    watch2::preferences.begin("watch2", false);      //open watch II preferences in RW mode
+                    watch2::preferences.putUInt("brightness", watch2::screen_brightness);
+                    watch2::preferences.end();
+                }
+                else if (selected_widget == 2) // torch
+                {
+                    watch2::torch_brightness = std::max(watch2::torch_brightness - 10, 0);
+                    ledcWrite(TORCH_PWM_CHANNEL, watch2::torch_brightness);
+                }
+            }
+            if (dpad_right_active())
+            {
+                if (selected_widget > 2)
+                {
+                    selected_widget++;
+                    if (selected_widget > 4) selected_widget = 3;
+                }
+                else if (selected_widget == 0) // volume
+                {
+                    watch2::speaker_volume = std::min(watch2::speaker_volume + 1, 21);
+                }
+                else if (selected_widget == 1) // brightness
+                {
+                    watch2::screen_brightness = std::min(watch2::screen_brightness + 10, 255);
+                    ledcWrite(TFTBL_PWM_CHANNEL, watch2::screen_brightness);
+                    watch2::preferences.begin("watch2", false);      //open watch II preferences in RW mode
+                    watch2::preferences.putUInt("brightness", watch2::screen_brightness);
+                    watch2::preferences.end();
+                }
+                else if (selected_widget == 2) // torch
+                {
+                    watch2::torch_brightness = std::min(watch2::torch_brightness + 10, 255);
+                    ledcWrite(TORCH_PWM_CHANNEL, watch2::torch_brightness);
+                }
+            }
+            if (dpad_up_active())
+            {
+                if (selected_widget > 2)
+                {
+                    last_button_widget = selected_widget;
+                    selected_widget = 2;
+                }
+                else
+                {
+                    selected_widget--;
+                    if (selected_widget < 0) selected_widget = last_button_widget;
+                }
+            }
+            if (dpad_down_active())
+            {
+                if (selected_widget > 2)
+                {
+                    //last_button_widget = selected_widget;
+                    //selected_widget = 0;
+                    go_back_to_watch_face = true;
+                }
+                else
+                {
+                    selected_widget++;
+                    if (selected_widget > 2) selected_widget = last_button_widget;
+                }
+            }
+            if (dpad_enter_active())
+            {
+                if (selected_widget == 2) // torch
+                {
+                    if (watch2::torch_brightness) watch2::torch_brightness = 0;
+                    else watch2::torch_brightness = 255;
+                    ledcWrite(TORCH_PWM_CHANNEL, watch2::torch_brightness);
+                }
+                if (selected_widget == 3) // wifi
+                {
+                    if (watch2::wifi_state == 0) watch2::enable_wifi();
+                    else watch2::disable_wifi();
+                }
+                if (selected_widget == 4) // bluetooth
+                {
+                    if (watch2::bluetooth_state == 0) watch2::enable_bluetooth();
+                    else watch2::disable_bluetooth();
+                }
+            }
+
+            //------------------------
+            // draw stuff
+            //------------------------
+
+            if(!init || dpad_any_active() || (watch2::wifi_state != last_wifi_state) || (watch2::bluetooth_state != last_bt_state) || (minute() != last_minute)) {
+                
+                setFont(SLIGHTLY_BIGGER_FONT);
+
+                int spacing = 10;
+                int button_size = 30;
+                int radius = 10;
+                int outline_colour = WHITE;
+                int background_colour = BLACK;
+                int time_y = dialogue_y + 2;
+                int button_x = dialogue_x + spacing;
+                int button_y = time_y + oled.fontHeight() + spacing;
+                int slider_x = 0;
+
+                // draw time
+                oled.setCursor(button_x, time_y);
+                oled.setTextColor(WHITE, BLACK);
+                oled.fillRect(button_x, time_y, (dialogue_width / 2), oled.fontHeight(), BLACK);  // hacky
+                oled.printf("%02d:%02d", hour(), minute());
+                setFont(MAIN_FONT);
+                last_minute = minute();
+
+                //draw volume slider                                                                                                                    jungle green
+                if (selected_widget == 0) watch2::oled.fillRect(button_x - 2, button_y - 2, dialogue_width - button_x, button_size + 4, BLACK);
+                watch2::oled.drawRoundRect(button_x, button_y + (button_size / 3), dialogue_width - spacing - button_x, button_size / 3, (button_size / 3)/2, WHITE);
+                slider_x = button_x + ( watch2::speaker_volume * ( ( dialogue_width - button_size - spacing - 2 - button_x ) / 21.0 ) );
+                watch2::oled.fillRect(slider_x - 2, button_y - 2, button_size + 4, button_size + 4, BLACK);
+                watch2::oled.fillRoundRect(slider_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, 0x2D50);                               //background thing
+                outline_colour = (selected_widget == 0) ? WHITE : 0x2D50;                                                                               //determine outline colour
+                watch2::oled.drawRoundRect(slider_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, outline_colour);                       //draw outline
+                watch2::oled.drawBitmap(slider_x, button_y, watch2::small_icons["volume"].data(), button_size, button_size, WHITE);                     //draw icon
+                button_y += spacing + button_size;                                                                                                      //move cursor
+
+                //draw brightness slider                                                                                                                yellow
+                if (selected_widget == 1) watch2::oled.fillRect(button_x - 2, button_y - 2, dialogue_width - button_x, button_size + 4, BLACK);
+                watch2::oled.drawRoundRect(button_x, button_y + (button_size / 3), dialogue_width - spacing - button_x, button_size / 3, (button_size / 3)/2, WHITE);
+                slider_x = button_x + ( watch2::screen_brightness * ( (float)( dialogue_width - button_size - spacing - 2 - button_x ) / ( 255.0 ) ) );
+                watch2::oled.fillRect(slider_x - 2, button_y - 2, button_size + 4, button_size + 4, BLACK);
+                watch2::oled.fillRoundRect(slider_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, 0xFEC0);                               //background thing
+                outline_colour = (selected_widget == 1) ? WHITE : 0xFEC0;                                                                               //determine outline colour
+                watch2::oled.drawRoundRect(slider_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, outline_colour);                       //draw outline
+                watch2::oled.drawBitmap(slider_x, button_y, watch2::small_icons["sun"].data(), button_size, button_size, WHITE);                        //draw icon
+                button_y += spacing + button_size;                                                                                                      //move cursor
+
+                //draw torch slider                                                                                                                     adafruit yellow
+                if (selected_widget == 2) watch2::oled.fillRect(button_x - 2, button_y - 2, dialogue_width - button_x, button_size + 4, BLACK);
+                watch2::oled.drawRoundRect(button_x, button_y + (button_size / 3), dialogue_width - spacing - button_x, button_size / 3, (button_size / 3)/2, WHITE);
+                slider_x = button_x + ( watch2::torch_brightness * ( ( dialogue_width - button_size - spacing - 2 - button_x ) / 255.0 ) );
+                watch2::oled.fillRect(slider_x - 2, button_y - 2, button_size + 4, button_size + 4, BLACK);
+                watch2::oled.fillRoundRect(slider_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, YELLOW);                               //background thing
+                outline_colour = (selected_widget == 2) ? WHITE : YELLOW;                                                                               //determine outline colour
+                watch2::oled.drawRoundRect(slider_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, outline_colour);                       //draw outline
+                watch2::oled.drawBitmap(slider_x, button_y, watch2::small_icons["torch_but_smaller"].data(), button_size, button_size, WHITE);          //draw icon
+                button_y += spacing + button_size;                                                                                                      //move cursor
+
+                //draw wifi button
+                if (watch2::wifi_state == 3) background_colour = 0x867d; // enabled + connected
+                if (watch2::wifi_state == 2) background_colour = 0x6E5A; // enabled + connecting
+                if (watch2::wifi_state == 1) background_colour = 0x6E5A; // enabled + disconnected
+                if (watch2::wifi_state == 0) background_colour = BLACK;  // disabled
+                watch2::oled.fillRoundRect(button_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, background_colour);
+                outline_colour = ( !(selected_widget == 3) != !(watch2::wifi_state == 3) ) ? 0x867D : WHITE;
+                watch2::oled.drawRoundRect(button_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, outline_colour);
+                watch2::oled.drawBitmap(button_x, button_y, watch2::small_icons["wifi"].data(), button_size, button_size, (watch2::wifi_state != 0) ? WHITE : 0x867D);
+                button_x += spacing + button_size;
+                if (watch2::wifi_state != last_wifi_state) last_wifi_state = watch2::wifi_state;
+
+                //draw bluetooth button  bluetooth blue
+                if (watch2::bluetooth_state == 3) background_colour = 0x041F; // enabled + connected
+                if (watch2::bluetooth_state == 2) background_colour = 0x743E; // enabled + disconnected
+                if (watch2::bluetooth_state == 1) background_colour = 0xA55C; // enabling
+                if (watch2::bluetooth_state == 0) background_colour = BLACK;  // disabled
+                watch2::oled.fillRoundRect(button_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, background_colour);
+                outline_colour = ( !(selected_widget == 4) != !(watch2::bluetooth_state == 3) ) ? 0x041F : WHITE;
+                watch2::oled.drawRoundRect(button_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, outline_colour);
+                watch2::oled.drawBitmap(button_x, button_y, watch2::small_icons["bluetooth"].data(), button_size, button_size, (watch2::bluetooth_state != 0) ? WHITE : 0x041F);
+                button_x += spacing + button_size;
+                if (watch2::bluetooth_state != last_bt_state) last_bt_state = watch2::bluetooth_state;
+
+                // draw label
+                uint16_t label_y = dialogue_y + (dialogue_height - oled.fontHeight() - 5);
+                button_x = dialogue_x + spacing;;
+
+                oled.setCursor(button_x, label_y);
+                oled.setTextColor(WHITE, BLACK);
+                oled.fillRect(button_x, label_y, dialogue_width - (button_x * 2), oled.fontHeight() - 5, BLACK);
+                switch(selected_widget)
+                {
+                    case 0: // sound
+                        oled.print("Volume");
+                        break;
+
+                    case 1: // backlight
+                        oled.print("Brightness");
+                        break;
+
+                    case 2: // torch
+                        oled.print("Torch");
+                        break;
+
+                    case 3: // wifi
+                        switch(wifi_state)
+                        {
+                            case 0: // disabled
+                                oled.print("Wifi Disabled");
+                                break;
+
+                            case 1: // enabled, disconnected
+                                oled.print("Wifi Enabled");
+                                break;
+
+                            case 2: // connecting
+                                oled.print("Connecting");
+                                break;
+
+                            case 3: // connected
+                                oled.print(WiFi.SSID());
+                                break;
+
+                            case 4: // connect asap
+                                oled.print("Connecting Soon");
+                                break;
+                        }
+                        break;
+
+                    case 4: // bluetooth
+                        oled.print("Bluetooth");
+                        break;
+                }
+
+                init = true;
+            }
+
+            if (dpad_down_active())
+            {
+                if (go_back_to_watch_face) break; //watch2::switchState(watch2::state, 0);
+            }
+
+            endLoop();
+
+        }
+
+        showingControlCentre = false;
+        oled.fillScreen(BLACK);
+        forceRedraw = true;
+    }
+
     int initSD(bool handleCS)
     {
 
@@ -2328,7 +2616,7 @@ namespace watch2
 
         // enable ble keyboard
         // Serial.println("[Bluetooth] starting BLE keyboard");
-        // ble_keyboard.begin();
+        //ble_keyboard.begin();
 
         Serial.println("[BLE] ble device init");
         BLEDevice::init("watch2");
@@ -2366,6 +2654,7 @@ namespace watch2
 
         Serial.println("[BLE] starting advertising");
         BLEDevice::startAdvertising();
+        
 
         Serial.println("[Bluetooth] finished enabling bluetooth");
         bluetooth_state = 2;
@@ -2376,8 +2665,8 @@ namespace watch2
         Serial.println("[Bluetooth] disabling bluetooth");
 
         // disable ble keyboard
-        // Serial.println("[Bluetooth] ending BLE keyboard");
-        // ble_keyboard.end();
+        Serial.println("[Bluetooth] ending BLE keyboard");
+        //ble_keyboard.end();
 
         Serial.println("[BLE] stopping advertising");
         BLEDevice::stopAdvertising();

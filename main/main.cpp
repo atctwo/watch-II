@@ -1,5 +1,8 @@
 
 #define SPI_SPEED SD_SCK_MHZ(4)
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "esp_task_wdt.h"
 #include "watch2.h"
 #include "icons/app_icons.cpp"
 #include "icons/small_icons.cpp"
@@ -166,6 +169,10 @@ void setup() {
     //else selected_menu_icon = states.find(selected_state);
     Serial.println("done");
 
+    // micropython test
+    Serial.print("micropython test: ");
+    Serial.print("done!");
+
     //finish up
     watch2::boot_count++;
     Serial.println("setup finished!");
@@ -179,6 +186,8 @@ void setup() {
 void loop() {
 
     watch2::startLoop();
+
+    //Serial.printf("capacitive touch on gpio 0: %d\n", touchRead(0));
 
     //---------------------------------------
     // run current state
@@ -362,6 +371,37 @@ void loop() {
     watch2::endLoop();
     
 
+}
+
+
+////////////////////////////////////////
+// esp32 entrypoint
+////////////////////////////////////////
+
+// this is the main entrypoint for the system when being compiled with ESP-IDF.
+// this was stolen from the arduino esp32 core:
+// https://github.com/espressif/arduino-esp32/blob/master/cores/esp32/main.cpp
+
+TaskHandle_t loopTaskHandle = NULL;
+bool loopTaskWDTEnabled;
+
+void loopTask(void *pvParameters)
+{
+    setup();
+    for(;;) {
+        if(loopTaskWDTEnabled){
+            esp_task_wdt_reset();
+        }
+        loop();
+        if (serialEventRun) serialEventRun();
+    }
+}
+
+extern "C" void app_main()
+{
+    loopTaskWDTEnabled = false;
+    initArduino();
+    xTaskCreateUniversal(loopTask, "loopTask", 8192, NULL, 1, &loopTaskHandle, CONFIG_ARDUINO_RUNNING_CORE);
 }
 
 
