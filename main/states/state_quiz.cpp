@@ -6,10 +6,10 @@ cJSON *getQuestion()
 
     Serial.println("[Quiz] getting new question");
     const char *server = "postman-echo.com";
-    watch2::wifi_client.setCACert(root_ca_open_trivia_db);
+    watch2::wifi_client_secure.setCACert(root_ca_open_trivia_db);
     
     Serial.println("[Quiz] connecting to server");
-    if (!http.begin(watch2::wifi_client, "https://opentdb.com/api.php?amount=10"))
+    if (http.begin(watch2::wifi_client_secure, "https://opentdb.com/api.php?amount=10"))
     {
         Serial.print("[Quiz] connected to server");
         int http_code = http.GET();
@@ -19,8 +19,10 @@ cJSON *getQuestion()
         {
             if (http_code == HTTP_CODE_OK)
             {
+                String res = http.getString();
                 Serial.println("[Quiz] response:");
-                Serial.println(http.getString().c_str());
+                Serial.println(res);
+                return cJSON_Parse(res.c_str());
             }
         }
         else Serial.println("[Quiz] ???");
@@ -32,6 +34,7 @@ cJSON *getQuestion()
     }
 
     Serial.println("[Quiz] finished");
+    return NULL;
 }
 
 void state_func_quiz()
@@ -39,6 +42,7 @@ void state_func_quiz()
     if (!watch2::state_init)
     {
         cJSON *question = getQuestion();
+        cJSON_Delete(question);
     }
 
     if (dpad_left_active())

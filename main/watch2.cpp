@@ -22,7 +22,8 @@ namespace watch2
     //Adafruit_ImageReader reader(SD);
     TFT_eSprite top_thing = TFT_eSprite(&oled);
     TFT_eSprite framebuffer = TFT_eSprite(&oled);
-    WiFiClientSecure wifi_client;
+    WiFiClient wifi_client;
+    WiFiClientSecure wifi_client_secure;
     BleKeyboard ble_keyboard("watch2", "atctwo");
 
     //button objects
@@ -1698,6 +1699,10 @@ namespace watch2
 
         showingControlCentre = true;
 
+        uint16_t weather = 0;
+        time_t sunrise = 0, sunset = 0;
+        getCurrentWeather(weather, sunrise, sunset);
+
         while(1)
         {
             startLoop();
@@ -1814,6 +1819,7 @@ namespace watch2
 
                 int spacing = 10;
                 int button_size = 30;
+                int weather_icon_size = 24;
                 int radius = 10;
                 int outline_colour = WHITE;
                 int background_colour = BLACK;
@@ -1829,6 +1835,55 @@ namespace watch2
                 oled.printf("%02d:%02d", hour(), minute());
                 setFont(MAIN_FONT);
                 last_minute = minute();
+
+                // draw weather
+                uint16_t weather_x = (dialogue_x + dialogue_width) - weather_icon_size - spacing;
+                switch(weather / 100)
+                {
+                    case 2: // thunder
+                        oled.pushImage(weather_x, time_y, weather_icon_size, weather_icon_size, watch2::icons["thunder"].data());
+                        break;
+                        
+                    case 3: // drizzle
+                        if (now() < sunrise || now() > sunset) /* night */
+                            oled.pushImage(weather_x, time_y, weather_icon_size, weather_icon_size, watch2::icons["moon_rain"].data());
+                        else                                   /* day */
+                            oled.pushImage(weather_x, time_y, weather_icon_size, weather_icon_size, watch2::icons["sun_rain"].data());
+                        break;
+
+                    case 5: // rain
+                        oled.pushImage(weather_x, time_y, weather_icon_size, weather_icon_size, watch2::icons["rain"].data());
+                        break;
+
+                    case 6: // snow
+                        oled.pushImage(weather_x, time_y, weather_icon_size, weather_icon_size, watch2::icons["snow"].data());
+                        break;
+
+                    case 7: // atmosphere
+                        oled.pushImage(weather_x, time_y, weather_icon_size, weather_icon_size, watch2::icons["wind"].data());
+                        break;
+
+                    case 8: // clear / clouds
+                        if (weather == 800) // clear
+                        {
+                            if (now() < sunrise || now() > sunset) /* night */
+                                oled.pushImage(weather_x, time_y, weather_icon_size, weather_icon_size, watch2::icons["moon"].data());
+                            else                                   /* day */
+                                oled.pushImage(weather_x, time_y, weather_icon_size, weather_icon_size, watch2::icons["sun"].data());
+                        }
+                        else
+                        {
+                            if (now() < sunrise || now() > sunset) /* night */
+                                oled.pushImage(weather_x, time_y, weather_icon_size, weather_icon_size, watch2::icons["moon_cloud"].data());
+                            else                                   /* day */
+                                oled.pushImage(weather_x, time_y, weather_icon_size, weather_icon_size, watch2::icons["sun_cloud"].data());
+                        }
+                        break;
+
+                    default:
+                        oled.pushImage(weather_x, time_y, weather_icon_size, weather_icon_size, watch2::icons["weather_unknown"].data());
+                        break;
+                }
 
                 //draw volume slider                                                                                                                    jungle green
                 if (selected_widget == 0) watch2::oled.fillRect(button_x - 2, button_y - 2, dialogue_width - button_x, button_size + 4, BLACK);
@@ -1953,6 +2008,157 @@ namespace watch2
         showingControlCentre = false;
         oled.fillScreen(BLACK);
         forceRedraw = true;
+    }
+
+    std::string getApiKey(const char *service, const char *field)
+    {
+        Serial.printf("[api keys] getting api key: %s:%s\n", service, field);
+        std::string api_key = "";
+
+        if (SPIFFS.exists(API_KEYS_FILENAME))
+        {
+            // open keys file
+            fs::File api_keys_file = SPIFFS.open(API_KEYS_FILENAME);
+
+            // parse json
+            cJSON *api_keys_json = cJSON_Parse(api_keys_file.readString().c_str());
+
+            cJSON *service_json = cJSON_GetObjectItem(api_keys_json, service);
+            if (service_json)
+            {
+                cJSON *field_json = cJSON_GetObjectItem(service_json, field);
+                if (field_json)
+                {
+                    const char *value = field_json->valuestring;
+                    Serial.printf("[api keys] value: %s\n", value);
+                    uint8_t pos = 0;
+                    while(1)
+                    {
+                        api_key += value[pos];
+
+                        pos++;
+                        if (value[pos] == '\0') break;
+                    }
+                }
+                else Serial.println("[api keys] field doesn't exist");
+            }
+            else Serial.println("[api keys] service doesn't exist");
+
+            // free json memory
+            cJSON_Delete(api_keys_json);
+        }
+        else
+        {
+            Serial.println("[api keys] file doesn't exist");
+        }
+
+        return api_key;
+    }
+
+    void getCurrentWeather(uint16_t &weather, time_t &sunrise, time_t &sunset)
+    {
+        weather = 0;
+        sunrise = 0;
+        sunset = 0;
+
+        if (wifi_state != 3) // wifi not connected
+        {
+            Serial.println("[weather] not connected to wifi");
+        }
+        else // wifi is connected
+        {
+            Serial.println("[weather] getting current weather");
+
+            HTTPClient *http = new HTTPClient();
+            char server[150];
+            std::string api_key = getApiKey("openweather");
+            Serial.printf("[weather] key: %s\n", api_key.c_str());
+            sprintf(server, "http://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s", "carrickfergus", api_key.c_str());
+            Serial.printf("[weather] server request: %s\n", server);
+
+            // connect to server
+            Serial.println("[weather] connecting to server");
+            http->begin(watch2::wifi_client, server);
+            int http_code = http->GET();
+            if (http_code)
+            {
+                Serial.println("[weather] connected to server");
+                Serial.printf("[weather] http code: %d (%s)\n", http_code, http->errorToString(http_code));
+
+                if (http_code > 0)
+                {
+                    if (http_code == HTTP_CODE_OK)
+                    {
+                        // get server response
+                        String res = http->getString();
+                        Serial.println("[weather] response:");
+                        Serial.println(res);
+
+                        // parse returned json
+                        cJSON *weather_data = cJSON_Parse(res.c_str());
+                        if (weather_data)
+                        {
+                            // get weather array
+                            cJSON *weather_array = cJSON_GetObjectItem(weather_data, "weather");
+                            if (weather_array)
+                            {
+                                // get the primary weather condition
+                                cJSON *weather_status = cJSON_GetArrayItem(weather_array, 0);
+                                if (weather_status)
+                                {
+                                    // get the weather code
+                                    weather = cJSON_GetObjectItem(weather_status, "id")->valueint;
+                                    Serial.printf("[weather] got primary weather code: %d\n", weather);
+                                }
+                                else
+                                {
+                                    Serial.println("[weather] failed to get primary weather condition");
+                                }
+                            }
+                            else
+                            {
+                                Serial.println("[weather] failed to get weather array");
+                            }
+
+                            // get time info
+                            cJSON *time_info = cJSON_GetObjectItem(weather_data, "sys");
+                            if (time_info)
+                            {
+                                // get sunrise
+                                sunrise = cJSON_GetObjectItem(time_info, "sunrise")->valueint;
+                                Serial.printf("[weather] got sunrise time: %d\n", sunrise);
+
+                                // get sunset
+                                sunset = cJSON_GetObjectItem(time_info, "sunset")->valueint;
+                                Serial.printf("[weather] got sunset time: %d\n", sunset);
+                            }
+                            else
+                            {
+                                Serial.println("[weather] failed to get time info");
+                            }
+                            
+                        }
+                        else
+                        {
+                            Serial.println("[weather] failed to parse response");
+                        }
+                        
+                        // free memory used by parsed json
+                        cJSON_Delete(weather_data);
+                    }
+                }
+                else Serial.println("[weather] ???");
+                
+            }
+            else
+            {
+                Serial.println("[weather] failed to connect");
+            }
+
+            delete http;
+            Serial.println("[weather] finished");
+        }
+        
     }
 
     int initSD(bool handleCS)
@@ -2376,8 +2582,8 @@ namespace watch2
     void disable_wifi()
     {
         Serial.println("[Wifi] disconnecting from wifi");
-        WiFi.disconnect(true);
-        WiFi.mode(WIFI_OFF);
+        WiFi.disconnect();
+        //WiFi.mode(WIFI_OFF);
 
         // tell the system to disable wifi on boot
         watch2::preferences.begin("watch2", false);
@@ -2390,6 +2596,7 @@ namespace watch2
     {
         Serial.println("[WiFi] connecting to AP");
         WiFi.enableSTA(true);
+        //WiFi.mode(WIFI_STA);
         WiFi.setSleep(true);
         WiFi.setHostname("watch ii");
 
@@ -2409,21 +2616,24 @@ namespace watch2
                 
                 if (profiles)
                 {
+                    Serial.println("[Wifi] got profiles object");
                     cJSON *profile_array = cJSON_GetObjectItem(profiles, "profiles");
                     cJSON *access_index = cJSON_GetObjectItem(profiles, "access_index");
 
                     // if there are profiles
                     if (cJSON_GetArraySize(access_index) > 0)
                     {
-
                         if (access_index)
                         {
+                            Serial.printf("[Wifi] found %d profiles\n", cJSON_GetArraySize(profile_array));
+                            Serial.printf("[Wifi] found %d profiles in access index\n", cJSON_GetArraySize(access_index));
 
                             // if the profile index refers to a profile that doesn't exist
                             // (if the profile index is greater than the number of elements in the access index - 1)
                             if (profile_index > cJSON_GetArraySize(access_index) - 1)
                             {
                                 // the profile list has been exhausted
+                                Serial.println("[Wifi] tried to access a profile that doesn't exist");
                                 WiFi.disconnect();
                                 wifi_state = 1;
                                 wifi_reconnect_attempts = 0;
@@ -2431,6 +2641,7 @@ namespace watch2
                             else
                             {
                                 // the profile index refers to an access index element that does exist, so get the information for that profile
+                                Serial.printf("[Wifi] access index %d points to an existing profile\n", profile_index);
                                 const char *ssid = cJSON_GetArrayItem(access_index, profile_index)->valuestring;
                                 cJSON *profile;
                                 bool help = false;
@@ -2448,12 +2659,12 @@ namespace watch2
 
                                 if (help) // the profile actually exists
                                 {
-                                    Serial.println("thingy profile exists");
+                                    Serial.println("[Wifi] the profile's SSID matches the access index's SSID :), connecting...");
+                                    //WiFi._setStatus(WL_DISCONNECTED);
                                     WiFi.begin(
                                         cJSON_GetObjectItem(profile, "ssid")->valuestring,
                                         cJSON_GetObjectItem(profile, "password")->valuestring
                                     );
-                                    WiFi._setStatus(WL_DISCONNECTED);
                                     wifi_connect_timeout_start = millis();
                                 }
                                 // otherwise, the AP name exists in the access index, but doesn't actually have a profile, so skip to the next AP
@@ -2516,7 +2727,7 @@ namespace watch2
 
     cJSON *getWifiProfiles()
     {
-        Serial.println("[Wifi] getting profiles");
+        Serial.println("[Wifi profiles] getting profiles");
         if (spiffs_state == 1) // if spiffs is initalised
         {
             cJSON *profiles;
@@ -2524,7 +2735,7 @@ namespace watch2
             // if profile file already exists
             if (SPIFFS.exists(WIFI_PROFILES_FILENAME))
             {
-                Serial.println("[Wifi] profile exists");
+                Serial.println("[Wifi profiles] profile exists");
 
                 // get handle to profiles file
                 fs::File profiles_file = SPIFFS.open(WIFI_PROFILES_FILENAME);
@@ -2537,11 +2748,11 @@ namespace watch2
 
                 if (profiles)
                 {
-                    Serial.println("[Wifi] valid profile");
+                    Serial.println("[Wifi profiles] valid profile");
                 }
                 else
                 {
-                    Serial.println("[Wifi] invalid profile list, returning minimal profile object");
+                    Serial.println("[Wifi profiles] invalid profile list, returning minimal profile object");
 
                     // create profiles object
                     profiles = cJSON_CreateObject();
@@ -2562,7 +2773,7 @@ namespace watch2
             //otherwise
             else
             {
-                Serial.println("[Wifi] profile doesn't exist, creating");
+                Serial.println("[Wifi profiles] profile doesn't exist, creating");
 
                 // create profiles object
                 profiles = cJSON_CreateObject();
@@ -2584,14 +2795,14 @@ namespace watch2
         }
         else 
         {
-            Serial.printf("[Wifi] can't access spiffs (state: %d)\n", spiffs_state);
+            Serial.printf("[Wifi profiles] can't access spiffs (state: %d)\n", spiffs_state);
             return nullptr;
         }
     }
 
     void setWifiProfiles(cJSON *profiles)
     {
-        Serial.println("[Wifi] setting profiles");
+        Serial.println("[Wifi profiles] setting profiles");
         if (spiffs_state == 1) // if spiffs has been initalised
         {
             // open profiles file.  if the file doesn't exist, it will be created, and if it does exist,

@@ -120,7 +120,8 @@
 #define NTP_SERVER              "pool.ntp.org"
 #define PORT_HTTP               80
 #define PORT_HTTPS              443
-#define WIFI_PROFILES_FILENAME  "/wifi_profiles.json"
+#define WIFI_PROFILES_FILENAME  "/wifi_profiles.json"   //!< the name of the file that stores wifi profiles
+#define API_KEYS_FILENAME       "/api_keys.json"        //!< the name of the file that is used to store API keys for lots of REST APIs
 //Calculator definitions
 #define CALC_CELL_WIDTH   25//27 for 4 chrs
 #define CALC_CELL_HEIGHT  12
@@ -302,7 +303,8 @@ namespace watch2
     //extern Adafruit_ImageReader flash_reader;
     extern TFT_eSprite top_thing;                                                               //!< the framebuffer that the top thing is drawn onto
     extern TFT_eSprite framebuffer;                                                             //!< another framebuffer that isn't used
-    extern WiFiClientSecure wifi_client;                                                        //!< the wifi client used for HTTP and HTTPS requests
+    extern WiFiClient wifi_client;
+    extern WiFiClientSecure wifi_client_secure;                                                        //!< the wifi client used for HTTP and HTTPS requests
     extern BleKeyboard ble_keyboard;                                                            //!< a thing that handles BLE HID Keyboard stuff
 
     //button objects
@@ -604,6 +606,38 @@ namespace watch2
      * 
      */
     void controlCentreDialogue();
+
+    /**
+     * @brief gets an API key stored in the api key file in SPIFFS.
+     * The filename is stored by the watch with the API_KEYS_FILENAME define.  Keys are stored in the file in a JSON format.  You can
+     * also store any extra information that is needed.  You can specify what service you want to get the key for using the `service`
+     * parameter, and you can specify what field you want using the `field` parameter.  Here's an example of the format used to store
+     * keys:
+     * ```json
+     * {
+     *     "service1": {
+     *          "key": "abcdefg123456"
+     *      },
+     * "    service2: {
+     *          "key": "bpwpb42",
+     *          "user": "icantthinkofagoodusername"
+     *      }
+     * }
+     * ```
+     * @param service the name of the REST API to get the key of
+     * @param field the field of the API object to get (this is "key" by default)
+     * @return std::stringthe value of the specified field
+     */
+    std::string getApiKey(const char *service, const char *field="key");
+
+    /**
+     * @brief get the current weather from OpenWeather.
+     * For this function to work, the system needs to be connected to a Wifi network.
+     * @param weather a code representing the current weather.  see [this page](https://openweathermap.org/weather-conditions)
+     * @param sunrise the time that the sun will rise (in Unix time)
+     * @param sunset the time that sun will set (in Unix time)
+     */
+    void getCurrentWeather(uint16_t &weather, time_t &sunrise, time_t &sunset);
 
     /**
      * @brief initalises the SD card.

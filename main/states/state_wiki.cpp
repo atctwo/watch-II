@@ -83,8 +83,8 @@ void state_func_wiki()
             if (!watch2::state_init && !connected_to_wikipeda)
             {
                 // Serial.println("[Wiki] connecting to wikipedia");
-                // watch2::wifi_client.setCACert(root_ca_wikipedia);
-                // if (!watch2::wifi_client.connect("en.wikipedia.org", PORT_HTTPS))
+                // watch2::wifi_client_secure.setCACert(root_ca_wikipedia);
+                // if (!watch2::wifi_client_secure.connect("en.wikipedia.org", PORT_HTTPS))
                 // {
                 //     Serial.println("[Wiki] couldn't connect");
                 // }
@@ -181,8 +181,8 @@ void state_func_wiki()
                     Serial.println(search_query.c_str());
 
                     //https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" + String(search_query.c_str()) + "&format=json
-                    watch2::wifi_client.setCACert(root_ca_wikipedia);
-                    if(http.begin(watch2::wifi_client, "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" + String(search_query.c_str()) + "&format=json"))
+                    watch2::wifi_client_secure.setCACert(root_ca_wikipedia);
+                    if(http.begin(watch2::wifi_client_secure, "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" + String(search_query.c_str()) + "&format=json"))
                     {
                         Serial.println("[Wiki] connected to wikipedia");
                         int http_code= http.GET();
@@ -319,11 +319,11 @@ void state_func_wiki()
                 Serial.println(pageid);
 
                 //https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" + String(search_query.c_str()) + "&format=json
-                watch2::wifi_client.setCACert(root_ca_wikipedia);
+                watch2::wifi_client_secure.setCACert(root_ca_wikipedia);
                 String url = "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&formatversion=2&explaintext=1&pageids=" + String(pageid);
                 Serial.print("[Wiki] request url: ");
                 Serial.println(url);
-                if(http.begin(watch2::wifi_client, url))
+                if(http.begin(watch2::wifi_client_secure, url))
                 {
                     Serial.println("[Wiki] connected to wikipedia");
                     int http_code= http.GET();
