@@ -176,10 +176,11 @@ void state_func_watch_face()
             watch2::switchState(2);
         }
 
-        // if (dpad_up_active())
-        // {
-        //     watch2::switchState(watch2::state, 1);
-        // }
+        if (dpad_up_active())
+        {
+            //watch2::switchState(watch2::state, 1);
+            watch2::popup_menu("Category", {"General Knowledge", "Books", "Film", "Music", "Musicals and Theatres", "Televison", "Video Games", "Board Games"}, true);
+        }
 
         if (dpad_left_active())
         {

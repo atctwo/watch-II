@@ -63,6 +63,7 @@ namespace watch2
     bool wifi_wakeup_reconnect = true;
     bool wifi_boot_reconnect = true;
     bool wifi_enabled = false;
+    String weather_location = "";
     wifi_auth_mode_t wifi_encryption = WIFI_AUTH_MAX;
     uint8_t bluetooth_state = 0;
     bool ble_set_up = false;
@@ -1612,7 +1613,7 @@ namespace watch2
         return selected_button;
     }
 
-    uint16_t popup_menu(const char *title, std::vector<std::string> items, uint16_t colour)
+    uint16_t popup_menu(const char *title, std::vector<std::string> items, bool scroll, uint16_t colour)
     {
         uint16_t selected_item = 0;
         uint16_t padding = 4;
@@ -1634,7 +1635,7 @@ namespace watch2
             dialogue_x + padding,
             dialogue_y + padding + oled.fontHeight(),
             dialogue_w - (padding * 2), item_height * items.size(),
-            items, selected_item, false, true, colour
+            items, selected_item, scroll, true, colour
         );
 
         while(1)
@@ -2073,7 +2074,7 @@ namespace watch2
             char server[150];
             std::string api_key = getApiKey("openweather");
             Serial.printf("[weather] key: %s\n", api_key.c_str());
-            sprintf(server, "http://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s", "carrickfergus", api_key.c_str());
+            sprintf(server, "http://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s", weather_location.c_str(), api_key.c_str());
             Serial.printf("[weather] server request: %s\n", server);
 
             // connect to server

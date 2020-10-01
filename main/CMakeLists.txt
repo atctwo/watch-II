@@ -155,7 +155,6 @@ set(LIB_ARDUINO_SRCS
     libraries/Time/DateStrings.cpp
     libraries/TimeAlarms/TimeAlarms.cpp
     libraries/TFT_eSPI/TFT_eSPI.cpp
-    libraries/tinyexpr/tinyexpr.c
     libraries/ESP32-BLE-Keyboard/BleKeyboard.cpp
     libraries/ESP32-BLE-Keyboard/BleConnectionStatus.cpp
     libraries/ESP32-BLE-Keyboard/KeyboardOutputCallbacks.cpp
@@ -174,6 +173,8 @@ set(WATCH_SRCS
     libraries/gumbo-parser/src/utf8.c
     libraries/gumbo-parser/src/util.c
     libraries/gumbo-parser/src/vector.c
+    libraries/tinyexpr/tinyexpr.c
+    libraries/entities/entities.c
     root_store.cpp
     watch2.cpp
     #SdFatFSWrapper.cpp
@@ -217,6 +218,7 @@ set(COMPONENT_INCLUDEDIRS
     libraries/Time/ 				
     libraries/TimeAlarms/ 			
     libraries/tinyexpr/
+    libraries/entities/
     libraries/ESP32-BLE-Keyboard/
     libraries/ESP8266Audio/src/
     #libraries/micropython/

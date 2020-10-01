@@ -35,6 +35,8 @@ The Wikipedia app uses Google's [gimbo-parser](https://github.com/google/gumbo-p
 
 The system uses two of nothings' stb libraries (https://github.com/nothings/stb), specifically stb_image.h and stb_image_resize.h.  stb_image was modified slightly to shut the compiler up.  The modified version is included with the source.
 
+HTML character decoding is performed by the [`entities` library](https://stackoverflow.com/a/1082191), by cggaertner.
+
 ## Modifications
 
 These are the modifications you need to make to some of the libraries to get watch2 to work with them.

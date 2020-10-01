@@ -354,6 +354,7 @@ namespace watch2
     extern bool wifi_enabled;                                                                   //!< whether or not wifi is enabled.  don't use this if you actually want to know if the system is
                                                                                                 //!< connected to wifi, for that use wifi_state.  this is only used to decide whether or not to enable
                                                                                                 //!< wifi automatically on boot
+    extern String weather_location;                                                             //!< the city name to use when getting the weather
     extern wifi_auth_mode_t wifi_encryption;                                                    //!< hack hack hack hack pls replace with a way to get the encryption type of the current AP
 
     // fs states
@@ -599,7 +600,7 @@ namespace watch2
      * @param colour the colour to draw the dialogue
      * @return uint16_t the index of the selected menu item
      */
-    uint16_t popup_menu(const char *title, std::vector<std::string> items, uint16_t colour=watch2::themecolour);
+    uint16_t popup_menu(const char *title, std::vector<std::string> items, bool scroll=false, uint16_t colour=watch2::themecolour);
 
     /**
      * @brief shows the ripoff control centre as a popup dialogue

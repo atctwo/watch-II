@@ -80,6 +80,7 @@ void setup() {
     watch2::wifi_wakeup_reconnect = watch2::preferences.getBool("wifi_wakeup", true);
     watch2::wifi_boot_reconnect = watch2::preferences.getBool("wifi_boot", true);
     watch2::wifi_enabled = watch2::preferences.getBool("wifi_en", false);
+    watch2::weather_location = watch2::preferences.getString("weather_city", "");
     watch2::preferences.end();
     Serial.print("done");
 
