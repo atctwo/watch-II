@@ -1718,7 +1718,7 @@ namespace watch2
                 if (selected_widget > 2)
                 {
                     selected_widget--;
-                    if (selected_widget < 3) selected_widget = 4;
+                    if (selected_widget < 3) selected_widget = 5;
                 }
                 else if (selected_widget == 0) // volume
                 {
@@ -1743,7 +1743,7 @@ namespace watch2
                 if (selected_widget > 2)
                 {
                     selected_widget++;
-                    if (selected_widget > 4) selected_widget = 3;
+                    if (selected_widget > 5) selected_widget = 3;
                 }
                 else if (selected_widget == 0) // volume
                 {
@@ -1807,6 +1807,10 @@ namespace watch2
                 {
                     if (watch2::bluetooth_state == 0) watch2::enable_bluetooth();
                     else watch2::disable_bluetooth();
+                }
+                if (selected_widget == 5) // ntp
+                {
+                    getTimeFromNTP();
                 }
             }
 
@@ -1943,6 +1947,14 @@ namespace watch2
                 button_x += spacing + button_size;
                 if (watch2::bluetooth_state != last_bt_state) last_bt_state = watch2::bluetooth_state;
 
+                //draw NTP button
+                background_colour = TFT_OLIVE;
+                watch2::oled.fillRoundRect(button_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, background_colour);
+                outline_colour = ( (selected_widget == 5) ? WHITE : 0x041f);
+                watch2::oled.drawRoundRect(button_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, outline_colour);
+                watch2::oled.drawBitmap(button_x, button_y, watch2::small_icons["internet_time"].data(), button_size, button_size, WHITE);
+                button_x += spacing + button_size;
+
                 // draw label
                 uint16_t label_y = dialogue_y + (dialogue_height - oled.fontHeight() - 5);
                 button_x = dialogue_x + spacing;;
@@ -1991,6 +2003,10 @@ namespace watch2
 
                     case 4: // bluetooth
                         oled.print("Bluetooth");
+                        break;
+
+                    case 5: // ntp
+                        oled.print("Internet Time");
                         break;
                 }
 
