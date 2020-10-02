@@ -156,9 +156,14 @@ void state_func_quiz()
     static uint8_t *selection;
     static std::vector<std::string> *parameter_options;
 
-    static char current_question[300] = "";
+    static char temp_text[300] = "";
+    static std::string current_question = "";
     static std::vector<std::string> answers = {"", "", "", ""};
     static uint8_t correct_answer = 0;
+    static uint8_t selected_answer = 0;
+    static bool answered = false;
+    static bool answered_but_we_have_only_just_found_out = false;
+    static uint16_t score = 0;
 
     switch(watch2::states[watch2::state].variant)
     {
@@ -176,12 +181,18 @@ void state_func_quiz()
                 menu_y = watch2::top_thing_height + watch2::oled.fontHeight();
                 watch2::setFont(MAIN_FONT);
 
-                // get categories
-                if (!retrieved_categories) 
+                if (watch2::wifi_state == 3)
                 {
-                    getCategories(category_names, category_ids);
-                    retrieved_categories = true;
+                    // get categories
+                    if (!retrieved_categories) 
+                    {
+                        getCategories(category_names, category_ids);
+                        retrieved_categories = true;
+                    }
                 }
+
+                // reset score
+                score = 0;
             }
 
             // update menu selection
@@ -199,11 +210,23 @@ void state_func_quiz()
             // draw menu
             draw(dpad_any_active(), {
 
-                watch2::drawMenu(
-                    4, menu_y, SCREEN_WIDTH - 8, SCREEN_HEIGHT - menu_y, 
-                    { category_names[selected_category], difficulty_names[selected_difficulty], "Start" },
-                    selected_menu_item, false, true
-                );
+                if (watch2::wifi_state == 3)
+                {
+                    watch2::drawMenu(
+                        4, menu_y, SCREEN_WIDTH - 8, SCREEN_HEIGHT - menu_y, 
+                        { category_names[selected_category], difficulty_names[selected_difficulty], "Start" },
+                        selected_menu_item, false, true
+                    );
+                }
+                else
+                {
+                    watch2::oled.setCursor(0, menu_y);
+                    watch2::oled.setTextColor(WHITE, BLACK);
+                    watch2::oled.println("Please connect to wifi\n"
+                                         "to use this app.  You can\n"
+                                         "press enter to leave."
+                    );
+                }
 
             });
 
@@ -214,12 +237,17 @@ void state_func_quiz()
                 {
                     case 0: // category selection
                     case 1: // difficulty selection
-                        parameter_selection = selected_menu_item;
-                        watch2::switchState(watch2::state, 1);
+                        if (watch2::wifi_state == 3)
+                        {
+                            parameter_selection = selected_menu_item;
+                            watch2::switchState(watch2::state, 1);
+                        }
+                        else watch2::switchState(2);
                         break;
 
                     case 2: // quiz
-                        watch2::switchState(watch2::state, 2);
+                        if (watch2::wifi_state == 3) watch2::switchState(watch2::state, 2);
+                        else watch2::switchState(2);
                         break;
                 }
             }
@@ -289,6 +317,11 @@ void state_func_quiz()
 
             if (!watch2::state_init)
             {
+                // reset things
+                selected_answer = 0;
+                answered = false;
+                answered_but_we_have_only_just_found_out = false;
+
                 // get a question
                 cJSON *response_object = getQuestion(category_ids[selected_category], selected_difficulty);
 
@@ -311,29 +344,29 @@ void state_func_quiz()
 
                                 // get actual question
                                 //current_question = cJSON_GetObjectItem(question_object, "question")->valuestring;
-                                decode_html_entities_utf8(current_question, cJSON_GetObjectItem(question_object, "question")->valuestring);
+                                decode_html_entities_utf8(temp_text, cJSON_GetObjectItem(question_object, "question")->valuestring);
+                                current_question = temp_text;
 
                                 // get answers
-                                answers[0] = cJSON_GetObjectItem(question_object, "correct_answer")->valuestring;
+                                decode_html_entities_utf8(temp_text, cJSON_GetObjectItem(question_object, "correct_answer")->valuestring);
+                                answers[0] = temp_text;
                                 cJSON *incorrect_answers = cJSON_GetObjectItem(question_object, "incorrect_answers");
                                 if (incorrect_answers)
                                 {
-                                    answers[1] = cJSON_GetArrayItem(incorrect_answers, 0)->valuestring;
-                                    answers[2] = cJSON_GetArrayItem(incorrect_answers, 1)->valuestring;
-                                    answers[3] = cJSON_GetArrayItem(incorrect_answers, 2)->valuestring;
+                                    for (uint8_t i = 0; i < 3; i++)
+                                    {
+                                        decode_html_entities_utf8(temp_text, cJSON_GetArrayItem(incorrect_answers, i)->valuestring);
+                                        answers[i+1] = temp_text;
+                                    }
                                 }
                                 else Serial.println("[Quiz] couldn't get incorrect answers");
 
-                                // print question
-                                watch2::oled.setCursor(2, watch2::top_thing_height);
-                                watch2::oled.setTextColor(WHITE, BLACK);
-                                watch2::oled.println(current_question);
+                                // store correct answer
+                                decode_html_entities_utf8(temp_text, cJSON_GetObjectItem(question_object, "correct_answer")->valuestring);
 
-                                // print answers
-                                for (std::string answer : answers)
-                                {
-                                    watch2::oled.println(answer.c_str());
-                                }
+                                // shuffle answers
+                                std::srand(time(0));
+                                std::random_shuffle(answers.begin(), answers.end());
 
                             }
                             else Serial.println("[Quiz] couldn't get question");
@@ -344,18 +377,30 @@ void state_func_quiz()
                     else if (response_code == 1) // no results
                     {
                         Serial.println("[Quiz] no results were returned");
+                        watch2::oled.setCursor(2, watch2::top_thing_height);
+                        watch2::oled.setTextColor(WHITE, BLACK);
+                        watch2::oled.println("Error 1\nno results were returned");
                     }
                     else if (response_code == 2) // invalid parameter
                     {
                         Serial.println("[Quiz] invalid parameter");
+                        watch2::oled.setCursor(2, watch2::top_thing_height);
+                        watch2::oled.setTextColor(WHITE, BLACK);
+                        watch2::oled.println("Error 2\ninvalid parameter");
                     }
                     else if (response_code == 3) // token not found
                     {
                         Serial.println("[Quiz] session token doesn't exist");
+                        watch2::oled.setCursor(2, watch2::top_thing_height);
+                        watch2::oled.setTextColor(WHITE, BLACK);
+                        watch2::oled.println("Error 3\ntoken not found");
                     }
                     else if (response_code == 4) // token empty
                     {
                         Serial.println("[Quiz] session token has returned all possible questions for the query");
+                        watch2::oled.setCursor(2, watch2::top_thing_height);
+                        watch2::oled.setTextColor(WHITE, BLACK);
+                        watch2::oled.println("Error 4\ntoken empty");
                     }   
                     
                 }
@@ -365,14 +410,68 @@ void state_func_quiz()
                 cJSON_Delete(response_object);
             }
 
+            // update selected answer
+            if (dpad_up_active())
+            {
+                if (selected_answer == 0) selected_answer = answers.size() - 1;
+                else selected_answer--;
+            }
+            if (dpad_down_active())
+            {
+                if (selected_answer == answers.size() - 1) selected_answer = 0;
+                else selected_answer++;
+            }
+
             if (dpad_enter_active()) // get a new question
             {
-                watch2::switchState(watch2::state, 2);
+                if (!answered) 
+                {
+                    answered_but_we_have_only_just_found_out = true;
+                    if (strcmp(temp_text, answers[selected_answer].c_str()) == 0) score++;
+                }
+            }
+
+            draw(dpad_any_active(), {
+
+                // print question
+                watch2::oled.setCursor(2, watch2::top_thing_height);
+                watch2::oled.setTextColor(WHITE, BLACK);
+                watch2::oled.println(current_question.c_str());
+
+                // print answers
+                for (uint8_t i = 0; i < answers.size(); i++)
+                {
+                    if (answered || answered_but_we_have_only_just_found_out)
+                    {
+                        if (strcmp(temp_text, answers[i].c_str()) == 0) watch2::oled.setTextColor(TFT_GREEN, BLACK);
+                        else 
+                        {
+                            if (selected_answer == i) watch2::oled.setTextColor(RED, BLACK);
+                            else watch2::oled.setTextColor(WHITE, BLACK);
+                        }
+                    }
+                    else
+                    {
+                        if (selected_answer == i) watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                        else                      watch2::oled.setTextColor(WHITE, BLACK);
+                    }
+                    
+                    watch2::oled.printf("        %s\n", answers[i].c_str());
+                }
+
+            });
+
+            if (dpad_enter_active()) // get a new question
+            {
+                if (answered)  watch2::switchState(watch2::state, 2);
             }
             if (dpad_left_active()) // return to the menu
             {
+                score = 0;
                 watch2::switchState(watch2::state, 0);
             }
+
+            if (answered_but_we_have_only_just_found_out) answered = true;
 
             break;
 
