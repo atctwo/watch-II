@@ -105,7 +105,6 @@ void state_func_state_menu()
 
 
     draw(dpad_any_active(), {
-        watch2::oled.fillRect(0, 86, SCREEN_WIDTH, 10, BLACK); //clear state name text
         icon_ypos += watch2::top_thing_height;                 //add space for top bar thing
 
         //determine row of selected icon by means of an overengineered 2d-ish linear search
@@ -143,7 +142,6 @@ void state_func_state_menu()
         if (icon_yoffset != last_yoffset)
         {
             watch2::oled.fillScreen(BLACK);
-            last_yoffset = icon_yoffset;
         }
 
         //draw state icons
@@ -153,21 +151,12 @@ void state_func_state_menu()
             if (!stateinfo.hidden)
             {
                 //draw app icon
-                watch2::oled.setSwapBytes(true);
-                watch2::oled.pushImage(icon_xpos, icon_ypos - icon_yoffset, icon_size, icon_size, watch2::icons[stateinfo.stateIcon].data());
-                /*std::string icon_path = "/" + stateinfo.stateIcon;
-                if (SPIFFS.exists(icon_path.c_str()))
+                if ((watch2::selected_menu_icon == i) || (icon_yoffset != last_yoffset) || (!watch2::state_init))
                 {
-                    watch2::drawBmp(icon_path.c_str(), icon_xpos, icon_ypos - icon_yoffset);
+                    Serial.printf("drawing icon for state \"%s\", icon is \"%s\" (%d elements)\n", stateinfo.stateName.c_str(), stateinfo.stateIcon.c_str(), sizeof((*watch2::icons)[stateinfo.stateIcon]));
+                    watch2::drawImage((*watch2::icons)[stateinfo.stateIcon], icon_xpos, icon_ypos - icon_yoffset);
                 }
-                else
-                {
-                    Serial.print("[error] ");
-                    Serial.print(icon_path.c_str());
-                    Serial.println(" does not exist");
-                }*/
 
-                //if current app is selected, draw an outline around it
                 if (watch2::selected_menu_icon == i)
                 {
                     watch2::oled.drawRoundRect(icon_xpos-1, icon_ypos-1 - icon_yoffset, icon_size+1, icon_size+1, 10, watch2::themecolour);
@@ -189,6 +178,12 @@ void state_func_state_menu()
 
                 if (!watch2::state_init) no_icons++;
             }
+        }
+
+        // reset last y offset
+        if (icon_yoffset != last_yoffset)
+        {
+            last_yoffset = icon_yoffset;
         }
 
         //draw name of selected icon

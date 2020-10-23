@@ -191,7 +191,7 @@ void state_func_alarms()
             watch2::oled.drawBitmap(
                 alarm_edge - (icon_size * 2) - (icon_spacing * 5),
                 alarm_y,
-                watch2::small_icons["back"].data(),
+                (*watch2::small_icons)["back"].data(),
                 icon_size,
                 icon_size,
                 working_alarm_colour
@@ -212,7 +212,7 @@ void state_func_alarms()
             watch2::oled.drawBitmap(
                 alarm_edge - icon_size - (icon_spacing * 2),
                 alarm_y,
-                watch2::small_icons["add"].data(),
+                (*watch2::small_icons)["add"].data(),
                 icon_size,
                 icon_size,
                 working_alarm_colour
@@ -311,7 +311,7 @@ void state_func_alarms()
                 watch2::oled.drawBitmap(
                     alarm_edge - (icon_size * 2) - (icon_spacing * 5),
                     alarm_y,
-                    (watch2::alarms[i].paused) ? watch2::small_icons["play"].data() : watch2::small_icons["pause"].data(),
+                    (watch2::alarms[i].paused) ? (*watch2::small_icons)["play"].data() : (*watch2::small_icons)["pause"].data(),
                     icon_size,
                     icon_size,
                     working_alarm_colour
@@ -339,7 +339,7 @@ void state_func_alarms()
                 watch2::oled.drawBitmap(
                     alarm_edge - icon_size - (icon_spacing * 2),
                     alarm_y,
-                    watch2::small_icons["x"].data(),
+                    (*watch2::small_icons)["x"].data(),
                     icon_size,
                     icon_size,
                     working_alarm_colour

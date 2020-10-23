@@ -35,7 +35,8 @@ void state_func_tetris()
             // watch2::oled.setTextColor(CYAN, BLACK);         watch2::oled.print("I");
             // watch2::oled.setTextColor(PURPLE, BLACK);       watch2::oled.print("S\n");
 
-            watch2::oled.pushImage(35, 10, 170, 118, watch2::icons["tetris_logo"].data());
+            // image is 170 x 118
+            watch2::drawImage((*watch2::icons)["tetris_logo"], 35, 10);
 
             
         }

@@ -4,7 +4,7 @@
 #include "freertos/task.h"
 #include "esp_task_wdt.h"
 #include "watch2.h"
-#include "icons/app_icons.cpp"
+// #include "icons/app_icons.cpp"
 #include "icons/small_icons.cpp"
 
 ////////////////////////////////////////
@@ -43,7 +43,7 @@ void setup() {
         Serial.println("initalised spiffs successfully");
         watch2::spiffs_state = 1;
     }
-
+    
     //set up oled
     Serial.print("setting up display: ");
     digitalWrite(cs, LOW);
@@ -115,6 +115,42 @@ void setup() {
     watch2::setFont(MAIN_FONT, watch2::top_thing);
     Serial.println("done");
 
+    // set up icons
+    Serial.print("setting up icons: \n");
+
+    // the icon maps are dynamically allocated using malloc() and "placement new"s.
+
+    // allocate memory for maps using malloc; specifically allocate memory from PSRAM
+    watch2::icons = (std::map<std::string, watch2::imageData>*) heap_caps_malloc(sizeof(std::map<std::string, watch2::imageData>), MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+    watch2::small_icons = (std::map<std::string, std::vector<unsigned char>>*) heap_caps_malloc(sizeof(std::map<std::string, std::vector<unsigned char>>), MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+
+    Serial.printf("spiram %s\n", (psramFound() ? "found" : "not found"));
+    if (!watch2::icons) Serial.println("failed to allocate memory for icons!");
+    if (!watch2::small_icons) Serial.println("failed to allocate memory for small icons!");
+
+    // use placement new to construct objects
+    new(watch2::icons) std::map<std::string, watch2::imageData>();
+    new(watch2::small_icons) std::map<std::string, std::vector<unsigned char>>();
+
+    // copy icons from flash to ram
+    fs::File spi_root = SPIFFS.open("/");
+    fs::File spi_file = spi_root.openNextFile();
+    while(spi_file)
+    {
+        if (watch2::file_ext(spi_file.name()).compare("bmp") == 0) // the file extension is bmp
+        {
+            Serial.printf("loading \"%s\" as \"%s\"\n", spi_file.name(), watch2::file_name(spi_file.name()).c_str());
+            watch2::imageData loaded_icon = watch2::getImageDataSPIFFS(spi_file.name());
+            if (loaded_icon.error) Serial.printf("\tload error: %s\n", loaded_icon.error);
+            watch2::registerIcon(watch2::file_name(spi_file.name()).c_str(), loaded_icon);
+        }
+
+        spi_file = spi_root.openNextFile();
+    }
+    registerSmallIcons();
+
+    Serial.println("done");
+
     //set up framebuffer
     //watch2::framebuffer.createSprite(100, 100);
     //watch2::setFont(MAIN_FONT, watch2::framebuffer);
@@ -143,12 +179,6 @@ void setup() {
         btStop();
 
     }
-    Serial.println("done");
-
-    // set up icons
-    Serial.print("setting up icons: ");
-    registerAppIcons();
-    registerSmallIcons();
     Serial.println("done");
 
     // set up state menu
@@ -328,11 +358,11 @@ void loop() {
             uint16_t split_width = SCREEN_WIDTH / 4;
 
             //draw dismiss button
-            watch2::oled.pushImage(split_width - (button_w / 2), button_y, button_w, button_h, watch2::icons["dismiss"].data());
+            watch2::drawImage((*watch2::icons)["dismiss"], split_width - (button_w / 2), button_y);
             watch2::oled.drawRoundRect(split_width - (button_w / 2), button_y, button_w, button_h, button_r, (!selected_alarm_action) ? watch2::themecolour : BLACK);
 
             //draw snooze button
-            watch2::oled.pushImage((split_width * 3) - (button_w / 2), button_y, button_w, button_h, watch2::icons["bed"].data());
+            watch2::drawImage((*watch2::icons)["bed"], (split_width * 3) - (button_w / 2), button_y);
             watch2::oled.drawRoundRect((split_width * 3) - (button_w / 2), button_y, button_w, button_h, button_r, (selected_alarm_action) ? watch2::themecolour : BLACK);
 
             //draw button text

@@ -1,6 +1,9 @@
 #include "watch2.h"
 
 #define STB_IMAGE_IMPLEMENTATION
+#define STBI_MALLOC(sz)           heap_caps_malloc(sz, MALLOC_CAP_SPIRAM)
+#define STBI_REALLOC(p,newsz)     heap_caps_realloc(p,newsz, MALLOC_CAP_SPIRAM)
+#define STBI_FREE(p)              free(p)
 #include "libraries/stb/stb_image.h"
 
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
@@ -34,8 +37,8 @@ namespace watch2
     Button btn_dpad_enter(dpad_enter, 25, false, false);
     Button btn_zero(0);
 
-    std::map<std::string, std::vector<unsigned short int>> icons;
-    std::map<std::string, std::vector<unsigned char>> small_icons;
+    std::map<std::string, imageData> *icons;
+    std::map<std::string, std::vector<unsigned char>> *small_icons;
 
     // global variables
     int state = 0;
@@ -403,7 +406,7 @@ namespace watch2
             top_thing.drawBitmap(
                 icon_xpos,
                 1,
-                small_icons["small_battery"].data(),
+                (*small_icons)["small_battery"].data(),
                 icon_size,
                 icon_size,
                 WHITE
@@ -420,7 +423,7 @@ namespace watch2
             top_thing.drawBitmap(
                 icon_xpos,
                 1,
-                small_icons["small_ram"].data(),
+                (*small_icons)["small_ram"].data(),
                 icon_size,
                 icon_size,
                 WHITE
@@ -441,7 +444,7 @@ namespace watch2
         top_thing.drawBitmap(
             icon_xpos,
             1,
-            small_icons["small_sd"].data(),
+            (*small_icons)["small_sd"].data(),
             icon_size,
             icon_size,
             sd_colour
@@ -458,7 +461,7 @@ namespace watch2
                     top_thing.drawBitmap(
                         icon_xpos,
                         1,
-                        small_icons["small_wifi_complete"].data(),
+                        (*small_icons)["small_wifi_complete"].data(),
                         icon_size,
                         icon_size,
                         0x4A69
@@ -470,16 +473,16 @@ namespace watch2
                     milliseconds = millis() % 1000;
 
                     // bar 0
-                    top_thing.drawBitmap(icon_xpos, 1, small_icons["small_wifi_0"].data(), icon_size, icon_size, (0 <= milliseconds && milliseconds <= 250) ? WHITE : 0x6B4D);
+                    top_thing.drawBitmap(icon_xpos, 1, (*small_icons)["small_wifi_0"].data(), icon_size, icon_size, (0 <= milliseconds && milliseconds <= 250) ? WHITE : 0x6B4D);
                     
                     // bar 1
-                    top_thing.drawBitmap(icon_xpos, 1, small_icons["small_wifi_1"].data(), icon_size, icon_size, (251 <= milliseconds && milliseconds <= 500) ? WHITE : 0x6B4D);
+                    top_thing.drawBitmap(icon_xpos, 1, (*small_icons)["small_wifi_1"].data(), icon_size, icon_size, (251 <= milliseconds && milliseconds <= 500) ? WHITE : 0x6B4D);
 
                     // bar 2
-                    top_thing.drawBitmap(icon_xpos, 1, small_icons["small_wifi_2"].data(), icon_size, icon_size, (501 <= milliseconds && milliseconds <= 750) ? WHITE : 0x6B4D);
+                    top_thing.drawBitmap(icon_xpos, 1, (*small_icons)["small_wifi_2"].data(), icon_size, icon_size, (501 <= milliseconds && milliseconds <= 750) ? WHITE : 0x6B4D);
 
                     // bar 3
-                    top_thing.drawBitmap(icon_xpos, 1, small_icons["small_wifi_3"].data(), icon_size, icon_size, (751 <= milliseconds && milliseconds <= 1000) ? WHITE : 0x6B4D);
+                    top_thing.drawBitmap(icon_xpos, 1, (*small_icons)["small_wifi_3"].data(), icon_size, icon_size, (751 <= milliseconds && milliseconds <= 1000) ? WHITE : 0x6B4D);
 
                     break;
 
@@ -488,16 +491,16 @@ namespace watch2
                     // draw the wifi symbol, but hightlight each "bar" depending on the wifi signal strength
 
                     // bar 0
-                    top_thing.drawBitmap(icon_xpos, 1, small_icons["small_wifi_0"].data(), icon_size, icon_size, (WiFi.RSSI() >= -80) ? WHITE : 0x6B4D);
+                    top_thing.drawBitmap(icon_xpos, 1, (*small_icons)["small_wifi_0"].data(), icon_size, icon_size, (WiFi.RSSI() >= -80) ? WHITE : 0x6B4D);
                     
                     // bar 1
-                    top_thing.drawBitmap(icon_xpos, 1, small_icons["small_wifi_1"].data(), icon_size, icon_size, (WiFi.RSSI() >= -70) ? WHITE : 0x6B4D);
+                    top_thing.drawBitmap(icon_xpos, 1, (*small_icons)["small_wifi_1"].data(), icon_size, icon_size, (WiFi.RSSI() >= -70) ? WHITE : 0x6B4D);
                     
                     // bar 2
-                    top_thing.drawBitmap(icon_xpos, 1, small_icons["small_wifi_2"].data(), icon_size, icon_size, (WiFi.RSSI() >= -67) ? WHITE : 0x6B4D);
+                    top_thing.drawBitmap(icon_xpos, 1, (*small_icons)["small_wifi_2"].data(), icon_size, icon_size, (WiFi.RSSI() >= -67) ? WHITE : 0x6B4D);
                     
                     // bar 3
-                    top_thing.drawBitmap(icon_xpos, 1, small_icons["small_wifi_3"].data(), icon_size, icon_size, (WiFi.RSSI() >= -30) ? WHITE : 0x6B4D);
+                    top_thing.drawBitmap(icon_xpos, 1, (*small_icons)["small_wifi_3"].data(), icon_size, icon_size, (WiFi.RSSI() >= -30) ? WHITE : 0x6B4D);
                     break;
             }
         }
@@ -505,16 +508,16 @@ namespace watch2
         top_thing.pushSprite(0, 0);
     }
 
-    bool registerIcon(std::string iconName, std::vector<unsigned short int> icon)
+    bool registerIcon(std::string iconName, imageData icon)
     {
-        icons.emplace( iconName, icon );
+        icons->emplace( iconName, icon );
 
         return false;
     }
 
     bool registerSmallIcon(std::string iconName, std::vector<unsigned char> icon)
     {
-        small_icons.emplace( iconName, icon );
+        small_icons->emplace( iconName, icon );
 
         return false;
     }
@@ -1129,6 +1132,17 @@ namespace watch2
         }
     }
 
+    std::string file_name(const char* filepath)
+    {
+        // get icon name from filename
+        std::string icon_name = filepath;       // copy filename
+        size_t pos = icon_name.rfind("/");      // find last '/'
+        icon_name.erase(0, pos + 1);            // remove path part
+        pos = icon_name.rfind(".");             // find where the extension starts
+        icon_name.erase(pos, icon_name.npos);   // remove extension
+        return icon_name;   
+    }
+
     std::string dir_name(std::string file_path_thing)
     {
         char path[file_path_thing.length()];
@@ -1366,7 +1380,7 @@ namespace watch2
                         oled.drawBitmap(
                             key_matrix_x + (x * key_w),
                             key_matrix_y + (y * key_h),
-                            small_icons[icon].data(),
+                            (*small_icons)[icon].data(),
                             key_w, key_h, WHITE
                         );
                     }
@@ -1680,6 +1694,21 @@ namespace watch2
         // if the control centre is already being shown, don't do anything
         if (showingControlCentre) return;
 
+        // print memory info
+        Serial.printf("[memory] used internal memory (heap):  %d (%s) (%0.2f%%)\n", 
+            ESP.getHeapSize() - ESP.getFreeHeap(), watch2::humanSize(ESP.getHeapSize() - ESP.getFreeHeap()), 
+            ((float)(ESP.getHeapSize() - ESP.getFreeHeap()) / ESP.getHeapSize()) * 100
+        );
+        Serial.printf("[memory] free internal memory (heap):  %d (%s)\n", ESP.getFreeHeap(), watch2::humanSize(ESP.getFreeHeap()));
+        Serial.printf("[memory] total internal memory (heap): %d (%s)\n", ESP.getHeapSize(), watch2::humanSize(ESP.getHeapSize()));
+
+        Serial.printf("[memory] used external memory (heap):  %d (%s) (%0.2%%)\n", 
+            ESP.getPsramSize() - ESP.getFreePsram(), watch2::humanSize(ESP.getPsramSize() - ESP.getFreePsram()), 
+            ((float)(ESP.getPsramSize() - ESP.getFreePsram()) / ESP.getPsramSize()) * 100
+        );
+        Serial.printf("[memory] free external memory (heap):  %d (%s)\n", ESP.getFreePsram(), watch2::humanSize(ESP.getFreePsram()));
+        Serial.printf("[memory] total external memory (heap): %d (%s)\n", ESP.getPsramSize(), watch2::humanSize(ESP.getPsramSize()));
+
         int selected_widget = 3;
         int last_button_widget = 3;
         bool go_back_to_watch_face = false;
@@ -1824,7 +1853,7 @@ namespace watch2
 
                 int spacing = 10;
                 int button_size = 30;
-                int weather_icon_size = 24;
+                int weather_icon_size = 30;
                 int radius = 10;
                 int outline_colour = WHITE;
                 int background_colour = BLACK;
@@ -1846,47 +1875,47 @@ namespace watch2
                 switch(weather / 100)
                 {
                     case 2: // thunder
-                        oled.pushImage(weather_x, time_y, weather_icon_size, weather_icon_size, watch2::icons["thunder"].data());
+                        drawImage((*watch2::icons)["thunder"], weather_x, time_y);
                         break;
                         
                     case 3: // drizzle
                         if (now() < sunrise || now() > sunset) /* night */
-                            oled.pushImage(weather_x, time_y, weather_icon_size, weather_icon_size, watch2::icons["moon_rain"].data());
+                            drawImage((*watch2::icons)["moon_rain"], weather_x, time_y);
                         else                                   /* day */
-                            oled.pushImage(weather_x, time_y, weather_icon_size, weather_icon_size, watch2::icons["sun_rain"].data());
+                            drawImage((*watch2::icons)["sun_rain"], weather_x, time_y);
                         break;
 
                     case 5: // rain
-                        oled.pushImage(weather_x, time_y, weather_icon_size, weather_icon_size, watch2::icons["rain"].data());
+                        drawImage((*watch2::icons)["rain"], weather_x, time_y);
                         break;
 
                     case 6: // snow
-                        oled.pushImage(weather_x, time_y, weather_icon_size, weather_icon_size, watch2::icons["snow"].data());
+                        drawImage((*watch2::icons)["snow"], weather_x, time_y);
                         break;
 
                     case 7: // atmosphere
-                        oled.pushImage(weather_x, time_y, weather_icon_size, weather_icon_size, watch2::icons["wind"].data());
+                        drawImage((*watch2::icons)["wind"], weather_x, time_y);
                         break;
 
                     case 8: // clear / clouds
                         if (weather == 800) // clear
                         {
                             if (now() < sunrise || now() > sunset) /* night */
-                                oled.pushImage(weather_x, time_y, weather_icon_size, weather_icon_size, watch2::icons["moon"].data());
+                                drawImage((*watch2::icons)["moon"], weather_x, time_y);
                             else                                   /* day */
-                                oled.pushImage(weather_x, time_y, weather_icon_size, weather_icon_size, watch2::icons["sun"].data());
+                                drawImage((*watch2::icons)["sun"], weather_x, time_y);
                         }
                         else
                         {
                             if (now() < sunrise || now() > sunset) /* night */
-                                oled.pushImage(weather_x, time_y, weather_icon_size, weather_icon_size, watch2::icons["moon_cloud"].data());
+                                drawImage((*watch2::icons)["moon_cloud"], weather_x, time_y);
                             else                                   /* day */
-                                oled.pushImage(weather_x, time_y, weather_icon_size, weather_icon_size, watch2::icons["sun_cloud"].data());
+                                drawImage((*watch2::icons)["sun_cloud"], weather_x, time_y);
                         }
                         break;
 
                     default:
-                        oled.pushImage(weather_x, time_y, weather_icon_size, weather_icon_size, watch2::icons["weather_unknown"].data());
+                        drawImage((*watch2::icons)["weather_unknown"], weather_x, time_y);
                         break;
                 }
 
@@ -1898,7 +1927,7 @@ namespace watch2
                 watch2::oled.fillRoundRect(slider_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, 0x2D50);                               //background thing
                 outline_colour = (selected_widget == 0) ? WHITE : 0x2D50;                                                                               //determine outline colour
                 watch2::oled.drawRoundRect(slider_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, outline_colour);                       //draw outline
-                watch2::oled.drawBitmap(slider_x, button_y, watch2::small_icons["volume"].data(), button_size, button_size, WHITE);                     //draw icon
+                watch2::oled.drawBitmap(slider_x, button_y, (*watch2::small_icons)["volume"].data(), button_size, button_size, WHITE);                     //draw icon
                 button_y += spacing + button_size;                                                                                                      //move cursor
 
                 //draw brightness slider                                                                                                                yellow
@@ -1909,7 +1938,7 @@ namespace watch2
                 watch2::oled.fillRoundRect(slider_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, 0xFEC0);                               //background thing
                 outline_colour = (selected_widget == 1) ? WHITE : 0xFEC0;                                                                               //determine outline colour
                 watch2::oled.drawRoundRect(slider_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, outline_colour);                       //draw outline
-                watch2::oled.drawBitmap(slider_x, button_y, watch2::small_icons["sun"].data(), button_size, button_size, WHITE);                        //draw icon
+                watch2::oled.drawBitmap(slider_x, button_y, (*watch2::small_icons)["sun"].data(), button_size, button_size, WHITE);                        //draw icon
                 button_y += spacing + button_size;                                                                                                      //move cursor
 
                 //draw torch slider                                                                                                                     adafruit yellow
@@ -1920,7 +1949,7 @@ namespace watch2
                 watch2::oled.fillRoundRect(slider_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, YELLOW);                               //background thing
                 outline_colour = (selected_widget == 2) ? WHITE : YELLOW;                                                                               //determine outline colour
                 watch2::oled.drawRoundRect(slider_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, outline_colour);                       //draw outline
-                watch2::oled.drawBitmap(slider_x, button_y, watch2::small_icons["torch_but_smaller"].data(), button_size, button_size, WHITE);          //draw icon
+                watch2::oled.drawBitmap(slider_x, button_y, (*watch2::small_icons)["torch_but_smaller"].data(), button_size, button_size, WHITE);          //draw icon
                 button_y += spacing + button_size;                                                                                                      //move cursor
 
                 //draw wifi button
@@ -1931,7 +1960,7 @@ namespace watch2
                 watch2::oled.fillRoundRect(button_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, background_colour);
                 outline_colour = ( !(selected_widget == 3) != !(watch2::wifi_state == 3) ) ? 0x867D : WHITE;
                 watch2::oled.drawRoundRect(button_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, outline_colour);
-                watch2::oled.drawBitmap(button_x, button_y, watch2::small_icons["wifi"].data(), button_size, button_size, (watch2::wifi_state != 0) ? WHITE : 0x867D);
+                watch2::oled.drawBitmap(button_x, button_y, (*watch2::small_icons)["wifi"].data(), button_size, button_size, (watch2::wifi_state != 0) ? WHITE : 0x867D);
                 button_x += spacing + button_size;
                 if (watch2::wifi_state != last_wifi_state) last_wifi_state = watch2::wifi_state;
 
@@ -1943,7 +1972,7 @@ namespace watch2
                 watch2::oled.fillRoundRect(button_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, background_colour);
                 outline_colour = ( !(selected_widget == 4) != !(watch2::bluetooth_state == 3) ) ? 0x041F : WHITE;
                 watch2::oled.drawRoundRect(button_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, outline_colour);
-                watch2::oled.drawBitmap(button_x, button_y, watch2::small_icons["bluetooth"].data(), button_size, button_size, (watch2::bluetooth_state != 0) ? WHITE : 0x041F);
+                watch2::oled.drawBitmap(button_x, button_y, (*watch2::small_icons)["bluetooth"].data(), button_size, button_size, (watch2::bluetooth_state != 0) ? WHITE : 0x041F);
                 button_x += spacing + button_size;
                 if (watch2::bluetooth_state != last_bt_state) last_bt_state = watch2::bluetooth_state;
 
@@ -1952,7 +1981,7 @@ namespace watch2
                 watch2::oled.fillRoundRect(button_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, background_colour);
                 outline_colour = ( (selected_widget == 5) ? WHITE : 0x041f);
                 watch2::oled.drawRoundRect(button_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, outline_colour);
-                watch2::oled.drawBitmap(button_x, button_y, watch2::small_icons["internet_time"].data(), button_size, button_size, WHITE);
+                watch2::oled.drawBitmap(button_x, button_y, (*watch2::small_icons)["internet_time"].data(), button_size, button_size, WHITE);
                 button_x += spacing + button_size;
 
                 // draw label
@@ -2430,6 +2459,7 @@ namespace watch2
         w = read32(bmpFS);
         h = read32(bmpFS);
 
+        //   planes                  bits per pixel           compression
         if ((read16(bmpFS) == 1) && (read16(bmpFS) == 24) && (read32(bmpFS) == 0))
         {
         y += h - 1;
@@ -2468,6 +2498,81 @@ namespace watch2
     bmpFS.close();
     }
 
+    void loadBmp(const char *filename) {
+
+        fs::File bmpFS;
+
+        // Open requested file on SD card
+        bmpFS = SPIFFS.open(filename, "r");
+
+        // get icon name from filename
+        std::string icon_name = filename;       // copy filename
+        icon_name.erase(icon_name.begin());     // remove '/' at start of name
+        size_t pos = icon_name.rfind(".");      // find where the extension starts
+        icon_name.erase(pos, icon_name.npos);   // remove extension
+        Serial.printf("[loadBmp] using icon name %s\n", icon_name.c_str());
+
+        if (!bmpFS)
+        {
+            Serial.print("[loadBmp] File not found");
+            return;
+        }
+
+        uint32_t seekOffset;
+        uint16_t w, h, row, col;
+        uint8_t  r, g, b;
+
+        uint32_t startTime = millis();
+
+        if (read16(bmpFS) == 0x4D42)
+        {
+            read32(bmpFS);
+            read32(bmpFS);
+            seekOffset = read32(bmpFS);
+            read32(bmpFS);
+            w = read32(bmpFS);
+            h = read32(bmpFS);
+            uint16_t y = h;
+
+            Serial.printf("w: %d, h: %d\n", w, h);
+
+            //   planes                  bits per pixel           compression
+            if ((read16(bmpFS) == 1) && (read16(bmpFS) == 24) && (read32(bmpFS) == 0))
+            {
+                bmpFS.seek(seekOffset);
+                uint16_t padding = (4 - ((w * 3) & 3)) & 3;
+                uint8_t *lineBuffer = (uint8_t*) malloc( (w * 3 + padding) * sizeof(uint8_t));
+                uint16_t *imageBuffer = (uint16_t*) malloc(w * h * sizeof(uint16_t));
+
+                for (row = 0; row < h; row++) 
+                {
+                    bmpFS.read(lineBuffer, sizeof(lineBuffer));
+                    uint8_t*  bptr = lineBuffer;
+                    uint16_t* tptr = (uint16_t*)lineBuffer;
+                    // Convert 24 to 16 bit colours
+                    for (uint16_t col = 0; col < w; col++)
+                    {
+                        b = *bptr++;
+                        g = *bptr++;
+                        r = *bptr++;
+                        *tptr++ = ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3);
+                    }
+
+                    // Push the pixel row to screen, pushImage will crop the line if needed
+                    // y is decremented as the BMP image is drawn bottom up
+                    Serial.printf("%d ", row);
+                    memcpy(imageBuffer + (row * w), lineBuffer,  w/2);
+                }
+
+                //registerIcon(icon_name, imageBuffer); 
+                Serial.print("[loadBmp] Loaded in "); Serial.print(millis() - startTime);
+                Serial.println(" ms");
+            }
+            else Serial.println("[loadBmp] BMP format not recognized.");
+        }
+        bmpFS.close();
+    }
+
 
     imageData getImageData(const char *filename)
     {
@@ -2493,7 +2598,42 @@ namespace watch2
         // set up response struct
         const char *error;
         if (data == NULL) error = stbi_failure_reason();
-        else error = "";
+        else error = NULL;
+        imageData response = {
+            data,
+            img_w,
+            img_h,
+            error
+        };
+
+        // return data
+        f.close();
+        return response;
+    }
+
+    imageData getImageDataSPIFFS(const char *filename)
+    {
+
+        // this method currently uses stb_image for everything
+
+        stbi_io_callbacks callbacks = {
+            img_read_spiffs,
+            img_skip_spiffs,
+            img_eof_spiffs
+        };
+
+        // open file
+        fs::File f = SPIFFS.open(filename);
+        // Serial.println(f.name());
+
+        // read image
+        int img_w, img_h, img_n, x, y;
+        unsigned char *data = stbi_load_from_callbacks(&callbacks, &f, &img_w, &img_h, &img_n, 3);
+
+        // set up response struct
+        const char *error;
+        if (data == NULL) error = stbi_failure_reason();
+        else error = NULL;
         imageData response = {
             data,
             img_w,
@@ -2928,6 +3068,27 @@ namespace watch2
     int img_eof(void *user)
     {
         File *f = static_cast<File*>(user);
+        uint32_t help = f->available();
+        if (help == 0) return 1;
+        return 0;
+    }
+
+    int img_read_spiffs(void *user,  char *data, int size)
+    {
+        fs::File *f = static_cast<fs::File*>(user);
+        int bytes_read = f->readBytes(data, size);
+        return bytes_read;
+    }
+
+    void img_skip_spiffs(void *user, int n)
+    {
+        fs::File *f = static_cast<fs::File*>(user);
+        f->seek(n);
+    }
+
+    int img_eof_spiffs(void *user)
+    {
+        fs::File *f = static_cast<fs::File*>(user);
         uint32_t help = f->available();
         if (help == 0) return 1;
         return 0;

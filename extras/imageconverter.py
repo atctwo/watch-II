@@ -11,17 +11,22 @@ parser.add_argument( "--format", "-f", default = "rgb", help="the order in which
 
 args = parser.parse_args()
 
+print(args.input)
 im = Image.open(args.input)
-out = open(args.output, "w")
+out = open(args.output, "a")
 
 image_width  = ceil( im.width  * args.xscale)
 image_height = ceil( im.height * args.yscale)
 
 im.resize((image_width, image_height))
 
+# out.write("//input file: {}\n".format(args.input));
+# out.write("static unsigned short {}[]".format(args.output.split(".")[0]))
+# out.write(" = {\n\t")
+
+name = args.input.split('/')[-1].split(".")[0]
 out.write("//input file: {}\n".format(args.input));
-out.write("static unsigned short {}[]".format(args.output.split(".")[0]))
-out.write(" = {\n\t")
+out.write(f"watch2::registerIcon(\"{ name }\", {{\n")
 
 output_thing = 0
 pixels = im.width * im.height
@@ -30,7 +35,14 @@ for y in range(im.height):
     for x in range(im.width):
 
         #partly adapted from https://stackoverflow.com/questions/31957771/default-value-in-python-unpacking
-        r,g,b,*a = im.getpixel((x, y))
+
+        if im.mode == "P": # palette
+            pixel_index = im.getpixel((x,y))
+            palette_index = pixel_index * 3
+            r,g,b,*a = im.getpalette()[palette_index:palette_index+3]
+        elif im.mode == "RGBA": # rgba
+            r,g,b,*a = im.getpixel((x, y))
+
         a = a[0] if a else 255
         channels = [0, 0, 0]
 
@@ -49,5 +61,5 @@ for y in range(im.height):
 
         output_thing += 1
 
-out.write("\n};")
+out.write("\n});\n\n")
 print("{} bytes".format(pixels * 2))

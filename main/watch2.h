@@ -277,13 +277,14 @@ namespace watch2
          * @brief the raw image data
          * 
          * This member stores an array of pixels.  The array stores each red, green, and blue value one after another, so each pixel takes up 3 array 
-         * elements.  Here is a terrible diagram to show this:
+         * elements.  The colour is stored in 24 bit RGB format.  Here is a terrible diagram to show this:
          * ```
          * array            [R][G][B][R][G][B][R][G][B][R][G][B][R][G][B][R][G][B][R][G][B][R][G][B][R][G][B][R][G][B]...
          * element number   0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29
          * pixel number     |   0    |    1   |    2   |    3   |    4   |    5   |    6   |    7   |    8   |    9   |
          * ``` 
          */
+        imageData()=default;
         unsigned char               *data; 
         uint16_t                    width;          //!< the width of the image
         uint16_t                    height;         //!< the height of the image
@@ -318,8 +319,8 @@ namespace watch2
     extern std::vector<stateMeta> states;                                                       //<! vector of watch states
 
     //map of icons
-    extern std::map<std::string, std::vector<unsigned short int>> icons;                        //!< large colour icons for things like the state menu
-    extern std::map<std::string, std::vector<unsigned char>> small_icons;                       //!< smaller monochrome icons for use within GUIs
+    extern std::map<std::string, imageData> *icons;                                             //!< large colour icons for things like the state menu (16 bit 565 colour)
+    extern std::map<std::string, std::vector<unsigned char>> *small_icons;                      //!< smaller monochrome icons for use within GUIs (8 bit colour)
 
     // global variables
     extern int state;                                                                           //!< currently selected state
@@ -452,9 +453,9 @@ namespace watch2
     /**
      * @brief add an icon to the list of 16 bit colour icons.  this icon store is usually used to store things like app icons.
      * @param iconName the name of the icon that will be used to access it later
-     * @param icon a vector or array of unsigned short ints that represent the icon
+     * @param icon an array of unsigned short ints that represent the icon
      */
-    bool    registerIcon(std::string iconName, std::vector<unsigned short int> icon);
+    bool    registerIcon(std::string iconName, imageData icon);
 
     /**
      * @brief add an icon to the list of smaller 8 bit monochrome icons.
@@ -541,6 +542,16 @@ namespace watch2
      * @param path the path to start the file selection at
      */
     std::string beginFileSelect(std::string path = "/");
+
+    /**
+     * @brief gets the name part of a file path (without the extension).
+     * 
+     * for example, if you pass 'images/ir/pause.bmp', this function will return 'pause'.
+     * 
+     * @param filepath 
+     * @return std::string
+     */
+    std::string file_name(const char* filepath);
 
     /**
      * @brief gets the directory part of a file path.
@@ -785,15 +796,17 @@ namespace watch2
     uint32_t read32(fs::File &f);
 
     /**
-     * @brief draws a BMP to the screen.
+     * @brief draws a 24 bit uncompressed BMP to the screen.
      * 
      * this is a function written by Bodmer, and can be found at https://github.com/Bodmer/TFT_eSPI/blob/master/examples/Generic/TFT_SPIFFS_BMP/BMP_functions.ino.
      * 
-     * @param filename the path to the BMP to draw
+     * @param filename the path to the BMP in SPIFFS to draw
      * @param x the x position to draw the image at
      * @param y the y position to draw the image at
      */
     void drawBmp(const char *filename, int16_t x, int16_t y);
+
+    void loadBmp(const char *filename);
 
     /**
      * @brief get the data of an image as an array of pixels.
@@ -817,6 +830,7 @@ namespace watch2
      * @return imageData a struct containing image data
      */
     imageData getImageData(const char *filename);
+    imageData getImageDataSPIFFS(const char *filename);
 
     /**
      * @brief frees the memory used by an image loaded using `getImageData()`.
@@ -916,6 +930,9 @@ namespace watch2
     int img_read(void *user,  char *data, int size);
     void img_skip(void *user, int n);
     int img_eof(void *user);
+    int img_read_spiffs(void *user,  char *data, int size);
+    void img_skip_spiffs(void *user, int n);
+    int img_eof_spiffs(void *user);
 
 }
 

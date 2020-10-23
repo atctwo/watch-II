@@ -21,6 +21,20 @@ void state_func_init()
         //dim screen
         uint8_t contrast = 0x00;
         //watch2::oled.sendCommand(0xC7, &contrast, 1);
+
+        // Serial.printf("[memory] used internal memory (heap):  %d (%s) (%0.2f%%)\n", 
+        //     ESP.getHeapSize() - ESP.getFreeHeap(), watch2::humanSize(ESP.getHeapSize() - ESP.getFreeHeap()), 
+        //     ((float)(ESP.getHeapSize() - ESP.getFreeHeap()) / ESP.getHeapSize()) * 100
+        // );
+        // Serial.printf("[memory] free internal memory (heap):  %d (%s)\n", ESP.getFreeHeap(), watch2::humanSize(ESP.getFreeHeap()));
+        // Serial.printf("[memory] total internal memory (heap): %d (%s)\n", ESP.getHeapSize(), watch2::humanSize(ESP.getHeapSize()));
+
+        // Serial.printf("[memory] used external memory (heap):  %d (%s) (%0.2%%)\n", 
+        //     ESP.getPsramSize() - ESP.getFreePsram(), watch2::humanSize(ESP.getPsramSize() - ESP.getFreePsram()), 
+        //     ((float)(ESP.getPsramSize() - ESP.getFreePsram()) / ESP.getPsramSize()) * 100
+        // );
+        // Serial.printf("[memory] free external memory (heap):  %d (%s)\n", ESP.getFreePsram(), watch2::humanSize(ESP.getFreePsram()));
+        // Serial.printf("[memory] total external memory (heap): %d (%s)\n", ESP.getPsramSize(), watch2::humanSize(ESP.getPsramSize()));
     }
 
     //variant 1

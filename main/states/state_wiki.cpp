@@ -93,7 +93,7 @@ void state_func_wiki()
             }
 
             draw(dpad_any_active(), {
-                watch2::oled.pushImage(0, watch2::top_thing_height,240, 40, watch2::icons["wikipedia_text"].data());
+                watch2::drawImage((*watch2::icons)["wikipedia_text"], 0, watch2::top_thing_height);
                 watch2::oled.setTextColor(WHITE, BLACK);
                 watch2::oled.setTextDatum(TC_DATUM);
                 watch2::oled.drawString("The Free Encyclopedia", SCREEN_WIDTH / 2, watch2::top_thing_height + 40);
