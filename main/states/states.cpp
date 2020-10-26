@@ -13,6 +13,7 @@
 #include "state_image_viewer.cpp"
 #include "state_wiki.cpp"
 #include "state_quiz.cpp"
+#include "state_nes.cpp"
 #include "state_music_player.cpp"
 #include "state_tetris.cpp"
 #include "state_weather.cpp"
@@ -39,7 +40,8 @@ namespace watch2
         stateMeta("Wikipedia", state_func_wiki, "wikipedia"),
         stateMeta("Quiz Thingy", state_func_quiz),
         stateMeta("Music Player", state_func_music_player, "music_player"),
-        stateMeta("Tetris", state_func_tetris, "ltris")
+        stateMeta("Tetris", state_func_tetris, "ltris"),
+        stateMeta("NES", state_func_nes)
 
     };
 

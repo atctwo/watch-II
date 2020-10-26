@@ -37,6 +37,8 @@ The system uses two of nothings' stb libraries (https://github.com/nothings/stb)
 
 HTML character decoding is performed by the [`entities` library](https://stackoverflow.com/a/1082191), by cggaertner.
 
+The NES Emulator is built around [agnes](https://github.com/kgabis/agnes).
+
 ## Modifications
 
 These are the modifications you need to make to some of the libraries to get watch2 to work with them.
