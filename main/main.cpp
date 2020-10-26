@@ -137,7 +137,7 @@ void setup() {
     fs::File spi_file = spi_root.openNextFile();
     while(spi_file)
     {
-        if (watch2::file_ext(spi_file.name()).compare("bmp") == 0) // the file extension is bmp
+        if ((watch2::file_ext(spi_file.name()).compare("bmp") == 0) || (watch2::file_ext(spi_file.name()).compare("png") == 0)) // the file extension is bmp
         {
             Serial.printf("loading \"%s\" as \"%s\"\n", spi_file.name(), watch2::file_name(spi_file.name()).c_str());
             watch2::imageData loaded_icon = watch2::getImageDataSPIFFS(spi_file.name());
@@ -432,7 +432,7 @@ extern "C" void app_main()
 {
     loopTaskWDTEnabled = false;
     initArduino();
-    xTaskCreateUniversal(loopTask, "loopTask", 8192, NULL, 1, &loopTaskHandle, CONFIG_ARDUINO_RUNNING_CORE);
+    xTaskCreateUniversal(loopTask, "loopTask", 10000, NULL, 1, &loopTaskHandle, CONFIG_ARDUINO_RUNNING_CORE);
 }
 
 

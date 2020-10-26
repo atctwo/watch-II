@@ -826,6 +826,8 @@ namespace watch2
      * screen using `drawImage()`.  Once you have drawn the image, you can free the memory used by calling `freeImageData()` on the `data` member of the 
      * returned struct.
      * 
+     * For some reason, BMPs smaller than 44x44 won't load properly.
+     * 
      * @param filename the path to the image file
      * @return imageData a struct containing image data
      */
@@ -852,7 +854,7 @@ namespace watch2
      * @param scaling the scaling factor
      * @return const char* if the image couldn't be read, this will return a string describing the reason why
      */
-    const char* drawImage(imageData data, int16_t img_x, int16_t img_y, float scaling=1.0);
+    const char* drawImage(imageData data, int16_t img_x, int16_t img_y, float scaling=1.0, int array_offset=0);
 
     /**
      * @brief enables the wifi subsystem. 
