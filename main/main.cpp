@@ -52,6 +52,7 @@ void setup() {
     watch2::oled.fillScreen(0);
     watch2::setFont(MAIN_FONT);
     watch2::oled.writecommand(0x11); // sleep out
+    watch2::oled.initDMA();
     Serial.println("done");
 
     //set up SD card
