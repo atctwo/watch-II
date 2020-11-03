@@ -36,12 +36,12 @@ namespace watch2
         stateMeta("Notepad", state_func_notepad, "notepad"),
         stateMeta("IR remote", state_func_ir_remote, "ir_remote"),
         stateMeta("Image Viewer", state_func_image_viewer, "image_viewer"),
-        stateMeta("Weather", state_func_weather),
+        stateMeta("Weather", state_func_weather, "weather"),
         stateMeta("Wikipedia", state_func_wiki, "wikipedia"),
-        stateMeta("Quiz Thingy", state_func_quiz),
+        stateMeta("Quiz Thingy", state_func_quiz, "quiz"),
         stateMeta("Music Player", state_func_music_player, "music_player"),
         stateMeta("Tetris", state_func_tetris, "ltris"),
-        stateMeta("NES", state_func_nes)
+        stateMeta("NES", state_func_nes, "nes")
 
     };
 

@@ -94,7 +94,7 @@ cJSON *getForecast(double latitude, double longitude)
         char server[175];
         std::string api_key = watch2::getApiKey("openweather");
         Serial.printf("[weather] key: %s\n", api_key.c_str());
-        sprintf(server, "http://api.openweathermap.org/data/2.5/onecall?lat=%f&lon=%f&exclude=minutely,current,hourly,alerts&appid=%s", latitude, longitude, api_key.c_str());
+        sprintf(server, "http://api.openweathermap.org/data/2.5/onecall?lat=%f&lon=%f&exclude=minutely,current,hourly&appid=%s", latitude, longitude, api_key.c_str());
         Serial.printf("[weather] server request: %s\n", server);
 
         // connect to server
@@ -167,6 +167,8 @@ void state_func_weather()
 
     static cJSON *forecast;
     static cJSON *daily_array;
+    static uint8_t selected_day = 0;
+    static uint8_t day_page = 0;
     static double latitude = 0;
     static double longitude = 0;
     static uint8_t selected_x = 0;
@@ -177,6 +179,7 @@ void state_func_weather()
     static uint16_t day_width = (SCREEN_WIDTH / 2) - (padding * 1.5);
     static uint16_t day_height = (SCREEN_HEIGHT - watch2::top_thing_height - button_icon_size - (padding * 5)) / 4;
     static uint16_t day_radius = 7;
+    static TFT_eSprite wind_arrow = TFT_eSprite(&watch2::oled);
 
     if (watch2::states[watch2::state].variant == 0) // 8 day forecast
     {
@@ -196,6 +199,13 @@ void state_func_weather()
                 forecast = getForecast(latitude, longitude);
                 daily_array = getDailyArray(forecast);
             }
+
+            // set up wind arrow
+            wind_arrow.setColorDepth(16);
+            wind_arrow.createSprite(20, 20);
+            wind_arrow.setPivot(10, 10);
+            wind_arrow.fillSprite(BLACK);
+            watch2::drawImage((*watch2::icons)["wind_arrow"], 0, 0, 1.0, 0, wind_arrow);
         }
 
         if (dpad_left_active())
@@ -237,10 +247,17 @@ void state_func_weather()
                 }
             }
 
-            if (selected_x == 1 && selected_y == 0) // exit app
+            else if (selected_x == 1 && selected_y == 0) // exit app
             {
                 if (forecast) cJSON_Delete(forecast);
                 watch2::switchState(2);
+            }
+
+            else {
+
+                selected_day = ((selected_y - 1) * 2) + selected_x;
+                watch2::switchState(watch2::state, 1);  // switch to details
+
             }
         }
 
@@ -349,6 +366,217 @@ void state_func_weather()
             }
 
         });
+    }
+    else if (watch2::states[watch2::state].variant == 1) // daily forecast
+    {
+        if (!watch2::state_init)
+        {
+            watch2::oled.setCursor(0, watch2::top_thing_height);
+            if (daily_array)
+            {
+                cJSON *day_object = cJSON_GetArrayItem(daily_array, selected_day);
+                if (day_object)
+                {
+                    // draw date
+                    uint32_t dt = cJSON_GetObjectItem(day_object, "dt")->valueint;
+                    watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                    watch2::oled.printf("%s %d ", dayStr(weekday(dt)), day(dt));
+                    watch2::oled.printf("%s\n", monthStr(month(dt)));
+
+                    // draw weather icon
+                    cJSON *weather_array = cJSON_GetObjectItem(day_object, "weather");
+                    if (weather_array)
+                    {
+                        cJSON *primary_weather = cJSON_GetArrayItem(weather_array, 0);
+                        int weather_id = cJSON_GetObjectItem(primary_weather, "id")->valueint;
+
+                        // this assumes all the weather icons are the same dimensions
+                        // if the icons were to be different sizes, the next two lines would have to be called
+                        // in each switch statement case
+                        uint16_t weather_icon_x = SCREEN_WIDTH - (*watch2::icons)["rain"].width;
+                        uint16_t weather_icon_y = watch2::top_thing_height;
+
+                        switch(weather_id / 100)
+                        {
+                            case 2: // thunder
+                                drawImage((*watch2::icons)["thunder"], weather_icon_x, weather_icon_y);
+                                break;
+                                
+                            case 3: // drizzle
+                                drawImage((*watch2::icons)["sun_rain"], weather_icon_x, weather_icon_y);
+                                break;
+
+                            case 5: // rain
+                                drawImage((*watch2::icons)["rain"], weather_icon_x, weather_icon_y);
+                                break;
+
+                            case 6: // snow
+                                drawImage((*watch2::icons)["snow"], weather_icon_x, weather_icon_y);
+                                break;
+
+                            case 7: // atmosphere
+                                drawImage((*watch2::icons)["wind"], weather_icon_x, weather_icon_y);
+                                break;
+
+                            case 8: // clear / clouds
+                                if (weather_id == 800) // clear
+                                {
+                                    drawImage((*watch2::icons)["sun"], weather_icon_x, weather_icon_y);
+                                }
+                                else
+                                {
+                                    drawImage((*watch2::icons)["sun_cloud"], weather_icon_x, weather_icon_y);
+                                }
+                                break;
+
+                            default:
+                                drawImage((*watch2::icons)["weather_unknown"], weather_icon_x, weather_icon_y);
+                                break;
+                        }
+                    }
+                    else Serial.println("[weather] failed to get weather array");
+
+                    if (day_page == 0)
+                    {
+                        // draw temperature
+                        cJSON *temp = cJSON_GetObjectItem(day_object, "temp");
+                        double temp_min = cJSON_GetObjectItem(temp, "min")->valuedouble - 273.5;
+                        double temp_max = cJSON_GetObjectItem(temp, "max")->valuedouble - 273.5;
+                        double temp_day = cJSON_GetObjectItem(temp, "day")->valuedouble - 273.5;
+
+                        watch2::oled.setTextColor(WHITE, BLACK);
+                        watch2::oled.print("High Temp: ");
+                        watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                        watch2::oled.printf("%0.2f °C\n", temp_max);
+
+                        watch2::oled.setTextColor(WHITE, BLACK);
+                        watch2::oled.print("Low Temp: ");
+                        watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                        watch2::oled.printf("%0.2f °C\n", temp_min);
+
+                        watch2::oled.setTextColor(WHITE, BLACK);
+                        watch2::oled.print("Day Temp: ");
+                        watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                        watch2::oled.printf("%0.2f °C\n", temp_day);
+
+                        // draw pressure
+                        uint32_t pressure = cJSON_GetObjectItem(day_object, "pressure")->valueint;
+                        watch2::oled.setTextColor(WHITE, BLACK);
+                        watch2::oled.print("Pressure: ");
+                        watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                        watch2::oled.printf("%d hPa\n", pressure);
+
+                        // draw humidity
+                        uint32_t humidity = cJSON_GetObjectItem(day_object, "humidity")->valueint;
+                        watch2::oled.setTextColor(WHITE, BLACK);
+                        watch2::oled.print("Humidity: ");
+                        watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                        watch2::oled.printf("%d%%\n", humidity);
+
+                        // draw rain
+                        cJSON *rain = cJSON_GetObjectItem(day_object, "rain");
+                        if (rain)
+                        {
+                            watch2::oled.setTextColor(WHITE, BLACK);
+                            watch2::oled.print("Rain: ");
+                            watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                            watch2::oled.printf("%0.3f mm\n", rain->valuedouble);
+                        }
+
+                        // draw snow
+                        cJSON *snow = cJSON_GetObjectItem(day_object, "snow");
+                        if (snow)
+                        {
+                            watch2::oled.setTextColor(WHITE, BLACK);
+                            watch2::oled.print("Snow: ");
+                            watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                            watch2::oled.printf("%0.3f mm\n", snow->valuedouble);
+                        }
+                    }
+                    else if (day_page == 1)
+                    {
+                        // draw sunrise and sunset
+                        uint32_t sunrise = cJSON_GetObjectItem(day_object, "sunrise")->valueint;
+                        watch2::oled.setTextColor(WHITE, BLACK);
+                        watch2::oled.print("Sunrise: ");
+                        watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                        watch2::oled.printf("%2d:%2d\n", hour(sunrise), minute(sunrise));
+
+                        uint32_t sunset = cJSON_GetObjectItem(day_object, "sunset")->valueint;
+                        watch2::oled.setTextColor(WHITE, BLACK);
+                        watch2::oled.print("Sunset:  ");
+                        watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                        watch2::oled.printf("%2d:%2d\n", hour(sunset), minute(sunset));
+
+                        // draw clouds
+                        uint32_t clouds = cJSON_GetObjectItem(day_object, "clouds")->valueint;
+                        watch2::oled.setTextColor(WHITE, BLACK);
+                        watch2::oled.print("Clouds: ");
+                        watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                        watch2::oled.printf("%d%%\n", clouds);
+
+                        // draw dew point
+                        double dew_point = cJSON_GetObjectItem(day_object, "dew_point")->valuedouble - 273.5;
+                        watch2::oled.setTextColor(WHITE, BLACK);
+                        watch2::oled.print("Dew Point: ");
+                        watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                        watch2::oled.printf("%0.2f °C\n", dew_point);
+
+                        // draw wind speed
+                        double wind_speed = cJSON_GetObjectItem(day_object, "wind_speed")->valuedouble * MPS_TO_MPH;
+                        watch2::oled.setTextColor(WHITE, BLACK);
+                        watch2::oled.print("Wind Speed: ");
+                        watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                        watch2::oled.printf("%0.2f mph\n", wind_speed);
+
+                        // draw wind direction
+                        uint32_t wind_deg = cJSON_GetObjectItem(day_object, "wind_deg")->valueint;
+                        watch2::oled.setTextColor(WHITE, BLACK);
+                        watch2::oled.print("Wind Direction: ");
+                        watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                        watch2::oled.printf("%d °\n", wind_deg);
+
+                        watch2::oled.setPivot(
+                            watch2::oled.textWidth("Wind Direction: 999°") + 20, 
+                            watch2::top_thing_height + (watch2::oled.fontHeight() * 6) + 10
+                        );
+                        wind_arrow.pushRotated(wind_deg, BLACK);
+                        //wind_arrow.pushSprite(100, 100);
+
+                        // draw uv index
+                        double uvi = cJSON_GetObjectItem(day_object, "uvi")->valuedouble;
+                        watch2::oled.setTextColor(WHITE, BLACK);
+                        watch2::oled.print("UV Index: ");
+                        watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                        watch2::oled.printf("%0.2f\n", uvi);
+                    }
+                }
+                else 
+                {
+                    Serial.printf("[weather] couldn't get day from array (selected_day: %d)\n", selected_day);
+                    watch2::oled.printf("error: couldn't get \nday from array \n(selected_day: %d)\n", selected_day);
+                }
+            }
+            else 
+            {
+                Serial.println("[weather] invalid daily array");
+                watch2::oled.println("error: invalid daily \narray");
+            }
+
+            
+        }
+
+        if (dpad_left_active() || dpad_right_active())
+        {
+            if (day_page == 0) day_page = 1;
+            else day_page = 0;
+            watch2::switchState(watch2::state, 1);
+        }
+
+        if (dpad_any_active())
+        {
+            watch2::switchState(watch2::state, 0);
+        }
     }
 
     watch2::drawTopThing();

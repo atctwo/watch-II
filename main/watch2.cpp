@@ -2651,7 +2651,7 @@ namespace watch2
         if (data) stbi_image_free(data);
     }
 
-    const char* drawImage(imageData data, int16_t img_x, int16_t img_y, float scaling, int array_offset)
+    const char* drawImage(imageData data, int16_t img_x, int16_t img_y, float scaling, int array_offset, TFT_eSPI &tft)
     {
         // numbers
         unsigned long pixels = data.width * data.height * 3;//sizeof(data) / sizeof(unsigned char);
@@ -2703,7 +2703,7 @@ namespace watch2
                 {
                     uint32_t pixel = (( x + (img_width * y) ) * 3) + array_offset;
                     //printf("%x %x %x\n", actual_data[pixel], actual_data[pixel+1], actual_data[pixel+2]);
-                    watch2::oled.drawPixel(img_x + x, img_y + y, watch2::oled.color565(actual_data[pixel], actual_data[pixel+1], actual_data[pixel+2]));
+                    tft.drawPixel(img_x + x, img_y + y, watch2::oled.color565(actual_data[pixel], actual_data[pixel+1], actual_data[pixel+2]));
                 }
             }
 

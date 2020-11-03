@@ -101,6 +101,8 @@
 #define PURPLE          0x8010
 #define WHITE           0xFFFF
 
+#define MPS_TO_MPH 2.23694                              // multiply a value in metres per second to get the value in miles per hour
+
 // font declarations
 #define MAIN_FONT               "HelvetiHand20"
 #define SLIGHTLY_BIGGER_FONT    "HelvetiHand24"
@@ -109,17 +111,17 @@
 #define REALLY_REALLY_BIG_FONT  "HelvetiHand90"
 
 // device info
-#define SCREEN_WIDTH            240
-#define SCREEN_HEIGHT           240
-#define WATCH_VER               "0.1"
-#define BATTERY_VOLTAGE_MAX     3.3     //max voltage of battery (when fully charged)
-#define BATTERY_VOLTAGE_SCALE   2       //scale factor of voltage divider
-                                        //make sure the battery voltage (when scaled) is not above 3.3v.
-                                        //a LiPo that maxes out at 4.7v will be scaled to 2.35v, which is
-                                        //fine for the ESP32.
-#define NTP_SERVER              "pool.ntp.org"
-#define PORT_HTTP               80
-#define PORT_HTTPS              443
+#define SCREEN_WIDTH            240                     // the width of the screen in pixels
+#define SCREEN_HEIGHT           240                     // the height of the screen in pixels
+#define WATCH_VER               "0.1"                   // the version of the watch2 firmware
+#define BATTERY_VOLTAGE_MAX     3.3                     // max voltage of battery (when fully charged)
+#define BATTERY_VOLTAGE_SCALE   2                       // scale factor of voltage divider
+                                                        // make sure the battery voltage (when scaled) is not above 3.3v.
+                                                        // a LiPo that maxes out at 4.7v will be scaled to 2.35v, which is
+                                                        // fine for the ESP32.
+#define NTP_SERVER              "pool.ntp.org"          // the server to use for NTP
+#define PORT_HTTP               80                      // the tcp port used for HTTP
+#define PORT_HTTPS              443                     // the tcp port used for HTTPS
 #define WIFI_PROFILES_FILENAME  "/wifi_profiles.json"   //!< the name of the file that stores wifi profiles
 #define API_KEYS_FILENAME       "/api_keys.json"        //!< the name of the file that is used to store API keys for lots of REST APIs
 //Calculator definitions
@@ -854,7 +856,7 @@ namespace watch2
      * @param scaling the scaling factor
      * @return const char* if the image couldn't be read, this will return a string describing the reason why
      */
-    const char* drawImage(imageData data, int16_t img_x, int16_t img_y, float scaling=1.0, int array_offset=0);
+    const char* drawImage(imageData data, int16_t img_x, int16_t img_y, float scaling=1.0, int array_offset=0, TFT_eSPI &tft=oled);
 
     /**
      * @brief enables the wifi subsystem. 
