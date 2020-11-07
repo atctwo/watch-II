@@ -112,7 +112,7 @@ void state_func_wiki()
                 }
                 else 
                 {
-                    watch2::drawMenu(2, menu_y, SCREEN_WIDTH - 4, SCREEN_HEIGHT - menu_y, wiki_menu_options, wiki_selected_option, false);
+                    watch2::drawMenu(2, menu_y, SCREEN_WIDTH - 4, SCREEN_HEIGHT - menu_y, wiki_menu_options, wiki_selected_option, {}, false);
                     watch2::oled.setCursor(0, menu_y + 24 + (watch2::oled.fontHeight() * 2));
                     watch2::oled.setTextColor(WHITE, BLACK);
                     watch2::oled.print("Work in progress\n_very_ buggy");

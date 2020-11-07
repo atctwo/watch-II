@@ -215,7 +215,7 @@ void state_func_quiz()
                     watch2::drawMenu(
                         4, menu_y, SCREEN_WIDTH - 8, SCREEN_HEIGHT - menu_y, 
                         { category_names[selected_category], difficulty_names[selected_difficulty], "Start" },
-                        selected_menu_item, false, true
+                        selected_menu_item, {}, false, true
                     );
                 }
                 else

@@ -55,7 +55,7 @@ void state_func_tetris()
 
         draw(dpad_any_active(), {
 
-            watch2::drawMenu(20, 130, SCREEN_WIDTH - 40, SCREEN_HEIGHT - 118, {"Play", "Exit"}, selected_item, false, true);
+            watch2::drawMenu(20, 130, SCREEN_WIDTH - 40, SCREEN_HEIGHT - 118, {"Play", "Exit"}, selected_item, {}, false, true);
 
         });
 

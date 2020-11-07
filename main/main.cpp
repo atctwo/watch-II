@@ -205,6 +205,11 @@ void setup() {
     Serial.print("micropython test: ");
     Serial.print("done!");
 
+    // set up fs icons
+    Serial.print("setting up fs icon maps: ");
+    watch2::setupFsIcons();
+    Serial.println("done");
+
     //finish up
     watch2::boot_count++;
     Serial.println("setup finished!");

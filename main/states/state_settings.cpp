@@ -45,7 +45,7 @@ void state_func_settings()
             draw(dpad_any_active(), {
                 // draw menu
                 //watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
-                watch2::drawMenu(2, watch2::top_thing_height, SCREEN_WIDTH-4, SCREEN_HEIGHT-12, panels, selected_panel, watch2::themecolour);
+                watch2::drawMenu(2, watch2::top_thing_height, SCREEN_WIDTH-4, SCREEN_HEIGHT-12, panels, selected_panel, {}, watch2::themecolour);
             });
             if (dpad_enter_active())
             {
@@ -518,7 +518,7 @@ void state_func_settings()
                 watch2::drawMenu(
                     2, ypos, 
                     SCREEN_WIDTH-4, 24 + (watch2::oled.fontHeight() * 2), 
-                    set_time_buttons, selected_item, false
+                    set_time_buttons, selected_item, {}, false
                 );
                 ypos += 24 + (watch2::oled.fontHeight() * 2);
 
@@ -625,7 +625,7 @@ void state_func_settings()
                 watch2::drawMenu(
                     2, 150, 
                     SCREEN_WIDTH-4, 24 + (watch2::oled.fontHeight() * 2), 
-                    wifi_buttons, selected_item_wifi - 3, false
+                    wifi_buttons, selected_item_wifi - 3, {}, false
                 );
             });
 
@@ -887,7 +887,7 @@ void state_func_settings()
                 watch2::drawMenu(
                     2, button_menu_y,
                     SCREEN_WIDTH - 4, SCREEN_HEIGHT - watch2::top_thing_height,
-                    profile_actions, selected_profile_setting, false
+                    profile_actions, selected_profile_setting, {}, false
                 );
 
                 // draw encryption menu

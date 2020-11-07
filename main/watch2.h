@@ -66,6 +66,8 @@
 #define I2S_DOUT            25
 #define I2S_BCLK            27
 #define I2S_LRC             26
+#define I2C_SDA             0
+#define I2C_SCL             15
 
 //ledc channels
 #define TORCH_PWM_CHANNEL 2
@@ -294,6 +296,20 @@ namespace watch2
 
     };
 
+    enum fs_icon {
+        FS_ICON_BLANK = 0,
+        FS_ICON_CANCEL,
+        FS_ICON_FOLDER,
+        FS_ICON_FILE_GENERIC,
+        FS_ICON_FILE_IMAGE,
+        FS_ICON_FILE_AUDIO,
+        FS_ICON_FILE_VIDEO,
+        FS_ICON_FILE_COMPRESSED,
+        FS_ICON_FILE_CODE,
+        FS_ICON_FILE_DOCUMENT,
+        FS_ICON_FILE_FONT
+    };
+
     // type definitions
     typedef void (*func)(void);                                                                 //!< function pointer type
 
@@ -323,6 +339,10 @@ namespace watch2
     //map of icons
     extern std::map<std::string, imageData> *icons;                                             //!< large colour icons for things like the state menu (16 bit 565 colour)
     extern std::map<std::string, std::vector<unsigned char>> *small_icons;                      //!< smaller monochrome icons for use within GUIs (8 bit colour)
+    
+    // fs icon maps
+    extern std::unordered_map<std::string, fs_icon> fs_icon_ext_map;                            //!< a map of file extensions to fs icon identifiers
+    extern std::unordered_map<fs_icon, std::string> fs_icon_name_map;                           //!< a map of fs icon identifiers to icon names
 
     // global variables
     extern int state;                                                                           //!< currently selected state
@@ -447,6 +467,14 @@ namespace watch2
     void endLoop();
 
     /**
+     * @brief sets up the fs_icon maps.
+     * this only needs to be done once, and is already done in main.cpp.  it just
+     * populates `fs_icon_ext_map` and `fs_icon_name_map` with links between file
+     * extensions and fs icon identifiers, and fs icon identifiers and icon names.
+     */
+    void setupFsIcons();
+
+    /**
      * @brief draw the status bar at the top of the page.
      * @param light if this is true, only the status icons will be drawn.  otherwise, everything will be drawn
      */
@@ -514,7 +542,7 @@ namespace watch2
      * @param centre if this is true, text will be drawn in the middle of the button
      * @param colour the colour the menu should be drawn.  by default, this will be the theme colour
      */
-    void    drawMenu(int x, int y, int width, int height, std::vector<std::string> items, int selected, bool scroll=true, bool centre = false, int colour=themecolour);
+    void    drawMenu(int x, int y, int width, int height, std::vector<std::string> items, int selected, std::vector<fs_icon> icons={}, bool scroll=true, bool centre = false, int colour=themecolour);
 
     /**
      * @brief draws a settings menu.
@@ -537,7 +565,7 @@ namespace watch2
      * @brief method to return all the files in a directory (non-recursively).
      * @param path the path of the directory to return files in
      */
-    std::vector<std::string> getDirFiles(std::string path);
+    std::vector<std::string> getDirFiles(std::string path, std::vector<fs_icon> *icons=NULL);
 
     /**
      * @brief open the file select dialogue.  this will pause the state until a file has been selected (or the operation has been cancelled).

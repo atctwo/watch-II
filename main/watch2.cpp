@@ -40,6 +40,10 @@ namespace watch2
     std::map<std::string, imageData> *icons;
     std::map<std::string, std::vector<unsigned char>> *small_icons;
 
+    // fs icon maps
+    std::unordered_map<std::string, fs_icon> fs_icon_ext_map;
+    std::unordered_map<fs_icon, std::string> fs_icon_name_map;
+
     // global variables
     int state = 0;
     int state_init = 0;
@@ -361,6 +365,125 @@ namespace watch2
     }
 
 
+    void setupFsIcons()
+    {
+        watch2::fs_icon_ext_map["png"] = watch2::FS_ICON_FILE_IMAGE;
+        watch2::fs_icon_ext_map["jpg"] = watch2::FS_ICON_FILE_IMAGE;
+        watch2::fs_icon_ext_map["jpeg"] = watch2::FS_ICON_FILE_IMAGE;
+        watch2::fs_icon_ext_map["gif"] = watch2::FS_ICON_FILE_IMAGE;
+        watch2::fs_icon_ext_map["tiff"] = watch2::FS_ICON_FILE_IMAGE;
+        watch2::fs_icon_ext_map["tif"] = watch2::FS_ICON_FILE_IMAGE;
+        watch2::fs_icon_ext_map["bmp"] = watch2::FS_ICON_FILE_IMAGE;
+        watch2::fs_icon_ext_map["psd"] = watch2::FS_ICON_FILE_IMAGE;
+        watch2::fs_icon_ext_map["tga"] = watch2::FS_ICON_FILE_IMAGE;
+        watch2::fs_icon_ext_map["hdr"] = watch2::FS_ICON_FILE_IMAGE;
+        watch2::fs_icon_ext_map["pic"] = watch2::FS_ICON_FILE_IMAGE;
+        watch2::fs_icon_ext_map["pnm"] = watch2::FS_ICON_FILE_IMAGE;
+        watch2::fs_icon_ext_map["ico"] = watch2::FS_ICON_FILE_IMAGE;
+        watch2::fs_icon_ext_map["webp"] = watch2::FS_ICON_FILE_IMAGE;
+
+        watch2::fs_icon_ext_map["aac"] = watch2::FS_ICON_FILE_AUDIO;
+        watch2::fs_icon_ext_map["flac"] = watch2::FS_ICON_FILE_AUDIO;
+        watch2::fs_icon_ext_map["midi"] = watch2::FS_ICON_FILE_AUDIO;
+        watch2::fs_icon_ext_map["mid"] = watch2::FS_ICON_FILE_AUDIO;
+        watch2::fs_icon_ext_map["rtttl"] = watch2::FS_ICON_FILE_AUDIO;
+        watch2::fs_icon_ext_map["wav"] = watch2::FS_ICON_FILE_AUDIO;
+        watch2::fs_icon_ext_map["mp3"] = watch2::FS_ICON_FILE_AUDIO;
+        watch2::fs_icon_ext_map["mod"] = watch2::FS_ICON_FILE_AUDIO;
+        watch2::fs_icon_ext_map["m3u"] = watch2::FS_ICON_FILE_AUDIO;
+        watch2::fs_icon_ext_map["icy"] = watch2::FS_ICON_FILE_AUDIO;
+        watch2::fs_icon_ext_map["ogg"] = watch2::FS_ICON_FILE_AUDIO;
+
+        watch2::fs_icon_ext_map["mp4"] = watch2::FS_ICON_FILE_VIDEO;
+        watch2::fs_icon_ext_map["avi"] = watch2::FS_ICON_FILE_VIDEO;
+        watch2::fs_icon_ext_map["wmv"] = watch2::FS_ICON_FILE_VIDEO;
+        watch2::fs_icon_ext_map["mov"] = watch2::FS_ICON_FILE_VIDEO;
+        watch2::fs_icon_ext_map["webm"] = watch2::FS_ICON_FILE_VIDEO;
+
+        watch2::fs_icon_ext_map["zip"] = watch2::FS_ICON_FILE_COMPRESSED;
+        watch2::fs_icon_ext_map["7z"] = watch2::FS_ICON_FILE_COMPRESSED;
+        watch2::fs_icon_ext_map["tar"] = watch2::FS_ICON_FILE_COMPRESSED;
+        watch2::fs_icon_ext_map["gz"] = watch2::FS_ICON_FILE_COMPRESSED;
+        watch2::fs_icon_ext_map["lz"] = watch2::FS_ICON_FILE_COMPRESSED;
+        watch2::fs_icon_ext_map["rar"] = watch2::FS_ICON_FILE_COMPRESSED;
+
+        watch2::fs_icon_ext_map["json"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["xml"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["csv"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["c"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["cpp"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["cxx"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["h"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["hpp"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["hxx"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["py"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["js"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["html"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["htm"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["css"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["less"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["ts"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["java"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["ino"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["pde"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["lua"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["php"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["bat"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["sh"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["ps1"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["rs"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["rb"] = watch2::FS_ICON_FILE_CODE;
+        watch2::fs_icon_ext_map["sql"] = watch2::FS_ICON_FILE_CODE;
+
+        // watch2::fs_icon_ext_map["dat"] = watch2::FS_ICON_FILE_DATABASE;
+        // watch2::fs_icon_ext_map["db"] = watch2::FS_ICON_FILE_DATABASE;
+        // watch2::fs_icon_ext_map["sqlite"] = watch2::FS_ICON_FILE_DATABASE;
+
+        watch2::fs_icon_ext_map["abw"] = watch2::FS_ICON_FILE_DOCUMENT;
+        watch2::fs_icon_ext_map["odt"] = watch2::FS_ICON_FILE_DOCUMENT;
+        watch2::fs_icon_ext_map["doc"] = watch2::FS_ICON_FILE_DOCUMENT;
+        watch2::fs_icon_ext_map["docx"] = watch2::FS_ICON_FILE_DOCUMENT;
+        watch2::fs_icon_ext_map["tex"] = watch2::FS_ICON_FILE_DOCUMENT;
+        watch2::fs_icon_ext_map["pdf"] = watch2::FS_ICON_FILE_DOCUMENT;
+        watch2::fs_icon_ext_map["epub"] = watch2::FS_ICON_FILE_DOCUMENT;
+        watch2::fs_icon_ext_map["docm"] = watch2::FS_ICON_FILE_DOCUMENT;
+        watch2::fs_icon_ext_map["ppt"] = watch2::FS_ICON_FILE_DOCUMENT;
+        watch2::fs_icon_ext_map["pptx"] = watch2::FS_ICON_FILE_DOCUMENT;
+        watch2::fs_icon_ext_map["rtf"] = watch2::FS_ICON_FILE_DOCUMENT;
+        watch2::fs_icon_ext_map["txt"] = watch2::FS_ICON_FILE_DOCUMENT;
+
+        watch2::fs_icon_ext_map["ttf"] = watch2::FS_ICON_FILE_FONT;
+        watch2::fs_icon_ext_map["otf"] = watch2::FS_ICON_FILE_FONT;
+        watch2::fs_icon_ext_map["woff"] = watch2::FS_ICON_FILE_FONT;
+
+        // watch2::fs_icon_ext_map["exe"] = watch2::FS_ICON_FILE_EXECUTABLE;
+        // watch2::fs_icon_ext_map["out"] = watch2::FS_ICON_FILE_EXECUTABLE;
+        // watch2::fs_icon_ext_map["app"] = watch2::FS_ICON_FILE_EXECUTABLE;
+        // watch2::fs_icon_ext_map["apk"] = watch2::FS_ICON_FILE_EXECUTABLE;
+        // watch2::fs_icon_ext_map["ipa"] = watch2::FS_ICON_FILE_EXECUTABLE;
+        // watch2::fs_icon_ext_map["jar"] = watch2::FS_ICON_FILE_EXECUTABLE;
+        // watch2::fs_icon_ext_map["class"] = watch2::FS_ICON_FILE_EXECUTABLE;
+        // watch2::fs_icon_ext_map["elf"] = watch2::FS_ICON_FILE_EXECUTABLE;
+        // watch2::fs_icon_ext_map["com"] = watch2::FS_ICON_FILE_EXECUTABLE;
+        // watch2::fs_icon_ext_map["o"] = watch2::FS_ICON_FILE_EXECUTABLE;
+        // watch2::fs_icon_ext_map["a"] = watch2::FS_ICON_FILE_EXECUTABLE;
+        // watch2::fs_icon_ext_map["so"] = watch2::FS_ICON_FILE_EXECUTABLE;
+
+        watch2::fs_icon_name_map[watch2::FS_ICON_BLANK] = "file";
+        watch2::fs_icon_name_map[watch2::FS_ICON_CANCEL] = "cancel";
+        watch2::fs_icon_name_map[watch2::FS_ICON_FOLDER] = "folder";
+        watch2::fs_icon_name_map[watch2::FS_ICON_FILE_GENERIC] = "file";
+        watch2::fs_icon_name_map[watch2::FS_ICON_FILE_IMAGE] = "file_image";
+        watch2::fs_icon_name_map[watch2::FS_ICON_FILE_AUDIO] = "file_audio";
+        watch2::fs_icon_name_map[watch2::FS_ICON_FILE_VIDEO] = "file_video";
+        watch2::fs_icon_name_map[watch2::FS_ICON_FILE_COMPRESSED] = "file_compressed";
+        watch2::fs_icon_name_map[watch2::FS_ICON_FILE_CODE] = "file_code";
+        //watch2::fs_icon_name_map[watch2::FS_ICON_FILE_DATABASE] = "file";
+        watch2::fs_icon_name_map[watch2::FS_ICON_FILE_DOCUMENT] = "file_document";
+        watch2::fs_icon_name_map[watch2::FS_ICON_FILE_FONT] = "file_font";
+        //watch2::fs_icon_name_map[watch2::FS_ICON_FILE_EXECUTABLE] = "file";
+    }
+
     void drawTopThing(bool light)
     {
         static char text[4];
@@ -674,7 +797,7 @@ namespace watch2
         else switchState(0);
     }
 
-    void drawMenu(int x, int y, int width, int height, std::vector<std::string> items, int selected, bool scroll, bool centre, int colour)
+    void drawMenu(int x, int y, int width, int height, std::vector<std::string> items, int selected, std::vector<fs_icon> icons, bool scroll, bool centre, int colour)
     {
         static int16_t x1, y1;
         static uint16_t w=0, w2=0, h=0, h2=0;
@@ -714,7 +837,7 @@ namespace watch2
         }
 
         //print each menu item
-        int fridgebuzz = 0;
+        int fridgebuzz = 0; // onscreen icon number
         for (const std::string &item : items)
         {
             //calculate the item's y position
@@ -738,6 +861,26 @@ namespace watch2
                     //draw the outline of a rounded rectangle
                     oled.drawRoundRect(x, y - y_offset, width - (padding*2), h + padding + padding, radius, colour);
                     oled.setTextColor(colour, BLACK);
+                }
+
+                // draw the icon
+                uint16_t icon_space = 0;
+                if (fridgebuzz < icons.size())
+                {
+                    std::string icon_name = fs_icon_name_map[icons[fridgebuzz]];
+
+                    Serial.printf("%s: icon \"%s\" (item no %d, icon no %d)\n", item.c_str(), icon_name.c_str(), fridgebuzz, icons[fridgebuzz]);
+
+                    if (!icon_name.empty())
+                    {
+                        oled.drawBitmap(
+                            x + padding, y + padding - y_offset,
+                            (*small_icons)[icon_name].data(),
+                            20, 20, (fridgebuzz == selected ? BLACK : WHITE)
+                        );
+                    }
+                    icon_space = 20 + padding; // set to 0 if no icon is being drawn
+                    
                 }
 
                 //draw the item text
@@ -775,7 +918,7 @@ namespace watch2
 
                         //if the text would be too long (idk im tired)
                         //the limit is the width - padding - the length of "..."
-                        if (text_length > (width - (padding * 10) - w2))
+                        if (text_length > (width - (padding * 10) - w2 - icon_space))
                         {
                             //add "..." to the item text, and break the loop
                             itemtext += "...";
@@ -796,12 +939,12 @@ namespace watch2
                 if (centre)
                 {
                     oled.setTextDatum(TC_DATUM);
-                    oled.drawString(itemtext, x + (width / 2), y + padding);
+                    oled.drawString(itemtext, x + (width / 2) + icon_space, y + padding - y_offset);
                     oled.setTextDatum(TL_DATUM);
                 }
                 else
                 {
-                    oled.setCursor(x + padding, y + padding - y_offset);
+                    oled.setCursor(x + padding + icon_space, y + padding - y_offset);
                     oled.print(itemtext);
                 }
 
@@ -887,10 +1030,11 @@ namespace watch2
         }
     }
 
-    std::vector<std::string> getDirFiles(std::string path)
+    std::vector<std::string> getDirFiles(std::string path, std::vector<fs_icon> *icons)
     {
         //vector to store files in the directory
         std::vector<std::string> files;
+        if (icons) icons->clear();
 
         //buffer to store filenames
         char filename[255];
@@ -932,7 +1076,7 @@ namespace watch2
 
             while(true)
             {
-                Serial.print("f");
+                //Serial.print("f");
 
                 //open next file in dir
                 File f = root.openNextFile();
@@ -945,6 +1089,18 @@ namespace watch2
 
                 //add the name to the vector
                 files.push_back(std::string(filename));
+
+                // add the icon to the icons vector
+                if (icons)
+                {
+                    std::string ext = file_ext(filename);
+                    fs_icon icon;
+                    if (f.isDirectory()) icon = FS_ICON_FOLDER;
+                    else icon = fs_icon_ext_map[ext];
+                    icons->push_back(icon);
+
+                    Serial.printf("[getDirFiles] %s: %d\n", filename, icon);
+                }
 
                 f.close();
             }
@@ -972,6 +1128,7 @@ namespace watch2
 
         static std::vector<std::string> files2;      //vector of Strings representing names of files in directory
         static std::stack<int> selected_icon_stack; //stack for storing selected file indecies when navigating through subdirectories
+        static std::vector<fs_icon> icons;
 
         //call once
         file_path = path;
@@ -1091,7 +1248,7 @@ namespace watch2
 
                 //populate files2 with the contents of the selected directory
                 files2.clear();
-                files2 = getDirFiles(file_path);
+                files2 = getDirFiles(file_path, &icons);
 
                 //if card isn't initalised, notify the user
                 if (sd_state != 1)
@@ -1108,11 +1265,16 @@ namespace watch2
                         oled.print("This directory is empty");
                     }
                     //add back button if in a non-root directory
-                    if (file_path != "/") files2.emplace(files2.begin(), "..");                
+                    if (file_path != "/") 
+                    {
+                        files2.emplace(files2.begin(), ".."); 
+                        icons.emplace(icons.begin(), FS_ICON_FOLDER);               
+                    }
                 }
 
                 //add cancel option
                 files2.emplace(files2.begin(), "Cancel");
+                icons.emplace(icons.begin(), FS_ICON_CANCEL);
 
                 dimScreen(1, 10);
             }
@@ -1120,7 +1282,19 @@ namespace watch2
             //if file select list hasn't been initliased, or any button is pressed, redraw the menu
             if (watch2::forceRedraw || !file_select_dir_list_init || dpad_any_active())
             {
-                drawMenu(2, top_thing_height, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 12, files2, selected_icon, themecolour);
+                std::vector<fs_icon> menu_icons = {};
+                if (sd_state == 1 && files2.size() > 0) 
+                {
+                    menu_icons = icons;
+                    Serial.println("[beginFileSelect] using icon vector");
+                }
+
+                for (fs_icon icon : menu_icons)
+                {
+                    Serial.printf("\t%d\n", icon);
+                }
+
+                drawMenu(2, top_thing_height, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 12, files2, selected_icon, menu_icons, themecolour);
             };
 
             //finish file select list initilisation
@@ -1649,7 +1823,7 @@ namespace watch2
             dialogue_x + padding,
             dialogue_y + padding + oled.fontHeight(),
             dialogue_w - (padding * 2), item_height * items.size(),
-            items, selected_item, scroll, true, colour
+            items, selected_item, {}, scroll, true, colour
         );
 
         while(1)
@@ -1675,7 +1849,7 @@ namespace watch2
                     dialogue_x + padding,
                     dialogue_y + padding + oled.fontHeight(),
                     dialogue_w - (padding * 2), item_height * items.size(),
-                    items, selected_item, false, true, colour
+                    items, selected_item, {}, false, true, colour
                 );
             }
 
