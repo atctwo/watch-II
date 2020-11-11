@@ -203,11 +203,17 @@ void setup() {
 
     // micropython test
     Serial.print("micropython test: ");
-    Serial.print("done!");
+    Serial.println("done!");
 
     // set up fs icons
     Serial.print("setting up fs icon maps: ");
     watch2::setupFsIcons();
+    Serial.println("done");
+
+    // set up audio task
+    Serial.print("setting up audio task: ");
+    int x = 10;
+    xTaskCreatePinnedToCore(watch2::audio_task, "audio", 8192, (void*)x, ESP_TASK_PRIO_MAX - 2, &watch2::audio_task_handle, 1);
     Serial.println("done");
 
     //finish up

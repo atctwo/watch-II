@@ -21,13 +21,14 @@ namespace watch2
     SPIClass *vspi = new SPIClass(VSPI);
     TFT_eSPI oled = TFT_eSPI();
     Preferences preferences;
-    SdFat SD(&*vspi);
+    SdFat sdcard(&*vspi);
     //Adafruit_ImageReader reader(SD);
     TFT_eSprite top_thing = TFT_eSprite(&oled);
     TFT_eSprite framebuffer = TFT_eSprite(&oled);
     WiFiClient wifi_client;
     WiFiClientSecure wifi_client_secure;
     BleKeyboard ble_keyboard("watch2", "atctwo");
+    Audio audio;
 
     //button objects
     Button btn_dpad_up(dpad_up, 25, false, false);
@@ -72,6 +73,7 @@ namespace watch2
     bool wifi_enabled = false;
     String weather_location = "";
     wifi_auth_mode_t wifi_encryption = WIFI_AUTH_MAX;
+    TaskHandle_t audio_task_handle;
     uint8_t bluetooth_state = 0;
     bool ble_set_up = false;
     int sd_state = 0;
@@ -1058,19 +1060,21 @@ namespace watch2
             digitalWrite(sdcs, LOW);
 
             //open the dir at the path
-            File root = SD.open(path.c_str());
+            FatFile root = sdcard.open(path.c_str());
 
             //check that path is valid
-            if (!root)
+            if (!sdcard.exists(path.c_str()))
             {
                 //file path is invalid
+                Serial.printf("[getDirFiles] file path %s is invalid\n", path.c_str());
                 return files;
             }
 
             //check that path is actually a dir
-            if (!root.isDirectory())
+            if (!root.isDir())
             {
                 //path is not a directory
+                Serial.printf("[getDirFiles] file path isn't a directory\n");
                 return files;
             }
 
@@ -1079,10 +1083,15 @@ namespace watch2
                 //Serial.print("f");
 
                 //open next file in dir
-                File f = root.openNextFile();
+                FatFile f;
+                bool thing = f.openNext(&root);
 
                 //if there are no more files, break
-                if (!f) break;
+                if (!thing) 
+                {
+                    Serial.printf("[getDirFiles] no more files\n");
+                    break;
+                }
 
                 //get the name of the file
                 f.getName(filename, 255);
@@ -1095,11 +1104,11 @@ namespace watch2
                 {
                     std::string ext = file_ext(filename);
                     fs_icon icon;
-                    if (f.isDirectory()) icon = FS_ICON_FOLDER;
+                    if (f.isDir()) icon = FS_ICON_FOLDER;
                     else icon = fs_icon_ext_map[ext];
                     icons->push_back(icon);
 
-                    Serial.printf("[getDirFiles] %s: %d\n", filename, icon);
+                    //Serial.printf("[getDirFiles] %s: %d\n", filename, icon);
                 }
 
                 f.close();
@@ -1199,12 +1208,12 @@ namespace watch2
                 else
                 {
                     //determine whether selected path is a directory
-                    File selected_file;
+                    FatFile selected_file;
                     std::string filename = file_path + files2[selected_icon];
-                    selected_file = SD.open(filename.c_str());
+                    selected_file = sdcard.open(filename.c_str());
                     
                     //if the path points to a directory
-                    if (selected_file.isDirectory())
+                    if (selected_file.isDir())
                     {
                         file_path += files2[selected_icon] + "/"; //set file select dialogue to subdirectory
                         file_select_dir_list_init = false;
@@ -1239,7 +1248,7 @@ namespace watch2
             //if the file select list hasn't been initalised
             if (!file_select_dir_list_init)
             {
-                Serial.print("opening file dialogue for ");
+                Serial.print("[beginFileSelect] opening file dialogue for ");
                 Serial.println(file_path.c_str());
 
                 //dim screen
@@ -1254,7 +1263,7 @@ namespace watch2
                 if (sd_state != 1)
                 {
                     oled.setCursor(2, 36);
-                    oled.print("SD card not mounted");
+                    oled.print("[beginFileSelect] SD card not mounted");
                 }
                 else
                 {
@@ -1286,12 +1295,7 @@ namespace watch2
                 if (sd_state == 1 && files2.size() > 0) 
                 {
                     menu_icons = icons;
-                    Serial.println("[beginFileSelect] using icon vector");
-                }
-
-                for (fs_icon icon : menu_icons)
-                {
-                    Serial.printf("\t%d\n", icon);
+                    //Serial.println("[beginFileSelect] using icon vector");
                 }
 
                 drawMenu(2, top_thing_height, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 12, files2, selected_icon, menu_icons, themecolour);
@@ -1883,6 +1887,12 @@ namespace watch2
         Serial.printf("[memory] free external memory (heap):  %d (%s)\n", ESP.getFreePsram(), watch2::humanSize(ESP.getFreePsram()));
         Serial.printf("[memory] total external memory (heap): %d (%s)\n", ESP.getPsramSize(), watch2::humanSize(ESP.getPsramSize()));
 
+        // print task info
+        char pcWriteBuffer[40 * 10];
+        vTaskList(pcWriteBuffer);
+        Serial.println("Task Info:");
+        Serial.print(pcWriteBuffer);
+
         int selected_widget = 3;
         int last_button_widget = 3;
         bool go_back_to_watch_face = false;
@@ -2400,14 +2410,14 @@ namespace watch2
         digitalWrite(sdcs, LOW);
 
         //initalise the sd card
-        if(!SD.begin(sdcs, SPISettings(9000000, MSBFIRST, SPI_MODE0))){
+        if(!sdcard.begin(sdcs, SPISettings(9000000, MSBFIRST, SPI_MODE0))){
 
             //card couldn't mount
             Serial.println("initSD() - Couldn't mount SD card");
             Serial.print("\tError code: ");
-            Serial.printf("0x%x\n", SD.cardErrorCode());
+            Serial.printf("0x%x\n", sdcard.cardErrorCode());
             Serial.print("\tError data: ");
-            Serial.printf("0x%x\n", SD.cardErrorData());
+            Serial.printf("0x%x\n", sdcard.cardErrorData());
             no = 0;
 
         }
@@ -2416,8 +2426,8 @@ namespace watch2
 
             //card mounted successfully
             Serial.println("initSD() - Successfully mounted SD card");
-            Serial.printf("Card size: %d\n", SD.card()->cardSize());
-            //SD.ls(LS_R | LS_DATE | LS_SIZE);
+            Serial.printf("Card size: %d\n", sdcard.card()->cardSize());
+            //sdcard.ls(LS_R | LS_DATE | LS_SIZE);
             no = 1;
 
         }
@@ -2760,7 +2770,7 @@ namespace watch2
         };
 
         // open file
-        File f = SD.open(filename);
+        FatFile f = sdcard.open(filename);
         char buffer[255];
         f.getName(buffer, 255);
         Serial.println(buffer);
@@ -3222,6 +3232,46 @@ namespace watch2
         bluetooth_state = 0;
     }
 
+    bool play_music(TaskHandle_t &task_handle, const char *filename, bool repeat, fs::FS *fs)
+    {
+        Serial.printf("[music player] now playing %s\n", filename);
+
+        // set I2S parameters
+        audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
+        audio.setVolume(5);
+
+        // if a filesystem has been passed, load the file from the filesystem
+        if (fs) audio.connecttoFS(*fs, filename);
+
+        // otherwise, internet
+        else audio.connecttohost(filename);
+
+        // create the audio task
+        // int x = 10;
+        // xTaskCreatePinnedToCore(audio_task, "audio", 8192, (void*)x, ESP_TASK_PRIO_MAX - 2, &task_handle, 1);
+
+        return false;
+    }
+
+    void audio_task(void *pvParameters)
+    {
+        Serial.println("[music player] starting audio");
+        while(true)
+        {
+            //Serial.printf("is running? %d\n", audio.isRunning());
+            if (audio.isRunning()) audio.loop();
+            else vTaskDelay(500);
+            //Serial.printf("aaa");
+            // else 
+            // {
+            //     Serial.println("[music player] audio ended");
+            //     audio.stopSong();
+            //     vTaskDelete(NULL);
+            // }
+        }
+        Serial.println("[music player] audio task loop ended");
+    }
+
 
     // These read 16- and 32-bit types from the SD card file.
     // BMP data is stored little-endian, Arduino is little-endian too.
@@ -3230,20 +3280,20 @@ namespace watch2
     //functions for stb_image
     int img_read(void *user,  char *data, int size)
     {
-        File *f = static_cast<File*>(user);
+        FatFile *f = static_cast<FatFile*>(user);
         int bytes_read = f->read(data, size);
         return bytes_read;
     }
 
     void img_skip(void *user, int n)
     {
-        File *f = static_cast<File*>(user);
+        FatFile *f = static_cast<FatFile*>(user);
         f->seekCur(n);
     }
 
     int img_eof(void *user)
     {
-        File *f = static_cast<File*>(user);
+        FatFile *f = static_cast<FatFile*>(user);
         uint32_t help = f->available();
         if (help == 0) return 1;
         return 0;

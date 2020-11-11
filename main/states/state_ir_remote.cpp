@@ -132,7 +132,7 @@ void state_func_ir_remote()
             Serial.print("loading ir profile: ");
 
             // get a handle (???) to the selected file
-            File json = watch2::SD.open(selected_profile_filename.c_str());
+            FatFile json = watch2::sdcard.open(selected_profile_filename.c_str());
 
             // allocate memory for the file's contents
             json_contents = (char*) malloc(json.fileSize());

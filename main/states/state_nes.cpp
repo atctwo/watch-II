@@ -8,9 +8,9 @@ static void *read_nes_rom(const char *filename, size_t *out_len)
 {
     Serial.printf("[nes] reading file %s...\n", filename);
 
-    File f = watch2::SD.open(filename, 0);
-    unsigned char *file_contents = (unsigned char*) malloc(f.size());
-    *out_len = f.size();
+    FatFile f = watch2::sdcard.open(filename, 0);
+    unsigned char *file_contents = (unsigned char*) malloc(f.fileSize());
+    *out_len = f.fileSize();
 
     int chr;
     uint16_t pos = 0;

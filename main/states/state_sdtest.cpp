@@ -30,7 +30,7 @@ void state_func_SDtest()
             watch2::setFont(MAIN_FONT);
 
             // open file
-            FatFile f = watch2::SD.open(filename.c_str(), 0);
+            FatFile f = watch2::sdcard.open(filename.c_str(), 0);
 
             // print file size
             watch2::oled.setTextColor(WHITE, BLACK);
@@ -152,13 +152,13 @@ void state_func_SDtest()
         else if (selected_button == 2) // rename
         {
             std::string new_name = watch2::textFieldDialogue("New Name", filename.c_str());
-            if (new_name.compare("") != 0) watch2::SD.rename(filename.c_str(), new_name.c_str());
+            if (new_name.compare("") != 0) watch2::sdcard.rename(filename.c_str(), new_name.c_str());
         }
         else if (selected_button == 3) // delete
         {
             bool confirmation = watch2::messageBox("Are you sure?", {"No", "Yes"});
             if (confirmation) {
-                watch2::SD.remove(filename.c_str());
+                watch2::sdcard.remove(filename.c_str());
                 watch2::switchState(watch2::state);
             }
         }

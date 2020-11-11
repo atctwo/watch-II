@@ -28,7 +28,7 @@ void state_func_notepad()
 
             filedata.clear();
             yoffset = 0;
-            File f = watch2::SD.open(filename.c_str());
+            FatFile f = watch2::sdcard.open(filename.c_str());
 
             int chr;
             while(chr != -1)

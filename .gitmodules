@@ -1,9 +1,6 @@
 [submodule "main/css-color-parser-cpp"]
-	path = main/css-color-parser-cpp
+	path = main/libraries/css-color-parser-cpp
 	url = https://github.com/mapbox/css-color-parser-cpp.git
-[submodule "main/gumbo-parser"]
-	path = main/gumbo-parser
-	url = https://github.com/google/gumbo-parser.git
 [submodule "main/libraries/JC_Button"]
 	path = main/libraries/JC_Button
 	url = https://github.com/JChristensen/JC_Button.git
@@ -34,3 +31,6 @@
 [submodule "main/libraries/libtris"]
 	path = main/libraries/libtris
 	url = https://github.com/atctwo/libtris.git
+[submodule "main/libraries/gumbo-parser"]
+	path = main/libraries/gumbo-parser
+	url = https://github.com/google/gumbo-parser.git

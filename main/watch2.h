@@ -5,7 +5,6 @@
 // includes
 ////////////////////////////////////////
 
-
 #include <stdio.h>                  // i don't actually know...
 #include <stdint.h>
 #include <algorithm>                // used for std::find and std::min and std::max
@@ -26,6 +25,7 @@
 #include <WiFiClientSecure.h>       // https client library
 #include <HTTPClient.h>             // http client library
 #include <BleKeyboard.h>            // for connecting to a device over BLE, and sending keyboard keys
+#include <Audio.h>                  // for audio playback
 #include <Preferences.h>            // for storing settings in nvs (allowing for persistance over power cycles)
 #include <tinyexpr.h>               // expression evaluator for calculator
 #include <cJSON.h>                  // JSON parser
@@ -317,7 +317,7 @@ namespace watch2
     extern SPIClass *vspi;                                                                      //!< VSPI object
     extern TFT_eSPI oled;                                                                       //!< hw spi (use vspi or &SPI)
     extern Preferences preferences;                                                             //!< wrapper for esp32 nvs used to store system settings
-    extern SdFat SD;                                                                            //!< instance of SdFat used to access the sd card
+    extern SdFat sdcard;                                                                            //!< instance of SdFat used to access the sd card
     //extern Adafruit_ImageReader reader;                                                     
     //extern Adafruit_ImageReader flash_reader;
     extern TFT_eSprite top_thing;                                                               //!< the framebuffer that the top thing is drawn onto
@@ -325,6 +325,7 @@ namespace watch2
     extern WiFiClient wifi_client;
     extern WiFiClientSecure wifi_client_secure;                                                        //!< the wifi client used for HTTP and HTTPS requests
     extern BleKeyboard ble_keyboard;                                                            //!< a thing that handles BLE HID Keyboard stuff
+    extern Audio audio;                                                                         //!< audio playback!
 
     //button objects
     extern Button btn_dpad_up;                                                                  //!< the object that handles the dpad up button
@@ -379,6 +380,7 @@ namespace watch2
                                                                                                 //!< wifi automatically on boot
     extern String weather_location;                                                             //!< the city name to use when getting the weather
     extern wifi_auth_mode_t wifi_encryption;                                                    //!< hack hack hack hack pls replace with a way to get the encryption type of the current AP
+    extern TaskHandle_t audio_task_handle;
 
     // fs states
     extern int sd_state;                                                                        //!< state of the sd card
@@ -957,6 +959,26 @@ namespace watch2
      * @brief disables the bluetooth subsystem.  this is kind of broken at the minute.
      */
     void disable_bluetooth();
+
+    /**
+     * @brief Play an audio file over I2S.
+     * 
+     * The audio playback is handled by schreibfaul1's [ESP32-audioI2S](https://github.com/schreibfaul1/ESP32-audioI2S) library.  The I2S
+     * interface is setup, then a new FreeRTOS task with a really high priority is created to handle the audio loop.  This means that if
+     * you try to do a lot of anything else at the same time, it will run really slowly, and the audio will playback very distorted.
+     * 
+     * You have to pass a task handle to the function.  You can use this to delete the task when you need to stop playback.  The task will
+     * delete itself once playback ends, unless `repeat` is true.
+     * 
+     * @param task_handle a handle to the task that is created to play the music
+     * @param filename the name of the audio file on the filesystem, or a url to an audio stream
+     * @param repeat if this is true, the audio file will restart once it has ended, and will play forever
+     * @param fs the filesystem to stream the audio from, or null to use The Internet™
+     * @return true if the audio was loaded ok
+     * @return false if tha audio failed to load
+     */
+    bool play_music(TaskHandle_t &task_handle, const char *filename, bool repeat=false, fs::FS *fs=&SD);
+    void audio_task(void *pvParameters);
 
     //functions for stb_image
     int img_read(void *user,  char *data, int size);
