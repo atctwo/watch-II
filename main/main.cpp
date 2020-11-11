@@ -140,10 +140,10 @@ void setup() {
     {
         if ((watch2::file_ext(spi_file.name()).compare("bmp") == 0) || (watch2::file_ext(spi_file.name()).compare("png") == 0)) // the file extension is bmp
         {
-            Serial.printf("loading \"%s\" as \"%s\"\n", spi_file.name(), watch2::file_name(spi_file.name()).c_str());
+            Serial.printf("loading \"%s\" as \"%s\"\n", spi_file.name(), watch2::file_name(spi_file.name(), false).c_str());
             watch2::imageData loaded_icon = watch2::getImageDataSPIFFS(spi_file.name());
             if (loaded_icon.error) Serial.printf("\tload error: %s\n", loaded_icon.error);
-            watch2::registerIcon(watch2::file_name(spi_file.name()).c_str(), loaded_icon);
+            watch2::registerIcon(watch2::file_name(spi_file.name(), false).c_str(), loaded_icon);
         }
 
         spi_file = spi_root.openNextFile();

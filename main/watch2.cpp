@@ -62,7 +62,7 @@ namespace watch2
     int themecolour = BLUE;
     time_t alarm_snooze_time = 5*60;
     uint16_t screen_brightness = 2^tftbl_resolution;
-    uint8_t speaker_volume = 10;
+    uint8_t speaker_volume = 5;
     uint8_t torch_brightness = 0;
     int8_t timezone = 0;
     bool ntp_wakeup_connect = true;
@@ -871,7 +871,7 @@ namespace watch2
                 {
                     std::string icon_name = fs_icon_name_map[icons[fridgebuzz]];
 
-                    Serial.printf("%s: icon \"%s\" (item no %d, icon no %d)\n", item.c_str(), icon_name.c_str(), fridgebuzz, icons[fridgebuzz]);
+                    //Serial.printf("%s: icon \"%s\" (item no %d, icon no %d)\n", item.c_str(), icon_name.c_str(), fridgebuzz, icons[fridgebuzz]);
 
                     if (!icon_name.empty())
                     {
@@ -1310,14 +1310,18 @@ namespace watch2
         }
     }
 
-    std::string file_name(const char* filepath)
+    std::string file_name(const char* filepath, bool extension)
     {
         // get icon name from filename
         std::string icon_name = filepath;       // copy filename
         size_t pos = icon_name.rfind("/");      // find last '/'
         icon_name.erase(0, pos + 1);            // remove path part
-        pos = icon_name.rfind(".");             // find where the extension starts
-        icon_name.erase(pos, icon_name.npos);   // remove extension
+
+        if (!extension) 
+        {
+            pos = icon_name.rfind(".");             // find where the extension starts
+            icon_name.erase(pos, icon_name.npos);   // remove extension
+        }
         return icon_name;   
     }
 
@@ -3238,7 +3242,7 @@ namespace watch2
 
         // set I2S parameters
         audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
-        audio.setVolume(5);
+        audio.setVolume(speaker_volume);
 
         // if a filesystem has been passed, load the file from the filesystem
         if (fs) audio.connecttoFS(*fs, filename);

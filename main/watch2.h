@@ -576,14 +576,15 @@ namespace watch2
     std::string beginFileSelect(std::string path = "/");
 
     /**
-     * @brief gets the name part of a file path (without the extension).
+     * @brief gets the name part of a file path.
      * 
-     * for example, if you pass 'images/ir/pause.bmp', this function will return 'pause'.
+     * for example, if you pass 'images/ir/pause.bmp', this function will return 'pause.bmp'.  if `extension` is false, it will return `pause`.
      * 
-     * @param filepath 
-     * @return std::string
+     * @param filepath the path to the file to get the name of
+     * @param extension whether or not to include the file extension
+     * @return std::string the name
      */
-    std::string file_name(const char* filepath);
+    std::string file_name(const char* filepath, bool extension=true);
 
     /**
      * @brief gets the directory part of a file path.
