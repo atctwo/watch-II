@@ -124,7 +124,6 @@ set(COMPONENT_INCLUDEDIRS
     libraries/tinyexpr/
     libraries/entities/
     libraries/ESP32-BLE-Keyboard/
-    libraries/ESP8266Audio/src/
     libraries/ESP32-audioI2S/src/
     #libraries/micropython/
 )
