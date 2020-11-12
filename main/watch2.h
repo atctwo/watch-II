@@ -21,6 +21,7 @@
 #include <TFT_eSPI.h>               // TFT library
 #include <FS.h>                     // Arduino filesystem abstraction
 #include <JC_Button.h>              // button object
+#include <JC_Button_MCP23008.h>     // buttons over MCP23008 IO expander
 #include <WiFi.h>                   // wifi library
 #include <WiFiClientSecure.h>       // https client library
 #include <HTTPClient.h>             // http client library
@@ -29,6 +30,8 @@
 #include <Preferences.h>            // for storing settings in nvs (allowing for persistance over power cycles)
 #include <tinyexpr.h>               // expression evaluator for calculator
 #include <cJSON.h>                  // JSON parser
+#include <Wire.h>
+#include <Adafruit_MCP23008.h>
 
 #include <sys/cdefs.h>
 #include <time.h>                   // used for system-level time keeping
@@ -54,11 +57,11 @@
 #define tftbl 33        //tft backlight
 #define tftbl_resolution 8 //resolution of backlight pwm in bits
 
-#define dpad_up             34
-#define dpad_down           39
-#define dpad_left           32
-#define dpad_right          35
-#define dpad_enter          36
+#define dpad_up             1
+#define dpad_down           3
+#define dpad_left           4
+#define dpad_right          0
+#define dpad_enter          2
 #define BATTERY_DIVIDER_PIN 34
 #define TORCH_PIN           14
 #define IR_PIN              4
@@ -66,7 +69,7 @@
 #define I2S_DOUT            25
 #define I2S_BCLK            27
 #define I2S_LRC             26
-#define I2C_SDA             0
+#define I2C_SDA             32
 #define I2C_SCL             15
 
 //ledc channels
@@ -78,11 +81,11 @@
 #define KEY_REPEAT_DELAY    550     //time for key repeat to start, in ms [DAS]
 #define KEY_REPEAT_PERIOD   24      //time between key repeats, in ms     [ARR]
 
-#define dpad_up_active()    ( !watch2::dpad_up_lock &&    (watch2::btn_dpad_up.wasPressed() || ( watch2::btn_dpad_up.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD < 10 ) ) ) )
-#define dpad_down_active()  ( !watch2::dpad_down_lock &&  (watch2::btn_dpad_down.wasPressed() || ( watch2::btn_dpad_down.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD < 10 ) ) ) )
-#define dpad_left_active()  ( !watch2::dpad_left_lock &&  (watch2::btn_dpad_left.wasPressed() || ( watch2::btn_dpad_left.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD < 10 ) ) ) )
-#define dpad_right_active() ( !watch2::dpad_right_lock && (watch2::btn_dpad_right.wasPressed() || ( watch2::btn_dpad_right.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD < 10 ) ) ) )
-#define dpad_enter_active() ( !watch2::dpad_enter_lock && (watch2::btn_dpad_enter.wasPressed() || ( watch2::btn_dpad_enter.pressedFor(KEY_REPEAT_DELAY) && ( millis() % KEY_REPEAT_PERIOD < 10 ) ) ) )
+#define dpad_up_active()    (!watch2::dpad_lock[dpad_up] && watch2::dpad_pressed[dpad_up])
+#define dpad_down_active()  (!watch2::dpad_lock[dpad_down] && watch2::dpad_pressed[dpad_down])
+#define dpad_left_active()  (!watch2::dpad_lock[dpad_left] && watch2::dpad_pressed[dpad_left])
+#define dpad_right_active() (!watch2::dpad_lock[dpad_right] && watch2::dpad_pressed[dpad_right])
+#define dpad_enter_active() (!watch2::dpad_lock[dpad_enter] && watch2::dpad_pressed[dpad_enter])
 #define dpad_any_active()   ( dpad_up_active() || dpad_down_active() || dpad_left_active() || dpad_right_active() || dpad_enter_active() )
 
 #define draw(conditions, ...)                                       \      
@@ -111,6 +114,9 @@
 #define LARGE_FONT              "HelvetiHand36"
 #define REALLY_BIG_FONT         "HelvetiHand60"
 #define REALLY_REALLY_BIG_FONT  "HelvetiHand90"
+
+// i2c addresses
+#define I2C_ADDRESS_MCP23008    0x20
 
 // device info
 #define SCREEN_WIDTH            240                     // the width of the screen in pixels
@@ -326,13 +332,14 @@ namespace watch2
     extern WiFiClientSecure wifi_client_secure;                                                        //!< the wifi client used for HTTP and HTTPS requests
     extern BleKeyboard ble_keyboard;                                                            //!< a thing that handles BLE HID Keyboard stuff
     extern Audio audio;                                                                         //!< audio playback!
+    extern Adafruit_MCP23008 mcp;                                                               //!< MCP23008 IO expander for user input
 
     //button objects
-    extern Button btn_dpad_up;                                                                  //!< the object that handles the dpad up button
-    extern Button btn_dpad_down;                                                                //!< the object that handles the dpad down button
-    extern Button btn_dpad_left;                                                                //!< the object that handles the dpad left button
-    extern Button btn_dpad_right;                                                               //!< the object that handles the dpad right button
-    extern Button btn_dpad_enter;                                                               //!< the object that handles the dpad enter button
+    extern Button btn_dpad_up;                                                         //!< the object that handles the dpad up button
+    extern Button btn_dpad_down;                                                       //!< the object that handles the dpad down button
+    extern Button btn_dpad_left;                                                       //!< the object that handles the dpad left button
+    extern Button btn_dpad_right;                                                      //!< the object that handles the dpad right button
+    extern Button btn_dpad_enter;                                                      //!< the object that handles the dpad enter button
     extern Button btn_zero;                                                                     //!< the object that handles GPIO0 input
 
     extern std::vector<stateMeta> states;                                                       //<! vector of watch states
@@ -449,11 +456,8 @@ namespace watch2
     // these variables stop button presses affecting new states when switching from a previous state.  when a user presses a button to go from the watch face 
     // to the menu, if the button is held down for long enough, the button press can affect the next state. these lock variables are set to true when switching 
     // states, then set to false when each button is released.
-    extern bool dpad_up_lock;
-    extern bool dpad_down_lock;
-    extern bool dpad_left_lock;
-    extern bool dpad_right_lock;
-    extern bool dpad_enter_lock;
+    extern bool dpad_lock[5];
+    extern bool dpad_pressed[5];
 
 
     // system function prototypes

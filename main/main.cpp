@@ -31,6 +31,27 @@ void setup() {
     Serial.begin(115200);
     Serial.print("\n\n");
 
+    // set up i2c
+    Serial.println("setting up i2c devices: ");
+
+    Serial.print("\tWire object: ");
+    Wire.begin(I2C_SDA, I2C_SCL);
+    Serial.println("done");
+
+    Serial.print("\tMCP23008: ");
+    watch2::mcp.begin(I2C_ADDRESS_MCP23008);
+    watch2::mcp.pinMode(0, INPUT);
+    watch2::mcp.pinMode(1, INPUT);
+    watch2::mcp.pinMode(2, INPUT);
+    watch2::mcp.pinMode(3, INPUT);
+    watch2::mcp.pinMode(4, INPUT);
+    watch2::mcp.pinMode(5, INPUT);
+    watch2::mcp.pinMode(6, INPUT);
+    watch2::mcp.pinMode(7, INPUT);
+    Serial.println("done");
+
+    Serial.println("done setting up i2c");
+
     //set up spiffs
     Serial.print("setting up spiffs: ");
     if (!SPIFFS.begin())

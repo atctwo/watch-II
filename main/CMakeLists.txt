@@ -53,6 +53,7 @@ set(LIB_SDFAT_SRCS
 
 set(LIB_ARDUINO_SRCS
     libraries/JC_Button/src/JC_Button.cpp
+    libraries/JC_Button_MCP23008/src/JC_Button_MCP23008.cpp
     libraries/Time/Time.cpp
     libraries/Time/DateStrings.cpp
     libraries/TimeAlarms/TimeAlarms.cpp
@@ -80,6 +81,10 @@ set(WATCH_SRCS
     libraries/ESP32-audioI2S/src/Audio.cpp
     libraries/tinyexpr/tinyexpr.c
     libraries/entities/entities.c
+    libraries/Adafruit_BusIO/Adafruit_BusIO_Register.cpp
+    libraries/Adafruit_BusIO/Adafruit_I2CDevice.cpp
+    libraries/Adafruit_BusIO/Adafruit_SPIDevice.cpp
+    libraries/Adafruit-MCP23008-library/Adafruit_MCP23008.cpp
     root_store.cpp
     watch2.cpp
     #SdFatFSWrapper.cpp
@@ -117,6 +122,7 @@ set(COMPONENT_SRCS
 set(COMPONENT_INCLUDEDIRS 
     libraries/SdFat/src/ 			
     libraries/JC_Button/src/ 	
+    libraries/JC_Button_MCP23008/src/ 	
     libraries/Arduino-IRremote/
     libraries/TFT_eSPI/ 			
     libraries/Time/ 				
@@ -125,6 +131,8 @@ set(COMPONENT_INCLUDEDIRS
     libraries/entities/
     libraries/ESP32-BLE-Keyboard/
     libraries/ESP32-audioI2S/src/
+    libraries/Adafruit_BusIO/
+    libraries/Adafruit-MCP23008-library/
     #libraries/micropython/
 )
 

@@ -44,10 +44,10 @@ void state_func_init()
         //settings clear mode
         if (!watch2::state_init)
         {
-            watch2::oled.setCursor(0,watch2::top_thing_height + 5);
-            //watch2::oled.setFreeFont(&SourceSansPro_Regular6pt7b);
             watch2::oled.setTextColor(WHITE, BLACK);
-            watch2::oled.print("Do you want to clear\nall saved settings?");
+            watch2::oled.setTextDatum(TC_DATUM);
+            watch2::oled.drawString("Do you want to clear\nall saved settings?", SCREEN_WIDTH / 2,watch2::top_thing_height + 5);
+            watch2::oled.setTextDatum(TL_DATUM);
         }
 
         if (dpad_up_active() || dpad_down_active())
@@ -56,12 +56,17 @@ void state_func_init()
         }
 
         draw(dpad_any_active(), {
-            watch2::drawMenu(2, 37, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 37, {"No", "Yes"}, selected_option, {}, false, false, RED);
+            watch2::drawMenu(2, 100, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 37, {"No", "Yes"}, selected_option, {}, false, true, RED);
         });
 
         if (dpad_enter_active())
         {
-            if (selected_option == 1) watch2::preferences.clear();
+            if (selected_option == 1) 
+            {
+                watch2::preferences.begin("watch2");
+                watch2::preferences.clear();
+                watch2::preferences.end();
+            }
             watch2::switchState(1);
         }
     }
@@ -69,7 +74,7 @@ void state_func_init()
     //check down button for settings clearing thing
     if (watch2::states[watch2::state].variant == 0)
     {
-        if (digitalRead(dpad_down))
+        if (watch2::mcp.digitalRead(dpad_down))
         {
             watch2::switchState(watch2::state, 1);
         }

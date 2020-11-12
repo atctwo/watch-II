@@ -29,6 +29,7 @@ namespace watch2
     WiFiClientSecure wifi_client_secure;
     BleKeyboard ble_keyboard("watch2", "atctwo");
     Audio audio;
+    Adafruit_MCP23008 mcp;
 
     //button objects
     Button btn_dpad_up(dpad_up, 25, false, false);
@@ -105,11 +106,8 @@ namespace watch2
     uint32_t wifi_connect_timeout = 15000;
     uint32_t wifi_connect_timeout_start = 0;
 
-    bool dpad_up_lock = false;
-    bool dpad_down_lock = false;
-    bool dpad_left_lock = false;
-    bool dpad_right_lock = false;
-    bool dpad_enter_lock = false;
+    bool dpad_lock[5] = {false};
+    bool dpad_pressed[5] = {false};
 
     void startLoop()
     {
@@ -153,40 +151,60 @@ namespace watch2
             
         // }
 
-        if (btn_zero.wasPressed())
-        {
-            watch2::controlCentreDialogue();
-        }
+        // if (btn_zero.wasPressed())
+        // {
+        //     watch2::controlCentreDialogue();
+        // }
 
-        //reset button lock state
-        if (btn_dpad_up.isReleased())       dpad_up_lock = false;
-        if (btn_dpad_down.isReleased())     dpad_down_lock = false;
-        if (btn_dpad_left.isReleased())     dpad_left_lock = false;
-        if (btn_dpad_right.isReleased())    dpad_right_lock = false;
-        if (btn_dpad_enter.isReleased())    dpad_enter_lock = false;
+        //for (uint i = 0; i < 8; i++) Serial.printf("btn %d: %d;\t", i, mcp.digitalRead(i));
+        //Serial.println("");
+        //Serial.printf("dpad right: %d;\n", mcp.digitalRead(dpad_right));
+
+        for (uint8_t i = 0; i < 5; i++)
+        {
+            // reset button active state
+            if (dpad_pressed[i]) {
+                //Serial.printf("[button locks] set button %d to not pressed and locked\n", i);
+                dpad_pressed[i] = false;
+                dpad_lock[i] = true;
+            }
+
+            // set button active state
+            if (!dpad_lock[i] && mcp.digitalRead(i)) {
+                //Serial.printf("[button locks] set button %d to pressed\n", i);
+                dpad_pressed[i] = true;
+            }
+
+            //reset button lock state
+            if (dpad_lock[i] && !mcp.digitalRead(i)) 
+            {
+                //Serial.printf("[button locks] set button %d to unlocked\n", i);
+                dpad_lock[i] = false;
+            }
+        }
 
         //handle timeouts
-        if (timeout && (state != 0))
-        {
-            if (state == 1)
-            {
-                if (btn_dpad_up.releasedFor(short_timeout) &&
-                    btn_dpad_down.releasedFor(short_timeout) &&
-                    btn_dpad_left.releasedFor(short_timeout) &&
-                    btn_dpad_right.releasedFor(short_timeout) &&
-                    btn_dpad_enter.releasedFor(short_timeout))
-                    deepSleep(31);
-            }
-            else
-            {
-                if (btn_dpad_up.releasedFor(long_timeout) &&
-                    btn_dpad_down.releasedFor(long_timeout) &&
-                    btn_dpad_left.releasedFor(long_timeout) &&
-                    btn_dpad_right.releasedFor(long_timeout) &&
-                    btn_dpad_enter.releasedFor(long_timeout))
-                    deepSleep(31);
-            }
-        }
+        // if (timeout && (state != 0))
+        // {
+        //     if (state == 1)
+        //     {
+        //         if (btn_dpad_up.releasedFor(short_timeout) &&
+        //             btn_dpad_down.releasedFor(short_timeout) &&
+        //             btn_dpad_left.releasedFor(short_timeout) &&
+        //             btn_dpad_right.releasedFor(short_timeout) &&
+        //             btn_dpad_enter.releasedFor(short_timeout))
+        //             deepSleep(31);
+        //     }
+        //     else
+        //     {
+        //         if (btn_dpad_up.releasedFor(long_timeout) &&
+        //             btn_dpad_down.releasedFor(long_timeout) &&
+        //             btn_dpad_left.releasedFor(long_timeout) &&
+        //             btn_dpad_right.releasedFor(long_timeout) &&
+        //             btn_dpad_enter.releasedFor(long_timeout))
+        //             deepSleep(31);
+        //     }
+        // }
 
         // wifi
         // check the wifi connection status
@@ -655,11 +673,12 @@ namespace watch2
         dimScreen(0, dim_pause_thing);              //dim the screen
         oled.fillScreen(BLACK);                     //clear screen
 
-        dpad_up_lock = true;                        //set button locks
-        dpad_down_lock = true;
-        dpad_left_lock = true;
-        dpad_right_lock = true;
-        dpad_enter_lock = true;
+        for (uint16_t i = 0; i < 5; i++) 
+        {
+            //Serial.printf("[button locks] set button %d to locked and not pressed\n", i);
+            dpad_lock[i] = true;
+            dpad_pressed[i] = false;
+        }
 
         state_init = 0;                             //reset first execution flag
         state = newState;                           //switch state variable

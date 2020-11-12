@@ -34,3 +34,9 @@
 [submodule "main/libraries/gumbo-parser"]
 	path = main/libraries/gumbo-parser
 	url = https://github.com/google/gumbo-parser.git
+[submodule "main/libraries/Adafruit-MCP23008-library"]
+	path = main/libraries/Adafruit-MCP23008-library
+	url = https://github.com/adafruit/Adafruit-MCP23008-library.git
+[submodule "main/libraries/Adafruit_BusIO"]
+	path = main/libraries/Adafruit_BusIO
+	url = https://github.com/adafruit/Adafruit_BusIO.git

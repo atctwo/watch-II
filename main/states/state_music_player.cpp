@@ -14,8 +14,8 @@ void state_func_music_player()
     if (!watch2::state_init) 
     {
         filename = watch2::beginFileSelect();
-        if (filename != "canceled")
-        {
+        if (filename == "canceled") watch2::switchState(2);
+        else {
             char sfn[25];
 
             watch2::oled.setCursor(2, 42);
