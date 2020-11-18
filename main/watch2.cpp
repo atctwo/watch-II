@@ -151,10 +151,10 @@ namespace watch2
             
         // }
 
-        // if (btn_zero.wasPressed())
-        // {
-        //     watch2::controlCentreDialogue();
-        // }
+        if (btn_zero.wasPressed())
+        {
+            watch2::controlCentreDialogue();
+        }
 
         //for (uint i = 0; i < 8; i++) Serial.printf("btn %d: %d;\t", i, mcp.digitalRead(i));
         //Serial.println("");

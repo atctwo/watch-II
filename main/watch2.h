@@ -132,6 +132,8 @@
 #define PORT_HTTPS              443                     // the tcp port used for HTTPS
 #define WIFI_PROFILES_FILENAME  "/wifi_profiles.json"   //!< the name of the file that stores wifi profiles
 #define API_KEYS_FILENAME       "/api_keys.json"        //!< the name of the file that is used to store API keys for lots of REST APIs
+#define RADIO_FILENAME          "/radio.txt"            //!< the name of the file that contains radio HTTP streams
+
 //Calculator definitions
 #define CALC_CELL_WIDTH   25//27 for 4 chrs
 #define CALC_CELL_HEIGHT  12

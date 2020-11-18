@@ -40,14 +40,11 @@ void setup() {
 
     Serial.print("\tMCP23008: ");
     watch2::mcp.begin(I2C_ADDRESS_MCP23008);
-    watch2::mcp.pinMode(0, INPUT);
-    watch2::mcp.pinMode(1, INPUT);
-    watch2::mcp.pinMode(2, INPUT);
-    watch2::mcp.pinMode(3, INPUT);
-    watch2::mcp.pinMode(4, INPUT);
-    watch2::mcp.pinMode(5, INPUT);
-    watch2::mcp.pinMode(6, INPUT);
-    watch2::mcp.pinMode(7, INPUT);
+    for (uint8_t i = 0; i < 8; i++)
+    {
+        watch2::mcp.pinMode(i, INPUT);
+        watch2::mcp.pullUp(i, LOW);
+    }
     Serial.println("done");
 
     Serial.println("done setting up i2c");
