@@ -8,29 +8,38 @@
 void state_func_music_player()
 {
     static std::string filename;
-    static TaskHandle_t audio_task_handle;
     static unsigned long last_draw_time = 0;
+    static bool cancelled = false;
 
     if (!watch2::state_init) 
     {
         filename = watch2::beginFileSelect();
-        if (filename == "canceled") watch2::switchState(2);
+        if (filename == "canceled") {
+            watch2::switchState(2);
+            cancelled = true;
+        }
         else {
+            cancelled = false;
             char sfn[25];
 
             watch2::oled.setCursor(2, 42);
-            watch2::oled.println(watch2::file_name(filename.c_str()).c_str());
+            watch2::oled.setTextColor(WHITE, BLACK);
+            Serial.printf("[music player] file name: %s (%s)\n", filename.c_str(), watch2::file_name(filename.c_str()).c_str());
+            watch2::oled.println(filename.c_str());
             FatFile f = watch2::sdcard.open(filename.c_str());
+            
             f.getSFN(sfn);
-            std::string music_path = "/MUSIC/";
+            Serial.printf("[music player] sfn: %s\n", sfn);
+
+            std::string music_path = watch2::dir_name(filename);
             music_path += (const char*)sfn;
+            Serial.printf("[music player] music path: %s\n", music_path.c_str());
             f.close();
-            watch2::drawTopThing();
 
             SD.begin(sdcs, *watch2::vspi, 4000000U);
             vTaskDelay(20); // wait for tft draw to finish
             
-            watch2::play_music(audio_task_handle, music_path.c_str());
+            watch2::play_music(music_path.c_str());
         }
     }
 
@@ -38,7 +47,7 @@ void state_func_music_player()
     //if (watch2::audio.isRunning()) watch2::audio.loop();
 
     // update progress bar
-    if (millis() - last_draw_time > 1000)
+    if (!cancelled && (millis() - last_draw_time > 1000))
     {
         //Serial.println("update progress");
         uint32_t length         = watch2::audio.getAudioFileDuration();
@@ -71,7 +80,7 @@ void state_func_music_player()
     }
     if (dpad_left_active() || watch2::btn_dpad_enter.pressedFor(1000)) 
     {
-        watch2::audio.stopSong();
+        watch2::stop_music();
         watch2::switchState(watch2::state);
     }
 }

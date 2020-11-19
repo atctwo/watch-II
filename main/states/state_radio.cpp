@@ -11,7 +11,6 @@ void state_func_radio()
     static std::vector<std::string> station_names;
     static std::vector<std::string> station_urls;
     static uint8_t selected_station = 0;
-    static TaskHandle_t audio_task_handle;
     
     // station selection
     if (watch2::states[watch2::state].variant == 0)
@@ -117,7 +116,7 @@ void state_func_radio()
             watch2::oled.setTextColor(WHITE, BLACK);
             watch2::oled.println(station_names[selected_station].c_str());
         
-            watch2::play_music(audio_task_handle, station_urls[selected_station].c_str(), false, NULL);
+            watch2::play_music(station_urls[selected_station].c_str(), false, NULL);
         }
 
         if (dpad_enter_active())
@@ -137,7 +136,7 @@ void state_func_radio()
 
         if (dpad_left_active())
         {
-            watch2::audio.stopSong();
+            watch2::stop_music();
             watch2::switchState(watch2::state, 0);
         }
     }

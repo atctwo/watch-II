@@ -389,7 +389,10 @@ namespace watch2
                                                                                                 //!< wifi automatically on boot
     extern String weather_location;                                                             //!< the city name to use when getting the weather
     extern wifi_auth_mode_t wifi_encryption;                                                    //!< hack hack hack hack pls replace with a way to get the encryption type of the current AP
-    extern TaskHandle_t audio_task_handle;
+    extern TaskHandle_t audio_task_handle;                                                      //!< handle to the audio task
+    extern bool audio_repeat;                                                                   //!< if this is true, audio files will repeat once they have ended
+    extern std::string audio_filename;                                                          //!< the filename of the currently playing audio file
+    extern fs::FS *audio_fs;                                                                    //!< the FS from which the currently playing audio is playing
 
     // fs states
     extern int sd_state;                                                                        //!< state of the sd card
@@ -984,7 +987,8 @@ namespace watch2
      * @return true if the audio was loaded ok
      * @return false if tha audio failed to load
      */
-    bool play_music(TaskHandle_t &task_handle, const char *filename, bool repeat=false, fs::FS *fs=&SD);
+    bool play_music(const char *filename, bool repeat=false, fs::FS *fs=&SD);
+    void stop_music();
     void audio_task(void *pvParameters);
 
     //functions for stb_image

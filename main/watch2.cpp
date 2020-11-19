@@ -75,6 +75,9 @@ namespace watch2
     String weather_location = "";
     wifi_auth_mode_t wifi_encryption = WIFI_AUTH_MAX;
     TaskHandle_t audio_task_handle;
+    bool audio_repeat = false;
+    std::string audio_filename = "";
+    fs::FS *audio_fs = NULL;
     uint8_t bluetooth_state = 0;
     bool ble_set_up = false;
     int sd_state = 0;
@@ -1346,24 +1349,10 @@ namespace watch2
 
     std::string dir_name(std::string file_path_thing)
     {
-        char path[file_path_thing.length()];
-        strcpy(path, file_path_thing.c_str());
-        char *pch;
-        std::string file_dir = "/";
-        
-        //get number of occurances of / character
-        int occurances = 0;
-        for (int i = 0; i < sizeof(path) / sizeof(char); i++) if (path[i] == '/') occurances++;
-        
-        //split the string
-        pch = strtok(path, "/");
-        
-        for (int i = 0; i < occurances - 2; i++)
-        {
-            file_dir += pch;
-            file_dir += "/";
-            pch = strtok(NULL, "/");
-        }
+        std::string file_dir = file_path_thing;
+
+        size_t pos = file_dir.rfind("/");       // find last '/'
+        file_dir.erase(pos + 1, file_dir.npos); // erase filename part
 
         return file_dir;
     }
@@ -3255,9 +3244,12 @@ namespace watch2
         bluetooth_state = 0;
     }
 
-    bool play_music(TaskHandle_t &task_handle, const char *filename, bool repeat, fs::FS *fs)
+    bool play_music(const char *filename, bool repeat, fs::FS *fs)
     {
         Serial.printf("[music player] now playing %s\n", filename);
+        audio_filename = filename;
+        audio_repeat = repeat;
+        audio_fs = fs;
 
         // set I2S parameters
         audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
@@ -3276,21 +3268,26 @@ namespace watch2
         return false;
     }
 
+    void stop_music()
+    {
+        audio.stopSong();
+        audio_filename = "";
+        audio_repeat = false;
+        audio_fs = NULL;
+    }
+
     void audio_task(void *pvParameters)
     {
         Serial.println("[music player] starting audio");
         while(true)
         {
-            //Serial.printf("is running? %d\n", audio.isRunning());
             if (audio.isRunning()) audio.loop();
-            else vTaskDelay(500);
-            //Serial.printf("aaa");
-            // else 
-            // {
-            //     Serial.println("[music player] audio ended");
-            //     audio.stopSong();
-            //     vTaskDelete(NULL);
-            // }
+            else 
+            {
+                if (audio_repeat) play_music(audio_filename.c_str(), true, audio_fs);
+                else vTaskDelay(500);
+            }
+            
         }
         Serial.println("[music player] audio task loop ended");
     }
