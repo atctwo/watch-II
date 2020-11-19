@@ -100,6 +100,8 @@ void setup() {
     watch2::wifi_boot_reconnect = watch2::preferences.getBool("wifi_boot", true);
     watch2::wifi_enabled = watch2::preferences.getBool("wifi_en", false);
     watch2::weather_location = watch2::preferences.getString("weather_city", "");
+    watch2::timer_music = watch2::preferences.getString("timer_music", "/music/alarms/CLASSI~1.mp3");
+    watch2::alarm_music = watch2::preferences.getString("alarm_music", "/music/alarms/Meander.mp3");
     watch2::preferences.end();
     Serial.print("done");
 
@@ -310,6 +312,13 @@ void loop() {
             //brighten screen
             watch2::dimScreen(1, 10);
 
+            // play music
+            SD.begin(sdcs, *watch2::vspi, 4000000U);
+            watch2::preferences.begin("watch2", true);
+            String music = watch2::preferences.getString("timer_music", "/music/alarms/CLASSI~1.mp3");
+            watch2::preferences.end();
+            watch2::play_music(music.c_str(), true);
+
             //set timer trigger status
             watch2::timer_trigger_status = 2;
         }
@@ -318,7 +327,8 @@ void loop() {
         if (dpad_any_active())
         {
             watch2::timer_trigger_status = 0;
-            watch2::switchState(watch2::state);
+            watch2::stop_music();
+            watch2::switchState(0);
         }
     }
 
@@ -339,6 +349,7 @@ void loop() {
         static uint16_t button_h = 60;
         static uint16_t button_r = 7;
         static TFT_eSprite time_sprite = TFT_eSprite(&watch2::oled);
+        static bool pause = false;
         //static GFXcanvas1 *canvas_time = new GFXcanvas1(SCREEN_WIDTH, 20);
         //0 - dismiss
         //anything else - sleep
@@ -363,12 +374,31 @@ void loop() {
             watch2::setFont(REALLY_BIG_FONT, time_sprite);
             time_sprite.createSprite(SCREEN_WIDTH, watch2::oled.fontHeight());
             time_sprite.fillScreen(BLACK);
-        }
 
-        if (dpad_left_active() || dpad_right_active())
-        {
-            if (selected_alarm_action == 0) selected_alarm_action = 1;
-            else if (selected_alarm_action == 1) selected_alarm_action = 0;
+            uint16_t split_width = SCREEN_WIDTH / 4;
+
+            //draw dismiss button
+            watch2::drawImage((*watch2::icons)["dismiss"], split_width - (button_w / 2), button_y);
+            
+            //draw snooze button
+            watch2::drawImage((*watch2::icons)["bed"], (split_width * 3) - (button_w / 2), button_y);
+            
+            //draw button text
+            watch2::oled.fillRect(0, button_y + button_h + (button_h / 4), SCREEN_WIDTH, watch2::oled.fontHeight(), BLACK);
+            watch2::setFont(MAIN_FONT);
+            watch2::oled.setTextDatum(TC_DATUM);
+            String button = "< Dismiss     Snooze! >";
+            watch2::oled.drawString(button, SCREEN_WIDTH / 2, button_y + button_h + (button_h / 4));
+            watch2::oled.setTextDatum(TL_DATUM);
+
+            watch2::alarm_trigger_status = 3;  //hack hack hack hack
+
+            // play music
+            SD.begin(sdcs, *watch2::vspi, 4000000U);
+            watch2::preferences.begin("watch2", true);
+            String music = watch2::preferences.getString("alarm_music", "/music/alarms/Meander.mp3");
+            watch2::preferences.end();
+            watch2::play_music(music.c_str(), true);
         }
 
         if (now() != last_time)
@@ -382,49 +412,26 @@ void loop() {
             last_time = now();
         }
 
-        //draw buttons
-        if (dpad_any_active() || watch2::alarm_trigger_status == 2 || watch2::forceRedraw)
-        {
-            uint16_t split_width = SCREEN_WIDTH / 4;
-
-            //draw dismiss button
-            watch2::drawImage((*watch2::icons)["dismiss"], split_width - (button_w / 2), button_y);
-            watch2::oled.drawRoundRect(split_width - (button_w / 2), button_y, button_w, button_h, button_r, (!selected_alarm_action) ? watch2::themecolour : BLACK);
-
-            //draw snooze button
-            watch2::drawImage((*watch2::icons)["bed"], (split_width * 3) - (button_w / 2), button_y);
-            watch2::oled.drawRoundRect((split_width * 3) - (button_w / 2), button_y, button_w, button_h, button_r, (selected_alarm_action) ? watch2::themecolour : BLACK);
-
-            //draw button text
-            watch2::oled.fillRect(0, button_y + button_h + (button_h / 4), SCREEN_WIDTH, watch2::oled.fontHeight(), BLACK);
-            watch2::setFont(MAIN_FONT);
-            watch2::oled.setTextDatum(TC_DATUM);
-            String button = (selected_alarm_action) ? "Snooze" : "Dismiss";
-            watch2::oled.drawString(button, SCREEN_WIDTH / 2, button_y + button_h + (button_h / 4));
-            watch2::oled.setTextDatum(TL_DATUM);
-
-            watch2::alarm_trigger_status = 3;  //hack hack hack hack
-        }
-
         watch2::drawTopThing();
 
-        if (dpad_enter_active())
+        if (dpad_left_active())
         {
-            if (selected_alarm_action == 1)  //snooze alarm
-            {
-                time_t time_alarm = Alarm.read(watch2::alarms[watch2::alarm_trigger_id].alarm_id);
-                time_alarm += watch2::alarm_snooze_time;
-                Alarm.write(watch2::alarms[watch2::alarm_trigger_id].alarm_id, time_alarm);
-            }
-            else
-            {
-                Serial.print("i wanna be a girl and i can't type");
-                Alarm.write(watch2::alarms[watch2::alarm_trigger_id].alarm_id, watch2::alarms[watch2::alarm_trigger_id].initial_time);
-            }
+            Serial.print("i wanna be a girl and i can't type");
+            Alarm.write(watch2::alarms[watch2::alarm_trigger_id].alarm_id, watch2::alarms[watch2::alarm_trigger_id].initial_time);
+        }
+        if (dpad_right_active())
+        {
+            time_t time_alarm = Alarm.read(watch2::alarms[watch2::alarm_trigger_id].alarm_id);
+            time_alarm += watch2::alarm_snooze_time; // if this is added to a time later than 23:55, then the alarm will be set to 24:something
+            Alarm.write(watch2::alarms[watch2::alarm_trigger_id].alarm_id, time_alarm);
+        }
 
+        if (dpad_left_active() || dpad_right_active())
+        {
             time_sprite.deleteSprite();
             watch2::alarm_trigger_status = 0;
-            watch2::switchState(watch2::state);
+            watch2::stop_music();
+            watch2::switchState(0);
         }
 
     }

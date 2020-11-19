@@ -388,11 +388,8 @@ namespace watch2
                                                                                                 //!< connected to wifi, for that use wifi_state.  this is only used to decide whether or not to enable
                                                                                                 //!< wifi automatically on boot
     extern String weather_location;                                                             //!< the city name to use when getting the weather
-    extern wifi_auth_mode_t wifi_encryption;                                                    //!< hack hack hack hack pls replace with a way to get the encryption type of the current AP
-    extern TaskHandle_t audio_task_handle;                                                      //!< handle to the audio task
-    extern bool audio_repeat;                                                                   //!< if this is true, audio files will repeat once they have ended
-    extern std::string audio_filename;                                                          //!< the filename of the currently playing audio file
-    extern fs::FS *audio_fs;                                                                    //!< the FS from which the currently playing audio is playing
+    extern String timer_music;                                                                  //!< the music played when a timer elapses
+    extern String alarm_music;                                                                  //!< the music played when an alarm elapses
 
     // fs states
     extern int sd_state;                                                                        //!< state of the sd card
@@ -457,6 +454,12 @@ namespace watch2
                                                                                                 //!< 2 - enabled, disconnected
                                                                                                 //!< 3 - enabled, connected
     extern bool ble_set_up;                                                                     //!< has the ble server been created?
+
+    extern wifi_auth_mode_t wifi_encryption;                                                    //!< hack hack hack hack pls replace with a way to get the encryption type of the current AP
+    extern TaskHandle_t audio_task_handle;                                                      //!< handle to the audio task
+    extern bool audio_repeat;                                                                   //!< if this is true, audio files will repeat once they have ended
+    extern std::string audio_filename;                                                          //!< the filename of the currently playing audio file
+    extern fs::FS *audio_fs;                                                                    //!< the FS from which the currently playing audio is playing
 
     // these variables stop button presses affecting new states when switching from a previous state.  when a user presses a button to go from the watch face 
     // to the menu, if the button is held down for long enough, the button press can affect the next state. these lock variables are set to true when switching 

@@ -73,6 +73,8 @@ namespace watch2
     bool wifi_boot_reconnect = true;
     bool wifi_enabled = false;
     String weather_location = "";
+    String timer_music = "";
+    String alarm_music = "";
     wifi_auth_mode_t wifi_encryption = WIFI_AUTH_MAX;
     TaskHandle_t audio_task_handle;
     bool audio_repeat = false;
@@ -792,7 +794,11 @@ namespace watch2
         Serial.println("entering sleep mode");
         esp_light_sleep_start();
 
+
+
         //when the esp is woken up, it will resume execution at this point
+
+
 
         Serial.println("awake");
         oled.writecommand(0x11); // wake up screen
@@ -3251,21 +3257,27 @@ namespace watch2
         audio_repeat = repeat;
         audio_fs = fs;
 
+        bool success = false;
+
         // set I2S parameters
         audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
         audio.setVolume(speaker_volume);
 
         // if a filesystem has been passed, load the file from the filesystem
-        if (fs) audio.connecttoFS(*fs, filename);
+        if (fs) success = audio.connecttoFS(*fs, filename);
 
         // otherwise, internet
-        else audio.connecttohost(filename);
+        else success = audio.connecttohost(filename);
 
         // create the audio task
         // int x = 10;
         // xTaskCreatePinnedToCore(audio_task, "audio", 8192, (void*)x, ESP_TASK_PRIO_MAX - 2, &task_handle, 1);
 
-        return false;
+        // if repeat is enabled, set it to the success value
+        // if playback failed, repeat will be set to false, so it won't repeat forever
+        if (repeat) audio_repeat = success;
+
+        return success;
     }
 
     void stop_music()
