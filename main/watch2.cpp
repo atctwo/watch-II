@@ -678,6 +678,7 @@ namespace watch2
         dimScreen(0, dim_pause_thing);              //dim the screen
         oled.fillScreen(BLACK);                     //clear screen
 
+        // lock dpad
         for (uint16_t i = 0; i < 5; i++) 
         {
             //Serial.printf("[button locks] set button %d to locked and not pressed\n", i);
@@ -1160,6 +1161,14 @@ namespace watch2
     {
         //i was watching tiktoks while writing this, so it might be pretty awful
 
+        // lock dpad
+        for (uint16_t i = 0; i < 5; i++) 
+        {
+            //Serial.printf("[button locks] set button %d to locked and not pressed\n", i);
+            dpad_lock[i] = true;
+            dpad_pressed[i] = false;
+        }
+
         static int selected_icon = 0; //currently selected file
         static char filename[255]; //buffer to hold filename
 
@@ -1385,6 +1394,14 @@ namespace watch2
 
     std::string textFieldDialogue(std::string prompt, const char *default_input, const char mask, bool clear_screen)
     {
+        // lock dpad
+        for (uint16_t i = 0; i < 5; i++) 
+        {
+            //Serial.printf("[button locks] set button %d to locked and not pressed\n", i);
+            dpad_lock[i] = true;
+            dpad_pressed[i] = false;
+        }
+
         /*
         special keys (like caps lock, space, backspace, enter) are mapped to repurposed ASCII control codes.
         the codes are interpreted by the system, so that no control codes are actually returned as part of 
@@ -1704,6 +1721,15 @@ namespace watch2
     uint8_t messageBox(const char* msg, std::vector<const char*> btns, bool clear_screen, uint16_t colour)
     {
         Serial.printf("showing message box: %s\n", msg);
+
+        // lock dpad
+        for (uint16_t i = 0; i < 5; i++) 
+        {
+            //Serial.printf("[button locks] set button %d to locked and not pressed\n", i);
+            dpad_lock[i] = true;
+            dpad_pressed[i] = false;
+        }
+
         watch2::setFont(MAIN_FONT);
 
         // The Numbers
@@ -1825,6 +1851,14 @@ namespace watch2
 
     uint16_t popup_menu(const char *title, std::vector<std::string> items, bool scroll, uint16_t colour)
     {
+        // lock dpad
+        for (uint16_t i = 0; i < 5; i++) 
+        {
+            //Serial.printf("[button locks] set button %d to locked and not pressed\n", i);
+            dpad_lock[i] = true;
+            dpad_pressed[i] = false;
+        }
+
         uint16_t selected_item = 0;
         uint16_t padding = 4;
         uint16_t item_height = (3 * padding) + oled.fontHeight();

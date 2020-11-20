@@ -153,7 +153,7 @@ void state_func_state_menu()
                 //draw app icon
                 if ((watch2::selected_menu_icon == i) || (icon_yoffset != last_yoffset) || (!watch2::state_init))
                 {
-                    Serial.printf("drawing icon for state \"%s\", icon is \"%s\" (%d elements)\n", stateinfo.stateName.c_str(), stateinfo.stateIcon.c_str(), sizeof((*watch2::icons)[stateinfo.stateIcon]));
+                    //Serial.printf("drawing icon for state \"%s\", icon is \"%s\" (%d elements)\n", stateinfo.stateName.c_str(), stateinfo.stateIcon.c_str(), sizeof((*watch2::icons)[stateinfo.stateIcon]));
                     watch2::drawImage((*watch2::icons)[stateinfo.stateIcon], icon_xpos, icon_ypos - icon_yoffset);
                 }
 

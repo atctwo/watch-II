@@ -30,14 +30,14 @@ void state_func_alarms()
     {
         selected_button--;
         if (selected_button < 0) selected_button = 4;
-        if (selected_alarm == -1 && selected_button < 3) selected_button = 4;
+        if (selected_alarm == -1 && selected_button < 2) selected_button = 4;
     }
 
     if (dpad_right_active())
     {
         selected_button++;
         if (selected_button > 4) selected_button = 0;
-        if (selected_alarm == -1 && selected_button < 3) selected_button = 3;
+        if (selected_alarm == -1 && selected_button < 2) selected_button = 2;
     }
 
     if (dpad_down_active())
@@ -116,6 +116,20 @@ void state_func_alarms()
                     -1              //last value
                 });
             }
+            else if (selected_button == 2)
+            {
+                // change timer music
+                Serial.println("[alarms] changing music");
+                std::string new_music = watch2::beginFileSelect();
+                Serial.printf("[alarms] new music to %s\n", new_music.c_str());
+                watch2::alarm_music = String(new_music.c_str());
+                Serial.printf("[alarms] changed music to %s\n", watch2::alarm_music.c_str());
+
+                watch2::preferences.begin("watch2");
+                watch2::preferences.putString("alarm_music", watch2::alarm_music);
+                watch2::preferences.end();
+                Serial.printf("[alarms] updated preferences store");
+            }
         }
         else
         {
@@ -161,7 +175,7 @@ void state_func_alarms()
         int icon_radius = 8;
         int radius = 4;
         int icon_spacing = 3;
-        int icon_size = 10;
+        int icon_size = 20;
         int alarm_edge = alarm_x + alarm_w;
         uint16_t working_button_colour = WHITE;
         uint16_t working_alarm_colour = WHITE;
@@ -176,46 +190,43 @@ void state_func_alarms()
             watch2::oled.setCursor(alarm_x, alarm_y);
             watch2::oled.print("Alarms");
 
-            //set colour of back button
-            working_button_colour = (selected_button <= 3 && selected_alarm == -1) ? watch2::themecolour : WHITE;
+            //set colour of music button
+            working_button_colour = (selected_button <= 2 && selected_alarm == -1) ? watch2::themecolour : WHITE;
 
-            //draw back button
-            watch2::oled.drawRoundRect(
-                alarm_edge - (icon_size * 2) - (icon_spacing * 6),
-                alarm_y - icon_spacing,
-                icon_size + (2 * icon_spacing),
-                icon_size + (2 * icon_spacing),
-                icon_radius,
+            //draw music button
+            watch2::oled.drawBitmap(
+                alarm_edge - (icon_size * 3) - (icon_spacing * 8),
+                alarm_y,
+                (*watch2::small_icons)["small_audio"].data(),
+                icon_size,
+                icon_size,
                 working_button_colour
             );
+
+            //set colour of back button
+            working_button_colour = (selected_button == 3 && selected_alarm == -1) ? watch2::themecolour : WHITE;
+
+            //draw back button
             watch2::oled.drawBitmap(
                 alarm_edge - (icon_size * 2) - (icon_spacing * 5),
                 alarm_y,
                 (*watch2::small_icons)["back"].data(),
                 icon_size,
                 icon_size,
-                working_alarm_colour
+                working_button_colour
             );
 
             //set colour of add button
             working_button_colour = (selected_button == 4 && selected_alarm == -1) ? watch2::themecolour : WHITE;
 
             //draw add button
-            watch2::oled.drawRoundRect(
-                alarm_edge - icon_size - (icon_spacing * 3),
-                alarm_y - icon_spacing,
-                icon_size + (2 * icon_spacing),
-                icon_size + (2 * icon_spacing),
-                icon_radius,
-                working_button_colour
-            );
             watch2::oled.drawBitmap(
                 alarm_edge - icon_size - (icon_spacing * 2),
                 alarm_y,
                 (*watch2::small_icons)["add"].data(),
                 icon_size,
                 icon_size,
-                working_alarm_colour
+                working_button_colour
             );
         });
 
@@ -293,56 +304,26 @@ void state_func_alarms()
                 working_button_colour = (selected_button == 3 && selected_alarm == i) ? watch2::themecolour : WHITE;
 
                 //draw play / pause button
-                watch2::oled.drawRoundRect(
-                    alarm_edge - (icon_size * 2) - (icon_spacing * 6),
-                    alarm_y - icon_spacing,
-                    icon_size + (2 * icon_spacing),
-                    icon_size + (2 * icon_spacing),
-                    icon_radius,
-                    working_button_colour
-                );
-                watch2::oled.fillRect(
-                    alarm_edge - (icon_size * 2) - (icon_spacing * 5),
-                    alarm_y,
-                    icon_size,
-                    icon_size,
-                    BLACK
-                );
                 watch2::oled.drawBitmap(
                     alarm_edge - (icon_size * 2) - (icon_spacing * 5),
                     alarm_y,
                     (watch2::alarms[i].paused) ? (*watch2::small_icons)["play"].data() : (*watch2::small_icons)["pause"].data(),
                     icon_size,
                     icon_size,
-                    working_alarm_colour
+                    working_button_colour
                 );
 
                 //set colour of delete button
                 working_button_colour = (selected_button == 4 && selected_alarm == i) ? watch2::themecolour : WHITE;
 
                 //draw delete button
-                watch2::oled.drawRoundRect(
-                    alarm_edge - icon_size - (icon_spacing * 3),
-                    alarm_y - icon_spacing,
-                    icon_size + (2 * icon_spacing),
-                    icon_size + (2 * icon_spacing),
-                    icon_radius,
-                    working_button_colour
-                );
-                watch2::oled.fillRect(
-                    alarm_edge - icon_size - (icon_spacing * 2),
-                    alarm_y,
-                    icon_size,
-                    icon_size,
-                    BLACK
-                );
                 watch2::oled.drawBitmap(
                     alarm_edge - icon_size - (icon_spacing * 2),
                     alarm_y,
-                    (*watch2::small_icons)["x"].data(),
+                    (*watch2::small_icons)["key_cancel"].data(),
                     icon_size,
                     icon_size,
-                    working_alarm_colour
+                    working_button_colour
                 );
 
                 watch2::alarms[i].last_value = alarm_time;

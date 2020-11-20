@@ -95,7 +95,7 @@ void state_func_radio()
 
         if (dpad_enter_active())
         {
-            watch2::switchState(watch2::state, 1);
+            if (watch2::wifi_state == 3 && watch2::sd_state == 1) watch2::switchState(watch2::state, 1);
         }
 
         if (dpad_left_active())

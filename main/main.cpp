@@ -314,10 +314,7 @@ void loop() {
 
             // play music
             SD.begin(sdcs, *watch2::vspi, 4000000U);
-            watch2::preferences.begin("watch2", true);
-            String music = watch2::preferences.getString("timer_music", "/music/alarms/CLASSI~1.mp3");
-            watch2::preferences.end();
-            watch2::play_music(music.c_str(), true);
+            watch2::play_music(watch2::timer_music.c_str(), true);
 
             //set timer trigger status
             watch2::timer_trigger_status = 2;
@@ -395,10 +392,7 @@ void loop() {
 
             // play music
             SD.begin(sdcs, *watch2::vspi, 4000000U);
-            watch2::preferences.begin("watch2", true);
-            String music = watch2::preferences.getString("alarm_music", "/music/alarms/Meander.mp3");
-            watch2::preferences.end();
-            watch2::play_music(music.c_str(), true);
+            watch2::play_music(watch2::alarm_music.c_str(), true);
         }
 
         if (now() != last_time)
