@@ -1,3 +1,14 @@
+/**
+ * @file watch2.h
+ * @author atctwo
+ * @brief the header file for each of the watch2_*.cpp files
+ * @version 0.1
+ * @date 2020-11-21
+ * 
+ * @copyright Copyright (c) 2020 atctwo
+ * 
+ */
+
 #ifndef WATCH2_H
 #define WATCH2_H
 
@@ -468,7 +479,15 @@ namespace watch2
     extern bool dpad_pressed[5];
 
 
+
+
+
+
+
+    //--------------------------------------
     // system function prototypes
+    //--------------------------------------
+
 
     /**
      * @brief does all the things that need to be done at the start of each loop
@@ -479,6 +498,127 @@ namespace watch2
      * @brief does all the things that need to be done at the end of each loop
      */
     void endLoop();
+
+    /**
+     * @brief switch to a different state or app.
+     * 
+     * this method lets you switch from running the current state, to another state (or the current state, but using a different variant).
+     * 
+     * @param newState the id of the state to switch to.  the state menu will always be state 2
+     * @param variant the state variant to switch to
+     * @param dim_pause_thing the time that should be taken to fade out the current state
+     * @param bright_pause_thing the time that should be taken to fade in the new state
+     * @param dont_draw_first_frame normally, the new state function is executed once before it is faded in.  set this to true to stop this.
+     */
+    void    switchState(int newState, int variant = 0, int dim_pause_thing = 250, int bright_pause_thing = 250, bool dont_draw_first_frame = false);
+
+    /**
+     * @brief dim or make brighter the screen.
+     * @param direction if this is false, the screen will dim.  if this is true, the screen will increase in brightness
+     * @param pause_thing the time it should take to fade the screen
+     */
+    void    dimScreen(bool direction, int pause_thing);
+
+    /**
+     * @brief puts the system in sleep mode.
+     * 
+     * this turns off most of the ESP32's peripherals, and internally uses the ESP32's light sleep system.  this handles things before and after sleeping.  this
+     * function will automatically handle fading out the screen.  i don't know what else to write... aaa!  i am bored!  wow!
+     * 
+     * @param pause_thing the time that it should take for the screen to fade out
+     */
+    void    deepSleep(int pause_thing=10);
+
+
+
+
+
+
+    //--------------------------------------
+    // utility function prototypes
+    //--------------------------------------
+
+
+    /**
+     * @brief gets an API key stored in the api key file in SPIFFS.
+     * The filename is stored by the watch with the API_KEYS_FILENAME define.  Keys are stored in the file in a JSON format.  You can
+     * also store any extra information that is needed.  You can specify what service you want to get the key for using the `service`
+     * parameter, and you can specify what field you want using the `field` parameter.  Here's an example of the format used to store
+     * keys:
+     * ```json
+     * {
+     *     "service1": {
+     *          "key": "abcdefg123456"
+     *      },
+     * "    service2: {
+     *          "key": "bpwpb42",
+     *          "user": "icantthinkofagoodusername"
+     *      }
+     * }
+     * ```
+     * @param service the name of the REST API to get the key of
+     * @param field the field of the API object to get (this is "key" by default)
+     * @return std::stringthe value of the specified field
+     */
+    std::string getApiKey(const char *service, const char *field="key");
+
+    /**
+     * @brief get the current weather from OpenWeather.
+     * For this function to work, the system needs to be connected to a Wifi network.
+     * @param weather a code representing the current weather.  see [this page](https://openweathermap.org/weather-conditions)
+     * @param sunrise the time that the sun will rise (in Unix time)
+     * @param sunset the time that sun will set (in Unix time)
+     */
+    void getCurrentWeather(uint16_t &weather, time_t &sunrise, time_t &sunset);
+
+    /**
+     * @brief attempts to get the current time and date using NTP.
+     * 
+     * for this to work, the system must be connected to the internet.  depending on the system settings, this can be called automatically when the system
+     * boots or wakes up from sleep mode.
+     */
+    void getTimeFromNTP();
+
+    /**
+     * @brief performs an ADC reading, then processes it to me more accurate.
+     * this was stolen from https://github.com/G6EJD/ESP32-ADC-Accuracy-Improvement-function.  the ESP32's ADC is non-linear, so this function takes an ADC reading, 
+     * then adjusts it using a polynomial to make it more linear
+     * @param pin the pin to read the voltage at
+     * @return double the adjusted voltage read
+     */
+    double  ReadVoltage(byte pin);
+
+    /**
+     * @brief i dont know!!1!!!
+     * 
+     * this was a sample prototype is added when i was creating this file that I never got rid of.  it has no implementation, so don't use it.
+     * 
+     * @param x how many different stars there are in the sky
+     * @param y the number of times you have blinked in your lifetime
+     * @return int the number of bugs in this codebase
+     */
+    int     something(int x, int y);
+
+    /**
+     * @brief returns a file size in human readable form.
+     * 
+     * this will return a string that expresses a given file size in a format that makes more sense to humans.  For example, if you pass `1030` bytes, this
+     * function will return "1KB".
+     * 
+     * @param bytes the number of bytes
+     * @return const char* a human readable form
+     */
+    const char *humanSize(uint64_t bytes);
+
+
+
+
+
+
+    //--------------------------------------
+    // drawing function prototypes
+    //--------------------------------------
+
 
     /**
      * @brief sets up the fs_icon maps.
@@ -509,34 +649,82 @@ namespace watch2
     bool    registerSmallIcon(std::string iconName, std::vector<unsigned char> icon);
 
     /**
-     * @brief dim or make brighter the screen.
-     * @param direction if this is false, the screen will dim.  if this is true, the screen will increase in brightness
-     * @param pause_thing the time it should take to fade the screen
+     * @brief sets the font used for a TFT or Sprite object from a vlw file stored on a filesystem.
+     * 
+     * the TFT_eSPI library allows you to use .vlw fonts.  It comes with a Processing sketch that lets you generate vlw fonts from standard font files.  You can
+     * store a font file on a file system (like an SD card or SPIFFS), and use it to draw text to the TFT (or a Sprite).  This method checks if the specified font
+     * exists on the specified filesystem, and if it does, it sets it as the font for the specified TFT or Sprite.
+     * 
+     * @param font a path to the vlw file on the specified file system.  don't include the ".vlw" extension.
+     * @param tft the TFT_eSPI object to set the font for.  this is the main TFT object by default.
+     * @param ffs the filesystem to load the font from.  this is SPIFFS by default.
      */
-    void    dimScreen(bool direction, int pause_thing);
+    void    setFont(const char* font, TFT_eSPI &tft = oled, fs::FS &ffs = SPIFFS);
 
     /**
-     * @brief switch to a different state or app.
+     * @brief gets the dimensions of some text.
      * 
-     * this method lets you switch from running the current state, to another state (or the current state, but using a different variant).
+     * this aims to be compatible with the `getTextBounds()` method from AdafruitGFX.  This function does consider the number of lines that a string will take
+     * when printed, and determines the height of one line based on the current font.
      * 
-     * @param newState the id of the state to switch to.  the state menu will always be state 2
-     * @param variant the state variant to switch to
-     * @param dim_pause_thing the time that should be taken to fade out the current state
-     * @param bright_pause_thing the time that should be taken to fade in the new state
-     * @param dont_draw_first_frame normally, the new state function is executed once before it is faded in.  set this to true to stop this.
+     * @param string the string to find the dimensions of
+     * @param x the x position at which the string will be drawn
+     * @param y the y position at which the string will be drawn
+     * @param x1 the x component of the upper left corner of the string's bounding box
+     * @param y1 the y component of the upper left corner of the string's bounding box
+     * @param w the width of the string's bounding box
+     * @param h the height of the string's bounding box
      */
-    void    switchState(int newState, int variant = 0, int dim_pause_thing = 250, int bright_pause_thing = 250, bool dont_draw_first_frame = false);
+    void getTextBounds(const char *string, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
 
     /**
-     * @brief puts the system in sleep mode.
+     * @brief gets the dimensions of some text.
      * 
-     * this turns off most of the ESP32's peripherals, and internally uses the ESP32's light sleep system.  this handles things before and after sleeping.  this
-     * function will automatically handle fading out the screen.  i don't know what else to write... aaa!  i am bored!  wow!
+     * this aims to be compatible with the `getTextBounds()` method from AdafruitGFX.  This function does consider the number of lines that a string will take
+     * when printed, and determines the height of one line based on the current font.
      * 
-     * @param pause_thing the time that it should take for the screen to fade out
+     * @param str the string to find the dimensions of
+     * @param x the x position at which the string will be drawn
+     * @param y the y position at which the string will be drawn
+     * @param x1 the x component of the upper left corner of the string's bounding box
+     * @param y1 the y component of the upper left corner of the string's bounding box
+     * @param w the width of the string's bounding box
+     * @param h the height of the string's bounding box
      */
-    void    deepSleep(int pause_thing=10);
+    void getTextBounds(const String &str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
+
+    /**
+     * @brief converts a 16 bit 565 colour to a 24 bit 888 colour.
+     * @param colour a 16 bit 565 colour
+     * @param r the red component of the 24 bit colour
+     * @param g the green component of the 24 bit colour
+     * @param b the blue component of the 24 bit colour
+     */
+    void    colour888(uint16_t colour, float *r, float *g, float *b);
+
+    /**
+     * @brief converts an HSV colour to an RGB colour.
+     * @param r the red component of the colour
+     * @param g the green component of the colour
+     * @param b the blue component of the colour
+     * @param h the hue component of the colour
+     * @param s the saturation component of the colour
+     * @param v the value component of the colour
+     */
+    void    HSVtoRGB( float *r, float *g, float *b, float h, float s, float v );
+
+    /**
+     * @brief gets the colour at a certain position of a gradient.
+     * 
+     * the gradient is currently fixed as the trans flag, but i might change this function so that any gradient can be used.  this is currently used by the
+     * watch face, when the time animation is set to trans mode.  this was adapted from http://www.andrewnoske.com/wiki/Code_-_heatmaps_and_color_gradient.
+     * 
+     * @param value the position of the gradient to get the colour at
+     * @param red the red component of the colour
+     * @param green the green component of the colour
+     * @param blue the blue component of the colour
+     */
+    void    getHeatMapColor(float value, float *red, float *green, float *blue);
 
     /**
      * @brief draws a scrollable menu to the screen.
@@ -575,248 +763,14 @@ namespace watch2
      */
     void    drawSettingsMenu(int x, int y, int width, int height, std::vector<settingsMenuData> items, int selected, int colour=themecolour);
 
-    /**
-     * @brief method to return all the files in a directory (non-recursively).
-     * @param path the path of the directory to return files in
-     */
-    std::vector<std::string> getDirFiles(std::string path, std::vector<fs_icon> *icons=NULL);
 
-    /**
-     * @brief open the file select dialogue.  this will pause the state until a file has been selected (or the operation has been cancelled).
-     * @param path the path to start the file selection at
-     */
-    std::string beginFileSelect(std::string path = "/");
 
-    /**
-     * @brief gets the name part of a file path.
-     * 
-     * for example, if you pass 'images/ir/pause.bmp', this function will return 'pause.bmp'.  if `extension` is false, it will return `pause`.
-     * 
-     * @param filepath the path to the file to get the name of
-     * @param extension whether or not to include the file extension
-     * @return std::string the name
-     */
-    std::string file_name(const char* filepath, bool extension=true);
 
-    /**
-     * @brief gets the directory part of a file path.
-     * 
-     * for example, if you pass `/images/ir/pause.bmp`, this function will return `/images/ir/`.
-     * 
-     * @param file_path_thing the path to get the directory part of
-     * @return std::string the path part of the directory
-     */
-    std::string dir_name(std::string file_path_thing);
 
-    /**
-     * @brief gets the extension of a file name.
-     * 
-     * for example, if you pass `/images/ir/pause.bmp`, this function will return `bmp`.
-     * 
-     * @param file_path_thing the filename to get the extension of
-     * @return std::string the extension
-     */
-    std::string file_ext(std::string file_path_thing);
+    //--------------------------------------
+    // image function prototypes
+    //--------------------------------------
 
-    /**
-     * @brief gets a string from the user.
-     * 
-     * this will open a popup dialogue that will ask the user for a text-based input.  a tiny keyboard will also be drawn on screen.  this function blocks the calling
-     * code, and automatically handles dpad input.
-     * 
-     * @param prompt a prompt for what should be entered
-     * @param default_input the text field will be populated with this when the dialogue opens
-     * @param mask if this isn't 0, all the characters in the text field will be drawn with whatever character is passed.
-     * @param clear_screen if this is true, the screen will be cleared when the dialogue closes (any part of the calling state that is wrapped with the `draw` macro
-     * will be redrawn after the dialgoue closes irrespective of this parameter).
-     * @return std::string the string that the user entered.  if the user cancelled the input, this will return "".
-     */
-    std::string textFieldDialogue(std::string prompt="", const char *default_input="", const char mask=0, bool clear_screen=true);
-
-    /**
-     * @brief this will produce a popup message box.
-     * 
-     * this function will block the calling state, and automatically handles dpad input.  you can specify the text to draw in the message box, and what buttons should
-     * be provided.  when a button is pressed, the index of whatever button was pressed will be returned.
-     * 
-     * @param msg the message to draw in the box
-     * @param btns an array of vector of strings that will be drawn as buttons below the message
-     * @param clear_screen if this is true, the screen will be cleared when the dialogue closes (any part of the calling state that is wrapped with the `draw` macro
-     * will be redrawn after the dialgoue closes irrespective of this parameter).
-     * @param colour the colour to draw the dialogue.  by default, this will be the current theme colour
-     * @return uint8_t the index of whatever button is selected
-     */
-    uint8_t messageBox(const char* msg, std::vector<const char*> btns={"Ok"}, bool clear_screen=true, uint16_t colour=themecolour);
-
-    /**
-     * @brief opens a popup menu with a series of buttons
-     * 
-     * @param title the title that is displayed at the top of the dialogue
-     * @param items an array or vector of strings that represent the menu items
-     * @param colour the colour to draw the dialogue
-     * @return uint16_t the index of the selected menu item
-     */
-    uint16_t popup_menu(const char *title, std::vector<std::string> items, bool scroll=false, uint16_t colour=watch2::themecolour);
-
-    /**
-     * @brief shows the ripoff control centre as a popup dialogue
-     * 
-     */
-    void controlCentreDialogue();
-
-    /**
-     * @brief gets an API key stored in the api key file in SPIFFS.
-     * The filename is stored by the watch with the API_KEYS_FILENAME define.  Keys are stored in the file in a JSON format.  You can
-     * also store any extra information that is needed.  You can specify what service you want to get the key for using the `service`
-     * parameter, and you can specify what field you want using the `field` parameter.  Here's an example of the format used to store
-     * keys:
-     * ```json
-     * {
-     *     "service1": {
-     *          "key": "abcdefg123456"
-     *      },
-     * "    service2: {
-     *          "key": "bpwpb42",
-     *          "user": "icantthinkofagoodusername"
-     *      }
-     * }
-     * ```
-     * @param service the name of the REST API to get the key of
-     * @param field the field of the API object to get (this is "key" by default)
-     * @return std::stringthe value of the specified field
-     */
-    std::string getApiKey(const char *service, const char *field="key");
-
-    /**
-     * @brief get the current weather from OpenWeather.
-     * For this function to work, the system needs to be connected to a Wifi network.
-     * @param weather a code representing the current weather.  see [this page](https://openweathermap.org/weather-conditions)
-     * @param sunrise the time that the sun will rise (in Unix time)
-     * @param sunset the time that sun will set (in Unix time)
-     */
-    void getCurrentWeather(uint16_t &weather, time_t &sunrise, time_t &sunset);
-
-    /**
-     * @brief initalises the SD card.
-     * 
-     * this will try and initalise the SD card and set up the watch's variables that track the SD card's state.  most watch 2 functions that work with the SD card
-     * call this function before doing things
-     * 
-     * @param handleCS whether or not the SPI chip select pins should be manually configured by the function
-     * @return int the state of the sd card
-     * 0 - the SD card couldn't be mounted
-     * 1 - the SD card was mounted successfully
-     */
-    int     initSD(bool handleCS = true);
-
-    /**
-     * @brief converts a 16 bit 565 colour to a 24 bit 888 colour.
-     * @param colour a 16 bit 565 colour
-     * @param r the red component of the 24 bit colour
-     * @param g the green component of the 24 bit colour
-     * @param b the blue component of the 24 bit colour
-     */
-    void    colour888(uint16_t colour, float *r, float *g, float *b);
-
-    /**
-     * @brief converts an HSV colour to an RGB colour.
-     * @param r the red component of the colour
-     * @param g the green component of the colour
-     * @param b the blue component of the colour
-     * @param h the hue component of the colour
-     * @param s the saturation component of the colour
-     * @param v the value component of the colour
-     */
-    void    HSVtoRGB( float *r, float *g, float *b, float h, float s, float v );
-
-    /**
-     * @brief gets the colour at a certain position of a gradient.
-     * 
-     * the gradient is currently fixed as the trans flag, but i might change this function so that any gradient can be used.  this is currently used by the
-     * watch face, when the time animation is set to trans mode.  this was adapted from http://www.andrewnoske.com/wiki/Code_-_heatmaps_and_color_gradient.
-     * 
-     * @param value the position of the gradient to get the colour at
-     * @param red the red component of the colour
-     * @param green the green component of the colour
-     * @param blue the blue component of the colour
-     */
-    void    getHeatMapColor(float value, float *red, float *green, float *blue);
-
-    /**
-     * @brief performs an ADC reading, then processes it to me more accurate.
-     * this was stolen from https://github.com/G6EJD/ESP32-ADC-Accuracy-Improvement-function.  the ESP32's ADC is non-linear, so this function takes an ADC reading, 
-     * then adjusts it using a polynomial to make it more linear
-     * @param pin the pin to read the voltage at
-     * @return double the adjusted voltage read
-     */
-    double  ReadVoltage(byte pin);
-
-    /**
-     * @brief sets the font used for a TFT or Sprite object from a vlw file stored on a filesystem.
-     * 
-     * the TFT_eSPI library allows you to use .vlw fonts.  It comes with a Processing sketch that lets you generate vlw fonts from standard font files.  You can
-     * store a font file on a file system (like an SD card or SPIFFS), and use it to draw text to the TFT (or a Sprite).  This method checks if the specified font
-     * exists on the specified filesystem, and if it does, it sets it as the font for the specified TFT or Sprite.
-     * 
-     * @param font a path to the vlw file on the specified file system.  don't include the ".vlw" extension.
-     * @param tft the TFT_eSPI object to set the font for.  this is the main TFT object by default.
-     * @param ffs the filesystem to load the font from.  this is SPIFFS by default.
-     */
-    void    setFont(const char* font, TFT_eSPI &tft = oled, fs::FS &ffs = SPIFFS);
-
-    /**
-     * @brief i dont know!!1!!!
-     * 
-     * this was a sample prototype is added when i was creating this file that I never got rid of.  it has no implementation, so don't use it.
-     * 
-     * @param x how many different stars there are in the sky
-     * @param y the number of times you have blinked in your lifetime
-     * @return int the number of bugs in this codebase
-     */
-    int     something(int x, int y);
-
-    /**
-     * @brief gets the dimensions of some text.
-     * 
-     * this aims to be compatible with the `getTextBounds()` method from AdafruitGFX.  This function does consider the number of lines that a string will take
-     * when printed, and determines the height of one line based on the current font.
-     * 
-     * @param string the string to find the dimensions of
-     * @param x the x position at which the string will be drawn
-     * @param y the y position at which the string will be drawn
-     * @param x1 the x component of the upper left corner of the string's bounding box
-     * @param y1 the y component of the upper left corner of the string's bounding box
-     * @param w the width of the string's bounding box
-     * @param h the height of the string's bounding box
-     */
-    void getTextBounds(const char *string, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
-
-    /**
-     * @brief gets the dimensions of some text.
-     * 
-     * this aims to be compatible with the `getTextBounds()` method from AdafruitGFX.  This function does consider the number of lines that a string will take
-     * when printed, and determines the height of one line based on the current font.
-     * 
-     * @param str the string to find the dimensions of
-     * @param x the x position at which the string will be drawn
-     * @param y the y position at which the string will be drawn
-     * @param x1 the x component of the upper left corner of the string's bounding box
-     * @param y1 the y component of the upper left corner of the string's bounding box
-     * @param w the width of the string's bounding box
-     * @param h the height of the string's bounding box
-     */
-    void getTextBounds(const String &str, int16_t x, int16_t y, int16_t *x1, int16_t *y1, uint16_t *w, uint16_t *h);
-
-    /**
-     * @brief returns a file size in human readable form.
-     * 
-     * this will return a string that expresses a given file size in a format that makes more sense to humans.  For example, if you pass `1030` bytes, this
-     * function will return "1KB".
-     * 
-     * @param bytes the number of bytes
-     * @return const char* a human readable form
-     */
-    const char *humanSize(uint64_t bytes);
 
     /**
      * @brief idk what this does.  it's part of drawBmp().
@@ -839,6 +793,14 @@ namespace watch2
      * @return uint16_t ???
      */
     uint32_t read32(fs::File &f);
+
+    //functions for stb_image
+    int img_read(void *user,  char *data, int size);
+    void img_skip(void *user, int n);
+    int img_eof(void *user);
+    int img_read_spiffs(void *user,  char *data, int size);
+    void img_skip_spiffs(void *user, int n);
+    int img_eof_spiffs(void *user);
 
     /**
      * @brief draws a 24 bit uncompressed BMP to the screen.
@@ -901,6 +863,136 @@ namespace watch2
      */
     const char* drawImage(imageData data, int16_t img_x, int16_t img_y, float scaling=1.0, int array_offset=0, TFT_eSPI &tft=oled);
 
+
+
+
+
+
+    //--------------------------------------
+    // file system function prototypes
+    //--------------------------------------
+
+
+    /**
+     * @brief initalises the SD card.
+     * 
+     * this will try and initalise the SD card and set up the watch's variables that track the SD card's state.  most watch 2 functions that work with the SD card
+     * call this function before doing things
+     * 
+     * @param handleCS whether or not the SPI chip select pins should be manually configured by the function
+     * @return int the state of the sd card
+     * 0 - the SD card couldn't be mounted
+     * 1 - the SD card was mounted successfully
+     */
+    int     initSD(bool handleCS = true);
+    
+    /**
+     * @brief method to return all the files in a directory (non-recursively).
+     * @param path the path of the directory to return files in
+     */
+    std::vector<std::string> getDirFiles(std::string path, std::vector<fs_icon> *icons=NULL);
+
+    /**
+     * @brief open the file select dialogue.  this will pause the state until a file has been selected (or the operation has been cancelled).
+     * @param path the path to start the file selection at
+     */
+    std::string beginFileSelect(std::string path = "/");
+
+    /**
+     * @brief gets the name part of a file path.
+     * 
+     * for example, if you pass 'images/ir/pause.bmp', this function will return 'pause.bmp'.  if `extension` is false, it will return `pause`.
+     * 
+     * @param filepath the path to the file to get the name of
+     * @param extension whether or not to include the file extension
+     * @return std::string the name
+     */
+    std::string file_name(const char* filepath, bool extension=true);
+
+    /**
+     * @brief gets the directory part of a file path.
+     * 
+     * for example, if you pass `/images/ir/pause.bmp`, this function will return `/images/ir/`.
+     * 
+     * @param file_path_thing the path to get the directory part of
+     * @return std::string the path part of the directory
+     */
+    std::string dir_name(std::string file_path_thing);
+
+    /**
+     * @brief gets the extension of a file name.
+     * 
+     * for example, if you pass `/images/ir/pause.bmp`, this function will return `bmp`.
+     * 
+     * @param file_path_thing the filename to get the extension of
+     * @return std::string the extension
+     */
+    std::string file_ext(std::string file_path_thing);
+
+
+
+
+
+    //--------------------------------------
+    // dialogue function prototypes
+    //--------------------------------------
+    
+    
+    /**
+     * @brief gets a string from the user.
+     * 
+     * this will open a popup dialogue that will ask the user for a text-based input.  a tiny keyboard will also be drawn on screen.  this function blocks the calling
+     * code, and automatically handles dpad input.
+     * 
+     * @param prompt a prompt for what should be entered
+     * @param default_input the text field will be populated with this when the dialogue opens
+     * @param mask if this isn't 0, all the characters in the text field will be drawn with whatever character is passed.
+     * @param clear_screen if this is true, the screen will be cleared when the dialogue closes (any part of the calling state that is wrapped with the `draw` macro
+     * will be redrawn after the dialgoue closes irrespective of this parameter).
+     * @return std::string the string that the user entered.  if the user cancelled the input, this will return "".
+     */
+    std::string textFieldDialogue(std::string prompt="", const char *default_input="", const char mask=0, bool clear_screen=true);
+
+    /**
+     * @brief this will produce a popup message box.
+     * 
+     * this function will block the calling state, and automatically handles dpad input.  you can specify the text to draw in the message box, and what buttons should
+     * be provided.  when a button is pressed, the index of whatever button was pressed will be returned.
+     * 
+     * @param msg the message to draw in the box
+     * @param btns an array of vector of strings that will be drawn as buttons below the message
+     * @param clear_screen if this is true, the screen will be cleared when the dialogue closes (any part of the calling state that is wrapped with the `draw` macro
+     * will be redrawn after the dialgoue closes irrespective of this parameter).
+     * @param colour the colour to draw the dialogue.  by default, this will be the current theme colour
+     * @return uint8_t the index of whatever button is selected
+     */
+    uint8_t messageBox(const char* msg, std::vector<const char*> btns={"Ok"}, bool clear_screen=true, uint16_t colour=themecolour);
+
+    /**
+     * @brief opens a popup menu with a series of buttons
+     * 
+     * @param title the title that is displayed at the top of the dialogue
+     * @param items an array or vector of strings that represent the menu items
+     * @param colour the colour to draw the dialogue
+     * @return uint16_t the index of the selected menu item
+     */
+    uint16_t popup_menu(const char *title, std::vector<std::string> items, bool scroll=false, uint16_t colour=watch2::themecolour);
+
+    /**
+     * @brief shows the ripoff control centre as a popup dialogue
+     * 
+     */
+    void controlCentreDialogue();
+
+    
+
+    
+
+    //--------------------------------------
+    // wifi function prototypes
+    //--------------------------------------    
+
+    
     /**
      * @brief enables the wifi subsystem. 
      * @param connect if this is true, the system will connect to one of the most recently connected to access points
@@ -923,14 +1015,6 @@ namespace watch2
      * @param password 
      */
     void connectToWifiAP(const char *ssid="", const char *password="");
-
-    /**
-     * @brief attempts to get the current time and date using NTP.
-     * 
-     * for this to work, the system must be connected to the internet.  depending on the system settings, this can be called automatically when the system
-     * boots or wakes up from sleep mode.
-     */
-    void getTimeFromNTP();
 
     /**
      * @brief returns the wifi profiles JSON object.
@@ -963,6 +1047,15 @@ namespace watch2
      */
     void setWifiProfiles(cJSON *profiles);
 
+
+
+
+
+    //--------------------------------------
+    // bluetooth function prototypes
+    //--------------------------------------
+
+
     /**
      * @brief enables the bluetooth subsystem.  this is kind of broken at the minute. 
      */
@@ -972,6 +1065,16 @@ namespace watch2
      * @brief disables the bluetooth subsystem.  this is kind of broken at the minute.
      */
     void disable_bluetooth();
+
+
+
+
+
+
+    //--------------------------------------
+    // audio function prototypes
+    //--------------------------------------
+
 
     /**
      * @brief Play an audio file over I2S.
@@ -991,16 +1094,21 @@ namespace watch2
      * @return false if tha audio failed to load
      */
     bool play_music(const char *filename, bool repeat=false, fs::FS *fs=&SD);
+
+    /**
+     * @brief this stops any currently playing music.
+     * 
+     */
     void stop_music();
+
+    /**
+     * @brief this is the function used for the audio task, so pls don't call it.
+     * 
+     * @param pvParameters 
+     */
     void audio_task(void *pvParameters);
 
-    //functions for stb_image
-    int img_read(void *user,  char *data, int size);
-    void img_skip(void *user, int n);
-    int img_eof(void *user);
-    int img_read_spiffs(void *user,  char *data, int size);
-    void img_skip_spiffs(void *user, int n);
-    int img_eof_spiffs(void *user);
+    
 
 }
 

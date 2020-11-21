@@ -61,10 +61,6 @@ set(LIB_ARDUINO_SRCS
     libraries/ESP32-BLE-Keyboard/BleKeyboard.cpp
     libraries/ESP32-BLE-Keyboard/BleConnectionStatus.cpp
     libraries/ESP32-BLE-Keyboard/KeyboardOutputCallbacks.cpp
-)
-
-set(WATCH_SRCS
-    libraries/css-color-parser-cpp/csscolorparser.cpp
     libraries/gumbo-parser/src/attribute.c
     libraries/gumbo-parser/src/char_ref.c
     libraries/gumbo-parser/src/error.c
@@ -79,15 +75,26 @@ set(WATCH_SRCS
     libraries/ESP32-audioI2S/src/aac_decoder/aac_decoder.cpp
     libraries/ESP32-audioI2S/src/mp3_decoder/mp3_decoder.cpp
     libraries/ESP32-audioI2S/src/Audio.cpp
+    libraries/css-color-parser-cpp/csscolorparser.cpp
     libraries/tinyexpr/tinyexpr.c
     libraries/entities/entities.c
     libraries/Adafruit_BusIO/Adafruit_BusIO_Register.cpp
     libraries/Adafruit_BusIO/Adafruit_I2CDevice.cpp
     libraries/Adafruit_BusIO/Adafruit_SPIDevice.cpp
     libraries/Adafruit-MCP23008-library/Adafruit_MCP23008.cpp
+)
+
+set(WATCH_SRCS
     root_store.cpp
-    watch2.cpp
-    #SdFatFSWrapper.cpp
+    watch2_system.cpp
+    watch2_utility.cpp
+    watch2_drawing.cpp
+    watch2_images.cpp
+    watch2_files.cpp
+    watch2_dialogues.cpp
+    watch2_wifi.cpp
+    watch2_bluetooth.cpp
+    watch2_audio.cpp
 )
 
 set(STATE_SRCS 
