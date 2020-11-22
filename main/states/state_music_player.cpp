@@ -26,20 +26,13 @@ void state_func_music_player()
             watch2::oled.setTextColor(WHITE, BLACK);
             Serial.printf("[music player] file name: %s (%s)\n", filename.c_str(), watch2::file_name(filename.c_str()).c_str());
             watch2::oled.println(filename.c_str());
-            FatFile f = watch2::sdcard.open(filename.c_str());
             
-            f.getSFN(sfn);
-            Serial.printf("[music player] sfn: %s\n", sfn);
-
-            std::string music_path = watch2::dir_name(filename);
-            music_path += (const char*)sfn;
-            Serial.printf("[music player] music path: %s\n", music_path.c_str());
-            f.close();
+            Serial.printf("[music player] music path: %s\n", filename.c_str());
 
             SD.begin(sdcs, *watch2::vspi, 4000000U);
             vTaskDelay(20); // wait for tft draw to finish
             
-            watch2::play_music(music_path.c_str());
+            watch2::play_music(filename.c_str());
         }
     }
 

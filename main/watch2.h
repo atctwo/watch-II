@@ -336,7 +336,7 @@ namespace watch2
     extern SPIClass *vspi;                                                                      //!< VSPI object
     extern TFT_eSPI oled;                                                                       //!< hw spi (use vspi or &SPI)
     extern Preferences preferences;                                                             //!< wrapper for esp32 nvs used to store system settings
-    extern SdFat sdcard;                                                                            //!< instance of SdFat used to access the sd card
+    //extern SdFat sdcard;                                                                            //!< instance of SdFat used to access the sd card
     //extern Adafruit_ImageReader reader;                                                     
     //extern Adafruit_ImageReader flash_reader;
     extern TFT_eSprite top_thing;                                                               //!< the framebuffer that the top thing is drawn onto

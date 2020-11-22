@@ -22,6 +22,8 @@
 
 namespace watch2 {
 
+    uint16_t *dma_buffer;
+
     // These read 16- and 32-bit types from the SD card file.
     // BMP data is stored little-endian, Arduino is little-endian too.
     // May need to reverse subscript order if porting elsewhere.
@@ -44,20 +46,20 @@ namespace watch2 {
     //functions for stb_image
     int img_read(void *user,  char *data, int size)
     {
-        FatFile *f = static_cast<FatFile*>(user);
-        int bytes_read = f->read(data, size);
+        fs::File *f = static_cast<fs::File*>(user);
+        int bytes_read = f->readBytes(data, size);
         return bytes_read;
     }
 
     void img_skip(void *user, int n)
     {
-        FatFile *f = static_cast<FatFile*>(user);
-        f->seekCur(n);
+        fs::File *f = static_cast<fs::File*>(user);
+        f->seek(n);
     }
 
     int img_eof(void *user)
     {
-        FatFile *f = static_cast<FatFile*>(user);
+        fs::File *f = static_cast<fs::File*>(user);
         uint32_t help = f->available();
         if (help == 0) return 1;
         return 0;
@@ -243,10 +245,8 @@ namespace watch2 {
         };
 
         // open file
-        FatFile f = sdcard.open(filename);
-        char buffer[255];
-        f.getName(buffer, 255);
-        Serial.println(buffer);
+        fs::File f = SD.open(filename);
+        Serial.println(f.name());
 
         // read image
         int img_w, img_h, img_n, x, y;
@@ -341,28 +341,33 @@ namespace watch2 {
                 actual_data = data.data;
             }
 
-            // write image data
-            // for (int i = 0; i < pixels; i+=(3 * scaling))
-            // {
-            //     watch2::oled.drawPixel(x, y, watch2::oled.color565(data.data[i], data.data[i+1], data.data[i+2]));
-            //     x++;
-            //     if (x >= data.width + img_x)
-            //     {
-            //         //watch2::oled.drawPixel(x-1, y, BLACK);
-            //         x = img_x;
-            //         y++;
-            //     }
-            // }
+            // allocate memory for dma buffer
+            dma_buffer = (uint16_t*) heap_caps_malloc(img_width * sizeof(uint16_t), MALLOC_CAP_DMA);
+            if (!dma_buffer) Serial.println("\0[31m[drawImage] failed to allocate memory for dma buffer\0[0m");
 
+            // set up tft
+            tft.startWrite();
+            tft.setSwapBytes(true);
+            tft.setAddrWindow(img_x, img_y, img_width - 1, img_height - 1);
+
+            // draw pixels
             for (uint16_t y = 0; y < img_height; y+=1)
             {
                 for (uint16_t x = 0; x < img_width; x+=1)
                 {
                     uint32_t pixel = (( x + (img_width * y) ) * 3) + array_offset;
                     //printf("%x %x %x\n", actual_data[pixel], actual_data[pixel+1], actual_data[pixel+2]);
-                    tft.drawPixel(img_x + x, img_y + y, watch2::oled.color565(actual_data[pixel], actual_data[pixel+1], actual_data[pixel+2]));
+                    //tft.drawPixel(img_x + x, img_y + y, tft.color565(actual_data[pixel], actual_data[pixel+1], actual_data[pixel+2]));
+                    dma_buffer[x] = tft.color565(actual_data[pixel], actual_data[pixel+1], actual_data[pixel+2]);
                 }
+                watch2::oled.pushPixelsDMA(dma_buffer, img_width - 1);
             }
+
+            // also set up tft
+            tft.endWrite();
+            tft.setSwapBytes(false);
+
+            free(dma_buffer);
 
             // if (actual_data) 
             // {

@@ -30,43 +30,43 @@ void state_func_SDtest()
             watch2::setFont(MAIN_FONT);
 
             // open file
-            FatFile f = watch2::sdcard.open(filename.c_str(), 0);
+            fs::File f = SD.open(filename.c_str());
 
             // print file size
             watch2::oled.setTextColor(WHITE, BLACK);
             watch2::oled.print("Size: ");
             watch2::oled.setTextColor(watch2:: themecolour, BLACK);
-            watch2::oled.println(watch2::humanSize(f.fileSize()));
+            watch2::oled.println(watch2::humanSize(f.size()));
 
             watch2::oled.setTextColor(WHITE, BLACK);
             watch2::oled.print("Cre:");
             watch2::oled.setTextColor(watch2:: themecolour, BLACK);
-            f.printCreateDateTime(&watch2::oled);
+            //f.printCreateDateTime(&watch2::oled);
             watch2::oled.println("");
 
             watch2::oled.setTextColor(WHITE, BLACK);
             watch2::oled.print("Mod:");
             watch2::oled.setTextColor(watch2:: themecolour, BLACK);
-            f.printModifyDateTime(&watch2::oled);
+            //f.printModifyDateTime(&watch2::oled);
             watch2::oled.println("");
 
             // print file hidden flag
-            watch2::oled.setTextColor(WHITE, BLACK);
-            watch2::oled.print("Hidden: ");
-            watch2::oled.setTextColor(watch2:: themecolour, BLACK);
-            watch2::oled.println(f.isHidden() ? "yes" : "no");
+            // watch2::oled.setTextColor(WHITE, BLACK);
+            // watch2::oled.print("Hidden: ");
+            // watch2::oled.setTextColor(watch2:: themecolour, BLACK);
+            // watch2::oled.println(f.isHidden() ? "yes" : "no");
 
-            // print file read only flag
-            watch2::oled.setTextColor(WHITE, BLACK);
-            watch2::oled.print("Read Only: ");
-            watch2::oled.setTextColor(watch2:: themecolour, BLACK);
-            watch2::oled.println(f.isReadOnly() ? "yes" : "no");
+            // // print file read only flag
+            // watch2::oled.setTextColor(WHITE, BLACK);
+            // watch2::oled.print("Read Only: ");
+            // watch2::oled.setTextColor(watch2:: themecolour, BLACK);
+            // watch2::oled.println(f.isReadOnly() ? "yes" : "no");
 
-            // print file hidden flag
-            watch2::oled.setTextColor(WHITE, BLACK);
-            watch2::oled.print("System: ");
-            watch2::oled.setTextColor(watch2:: themecolour, BLACK);
-            watch2::oled.println(f.isSystem() ? "yes" : "no");
+            // // print file hidden flag
+            // watch2::oled.setTextColor(WHITE, BLACK);
+            // watch2::oled.print("System: ");
+            // watch2::oled.setTextColor(watch2:: themecolour, BLACK);
+            // watch2::oled.println(f.isSystem() ? "yes" : "no");
 
             // close file
             f.close();
@@ -152,13 +152,13 @@ void state_func_SDtest()
         else if (selected_button == 2) // rename
         {
             std::string new_name = watch2::textFieldDialogue("New Name", filename.c_str());
-            if (new_name.compare("") != 0) watch2::sdcard.rename(filename.c_str(), new_name.c_str());
+            if (new_name.compare("") != 0) SD.rename(filename.c_str(), new_name.c_str());
         }
         else if (selected_button == 3) // delete
         {
             bool confirmation = watch2::messageBox("Are you sure?", {"No", "Yes"});
             if (confirmation) {
-                watch2::sdcard.remove(filename.c_str());
+                SD.remove(filename.c_str());
                 watch2::switchState(watch2::state);
             }
         }

@@ -26,19 +26,19 @@ void state_func_radio()
                 station_urls.clear();
 
                 // get stations from file
-                FatFile radio_file = watch2::sdcard.open(RADIO_FILENAME);
+                fs::File radio_file = SD.open(RADIO_FILENAME);
                 while(radio_file.available())
                 {
                     // get station name and url
-                    char station_name[255];
-                    char station_url[1023];
+                    String station_name;
+                    String station_url;
 
-                    radio_file.fgets(station_name, 256, ";");
-                    radio_file.fgets(station_url, 1024, "\n");
+                    station_name = radio_file.readStringUntil(';');
+                    station_url = radio_file.readStringUntil('\n');
 
                     // add entry to stations
-                    station_names.push_back(station_name);
-                    station_urls.push_back(station_url);
+                    station_names.push_back(station_name.c_str());
+                    station_urls.push_back(station_url.c_str());
 
                     // std::string &name_string = station_names[station_names.size() - 1];
                     // name_string.erase(std::remove(name_string.begin(), name_string.end(), ';'), name_string.end());

@@ -28,7 +28,7 @@ void state_func_notepad()
 
             filedata.clear();
             yoffset = 0;
-            FatFile f = watch2::sdcard.open(filename.c_str());
+            fs::File f = SD.open(filename.c_str());
 
             int chr;
             while(chr != -1)
@@ -37,7 +37,7 @@ void state_func_notepad()
                 Serial.print(chr);
                 if (chr != -1) filedata.push_back(chr);
             }
-            f.rewind();
+            f.seek(0);
             f.close();
 
             Serial.println("\nfinished");

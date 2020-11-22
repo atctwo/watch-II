@@ -54,7 +54,7 @@ void state_func_ir_remote()
         if (!watch2::state_init)
         {
             // get the names of each profile in the ir directory of the sd card
-            profile_names = watch2::getDirFiles("/ir/");
+            profile_names = watch2::getDirFiles("/ir");
             // add other ir remote modes
             profile_names.insert( profile_names.begin(), "Serial" );
             profile_names.insert( profile_names.begin(), "Receiver" );
@@ -132,13 +132,13 @@ void state_func_ir_remote()
             Serial.print("loading ir profile: ");
 
             // get a handle (???) to the selected file
-            FatFile json = watch2::sdcard.open(selected_profile_filename.c_str());
+            fs::File json = SD.open(selected_profile_filename.c_str());
 
             // allocate memory for the file's contents
-            json_contents = (char*) malloc(json.fileSize());
+            json_contents = (char*) malloc(json.size());
 
             // load the contents of the selected file into memory
-            json.read(json_contents, json.fileSize());
+            json.readBytes(json_contents, json.size());
 
             // close the json file handle
             json.close();
@@ -250,7 +250,7 @@ void state_func_ir_remote()
             //draw state icons
             for (int i = no_icons_separate_from_the_other_no_icons * this_page_number; i < no_icons_separate_from_the_other_no_icons * (this_page_number + 1); i++)
             {
-                Serial.printf("button %d\n", i);
+                // Serial.printf("button %d\n", i);
 
                 // get grid position
                 uint8_t relative_index = i - (this_page_number * rows * columns);
@@ -258,10 +258,10 @@ void state_func_ir_remote()
                 uint8_t col = relative_index % columns;
                 int code_index = code_indices[this_page_number][row][col];
 
-                Serial.printf("\tpage: %d\n", this_page_number);
-                Serial.printf("\trow:  %d\n", row);
-                Serial.printf("\tcol:  %d\n", col);
-                Serial.printf("\tcode index: %d\n", code_index - 1);
+                // Serial.printf("\tpage: %d\n", this_page_number);
+                // Serial.printf("\trow:  %d\n", row);
+                // Serial.printf("\tcol:  %d\n", col);
+                // Serial.printf("\tcode index: %d\n", code_index - 1);
 
                 //get button data
                 if (code_index > 0)
@@ -277,7 +277,7 @@ void state_func_ir_remote()
                         if (btn_icon_object)
                         {
                             // get image data
-                            Serial.println(btn_icon_object->valuestring);
+                            // Serial.println(btn_icon_object->valuestring);
                             watch2::imageData data = watch2::getImageData(btn_icon_object->valuestring);
 
                             // if image loaded successfully
@@ -287,8 +287,8 @@ void state_func_ir_remote()
                             }
                             else 
                             {
-                                Serial.print("\t");
-                                Serial.println(data.error);
+                                // Serial.print("\t");
+                                // Serial.println(data.error);
                             }
                         }
                         // no icon was found, so use text
@@ -306,7 +306,7 @@ void state_func_ir_remote()
                                 {
                                     CSSColorParser::optional<CSSColorParser::Color> btn_colour_css = CSSColorParser::parse(btn_colour_object->valuestring);
                                     if (btn_colour_css) btn_colour = watch2::oled.color565(btn_colour_css->r, btn_colour_css->g, btn_colour_css->b);
-                                    Serial.printf("\tcolour: %s (0x%x)\n", btn_colour_object->valuestring, btn_colour);
+                                    // Serial.printf("\tcolour: %s (0x%x)\n", btn_colour_object->valuestring, btn_colour);
                                 }
                                 //free(btn_colour_object);
 
@@ -314,15 +314,15 @@ void state_func_ir_remote()
                                 watch2::oled.setTextDatum(MC_DATUM);
                                 watch2::oled.setTextColor(btn_colour, BLACK);
                                 watch2::oled.drawString(btn_text_object->valuestring, icon_xpos + (icon_width / 2), icon_ypos + (icon_height / 2));
-                                Serial.printf("\tbutton text: %s\n", btn_text_object->valuestring);
+                                // Serial.printf("\tbutton text: %s\n", btn_text_object->valuestring);
                             }
                             //free(btn_text_object);
 
                         }
                     }
-                    else Serial.println("\tcode index doesn't point to a button");
+                    // else Serial.println("\tcode index doesn't point to a button");
                 }
-                else Serial.println("\tbutton doesn't have any IR data");
+                // else Serial.println("\tbutton doesn't have any IR data");
                 //free(btn);
                 
 

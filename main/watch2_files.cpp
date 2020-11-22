@@ -20,7 +20,7 @@ namespace watch2 {
     std::string file_path = "/";
     bool file_select_dir_list_init = false;
     
-    SdFat sdcard(&*vspi);
+    //SdFat sdcard(&*vspi);
     //Adafruit_ImageReader reader(SD);
 
     int initSD(bool handleCS)
@@ -32,14 +32,15 @@ namespace watch2 {
         digitalWrite(sdcs, LOW);
 
         //initalise the sd card
-        if(!sdcard.begin(sdcs, SPISettings(9000000, MSBFIRST, SPI_MODE0))){
+        //if(!sdcard.begin(sdcs, SPISettings(9000000, MSBFIRST, SPI_MODE0))){
+        if(!SD.begin(sdcs, *watch2::vspi, 4000000U)){
 
             //card couldn't mount
             Serial.println("initSD() - Couldn't mount SD card");
-            Serial.print("\tError code: ");
-            Serial.printf("0x%x\n", sdcard.cardErrorCode());
-            Serial.print("\tError data: ");
-            Serial.printf("0x%x\n", sdcard.cardErrorData());
+            // Serial.print("\tError code: ");
+            // Serial.printf("0x%x\n", sdcard.cardErrorCode());
+            // Serial.print("\tError data: ");
+            // Serial.printf("0x%x\n", sdcard.cardErrorData());
             no = 0;
 
         }
@@ -48,7 +49,7 @@ namespace watch2 {
 
             //card mounted successfully
             Serial.println("initSD() - Successfully mounted SD card");
-            Serial.printf("Card size: %d\n", sdcard.card()->cardSize());
+            Serial.printf("Card size: %d\n", SD.cardSize());
             //sdcard.ls(LS_R | LS_DATE | LS_SIZE);
             no = 1;
 
@@ -69,7 +70,7 @@ namespace watch2 {
         if (icons) icons->clear();
 
         //buffer to store filenames
-        char filename[255];
+        //char filename[255];
 
         //enable the sd card
         digitalWrite(cs, HIGH);
@@ -90,10 +91,10 @@ namespace watch2 {
             digitalWrite(sdcs, LOW);
 
             //open the dir at the path
-            FatFile root = sdcard.open(path.c_str());
+            fs::File root = SD.open(path.c_str());
 
             //check that path is valid
-            if (!sdcard.exists(path.c_str()))
+            if (!SD.exists(path.c_str()))
             {
                 //file path is invalid
                 Serial.printf("[getDirFiles] file path %s is invalid\n", path.c_str());
@@ -101,7 +102,7 @@ namespace watch2 {
             }
 
             //check that path is actually a dir
-            if (!root.isDir())
+            if (!root.isDirectory())
             {
                 //path is not a directory
                 Serial.printf("[getDirFiles] file path isn't a directory\n");
@@ -113,18 +114,20 @@ namespace watch2 {
                 //Serial.print("f");
 
                 //open next file in dir
-                FatFile f;
-                bool thing = f.openNext(&root);
+                fs::File f;
+                //bool thing = f.openNext(&root);
+                f = root.openNextFile();
 
                 //if there are no more files, break
-                if (!thing) 
+                if (!f) 
                 {
                     Serial.printf("[getDirFiles] no more files\n");
                     break;
                 }
 
                 //get the name of the file
-                f.getName(filename, 255);
+                //f.getName(filename, 255);
+                const char *filename = watch2::file_name(f.name()).c_str();
 
                 //add the name to the vector
                 files.push_back(std::string(filename));
@@ -134,7 +137,7 @@ namespace watch2 {
                 {
                     std::string ext = file_ext(filename);
                     fs_icon icon;
-                    if (f.isDir()) icon = FS_ICON_FOLDER;
+                    if (f.isDirectory()) icon = FS_ICON_FOLDER;
                     else icon = fs_icon_ext_map[ext];
                     icons->push_back(icon);
 
@@ -245,25 +248,37 @@ namespace watch2 {
                 }
                 else
                 {
+                    Serial.print("selected file or folder: ");
+                    Serial.print(file_path.c_str());
+                    Serial.print(" ");
+                    Serial.println(files2[selected_icon].c_str());
+
                     //determine whether selected path is a directory
-                    FatFile selected_file;
-                    std::string filename = file_path + files2[selected_icon];
-                    selected_file = sdcard.open(filename.c_str());
-                    
+                    fs::File selected_file;
+                    std::string filename;
+                    if(file_path == "/") filename = file_path + files2[selected_icon];
+                    else filename = file_path + "/" + files2[selected_icon];
+                    selected_file = SD.open(filename.c_str());
+                                        
                     //if the path points to a directory
-                    if (selected_file.isDir())
+                    if (selected_file.isDirectory())
                     {
-                        file_path += files2[selected_icon] + "/"; //set file select dialogue to subdirectory
+                        Serial.println("selected folder");
+                        if(file_path == "/") file_path += files2[selected_icon];
+                        else file_path += "/" + files2[selected_icon];
                         file_select_dir_list_init = false;
                         selected_icon_stack.push(selected_icon);
                         selected_icon = 0; //reset selected icon
+                        Serial.printf("new file path: %s\n", file_path.c_str());
+                        selected_file.close();
 
                     }
                     else //otherwise, assume the path points to a file
                     {
-
+                        Serial.println("selected file");
                         //set the file path
-                        file_path = file_path + files2[selected_icon];
+                        if(file_path == "/") file_path += files2[selected_icon];
+                        else file_path += "/" + files2[selected_icon];
 
                         //reset selected icon
                         selected_icon = 0;
@@ -274,7 +289,10 @@ namespace watch2 {
                         //stop the file select menu being active
                         file_select_status = false;
 
+                        Serial.printf("new file path: %s\n", file_path.c_str());
+
                         //dim the screen and return to the calling state
+                        selected_file.close();
                         switchState(state, states[state].variant, 10, 10, true);
                         return file_path;
 
