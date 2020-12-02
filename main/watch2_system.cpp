@@ -308,7 +308,7 @@ namespace watch2 {
         {
             if (ble_keyboard.isConnected())
             {
-                Serial.println("[Bluetooth] connected");
+                //Serial.println("[Bluetooth] connected");
                 bluetooth_state = 3;
             }
             else
@@ -319,18 +319,22 @@ namespace watch2 {
         }
 
         // redraw stuff
-        if (forceRedraw)
-        {
-            if (forceRedrawLooped)
-            {
-                forceRedraw = false;
-                forceRedrawLooped = false;
-            }
-            else
-            {
-                forceRedrawLooped = true;
-            }
-        }
+        // if (forceRedraw)
+        // {
+        //     Serial.print("[endLoop] forceRedraw loop check: ");
+        //     if (forceRedrawLooped)
+        //     {
+        //         Serial.println("finished");
+        //         forceRedraw = false;
+        //         forceRedrawLooped = false;
+        //     }
+        //     else
+        //     {
+        //         Serial.println("looped once");
+        //         forceRedrawLooped = true;
+        //     }
+        // }
+        if (forceRedraw) Serial.println("[endLoop] force redraw");
 
         // if the current state uses a framebuffer, draw it to the tft
         if (states[state].framebuffer) framebuffer.pushSprite(0, 0);

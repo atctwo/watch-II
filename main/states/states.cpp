@@ -18,6 +18,7 @@
 #include "state_tetris.cpp"
 #include "state_weather.cpp"
 #include "state_radio.cpp"
+#include "state_bt_remote.cpp"
 
 namespace watch2
 {
@@ -42,6 +43,7 @@ namespace watch2
         stateMeta("Quiz Thingy", state_func_quiz, "quiz"),
         stateMeta("Music Player", state_func_music_player, "music_player"),
         stateMeta("Radio", state_func_radio, "radio"),
+        stateMeta("Bluetooth Remote", state_func_bt_remote),
         stateMeta("Tetris", state_func_tetris, "ltris"),
         stateMeta("NES", state_func_nes, "nes")
 

@@ -41,7 +41,10 @@ void state_func_image_viewer()
                 }
 
                 // draw image
-                watch2::drawImage(data, (SCREEN_WIDTH / 2) - ( (data.width / scaling) / 2), watch2::top_thing_height, scaling);
+                watch2::drawImage(data, 
+                    (SCREEN_WIDTH / 2) -  ( (data.width / scaling)  / 2), 
+                    (SCREEN_HEIGHT / 2) - ( (data.height / scaling) / 2), 
+                scaling);
             }
         }
     }        

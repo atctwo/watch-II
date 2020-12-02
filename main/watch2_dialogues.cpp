@@ -564,7 +564,7 @@ namespace watch2 {
         Serial.printf("[memory] total external memory (heap): %d (%s)\n", ESP.getPsramSize(), watch2::humanSize(ESP.getPsramSize()));
 
         // print task info
-        char pcWriteBuffer[40 * 10];
+        char pcWriteBuffer[40 * uxTaskGetNumberOfTasks()];
         vTaskList(pcWriteBuffer);
         Serial.println("Task Info:");
         Serial.print(pcWriteBuffer);

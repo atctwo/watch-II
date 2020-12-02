@@ -103,6 +103,7 @@
     if (!watch2::state_init || watch2::forceRedraw || conditions)   \
     {                                                               \
         __VA_ARGS__                                                 \
+        watch2::forceRedraw = false;                                \
     }
 
 // Color definitions
