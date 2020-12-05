@@ -18,6 +18,7 @@ namespace watch2 {
     int state_init = 0;
     RTC_DATA_ATTR int selected_menu_icon;
     RTC_DATA_ATTR int boot_count = 0;
+    std::string wfs = "\x0\x0\x0\x0";
 
     bool dpad_lock[5] = {false};
     bool dpad_pressed[5] = {false};
@@ -489,6 +490,10 @@ namespace watch2 {
         {
             enable_wifi();
         }
+
+        // set bluetooth state
+        Serial.println(bluetooth_state);
+        if (bluetooth_state == 3) bluetooth_state = 2;
 
         // time??? what is it really?
         if (watch2::ntp_wakeup_connect) watch2::ntp_boot_connected = false;

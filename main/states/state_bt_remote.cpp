@@ -10,6 +10,7 @@ void state_func_bt_remote()
         {
             if (!watch2::state_init)
             {
+                Serial.println(watch2::bluetooth_state);
                 watch2::oled.setTextColor(WHITE, BLACK);
                 watch2::oled.setCursor(0, watch2::top_thing_height);
                 watch2::oled.println("Can't open remote\nbecause...");
@@ -54,26 +55,31 @@ void state_func_bt_remote()
 
             if (dpad_enter_active())
             {
+                Serial.println("[ble remote] pressing play/pause");
                 watch2::ble_keyboard.write(KEY_MEDIA_PLAY_PAUSE);
                 delay(500);
             }
             if (dpad_left_active())
             {
+                Serial.println("[ble remote] pressing previous");
                 watch2::ble_keyboard.write(KEY_MEDIA_PREVIOUS_TRACK);
                 delay(500);
             }
             if (dpad_right_active())
             {
+                Serial.println("[ble remote] pressing next");
                 watch2::ble_keyboard.write(KEY_MEDIA_NEXT_TRACK);
                 delay(500);
             }
             if (dpad_up_active())
             {
+                Serial.println("[ble remote] pressing volume up");
                 watch2::ble_keyboard.write(KEY_MEDIA_VOLUME_UP);
                 delay(500);
             }
             if (dpad_down_active())
             {
+                Serial.println("[ble remote] pressing volume down");
                 watch2::ble_keyboard.write(KEY_MEDIA_VOLUME_DOWN);
                 delay(500);
             }
@@ -84,4 +90,5 @@ void state_func_bt_remote()
             watch2::switchState(2);
         }
     }
+
 }

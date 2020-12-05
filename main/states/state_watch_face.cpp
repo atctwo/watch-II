@@ -175,13 +175,17 @@ void state_func_watch_face()
         if (dpad_right_active())
         {
             Serial.println("[watch face] switching to state menu");
-            watch2::switchState(2);
+            if (watch2::wfs[3]) watch2::switchState(watch2::wfs[3]);
         }
 
         if (dpad_up_active())
         {
-            //watch2::switchState(watch2::state, 1);
-            watch2::popup_menu("Category", {"General Knowledge", "Books", "Film", "Music", "Musicals and Theatres", "Televison", "Video Games", "Board Games"}, true);
+            if (watch2::wfs[0]) watch2::switchState(watch2::wfs[0]);
+        }
+
+        if (dpad_down_active())
+        {
+            if (watch2::wfs[1]) watch2::switchState(watch2::wfs[1]);
         }
 
         if (dpad_left_active())
@@ -193,6 +197,8 @@ void state_func_watch_face()
 
             digitalWrite(cs, LOW);
             digitalWrite(sdcs, HIGH);
+
+            if (watch2::wfs[2]) watch2::switchState(watch2::wfs[2]);
         }
 
     }

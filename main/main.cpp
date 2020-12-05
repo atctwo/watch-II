@@ -102,6 +102,7 @@ void setup() {
     watch2::weather_location = watch2::preferences.getString("weather_city", "");
     watch2::timer_music = watch2::preferences.getString("timer_music", "/music/alarms/CLASSI~1.mp3");
     watch2::alarm_music = watch2::preferences.getString("alarm_music", "/music/alarms/Meander.mp3");
+    watch2::wfs = watch2::preferences.getString("wfs", "\x0\x0\x0\x0").c_str();
     watch2::preferences.end();
     Serial.print("done");
 
@@ -234,6 +235,22 @@ void setup() {
     Serial.print("setting up audio task: ");
     int x = 10;
     xTaskCreatePinnedToCore(watch2::audio_task, "audio", 8192, (void*)x, ESP_TASK_PRIO_MAX - 2, &watch2::audio_task_handle, 1);
+    Serial.println("done");
+
+    Serial.print("setting up watch face shortcuts: ");
+    for (uint8_t i = 0; i < watch2::states.size(); i++)
+    {
+        if (watch2::states[i].stateName == "State Menu") 
+        {
+            Serial.print("state name, ");
+            watch2::wfs[3] = i;
+        }
+        if (watch2::states[i].stateName == "Bluetooth Remote") 
+        {
+            Serial.print(" ble remote, ");
+            watch2::wfs[1] = i;
+        }
+    }
     Serial.println("done");
 
     //finish up

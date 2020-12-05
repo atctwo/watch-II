@@ -2,9 +2,30 @@
 
 void state_func_settings()
 {
-    static std::vector<std::string> panels = {"Time and Date", "Timeout", "Colour", "WiFi", "About"};
+    static std::vector<std::string> panels = {"Time and Date", "Timeout", "Colour", "WiFi", "Watch Face Shortcuts", "About"};
+    /*
+        panel table
+        | variant   | panel name                             |
+        |-----------|----------------------------------------|
+        | 0         | menu                                   |
+        | 1         | time + date                            |
+        | 2         | timeout settings                       |
+        | 3         | colour settings                        |
+        | 4         | wifi                                   |
+        | 5         | watch face shortcuts                   |
+        | 6         | about                                  |
+        | 20        | manual time select                     |
+        | 21        | ssid scan                              |
+        | 22        | wifi profile edit select               |
+        | 23        | wifi profile editor                    |
+        | 24        | wfs state select                       |
+    */             
     static int selected_panel = 0;
     static int last_selected_time = 0;
+
+    static bool selecting_state = false;
+    static int16_t selected_wfs_state = 0;
+    static uint8_t wfs_direction = 0;
 
     static int temp_time[6] = {0};
     static int selected_time = 0;
@@ -383,7 +404,192 @@ void state_func_settings()
 
             break;
 
-        case 5: //about
+        case 5: // watch face shortcuts
+
+            static uint8_t app_icon_size = 47;
+            static uint8_t watch_face_size = 74;
+            static uint8_t arrow_icon_size = 20;
+            static uint8_t icon_thing_height = app_icon_size + arrow_icon_size;
+            static uint32_t app_id = 0;
+            static TFT_eSprite arrow_icon = TFT_eSprite(&watch2::oled);
+            static bool setup_arrow_icon = false;
+
+            if (!watch2::state_init)
+            {
+                // setup arrow icon
+                if (!setup_arrow_icon)
+                {
+                    arrow_icon.setColorDepth(8);
+                    arrow_icon.createSprite(20, 20);
+                    arrow_icon.setPivot(10, 10);
+                    arrow_icon.fillSprite(BLACK);
+                    arrow_icon.drawBitmap(0, 0, (*watch2::small_icons)["play"].data(), 20, 20, WHITE);
+                    setup_arrow_icon = true;
+                }
+
+                // aaaaaaaaaaaaaaaaaaaaaaaaa
+                if (selecting_state)
+                {
+                    //Serial.printf("%d, %d\n", selected_wfs_state, wfs_direction);
+                    if (selected_wfs_state == -1) selected_wfs_state = 0;
+                    if (selected_wfs_state >= 0 && selected_wfs_state < watch2::states.size())
+                    {
+                        switch(wfs_direction)
+                        {
+                            case 0: // up
+                                watch2::wfs[0] = selected_wfs_state;
+                                break;
+
+                            case 1: // down
+                                watch2::wfs[1] = selected_wfs_state;
+                                break;
+
+                            case 2: // left
+                                watch2::wfs[2] = selected_wfs_state;
+                                break;
+
+                            case 3: // right
+                                watch2::wfs[3] = selected_wfs_state;
+                                break;
+                        }
+                    }
+                    selecting_state = false;
+                    watch2::preferences.putString("wfs", String(watch2::wfs.c_str()));
+                }
+            }
+
+            draw(dpad_any_active(), {
+
+                // draw arrows
+                // up
+                watch2::oled.setPivot(
+                    (SCREEN_WIDTH / 2) - (arrow_icon_size / 2) + (arrow_icon_size / 2),
+                    watch2::top_thing_height + app_icon_size + (arrow_icon_size / 2)
+                );
+                arrow_icon.pushRotated(270, BLACK);
+
+                // down
+                watch2::oled.setPivot(
+                    (SCREEN_WIDTH / 2) - (arrow_icon_size / 2) + (arrow_icon_size / 2),
+                    watch2::top_thing_height + icon_thing_height + watch_face_size + (arrow_icon_size / 2)
+                );
+                arrow_icon.pushRotated(90, BLACK);
+
+                // left
+                watch2::oled.setPivot(
+                    (SCREEN_WIDTH / 2) - (watch_face_size / 2) - arrow_icon_size + (arrow_icon_size / 2),
+                    watch2::top_thing_height + icon_thing_height + (watch_face_size / 2) - (arrow_icon_size / 2) + (arrow_icon_size / 2)
+                );
+                arrow_icon.pushRotated(180, BLACK);
+
+                // right
+                watch2::oled.setPivot(
+                    (SCREEN_WIDTH / 2) + (watch_face_size / 2) + (arrow_icon_size / 2),
+                    watch2::top_thing_height + icon_thing_height + (watch_face_size / 2) - (arrow_icon_size / 2) + (arrow_icon_size / 2)
+                );
+                arrow_icon.pushRotated(0, BLACK);
+
+                // draw app icons
+                // up
+                watch2::oled.fillRect(
+                    (SCREEN_WIDTH / 2) - (app_icon_size / 2),
+                    watch2::top_thing_height,
+                    app_icon_size, app_icon_size, BLACK
+                );
+                if (watch2::wfs[0]) watch2::drawImage((*watch2::icons)[watch2::states[watch2::wfs[0]].stateIcon],
+                    (SCREEN_WIDTH / 2) - (app_icon_size / 2),
+                    watch2::top_thing_height
+                );
+                else watch2::oled.drawRect(
+                    (SCREEN_WIDTH / 2) - (app_icon_size / 2),
+                    watch2::top_thing_height,
+                    app_icon_size, app_icon_size, RED
+                );
+
+                // down
+                watch2::oled.fillRect(
+                    (SCREEN_WIDTH / 2) - (app_icon_size / 2),
+                    watch2::top_thing_height + icon_thing_height + watch_face_size + arrow_icon_size,
+                    app_icon_size, app_icon_size, BLACK
+                );
+                if (watch2::wfs[1]) watch2::drawImage((*watch2::icons)[watch2::states[watch2::wfs[1]].stateIcon],
+                    (SCREEN_WIDTH / 2) - (app_icon_size / 2),
+                    watch2::top_thing_height + icon_thing_height + watch_face_size + arrow_icon_size
+                );
+                else watch2::oled.drawRect(
+                    (SCREEN_WIDTH / 2) - (app_icon_size / 2),
+                    watch2::top_thing_height + icon_thing_height + watch_face_size + arrow_icon_size,
+                    app_icon_size, app_icon_size, GREEN
+                );
+
+                // left
+                watch2::oled.fillRect(
+                    (SCREEN_WIDTH / 2) - (watch_face_size / 2) - arrow_icon_size - app_icon_size,
+                    watch2::top_thing_height + icon_thing_height + (watch_face_size / 2) - (app_icon_size / 2),
+                    app_icon_size, app_icon_size, BLACK
+                );
+                if (watch2::wfs[2]) watch2::drawImage((*watch2::icons)[watch2::states[watch2::wfs[2]].stateIcon],
+                    (SCREEN_WIDTH / 2) - (watch_face_size / 2) - arrow_icon_size - app_icon_size,
+                    watch2::top_thing_height + icon_thing_height + (watch_face_size / 2) - (app_icon_size / 2)
+                );
+                else watch2::oled.drawRect(
+                    (SCREEN_WIDTH / 2) - (watch_face_size / 2) - arrow_icon_size - app_icon_size,
+                    watch2::top_thing_height + icon_thing_height + (watch_face_size / 2) - (app_icon_size / 2),
+                    app_icon_size, app_icon_size, BLUE
+                );
+
+                // right
+                watch2::oled.fillRect(
+                    (SCREEN_WIDTH / 2) + (watch_face_size / 2) + arrow_icon_size,
+                    watch2::top_thing_height + icon_thing_height + (watch_face_size / 2) - (app_icon_size / 2),
+                    app_icon_size, app_icon_size, BLACK
+                );
+                if (watch2::wfs[3]) watch2::drawImage((*watch2::icons)[watch2::states[watch2::wfs[3]].stateIcon],
+                    (SCREEN_WIDTH / 2) + (watch_face_size / 2) + arrow_icon_size,
+                    watch2::top_thing_height + icon_thing_height + (watch_face_size / 2) - (app_icon_size / 2)
+                );
+                else watch2::oled.drawRect(
+                    (SCREEN_WIDTH / 2) + (watch_face_size / 2) + arrow_icon_size,
+                    watch2::top_thing_height + icon_thing_height + (watch_face_size / 2) - (app_icon_size / 2),
+                    app_icon_size, app_icon_size, YELLOW
+                );
+
+                // watch face thing
+                watch2::drawImage(
+                    (*watch2::icons)["watchface_mini"], (SCREEN_WIDTH / 2) - (watch_face_size / 2), watch2::top_thing_height + icon_thing_height
+                );
+
+            });
+
+            if (dpad_up_active())
+            {
+                wfs_direction = 0;
+                watch2::switchState(watch2::state, 24);
+            }
+            if (dpad_down_active())
+            {
+                wfs_direction = 1;
+                watch2::switchState(watch2::state, 24);
+            }
+            if (dpad_left_active())
+            {
+                wfs_direction = 2;
+                watch2::switchState(watch2::state, 24);
+            }
+            // if (dpad_right_active())
+            // {
+            //     wfs_direction = 3;
+            //     watch2::switchState(watch2::state, 24);
+            // }
+
+            if (dpad_enter_active())
+            {
+                watch2::switchState(watch2::state);
+            }
+
+            break;
+
+        case 6: //about
 
             static int yoffset = 0;
             static const int about_height = 2000;
@@ -976,6 +1182,57 @@ void state_func_settings()
                         break;
                 }
 
+            }
+
+            break;
+
+        case 24: // wfs state select
+
+            static std::vector<std::string> state_names;
+            static std::vector<uint8_t> state_ids;
+            static uint8_t selected_state = 0;
+
+            if (!watch2::state_init)
+            {
+                // populate state name array
+                state_names.clear();
+                state_ids.clear();
+
+                state_names.push_back("None");
+                state_ids.push_back(0);
+
+                for (int i = 0; i < watch2::states.size(); i++)
+                {
+                    if (!watch2::states[i].hidden) {
+                        state_names.push_back(watch2::states[i].stateName);
+                        state_ids.push_back(i);
+                    }
+                }
+                selecting_state = true;
+            }
+
+            if (dpad_up_active()) {
+                if (selected_state == 0) selected_state = state_names.size() - 1;
+                else selected_state--;
+            }
+            if (dpad_down_active()) {
+                if (selected_state == state_names.size() - 1) selected_state = 0;
+                else selected_state++;
+            }
+
+            draw(dpad_any_active(), {
+
+                watch2::drawMenu(
+                    2, watch2::top_thing_height, SCREEN_WIDTH - 4, SCREEN_HEIGHT - watch2::top_thing_height,
+                    state_names, selected_state
+                );
+
+            });
+
+            if (dpad_enter_active())
+            {
+                selected_wfs_state = state_ids[selected_state];
+                watch2::switchState(watch2::state, 5);
             }
 
             break;

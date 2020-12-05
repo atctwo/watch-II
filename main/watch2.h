@@ -472,6 +472,7 @@ namespace watch2
     extern bool audio_repeat;                                                                   //!< if this is true, audio files will repeat once they have ended
     extern std::string audio_filename;                                                          //!< the filename of the currently playing audio file
     extern fs::FS *audio_fs;                                                                    //!< the FS from which the currently playing audio is playing
+    extern std::string wfs;
 
     // these variables stop button presses affecting new states when switching from a previous state.  when a user presses a button to go from the watch face 
     // to the menu, if the button is held down for long enough, the button press can affect the next state. these lock variables are set to true when switching 
