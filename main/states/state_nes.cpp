@@ -8,9 +8,11 @@ static void *read_nes_rom(const char *filename, size_t *out_len)
 {
     Serial.printf("[nes] reading file %s...\n", filename);
 
-    fs::File f = SD.open(filename, 0);
+    fs::File f = SD.open(filename);
     unsigned char *file_contents = (unsigned char*) malloc(f.size());
     *out_len = f.size();
+
+    Serial.printf("[nes] file size: %d\n", f.size());
 
     int chr;
     uint16_t pos = 0;
@@ -46,6 +48,8 @@ void state_func_nes()
     uint16_t x = 0;
     uint16_t y = 0;
     uint32_t dma_buffer_pos = 0;
+    clock_t frame_time_start = 0;
+    clock_t frame_time_end = 0;
 
     if (!watch2::state_init) 
     {
@@ -80,7 +84,10 @@ void state_func_nes()
             watch2::oled.dmaWait();
 
             //Serial.println("b");
+            frame_time_start = clock();
             agnes_next_frame(agnes);
+            frame_time_end = clock();
+            Serial.printf("frame time: %d\n", frame_time_end - frame_time_start);
             //Serial.println("c");
 
             // if (draw_frame == 0)
@@ -88,6 +95,8 @@ void state_func_nes()
                 
                 //Serial.println("d");
                 
+                frame_time_start = clock();
+
                 watch2::oled.startWrite();
                 watch2::oled.setSwapBytes(true);
                 watch2::oled.setAddrWindow(0, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1);
@@ -138,7 +147,11 @@ void state_func_nes()
 
                 watch2::oled.endWrite();
                 watch2::oled.setSwapBytes(false);
-                draw_frame += 1;
+                //draw_frame += 1;
+
+                frame_time_end = clock();
+
+                Serial.printf("draw time: %d\n", frame_time_end - frame_time_start);
 
                 //Serial.println("g");
             // }
