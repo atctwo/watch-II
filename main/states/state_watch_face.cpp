@@ -66,7 +66,13 @@ void state_func_watch_face()
                         break;
 
                     case 2: // trans
-                        watch2::getHeatMapColor( fmod(((float)i/(float)SCREEN_WIDTH) + (phase_difference/360.0), (float)1.0) , &r, &g, &b);
+                        watch2::getHeatMapColor( fmod(((float)i/(float)SCREEN_WIDTH) + (phase_difference/360.0), (float)1.0) , &r, &g, &b, {
+                            {0.333, 0.804, 0.988},
+                            {0.969, 0.659, 0.722},
+                            {0.984, 0.976, 0.961},
+                            {0.969, 0.659, 0.722},
+                            {0.333, 0.804, 0.988}    
+                        });
                         row_colour = watch2::oled.color565(r * 255, g * 255, b * 255);
                         break;
 

@@ -47,6 +47,11 @@ void setup() {
     }
     Serial.println("done");
 
+    Serial.print("\tMAX17043: ");
+    watch2::configMAX17043(15);
+    watch2::qsMAX17043();
+    Serial.println("done");
+
     Serial.println("done setting up i2c");
 
     //set up spiffs

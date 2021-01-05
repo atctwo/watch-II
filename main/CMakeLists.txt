@@ -95,6 +95,7 @@ set(WATCH_SRCS
     watch2_wifi.cpp
     watch2_bluetooth.cpp
     watch2_audio.cpp
+    watch2_battery.cpp
 )
 
 set(STATE_SRCS 

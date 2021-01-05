@@ -269,7 +269,7 @@ namespace watch2 {
     {
         static char text[4];
         static double batteryVoltage = 4.2;
-        static double batteryPercentage = 0;
+        static uint8_t batteryPercentage = 0;
         static int last_battery_reading = millis() - 1000;
         static uint16_t icon_size = 20;
         static uint16_t icon_padding = 5;
@@ -291,16 +291,17 @@ namespace watch2 {
             //top_thing.setFreeFont(&SourceSansPro_Regular6pt7b);
             top_thing.printf("%02d:%02d", hour(), minute());
 
-            if ( millis() - last_battery_reading > 1000)
+            if ( millis() - last_battery_reading > 10000)
             {
                 //batteryVoltage = ( (ReadVoltage(BATTERY_DIVIDER_PIN) * 3.3 ) / 4095.0 ) * 2;
                 //batteryVoltage = ReadVoltage(BATTERY_DIVIDER_PIN) * BATTERY_VOLTAGE_SCALE;
-                batteryPercentage = 69.0; ( batteryVoltage / BATTERY_VOLTAGE_MAX ) * 100.0;
+                //batteryPercentage = 69.0; ( batteryVoltage / BATTERY_VOLTAGE_MAX ) * 100.0;
+                batteryPercentage = percentMAX17043();
                 last_battery_reading = millis();
             }
 
             // print battery
-            sprintf(text, "%.0f", batteryPercentage);
+            sprintf(text, "%.0d", batteryPercentage);
             icon_xpos -= (watch2::oled.textWidth(text) + icon_padding);
             top_thing.setCursor(icon_xpos,1);
             top_thing.setTextColor(WHITE, BLACK);
@@ -643,33 +644,27 @@ namespace watch2 {
     }
 
     //from http://www.andrewnoske.com/wiki/Code_-_heatmaps_and_color_gradients
-    void getHeatMapColor(float value, float *red, float *green, float *blue)
+    void getHeatMapColor(float value, float *red, float *green, float *blue, std::vector<std::array<float, 3>> heatmap)
     {
-    const int NUM_COLORS = 5;
-    static float color[NUM_COLORS][3] = { {0.333, 0.804, 0.988},
-                                            {0.969, 0.659, 0.722},
-                                            {0.984, 0.976, 0.961},
-                                            {0.969, 0.659, 0.722},
-                                            {0.333, 0.804, 0.988} };
         // A static array of 4 colors:  (blue,   green,  yellow,  red) using {r,g,b} for each.
 
-    int idx1;        // |-- Our desired color will be between these two indexes in "color".
-    int idx2;        // |
-    float fractBetween = 0;  // Fraction between "idx1" and "idx2" where our value is.
+        int idx1;        // |-- Our desired color will be between these two indexes in "color".
+        int idx2;        // |
+        float fractBetween = 0;  // Fraction between "idx1" and "idx2" where our value is.
 
-    if(value <= 0)      {  idx1 = idx2 = 0;            }    // accounts for an input <=0
-    else if(value >= 1)  {  idx1 = idx2 = NUM_COLORS-1; }    // accounts for an input >=0
-    else
-    {
-        value = value * (NUM_COLORS-1);        // Will multiply value by 3.
-        idx1  = floor(value);                  // Our desired color will be after this index.
-        idx2  = idx1+1;                        // ... and before this index (inclusive).
-        fractBetween = value - float(idx1);    // Distance between the two indexes (0-1).
-    }
+        if(value <= 0)      {  idx1 = idx2 = 0;            }    // accounts for an input <=0
+        else if(value >= 1)  {  idx1 = idx2 = heatmap.size() - 1; }    // accounts for an input >=0
+        else
+        {
+            value = value * (heatmap.size() - 1);        // Will multiply value by 3.
+            idx1  = floor(value);                  // Our desired color will be after this index.
+            idx2  = idx1+1;                        // ... and before this index (inclusive).
+            fractBetween = value - float(idx1);    // Distance between the two indexes (0-1).
+        }
 
-    *red   = (color[idx2][0] - color[idx1][0])*fractBetween + color[idx1][0];
-    *green = (color[idx2][1] - color[idx1][1])*fractBetween + color[idx1][1];
-    *blue  = (color[idx2][2] - color[idx1][2])*fractBetween + color[idx1][2];
+        *red   = (heatmap[idx2][0] - heatmap[idx1][0])*fractBetween + heatmap[idx1][0];
+        *green = (heatmap[idx2][1] - heatmap[idx1][1])*fractBetween + heatmap[idx1][1];
+        *blue  = (heatmap[idx2][2] - heatmap[idx1][2])*fractBetween + heatmap[idx1][2];
     }
 
 }

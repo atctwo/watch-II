@@ -128,7 +128,8 @@
 #define REALLY_REALLY_BIG_FONT  "HelvetiHand90"
 
 // i2c addresses
-#define I2C_ADDRESS_MCP23008    0x20
+#define I2C_ADDRESS_MCP23008    0x20    // io expander
+#define I2C_ADDRESS_MAX17043    0x36    // lipo fuel gauge
 
 // device info
 #define SCREEN_WIDTH            240                     // the width of the screen in pixels
@@ -718,15 +719,30 @@ namespace watch2
     /**
      * @brief gets the colour at a certain position of a gradient.
      * 
-     * the gradient is currently fixed as the trans flag, but i might change this function so that any gradient can be used.  this is currently used by the
-     * watch face, when the time animation is set to trans mode.  this was adapted from http://www.andrewnoske.com/wiki/Code_-_heatmaps_and_color_gradient.
+     * the gradient should be passed as a vector of arrays of 3 elements. each vector element represents a colour in the gradient, 
+     * and each array element represents a colour component as a float (0 meaning none and 1.0 meaning full colour; element 0 is red,
+     * element 1 is green, and element 2 is blue).  here is an example:
+     * 
+     * ```
+     * float r, g, b;
+     * watch2::getHeatMapColor(value, &r, &g, &b, {
+     *      {0.333, 0.804, 0.988},
+     *      {0.969, 0.659, 0.722},
+     *      {0.984, 0.976, 0.961},
+     *      {0.969, 0.659, 0.722},
+     *      {0.333, 0.804, 0.988}    
+     *  });
+     * ```
+     * 
+     * this was adapted from http://www.andrewnoske.com/wiki/Code_-_heatmaps_and_color_gradient.
      * 
      * @param value the position of the gradient to get the colour at
      * @param red the red component of the colour
      * @param green the green component of the colour
      * @param blue the blue component of the colour
+     * @param heatmap a vector of arrays of 3 elements, that contain the gradient colours
      */
-    void    getHeatMapColor(float value, float *red, float *green, float *blue);
+    void    getHeatMapColor(float value, float *red, float *green, float *blue, std::vector<std::array<float, 3>> heatmap);
 
     /**
      * @brief draws a scrollable menu to the screen.
@@ -1111,6 +1127,54 @@ namespace watch2
     void audio_task(void *pvParameters);
 
     
+
+
+
+
+    //--------------------------------------
+    // battery function prototypes
+    //--------------------------------------
+
+    /**
+     * @brief vcellMAX17043() returns a 12-bit ADC reading of the battery voltage, as reported by the MAX17043's VCELL register.
+     * This does not return a voltage value. To convert this to a voltage, multiply by 5 and divide by 4096.
+     * @return unsigned int the voltage of the cell
+     */
+    unsigned int vcellMAX17043();
+
+    /**
+     * @brief percentMAX17043() returns a float value of the battery percentage reported from the SOC register of the MAX17043.
+     * @return the battery percentage
+    */
+    float percentMAX17043();
+
+    /**
+    @brief configMAX17043(byte percent) configures the config register of the MAX170143, specifically the alert threshold therein. 
+     * Pass a value between 1 and 32 to set the alert threshold to a value between 1 and 32%. Any other values will set 
+     * the threshold to 32%.
+    */
+    void configMAX17043(byte percent);
+
+    /**
+    @brief qsMAX17043() issues a quick-start command to the MAX17043.
+     * A quick start allows the MAX17043 to restart fuel-gauge calculations
+     * in the same manner as initial power-up of the IC. If an application's
+     * power-up sequence is very noisy, such that excess error is introduced
+     * into the IC's first guess of SOC, the Arduino can issue a quick-start
+     * to reduce the error.
+    */
+    void qsMAX17043();
+
+    /**
+    @brief i2cRead16(unsigned char address) reads a 16-bit value beginning at the 8-bit address, and continuing to the next address. 
+    @return A 16-bit value is returned.
+    */
+    unsigned int i2cRead16(unsigned char address);
+
+    /**
+    @brief i2cWrite16(unsigned int data, unsigned char address) writes 16 bits of data beginning at an 8-bit address, and continuing to the next.
+    */
+    void i2cWrite16(unsigned int data, unsigned char address);
 
 }
 
