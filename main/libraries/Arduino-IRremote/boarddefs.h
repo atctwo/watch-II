@@ -562,7 +562,7 @@
 #elif defined(IR_TIMER_USE_ESP32)
 #define TIMER_CHANNEL       0
 #define TIMER_LENGHT        8 //8-bit Timer
-#define TIMER_PWM_PIN       12    
+#define TIMER_PWM_PIN       4
 #define TIMER_ENABLE_PWM    ledcAttachPin(TIMER_PWM_PIN, TIMER_CHANNEL); 		 
 #define TIMER_DISABLE_PWM   ledcDetachPin(TIMER_PWM_PIN); 
 #define TIMER_RESET	 

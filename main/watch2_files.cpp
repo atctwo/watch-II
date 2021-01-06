@@ -25,6 +25,13 @@ namespace watch2 {
 
     int initSD(bool handleCS)
     {
+        if (sd_state == 1)
+        {
+            // sd card is already initalised
+            Serial.println("[initSD] sd is already mounted");
+            return 1;
+        }
+
         int no = 0;
 
         //enable the sd card
@@ -36,7 +43,7 @@ namespace watch2 {
         if(!SD.begin(sdcs, *watch2::vspi, 4000000U)){
 
             //card couldn't mount
-            Serial.println("initSD() - Couldn't mount SD card");
+            Serial.println("[initSD] Couldn't mount SD card");
             // Serial.print("\tError code: ");
             // Serial.printf("0x%x\n", sdcard.cardErrorCode());
             // Serial.print("\tError data: ");
@@ -48,8 +55,8 @@ namespace watch2 {
         {
 
             //card mounted successfully
-            Serial.println("initSD() - Successfully mounted SD card");
-            Serial.printf("Card size: %d\n", SD.cardSize());
+            Serial.println("[initSD] Successfully mounted SD card");
+            Serial.printf("Card size: %u\n", SD.cardSize());
             //sdcard.ls(LS_R | LS_DATE | LS_SIZE);
             no = 1;
 

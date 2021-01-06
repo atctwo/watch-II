@@ -48,7 +48,7 @@ These are the modifications you need to make to some of the libraries to get wat
 
 The system will still compile if you don't perform these modifications, but you will need to modify them to match with the exact hardware that you are using.  The modifications listed below are specific to the watch 2 hardware that the system is being developed for, so if you are trying to get watch 2 running on a different board, you should see the documentation for the config files, and configure them to work with the hardware you are using.
 
-The system uses a fork of IRRemote that adds ESP32 support (https://github.com/ExploreEmbedded/Arduino-IRremote).  In the file boarddefs.h, the value of TIMER_PWM_PIN (line 565) was changed from 5 to 12, and the value of TIMER_CHANNEL (line 563) was changed from 1 to 0.  The following method was added at line 159 of irRecv.cpp:
+The system uses a fork of IRRemote that adds ESP32 support (https://github.com/ExploreEmbedded/Arduino-IRremote).  In the file boarddefs.h, the value of TIMER_PWM_PIN (line 565) was changed from 5 to 4, and the value of TIMER_CHANNEL (line 563) was changed from 1 to 0.  The following method was added at line 159 of irRecv.cpp:
 ```c++
 void IRrecv::disableIRIn() {
 
