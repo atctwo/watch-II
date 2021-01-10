@@ -583,10 +583,6 @@ namespace watch2 {
         uint16_t dialogue_x = (SCREEN_WIDTH - dialogue_width) / 2;
         uint16_t dialogue_y = 0;
 
-        // draw dialogue box
-        oled.fillRoundRect(dialogue_x, -dialogue_radius, dialogue_width, dialogue_height, dialogue_radius, BLACK);
-        oled.drawRoundRect(dialogue_x, -dialogue_radius, dialogue_width, dialogue_height, dialogue_radius, themecolour);
-
         showingControlCentre = true;
 
         uint16_t weather = 0;
@@ -607,7 +603,7 @@ namespace watch2 {
                 if (selected_widget > 2)
                 {
                     selected_widget--;
-                    if (selected_widget < 3) selected_widget = 5;
+                    if (selected_widget < 3) selected_widget = 6;
                 }
                 else if (selected_widget == 0) // volume
                 {
@@ -632,7 +628,7 @@ namespace watch2 {
                 if (selected_widget > 2)
                 {
                     selected_widget++;
-                    if (selected_widget > 5) selected_widget = 3;
+                    if (selected_widget > 6) selected_widget = 3;
                 }
                 else if (selected_widget == 0) // volume
                 {
@@ -701,13 +697,17 @@ namespace watch2 {
                 {
                     getTimeFromNTP();
                 }
+                if (selected_widget == 6) // shutdown
+                {
+                    if (messageBox("Are you sure\nyou want to\nshutdown?", {"No", "Yes"})) mcp.digitalWrite(SHUTDOWN_PIN, 0);
+                }
             }
 
             //------------------------
             // draw stuff
             //------------------------
 
-            if(!init || dpad_any_active() || (watch2::wifi_state != last_wifi_state) || (watch2::bluetooth_state != last_bt_state) || (minute() != last_minute)) {
+            if(!init || dpad_any_active() || (watch2::wifi_state != last_wifi_state) || (watch2::bluetooth_state != last_bt_state) || (minute() != last_minute) || forceRedraw) {
                 
                 setFont(SLIGHTLY_BIGGER_FONT);
 
@@ -721,6 +721,13 @@ namespace watch2 {
                 int button_x = dialogue_x + spacing;
                 int button_y = time_y + oled.fontHeight() + spacing;
                 int slider_x = 0;
+
+                if (!init || forceRedraw)
+                {
+                    // draw dialogue box
+                    oled.fillRoundRect(dialogue_x, -dialogue_radius, dialogue_width, dialogue_height, dialogue_radius, BLACK);
+                    oled.drawRoundRect(dialogue_x, -dialogue_radius, dialogue_width, dialogue_height, dialogue_radius, themecolour);
+                }
 
                 // draw time
                 oled.setCursor(button_x, time_y);
@@ -844,6 +851,14 @@ namespace watch2 {
                 watch2::oled.drawBitmap(button_x, button_y, (*watch2::small_icons)["internet_time"].data(), button_size, button_size, WHITE);
                 button_x += spacing + button_size;
 
+                //draw shutdown button
+                background_colour = TFT_PINK;
+                watch2::oled.fillRoundRect(button_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, background_colour);
+                outline_colour = ( (selected_widget == 6) ? WHITE : TFT_PINK);
+                watch2::oled.drawRoundRect(button_x - 2, button_y - 2, button_size + 4, button_size + 4, radius, outline_colour);
+                watch2::oled.drawBitmap(button_x, button_y, (*watch2::small_icons)["shutdown"].data(), button_size, button_size, WHITE);
+                button_x += spacing + button_size;
+
                 // draw label
                 uint16_t label_y = dialogue_y + (dialogue_height - oled.fontHeight() - 5);
                 button_x = dialogue_x + spacing;;
@@ -897,9 +912,14 @@ namespace watch2 {
                     case 5: // ntp
                         oled.print("Internet Time");
                         break;
+
+                    case 6: // shutdown
+                        oled.print("Shutdown");
+                        break;
                 }
 
                 init = true;
+                forceRedraw = false;
             }
 
             if (dpad_down_active())

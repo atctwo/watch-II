@@ -82,6 +82,7 @@
 #define I2S_LRC             26
 #define I2C_SDA             32
 #define I2C_SCL             15
+#define SHUTDOWN_PIN        7 // mcp23008
 
 //ledc channels
 #define TORCH_PWM_CHANNEL 2

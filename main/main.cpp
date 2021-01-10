@@ -40,11 +40,17 @@ void setup() {
 
     Serial.print("\tMCP23008: ");
     watch2::mcp.begin(I2C_ADDRESS_MCP23008);
-    for (uint8_t i = 0; i < 8; i++)
+
+    for (uint8_t i = 0; i < 7; i++) // set channels 0 to 6 as inputs with no pull up
     {
         watch2::mcp.pinMode(i, INPUT);
         watch2::mcp.pullUp(i, LOW);
     }
+
+    watch2::mcp.pinMode(SHUTDOWN_PIN, OUTPUT); // set shutdown pin as an output w/ pull up
+    watch2::mcp.pullUp(SHUTDOWN_PIN, LOW);
+    watch2::mcp.digitalWrite(SHUTDOWN_PIN, 1);
+
     Serial.println("done");
 
     Serial.print("\tMAX17043: ");
