@@ -418,14 +418,18 @@ namespace watch2 {
 
         //determine when to wake up (if a timer or alarm is set)
         time_t next_alarm_time = -1;
-        time_t time_left = 0;
 
         for (int i = 0; i < timers.size(); i++)
         {
             if (timers[i].alarm_id != 255)
             {
                 time_t time_left = ( timers[i].time_started + Alarm.read(timers[i].alarm_id ) ) - now();
-                if (time_left < next_alarm_time || next_alarm_time == -1) next_alarm_time = time_left;
+                Serial.printf("[sleep] timer %d: %d seconds left\n", i, time_left);
+                if (time_left < next_alarm_time || next_alarm_time == -1) 
+                {
+                    next_alarm_time = time_left;
+                    Serial.printf("\tset next alarm\n");
+                }
             }
         }
         for (int i = 0; i < alarms.size(); i++)
@@ -433,8 +437,8 @@ namespace watch2 {
             tmElements_t current_unix_time_without_the_time = {
                 0, 0, 0, weekday(), day(), month(), year() - 1970
             };
-            if (alarms[i].paused == false &&
-                ( ( now() - makeTime(current_unix_time_without_the_time) ) < Alarm.read(alarms[i].alarm_id) )
+            if (alarms[i].paused == false &&                                                                    // alarm isn't paused
+                ( ( now() - makeTime(current_unix_time_without_the_time) ) < Alarm.read(alarms[i].alarm_id) )   // alarm's H:M:S is later than the current H:M:S
             )
             {
                 //to calculate the time until an alarm goes off, the current time is subtracted
@@ -448,14 +452,23 @@ namespace watch2 {
                 //(which now represents the actual unix time when the alarm will go off), giving the
                 //time until the alarm goes off in seconds
                 time_t time_left = ( Alarm.read(alarms[i].alarm_id) + makeTime(current_unix_time_without_the_time) ) - now();
-                if (time_left < next_alarm_time || next_alarm_time == -1) next_alarm_time = time_left;
+                Serial.printf("[sleep] alarm %d: %d seconds left\n", i, time_left);
+                if (time_left < next_alarm_time || next_alarm_time == -1) 
+                {
+                    next_alarm_time = time_left;
+                    Serial.printf("\tset next alarm\n");
+                }
             }
         }
+
+        Serial.printf("[sleep] sleep wakeup timer: %d\n", next_alarm_time);
 
         //if an timer or an alarm has been set, set the device to wake up just before the alarm triggers
         if (next_alarm_time > -1)
         {
-            esp_sleep_enable_timer_wakeup(next_alarm_time * 1000 * 1000 - 500);
+            esp_sleep_enable_timer_wakeup((((uint64_t)next_alarm_time) * 1000 * 1000) - 500);
+            Serial.printf("[sleep] timer in us (d): %d\n", next_alarm_time * 1000 * 1000 - 500);
+            Serial.printf("[sleep] timer in us (u): %u\n", next_alarm_time * 1000 * 1000 - 500);
         }
         else //if no alarm or timer has been set, then disable the timer wake up source
         {
@@ -463,7 +476,8 @@ namespace watch2 {
         }
 
         //begin sleep
-        Serial.println("entering sleep mode");
+        Serial.println("[sleep] entering sleep mode");
+        Serial.flush();
         esp_light_sleep_start();
 
 
