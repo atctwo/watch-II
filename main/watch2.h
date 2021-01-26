@@ -77,6 +77,7 @@
 #define TORCH_PIN           14
 #define IR_PIN              4
 #define IR_REC_PIN          12
+#define I2S_DIN             35
 #define I2S_DOUT            25
 #define I2S_BCLK            27
 #define I2S_LRC             26

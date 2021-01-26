@@ -51,6 +51,75 @@ set(LIB_SDFAT_SRCS
     libraries/SdFat/src/SpiDriver/SdSpiTeensy3.cpp
 )
 
+set(LIB_NOFRENDO_SRCS 
+	libraries/nofrendo/cpu/dis6502.c
+	libraries/nofrendo/cpu/nes6502.c
+	libraries/nofrendo/libsnss/libsnss.c
+	libraries/nofrendo/nes/mmclist.c
+	libraries/nofrendo/nes/nes_mmc.c
+	libraries/nofrendo/nes/nes_pal.c
+	libraries/nofrendo/nes/nes_ppu.c
+	libraries/nofrendo/nes/nes_rom.c
+	libraries/nofrendo/nes/nes.c
+	libraries/nofrendo/nes/nesinput.c
+	libraries/nofrendo/nes/nesstate.c
+	libraries/nofrendo/sndhrdw/fds_snd.c
+	libraries/nofrendo/sndhrdw/mmc5_snd.c
+	libraries/nofrendo/sndhrdw/nes_apu.c
+	libraries/nofrendo/sndhrdw/vrcvisnd.c
+	libraries/nofrendo/mappers/mapvrc.c
+	libraries/nofrendo/mappers/map000.c
+	libraries/nofrendo/mappers/map001.c
+	libraries/nofrendo/mappers/map002.c
+	libraries/nofrendo/mappers/map003.c
+	libraries/nofrendo/mappers/map004.c
+	libraries/nofrendo/mappers/map005.c
+	libraries/nofrendo/mappers/map007.c
+	libraries/nofrendo/mappers/map008.c
+	libraries/nofrendo/mappers/map009.c
+	libraries/nofrendo/mappers/map011.c
+	libraries/nofrendo/mappers/map015.c
+	libraries/nofrendo/mappers/map016.c
+	libraries/nofrendo/mappers/map018.c
+	libraries/nofrendo/mappers/map019.c
+	libraries/nofrendo/mappers/map024.c
+	libraries/nofrendo/mappers/map032.c
+	libraries/nofrendo/mappers/map033.c
+	libraries/nofrendo/mappers/map034.c
+	libraries/nofrendo/mappers/map040.c
+	libraries/nofrendo/mappers/map041.c
+	libraries/nofrendo/mappers/map042.c
+	libraries/nofrendo/mappers/map046.c
+	libraries/nofrendo/mappers/map050.c
+	libraries/nofrendo/mappers/map064.c
+	libraries/nofrendo/mappers/map065.c
+	libraries/nofrendo/mappers/map066.c
+	libraries/nofrendo/mappers/map070.c
+	libraries/nofrendo/mappers/map073.c
+	libraries/nofrendo/mappers/map075.c
+	libraries/nofrendo/mappers/map078.c
+	libraries/nofrendo/mappers/map079.c
+	libraries/nofrendo/mappers/map085.c
+	libraries/nofrendo/mappers/map087.c
+	libraries/nofrendo/mappers/map093.c
+	libraries/nofrendo/mappers/map094.c
+	libraries/nofrendo/mappers/map099.c
+	libraries/nofrendo/mappers/map160.c
+	libraries/nofrendo/mappers/map229.c
+	libraries/nofrendo/mappers/map231.c
+	libraries/nofrendo/bitmap.c
+	libraries/nofrendo/config.c
+	libraries/nofrendo/event.c
+	libraries/nofrendo/gui_elem.c
+	libraries/nofrendo/gui.c
+	libraries/nofrendo/intro.c
+	libraries/nofrendo/log.c
+	libraries/nofrendo/memguard.c
+	libraries/nofrendo/nofrendo.c
+	libraries/nofrendo/pcx.c
+	libraries/nofrendo/vid_drv.c
+)
+
 set(LIB_ARDUINO_SRCS
     libraries/JC_Button/src/JC_Button.cpp
     libraries/JC_Button_MCP23008/src/JC_Button_MCP23008.cpp
@@ -82,6 +151,7 @@ set(LIB_ARDUINO_SRCS
     libraries/Adafruit_BusIO/Adafruit_I2CDevice.cpp
     libraries/Adafruit_BusIO/Adafruit_SPIDevice.cpp
     libraries/Adafruit-MCP23008-library/Adafruit_MCP23008.cpp
+    states/state_nes.cpp
 )
 
 set(WATCH_SRCS
@@ -116,9 +186,10 @@ set(STATE_SRCS
 )
 
 set(COMPONENT_SRCS 
-    ${LIB_ARDUINO_SRCS}
     ${LIB_ARDUINO_IRREMOTE_SRCS} 
     ${LIB_SDFAT_SRCS}
+    ${LIB_NOFRENDO_SRCS}
+    ${LIB_ARDUINO_SRCS}
     ${STATE_SRCS} 
     ${WATCH_SRCS} 
     "main.cpp"
@@ -142,6 +213,11 @@ set(COMPONENT_INCLUDEDIRS
     libraries/Adafruit_BusIO/
     libraries/Adafruit-MCP23008-library/
     #libraries/micropython/
+    libraries/nofrendo/cpu/
+    libraries/nofrendo/libsnss/
+    libraries/nofrendo/nes/
+    libraries/nofrendo/sndhrdw/
+    libraries/nofrendo/
 )
 
 idf_component_register(SRCS         ${COMPONENT_SRCS}
@@ -180,6 +256,11 @@ target_compile_options(${COMPONENT_LIB} PRIVATE -DARDUINO_ARCH_ESP32)
 target_compile_options(${COMPONENT_LIB} PRIVATE -DARDUINO_BOARD=\"ESP32_DEV\")
 target_compile_options(${COMPONENT_LIB} PRIVATE -DMBEDTLS_CONFIG_FILE=\"mbedtls/esp_config.h\")
 target_compile_options(${COMPONENT_LIB} PRIVATE -DHAVE_CONFIG_H)
+
+target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-error=char-subscripts)
+target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-error=stringop-truncation)
+target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-error=attributes)
+#target_compile_options(${COMPONENT_LIB} PRIVATE -DNOFRENDO_DEBUG)
 
 # micropython
 # add_prebuilt_library(micropython "${COMPONENT_PATH}/libraries/micropython/libmicropython.a")

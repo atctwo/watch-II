@@ -31,7 +31,7 @@ namespace watch2 {
         bool success = false;
 
         // set I2S parameters
-        audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
+        audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT, I2S_DIN);
         audio.setVolume(speaker_volume);
 
         // if a filesystem has been passed, load the file from the filesystem

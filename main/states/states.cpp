@@ -13,12 +13,14 @@
 #include "state_image_viewer.cpp"
 #include "state_wiki.cpp"
 #include "state_quiz.cpp"
-#include "state_nes.cpp"
+#include "state_nes.h"
 #include "state_music_player.cpp"
 #include "state_tetris.cpp"
 #include "state_weather.cpp"
 #include "state_radio.cpp"
 #include "state_bt_remote.cpp"
+#include "state_recorder.cpp"
+#include "state_cube.cpp"
 
 namespace watch2
 {
@@ -43,9 +45,11 @@ namespace watch2
         stateMeta("Quiz Thingy", state_func_quiz, "quiz"),
         stateMeta("Music Player", state_func_music_player, "music_player"),
         stateMeta("Radio", state_func_radio, "radio"),
+        stateMeta("Recorder", state_func_recorder),
         stateMeta("Bluetooth Remote", state_func_bt_remote, "ble_remote"),
         stateMeta("Tetris", state_func_tetris, "ltris"),
-        stateMeta("NES", state_func_nes, "nes")
+        stateMeta("NES", state_func_nes, "nes"),
+        stateMeta("c u b e", state_func_cube)
 
     };
 
