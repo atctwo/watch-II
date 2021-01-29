@@ -188,7 +188,7 @@ set(STATE_SRCS
 set(COMPONENT_SRCS 
     ${LIB_ARDUINO_IRREMOTE_SRCS} 
     ${LIB_SDFAT_SRCS}
-    ${LIB_NOFRENDO_SRCS}
+    #${LIB_NOFRENDO_SRCS}
     ${LIB_ARDUINO_SRCS}
     ${STATE_SRCS} 
     ${WATCH_SRCS} 
@@ -212,12 +212,12 @@ set(COMPONENT_INCLUDEDIRS
     libraries/ESP32-audioI2S/src/
     libraries/Adafruit_BusIO/
     libraries/Adafruit-MCP23008-library/
-    #libraries/micropython/
-    libraries/nofrendo/cpu/
-    libraries/nofrendo/libsnss/
-    libraries/nofrendo/nes/
-    libraries/nofrendo/sndhrdw/
-    libraries/nofrendo/
+    # libraries/micropython/
+    # libraries/nofrendo/cpu/
+    # libraries/nofrendo/libsnss/
+    # libraries/nofrendo/nes/
+    # libraries/nofrendo/sndhrdw/
+    # libraries/nofrendo/
 )
 
 idf_component_register(SRCS         ${COMPONENT_SRCS}

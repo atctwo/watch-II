@@ -53,6 +53,18 @@ char configfilename[]="na";
 
 extern "C" {
 
+    void *mem_alloc(int size, bool fast_mem)
+    {
+        if (fast_mem)
+        {
+            return heap_caps_malloc(size, MALLOC_CAP_8BIT);
+        }
+        else
+        {
+            return heap_caps_malloc_prefer(size, MALLOC_CAP_SPIRAM, MALLOC_CAP_DEFAULT);
+        }
+    }
+
     char *osd_getromdata()
     {
         Serial.printf("[nes] reading file %s...\n", rom_path.c_str());
@@ -146,21 +158,21 @@ extern "C" {
 
     static void do_audio_frame() {
 
-    #if CONFIG_SOUND_ENA
-        int left=DEFAULT_SAMPLERATE/NES_REFRESH_RATE;
-        while(left) {
-            int n=DEFAULT_FRAGSIZE;
-            if (n>left) n=left;
-            audio_callback(audio_frame, n); //get more data
-            //16 bit mono -> 32-bit (16 bit r+l)
-            for (int i=n-1; i>=0; i--) {
-                audio_frame[i*2+1]=audio_frame[i];
-                audio_frame[i*2]=audio_frame[i];
-            }
-            //i2s_write_bytes(0, audio_frame, 4*n, portMAX_DELAY);
-            left-=n;
-        }
-    #endif
+        // #if CONFIG_SOUND_ENA
+        //     int left=DEFAULT_SAMPLERATE/NES_REFRESH_RATE;
+        //     while(left) {
+        //         int n=DEFAULT_FRAGSIZE;
+        //         if (n>left) n=left;
+        //         audio_callback(audio_frame, n); //get more data
+        //         //16 bit mono -> 32-bit (16 bit r+l)
+        //         for (int i=n-1; i>=0; i--) {
+        //             audio_frame[i*2+1]=audio_frame[i];
+        //             audio_frame[i*2]=audio_frame[i];
+        //         }
+        //         //i2s_write_bytes(0, audio_frame, 4*n, portMAX_DELAY);
+        //         left-=n;
+        //     }
+        // #endif
     }
 
     void osd_setsound(void (*playfunc)(void *buffer, int length))
