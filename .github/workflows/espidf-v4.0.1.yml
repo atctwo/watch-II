@@ -20,8 +20,16 @@ jobs:
           git checkout v4.0.1
 
       - name: Setup ESP-IDF Tools
-        run: ./install.sh
+        run: |
+          cd ~/esp/esp-idf/
+          ./install.sh
 
       - name: Set up environment
-        run: ./export.sh
+        run: |
+          . ~/esp/esp-idf/export.sh
 
+      - name: Environment Variable test
+        run: echo ${IDF_PATH}
+
+      - name: Checkout repo
+        uses: actions/checkout@v2
