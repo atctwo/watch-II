@@ -127,6 +127,12 @@ set_source_files_properties(
     "-x c++ -std=gnu++17"
 )
 
+set_source_files_properties(
+    "libraries/ESP32-audioI2S/src/Audio.cpp"
+    PROPERTIES COMPILE_FLAGS
+    "-DTAG='\"esp32 audio\"'"
+)
+
 target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-unused-variable)
 target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-unused-value)
 target_compile_options(${COMPONENT_LIB} PRIVATE -Wno-unused-function)
