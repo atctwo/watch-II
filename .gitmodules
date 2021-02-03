@@ -13,9 +13,6 @@
 [submodule "main/libraries/tinyexpr"]
 	path = main/libraries/tinyexpr
 	url = https://github.com/codeplea/tinyexpr.git
-[submodule "main/libraries/SdFat"]
-	path = main/libraries/SdFat
-	url = https://github.com/greiman/SdFat.git
 [submodule "main/libraries/TFT_eSPI"]
 	path = main/libraries/TFT_eSPI
 	url = https://github.com/Bodmer/TFT_eSPI.git
