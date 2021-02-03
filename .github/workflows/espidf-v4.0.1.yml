@@ -23,13 +23,19 @@ jobs:
         run: |
           cd ~/esp/esp-idf/
           ./install.sh
-
-      - name: Set up environment
-        run: |
-          . ~/esp/esp-idf/export.sh
-
-      - name: Environment Variable test
-        run: echo ${IDF_PATH}
-
+         
       - name: Checkout repo
         uses: actions/checkout@v2
+
+      - name: Setup watch2 dependancies
+        run: |
+          cd watch-II
+          chmod +x install_libraries.sh
+          ./install_libraries.sh
+
+      - name: Build watch2
+        run:
+          . ~/esp/esp-idf/export.sh
+          cd watch-II
+          idf.py build
+          idf.py size
