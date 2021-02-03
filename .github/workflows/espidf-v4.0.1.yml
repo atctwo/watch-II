@@ -3,7 +3,7 @@ name: Build Using ESP-IDF v4.0.1
 on: [push, pull_request]
 
 jobs:
-  build-espidf:
+  build-espidf4:
 
     runs-on: ubuntu-latest
     steps:
