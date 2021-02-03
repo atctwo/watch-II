@@ -1,6 +1,10 @@
 name: Build Using ESP-IDF v4.0.1
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
   build-espidf4:
@@ -29,13 +33,13 @@ jobs:
 
       - name: Setup watch2 dependancies
         run: |
-          cd watch-II
+          cd ${GITHUB_WORKSPACE}
           chmod +x install_libraries.sh
           ./install_libraries.sh
 
       - name: Build watch2
         run:
           . ~/esp/esp-idf/export.sh
-          cd watch-II
+          cd ${GITHUB_WORKSPACE}
           idf.py build
           idf.py size
