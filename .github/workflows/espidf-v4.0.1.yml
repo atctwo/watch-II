@@ -1,0 +1,27 @@
+name: Build Using ESP-IDF v4.0.1
+
+on: [push, pull_request]
+
+jobs:
+  build-espidf4:
+
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Install ESP-IDF Dependancies
+        run: sudo apt-get install git wget flex bison gperf python3 python3-pip python3-setuptools cmake ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0
+
+      - name: Clone ESP-IDF
+        run: |
+          mkdir -p ~/esp
+          cd ~/esp
+          git clone --recursive https://github.com/espressif/esp-idf.git
+          cd esp-idf
+          git checkout v4.0.1
+
+      - name: Setup ESP-IDF Tools
+        run: ./install.sh
+
+      - name: Set up environment
+        run: ./export.sh
+
