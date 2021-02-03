@@ -22,9 +22,6 @@
 [submodule "main/libraries/ESP32-BLE-Keyboard"]
 	path = main/libraries/ESP32-BLE-Keyboard
 	url = https://github.com/T-vK/ESP32-BLE-Keyboard.git
-[submodule "main/libraries/ESP8266Audio"]
-	path = main/libraries/ESP8266Audio
-	url = https://github.com/earlephilhower/ESP8266Audio.git
 [submodule "main/libraries/libtris"]
 	path = main/libraries/libtris
 	url = https://github.com/atctwo/libtris.git
@@ -37,3 +34,6 @@
 [submodule "main/libraries/Adafruit_BusIO"]
 	path = main/libraries/Adafruit_BusIO
 	url = https://github.com/adafruit/Adafruit_BusIO.git
+[submodule "main/libraries/ESP32-audioI2S"]
+	path = main/libraries/ESP32-audioI2S
+	url = https://github.com/schreibfaul1/ESP32-audioI2S.git

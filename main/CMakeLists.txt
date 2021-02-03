@@ -28,32 +28,8 @@ set(LIB_ARDUINO_IRREMOTE_SRCS
     #libraries/Arduino-IRremote/src/esp32.cpp
 )
 
-set(LIB_SDFAT_SRCS
-    libraries/SdFat/src/MinimumSerial.cpp
-    libraries/SdFat/src/FatLib/FatFile.cpp
-    libraries/SdFat/src/FatLib/FatFileLFN.cpp
-    libraries/SdFat/src/FatLib/FatFilePrint.cpp
-    libraries/SdFat/src/FatLib/FatFileSFN.cpp
-    libraries/SdFat/src/FatLib/FatVolume.cpp
-    libraries/SdFat/src/FatLib/FmtNumber.cpp
-    libraries/SdFat/src/FatLib/fstream.cpp
-    libraries/SdFat/src/FatLib/istream.cpp
-    libraries/SdFat/src/FatLib/ostream.cpp
-    libraries/SdFat/src/FatLib/StdioStream.cpp
-    libraries/SdFat/src/SdCard/SdioCardEX.cpp
-    libraries/SdFat/src/SdCard/SdioTeensy.cpp
-    libraries/SdFat/src/SdCard/SdSpiCard.cpp
-    libraries/SdFat/src/SdCard/SdSpiCardEX.cpp
-    libraries/SdFat/src/SpiDriver/SdSpiESP8266.cpp
-    libraries/SdFat/src/SpiDriver/SdSpiParticle.cpp
-    libraries/SdFat/src/SpiDriver/SdSpiSAM3X.cpp
-    libraries/SdFat/src/SpiDriver/SdSpiSTM32.cpp
-    libraries/SdFat/src/SpiDriver/SdSpiTeensy3.cpp
-)
-
 set(LIB_ARDUINO_SRCS
     libraries/JC_Button/src/JC_Button.cpp
-    libraries/JC_Button_MCP23008/src/JC_Button_MCP23008.cpp
     libraries/Time/Time.cpp
     libraries/Time/DateStrings.cpp
     libraries/TimeAlarms/TimeAlarms.cpp
@@ -117,8 +93,7 @@ set(STATE_SRCS
 
 set(COMPONENT_SRCS 
     ${LIB_ARDUINO_SRCS}
-    ${LIB_ARDUINO_IRREMOTE_SRCS} 
-    ${LIB_SDFAT_SRCS}
+    ${LIB_ARDUINO_IRREMOTE_SRCS}
     ${STATE_SRCS} 
     ${WATCH_SRCS} 
     "main.cpp"
@@ -127,10 +102,8 @@ set(COMPONENT_SRCS
 
 # add includes
 
-set(COMPONENT_INCLUDEDIRS 
-    libraries/SdFat/src/ 			
-    libraries/JC_Button/src/ 	
-    libraries/JC_Button_MCP23008/src/ 	
+set(COMPONENT_INCLUDEDIRS			
+    libraries/JC_Button/src/
     libraries/Arduino-IRremote/
     libraries/TFT_eSPI/ 			
     libraries/Time/ 				

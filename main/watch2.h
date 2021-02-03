@@ -27,12 +27,10 @@
 
 #include <Arduino.h>                // this will kind of be included anyway, it's just here to shut vscode up
 #include <SPI.h>                    // SPI library
-#include <SdFat.h>                  // sd card access library
-#include <sdios.h>
 #include <TFT_eSPI.h>               // TFT library
 #include <FS.h>                     // Arduino filesystem abstraction
+#include <SD.h>                     // for talking to the SD card
 #include <JC_Button.h>              // button object
-#include <JC_Button_MCP23008.h>     // buttons over MCP23008 IO expander
 #include <WiFi.h>                   // wifi library
 #include <WiFiClientSecure.h>       // https client library
 #include <HTTPClient.h>             // http client library
