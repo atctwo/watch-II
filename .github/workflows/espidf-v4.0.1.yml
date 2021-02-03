@@ -38,7 +38,7 @@ jobs:
           ./install_libraries.sh
 
       - name: Build watch2
-        run:
+        run: |
           . ~/esp/esp-idf/export.sh
           cd ${GITHUB_WORKSPACE}
           idf.py build
