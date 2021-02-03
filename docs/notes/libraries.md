@@ -4,7 +4,7 @@ watch 2 depends on lots of different code libraries.  Most of them are Arduino o
 
 Most of the required libraries are `#include`d in `main/src/watch2.h`, although libraries that are only required by one app will probably only be `#include`d in the code for that app.
 
-To automatically install each of the libraries, and the Arduino ESP32 Core, you can update the repository's submodules.  In the root of the repository, run `git submodule update --recursive --init`.
+To automatically install and set up each of the libraries, and the Arduino ESP32 Core, you can use the script included in the root of the repository called `install_libraries.sh`.  This will update the submodules, and copy and modify files of libraries that need to be modified.  You can manually update the repository's submodules by running `git submodule update --recursive --init` in the root of the repository.
 
 ## Libraries
 
