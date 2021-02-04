@@ -1,8 +1,10 @@
 
 #include "../watch2.h"
+#include <HIDKeyboardTypes.h>
 
 void state_func_bt_remote()
 {
+
     if (watch2::states[watch2::state].variant == 0)
     {
         if (watch2::bluetooth_state == 3) watch2::switchState(watch2::state, 1);
@@ -56,33 +58,47 @@ void state_func_bt_remote()
             if (dpad_enter_active())
             {
                 Serial.println("[ble remote] pressing play/pause");
-                watch2::ble_keyboard.write(KEY_MEDIA_PLAY_PAUSE);
+
+                const char* hello = "Hello world from esp32 hid keyboard!!!\n";
+
+                while(*hello){
+                    
+                    KEYMAP map = keymap[(uint8_t)*hello];
+                    uint8_t msg[] = {map.modifier, 0x0, map.usage, 0x0,0x0,0x0,0x0,0x0};
+                    watch2::ble_hid_send_report(msg, sizeof(msg));
+
+                    hello++;
+                    uint8_t msg1[] = {0x0, 0x0, 0x0, 0x0,0x0,0x0,0x0,0x0};
+                    watch2::ble_hid_send_report(msg1, sizeof(msg1));
+                    delay(10);
+                }
+
                 delay(500);
             }
             if (dpad_left_active())
             {
                 Serial.println("[ble remote] pressing previous");
-                watch2::ble_keyboard.write(KEY_MEDIA_PREVIOUS_TRACK);
+                watch2::ble_hid_send_media_key_report();
                 delay(500);
             }
-            if (dpad_right_active())
-            {
-                Serial.println("[ble remote] pressing next");
-                watch2::ble_keyboard.write(KEY_MEDIA_NEXT_TRACK);
-                delay(500);
-            }
-            if (dpad_up_active())
-            {
-                Serial.println("[ble remote] pressing volume up");
-                watch2::ble_keyboard.write(KEY_MEDIA_VOLUME_UP);
-                delay(500);
-            }
-            if (dpad_down_active())
-            {
-                Serial.println("[ble remote] pressing volume down");
-                watch2::ble_keyboard.write(KEY_MEDIA_VOLUME_DOWN);
-                delay(500);
-            }
+            // if (dpad_right_active())
+            // {
+            //     Serial.println("[ble remote] pressing next");
+            //     watch2::ble_keyboard.write(KEY_MEDIA_NEXT_TRACK);
+            //     delay(500);
+            // }
+            // if (dpad_up_active())
+            // {
+            //     Serial.println("[ble remote] pressing volume up");
+            //     watch2::ble_keyboard.write(KEY_MEDIA_VOLUME_UP);
+            //     delay(500);
+            // }
+            // if (dpad_down_active())
+            // {
+            //     Serial.println("[ble remote] pressing volume down");
+            //     watch2::ble_keyboard.write(KEY_MEDIA_VOLUME_DOWN);
+            //     delay(500);
+            // }
         }
 
         if (watch2::btn_zero.wasPressed())

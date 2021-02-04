@@ -34,13 +34,18 @@
 #include <WiFi.h>                   // wifi library
 #include <WiFiClientSecure.h>       // https client library
 #include <HTTPClient.h>             // http client library
-#include <BleKeyboard.h>            // for connecting to a device over BLE, and sending keyboard keys
 #include <Audio.h>                  // for audio playback
 #include <Preferences.h>            // for storing settings in nvs (allowing for persistance over power cycles)
 #include <tinyexpr.h>               // expression evaluator for calculator
 #include <cJSON.h>                  // JSON parser
 #include <Wire.h>
 #include <Adafruit_MCP23008.h>
+
+#include <BLEDevice.h>
+#include <BLEUtils.h>
+#include <BLEServer.h>
+#include <BLEHIDDevice.h>
+#include <HIDKeyboardTypes.h>
 
 #include <sys/cdefs.h>
 #include <time.h>                   // used for system-level time keeping
@@ -344,7 +349,7 @@ namespace watch2
     extern TFT_eSprite framebuffer;                                                             //!< another framebuffer that isn't used
     extern WiFiClient wifi_client;
     extern WiFiClientSecure wifi_client_secure;                                                        //!< the wifi client used for HTTP and HTTPS requests
-    extern BleKeyboard ble_keyboard;                                                            //!< a thing that handles BLE HID Keyboard stuff
+    //extern BleKeyboard ble_keyboard;                                                            //!< a thing that handles BLE HID Keyboard stuff
     extern Audio audio;                                                                         //!< audio playback!
     extern Adafruit_MCP23008 mcp;                                                               //!< MCP23008 IO expander for user input
 
@@ -365,6 +370,10 @@ namespace watch2
     // fs icon maps
     extern std::unordered_map<std::string, fs_icon> fs_icon_ext_map;                            //!< a map of file extensions to fs icon identifiers
     extern std::unordered_map<fs_icon, std::string> fs_icon_name_map;                           //!< a map of fs icon identifiers to icon names
+
+    // ble characteristics and services
+    extern BLEService *batteryService;
+    extern BLEHIDDevice *ble_hid;
 
     // global variables
     extern int state;                                                                           //!< currently selected state
@@ -1072,6 +1081,14 @@ namespace watch2
     // bluetooth function prototypes
     //--------------------------------------
 
+    /**
+     * @brief Sends a BLE HID report
+     * 
+     * @param report 
+     * @param size 
+     */
+    void ble_hid_send_report(uint8_t* report, uint16_t size);
+    void ble_hid_send_media_key_report();
 
     /**
      * @brief enables the bluetooth subsystem.  this is kind of broken at the minute. 
