@@ -5,12 +5,16 @@
  * @version 0.1
  * @date 2020-11-21
  * 
+ * A lot of the workings of the HID part of this subsystem were based on parts of T-vK's 
+ * [ESP32 BLE HID Keyboard library](https://github.com/T-vK/ESP32-BLE-Keyboard).
+ * 
  * @copyright Copyright (c) 2020 atctwo
  * 
  */
 
 #include "watch2.h"
 #include "esp_bt.h"
+#include "freertos/task.h"
 
 #define SERVICE_UUID        "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
@@ -175,25 +179,31 @@ namespace watch2 {
     
     }
 
-    void ble_hid_send_report(uint8_t* report, uint16_t size)
+    void ble_hid_send_keyboard_report(uint8_t* report)
     {
         Serial.print("[bluetooth] sending hid report: ");
-        for (int i = 0; i < size; i++) Serial.printf("0x%2x, ", report[i]);
+        for (int i = 0; i < sizeof(report); i++) Serial.printf("0x%2x, ", report[i]);
         Serial.println("");
 
-        input_keyboard->setValue(report, size);
+        input_keyboard->setValue(report, sizeof(report));
         input_keyboard->notify();
     }
 
-    void ble_hid_send_media_key_report()
+    void ble_hid_send_media_key_report(uint8_t* report)
     {
-        uint8_t media_key_report[3] = {0x08, 0x00, 0x00}; // send play / pause
-        input_media_keys->setValue(media_key_report, 3);
-        input_media_keys->notify();
+        Serial.print("[bluetooth] sending hid report: ");
+        for (int i = 0; i < sizeof(report); i++) Serial.printf("0x%2x, ", report[i]);
+        Serial.println("");
 
-        uint8_t media_key_report1[3] = {0, 0, 0};
-        input_media_keys->setValue(media_key_report1, 3);
+        input_media_keys->setValue(report, sizeof(report));
         input_media_keys->notify();
+    }
+
+    void ble_hid_send_media_key_report(const MediaKeyReport report)
+    {
+        uint8_t blank_report[2] = {0x00, 0x00};
+        ble_hid_send_media_key_report((uint8_t*) report);
+        ble_hid_send_media_key_report(blank_report);
     }
 
     void enable_bluetooth()
