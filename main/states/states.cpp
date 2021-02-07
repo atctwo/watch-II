@@ -43,6 +43,7 @@ namespace watch2
         stateMeta("Quiz Thingy", state_func_quiz, "quiz"),
         stateMeta("Music Player", state_func_music_player, "music_player"),
         stateMeta("Radio", state_func_radio, "radio"),
+        stateMeta("Recorder", state_func_recorder),
         stateMeta("Bluetooth Remote", state_func_bt_remote, "ble_remote"),
         stateMeta("Tetris", state_func_tetris, "ltris"),
         stateMeta("NES", state_func_nes, "nes")
