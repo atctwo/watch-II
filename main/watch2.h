@@ -1093,6 +1093,8 @@ namespace watch2
     // audio function prototypes
     //--------------------------------------
 
+    void setup_audio_for_playback();
+    void setup_audio_for_input();
 
     /**
      * @brief Play an audio file over I2S.

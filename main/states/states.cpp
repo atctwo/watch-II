@@ -19,6 +19,7 @@
 #include "state_weather.cpp"
 #include "state_radio.cpp"
 #include "state_bt_remote.cpp"
+#include "state_recorder.cpp"
 
 namespace watch2
 {
