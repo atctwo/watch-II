@@ -37,3 +37,6 @@
 [submodule "main/libraries/ESP32-audioI2S"]
 	path = main/libraries/ESP32-audioI2S
 	url = https://github.com/schreibfaul1/ESP32-audioI2S.git
+[submodule "main/libraries/tinywav"]
+	path = main/libraries/tinywav
+	url = https://github.com/mhroth/tinywav.git

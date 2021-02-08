@@ -51,6 +51,7 @@ set(LIB_ARDUINO_SRCS
     libraries/css-color-parser-cpp/csscolorparser.cpp
     libraries/tinyexpr/tinyexpr.c
     libraries/entities/entities.c
+    libraries/tinywav/tinywav.c
     libraries/Adafruit_BusIO/Adafruit_BusIO_Register.cpp
     libraries/Adafruit_BusIO/Adafruit_I2CDevice.cpp
     libraries/Adafruit_BusIO/Adafruit_SPIDevice.cpp
@@ -107,6 +108,7 @@ set(COMPONENT_INCLUDEDIRS
     libraries/TimeAlarms/ 			
     libraries/tinyexpr/
     libraries/entities/
+    libraries/tinywav/
     libraries/ESP32-audioI2S/src/
     libraries/Adafruit_BusIO/
     libraries/Adafruit-MCP23008-library/
