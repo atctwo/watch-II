@@ -34,9 +34,6 @@ set(LIB_ARDUINO_SRCS
     libraries/Time/DateStrings.cpp
     libraries/TimeAlarms/TimeAlarms.cpp
     libraries/TFT_eSPI/TFT_eSPI.cpp
-    libraries/ESP32-BLE-Keyboard/BleKeyboard.cpp
-    libraries/ESP32-BLE-Keyboard/BleConnectionStatus.cpp
-    libraries/ESP32-BLE-Keyboard/KeyboardOutputCallbacks.cpp
     libraries/gumbo-parser/src/attribute.c
     libraries/gumbo-parser/src/char_ref.c
     libraries/gumbo-parser/src/error.c
@@ -110,7 +107,6 @@ set(COMPONENT_INCLUDEDIRS
     libraries/TimeAlarms/ 			
     libraries/tinyexpr/
     libraries/entities/
-    libraries/ESP32-BLE-Keyboard/
     libraries/ESP32-audioI2S/src/
     libraries/Adafruit_BusIO/
     libraries/Adafruit-MCP23008-library/

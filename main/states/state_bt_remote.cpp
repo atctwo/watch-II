@@ -1,8 +1,10 @@
 
 #include "../watch2.h"
+#include <HIDKeyboardTypes.h>
 
 void state_func_bt_remote()
 {
+
     if (watch2::states[watch2::state].variant == 0)
     {
         if (watch2::bluetooth_state == 3) watch2::switchState(watch2::state, 1);
@@ -56,32 +58,32 @@ void state_func_bt_remote()
             if (dpad_enter_active())
             {
                 Serial.println("[ble remote] pressing play/pause");
-                watch2::ble_keyboard.write(KEY_MEDIA_PLAY_PAUSE);
-                delay(500);
+                watch2::ble_hid_send_media_key_report(watch2::KEY_MEDIA_PLAY_PAUSE);
+                delay(100);
             }
             if (dpad_left_active())
             {
                 Serial.println("[ble remote] pressing previous");
-                watch2::ble_keyboard.write(KEY_MEDIA_PREVIOUS_TRACK);
-                delay(500);
+                watch2::ble_hid_send_media_key_report(watch2::KEY_MEDIA_PREVIOUS_TRACK);
+                delay(100);
             }
             if (dpad_right_active())
             {
                 Serial.println("[ble remote] pressing next");
-                watch2::ble_keyboard.write(KEY_MEDIA_NEXT_TRACK);
-                delay(500);
+                watch2::ble_hid_send_media_key_report(watch2::KEY_MEDIA_NEXT_TRACK);
+                delay(100);
             }
             if (dpad_up_active())
             {
                 Serial.println("[ble remote] pressing volume up");
-                watch2::ble_keyboard.write(KEY_MEDIA_VOLUME_UP);
-                delay(500);
+                watch2::ble_hid_send_media_key_report(watch2::KEY_MEDIA_VOLUME_UP);
+                delay(100);
             }
             if (dpad_down_active())
             {
                 Serial.println("[ble remote] pressing volume down");
-                watch2::ble_keyboard.write(KEY_MEDIA_VOLUME_DOWN);
-                delay(500);
+                watch2::ble_hid_send_media_key_report(watch2::KEY_MEDIA_VOLUME_DOWN);
+                delay(100);
             }
         }
 

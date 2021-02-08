@@ -307,16 +307,16 @@ namespace watch2 {
         // bluetooth
         if (bluetooth_state == 2 || bluetooth_state == 3)
         {
-            if (ble_keyboard.isConnected())
-            {
-                //Serial.println("[Bluetooth] connected");
-                bluetooth_state = 3;
-            }
-            else
-            {
-                //Serial.println("[Bluetooth] disconnected");
-                bluetooth_state = 2;
-            }
+            // if (ble_keyboard.isConnected())
+            // {
+            //     //Serial.println("[Bluetooth] connected");
+            //     bluetooth_state = 3;
+            // }
+            // else
+            // {
+            //     //Serial.println("[Bluetooth] disconnected");
+            //     bluetooth_state = 2;
+            // }
         }
 
         // redraw stuff

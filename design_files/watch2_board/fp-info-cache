@@ -1,4 +1,4 @@
-22284719765078602
+22289557407560602
 Alice's Library
 Alps SKQUCAA010
 
@@ -28,6 +28,13 @@ JAE_DX07S016JA1R1500
 18
 18
 Alice's Library
+MLCAWT-A1-0000-000XE1
+
+
+0
+5
+5
+Alice's Library
 NE555DR
 D (R-PDSO-G8)
 Integrated Circuit
@@ -49,12 +56,26 @@ Switch
 8
 8
 Alice's Library
+SOD4223X290N
+VSMB2943GX01
+Diode
+0
+2
+2
+Alice's Library
 TL2285EE Latching Push Switch
 
 
 0
 6
 6
+Alice's Library
+XDCR_CMT-7525-80-SMT-TR
+
+
+0
+4
+4
 Battery
 BatteryHolder_Bulgin_BX0036_1xC
 Bulgin Battery Holder, BX0036, Battery Type C (https://www.bulgin.com/products/pub/media/bulgin/data/Battery_holders.pdf)
@@ -78288,16 +78309,16 @@ SparkFun-Connectors
 40
 40
 SparkFun-Connectors
-2X3
-
-
+2X03
+PIN HEADER
+PIN HEADER
 0
 6
 6
 SparkFun-Connectors
-2X03
-PIN HEADER
-PIN HEADER
+2X3
+
+
 0
 6
 6
@@ -86079,14 +86100,14 @@ SFE_LOGO_FLAME_.4
 0
 0
 Sparkfun-Aesthetics
-SFE_LOGO_FLAME_.5
+SFE_LOGO_FLAME_.05
 
 
 0
 0
 0
 Sparkfun-Aesthetics
-SFE_LOGO_FLAME_.05
+SFE_LOGO_FLAME_.5
 
 
 0
