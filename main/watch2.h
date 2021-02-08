@@ -34,13 +34,18 @@
 #include <WiFi.h>                   // wifi library
 #include <WiFiClientSecure.h>       // https client library
 #include <HTTPClient.h>             // http client library
-#include <BleKeyboard.h>            // for connecting to a device over BLE, and sending keyboard keys
 #include <Audio.h>                  // for audio playback
 #include <Preferences.h>            // for storing settings in nvs (allowing for persistance over power cycles)
 #include <tinyexpr.h>               // expression evaluator for calculator
 #include <cJSON.h>                  // JSON parser
 #include <Wire.h>
 #include <Adafruit_MCP23008.h>
+
+#include <BLEDevice.h>
+#include <BLEUtils.h>
+#include <BLEServer.h>
+#include <BLEHIDDevice.h>
+#include <HIDKeyboardTypes.h>
 
 #include <sys/cdefs.h>
 #include <time.h>                   // used for system-level time keeping
@@ -331,6 +336,27 @@ namespace watch2
         FS_ICON_FILE_FONT
     };
 
+    // ble hid consumer control reports
+    // stolen from https://github.com/T-vK/ESP32-BLE-Keyboard/blob/master/BleKeyboard.h
+    typedef uint8_t MediaKeyReport[2];
+
+    const MediaKeyReport KEY_MEDIA_NEXT_TRACK = {1, 0};
+    const MediaKeyReport KEY_MEDIA_PREVIOUS_TRACK = {2, 0};
+    const MediaKeyReport KEY_MEDIA_STOP = {4, 0};
+    const MediaKeyReport KEY_MEDIA_PLAY_PAUSE = {8, 0};
+    const MediaKeyReport KEY_MEDIA_MUTE = {16, 0};
+    const MediaKeyReport KEY_MEDIA_VOLUME_UP = {32, 0};
+    const MediaKeyReport KEY_MEDIA_VOLUME_DOWN = {64, 0};
+    const MediaKeyReport KEY_MEDIA_WWW_HOME = {128, 0};
+    const MediaKeyReport KEY_MEDIA_LOCAL_MACHINE_BROWSER = {0, 1}; // Opens "My Computer" on Windows
+    const MediaKeyReport KEY_MEDIA_CALCULATOR = {0, 2};
+    const MediaKeyReport KEY_MEDIA_WWW_BOOKMARKS = {0, 4};
+    const MediaKeyReport KEY_MEDIA_WWW_SEARCH = {0, 8};
+    const MediaKeyReport KEY_MEDIA_WWW_STOP = {0, 16};
+    const MediaKeyReport KEY_MEDIA_WWW_BACK = {0, 32};
+    const MediaKeyReport KEY_MEDIA_CONSUMER_CONTROL_CONFIGURATION = {0, 64}; // Media Selection
+    const MediaKeyReport KEY_MEDIA_EMAIL_READER = {0, 128};
+
     // type definitions
     typedef void (*func)(void);                                                                 //!< function pointer type
 
@@ -345,7 +371,7 @@ namespace watch2
     extern TFT_eSprite framebuffer;                                                             //!< another framebuffer that isn't used
     extern WiFiClient wifi_client;
     extern WiFiClientSecure wifi_client_secure;                                                        //!< the wifi client used for HTTP and HTTPS requests
-    extern BleKeyboard ble_keyboard;                                                            //!< a thing that handles BLE HID Keyboard stuff
+    //extern BleKeyboard ble_keyboard;                                                            //!< a thing that handles BLE HID Keyboard stuff
     extern Audio audio;                                                                         //!< audio playback!
     extern Adafruit_MCP23008 mcp;                                                               //!< MCP23008 IO expander for user input
 
@@ -366,6 +392,10 @@ namespace watch2
     // fs icon maps
     extern std::unordered_map<std::string, fs_icon> fs_icon_ext_map;                            //!< a map of file extensions to fs icon identifiers
     extern std::unordered_map<fs_icon, std::string> fs_icon_name_map;                           //!< a map of fs icon identifiers to icon names
+
+    // ble characteristics and services
+    extern BLEService *batteryService;
+    extern BLEHIDDevice *ble_hid;
 
     // global variables
     extern int state;                                                                           //!< currently selected state
@@ -1073,6 +1103,44 @@ namespace watch2
     // bluetooth function prototypes
     //--------------------------------------
 
+    /**
+     * @brief sends an HID Keyboard report
+     * This will only do something if the watch is connected to something over BLE (bluetooth_state == 3).
+     * This sends a Keyboard report, and notifies the connected device.  The report should be an array of
+     * 8 bytes that make up a standard USB HID Keyboard Report (this is described really well at 
+     * https://github.com/jpbrucker/BLE_HID/blob/master/doc/HID.md).  Make sure you send a blank report
+     * afterwards to "release" the key.
+     * 
+     * Here is an example that presses and releases the 'a' key:
+     * 
+     * ```c++
+     * uint8_t report_a[8] = {0, 0, 4, 0, 0, 0, 0, 0};
+     * uint8_t report_clr[8] = {0}; // initalises each element to 0
+     * 
+     * watch2::ble_hid_send_keyboard_report(report_a);
+     * watch2::ble_hid_send_keyboard_report(report_clr);
+     * ```
+     * @param report an array of bytes that make up the report
+     */
+    void ble_hid_send_keyboard_report(uint8_t* report);
+
+    /**
+     * @brief sends an HID Consumer Control report using a byte array
+     * This will only do something if the watch is connected to something over BLE (bluetooth_state == 3).
+     * Make sure to "release" the key after pressing it by sending an empty report.
+     * @param report an array of bytes that make up the report
+     */
+    void ble_hid_send_media_key_report(uint8_t* report);
+
+    /**
+     * @brief sends an HID consumer control report from a set of predefined reports
+     * This will only do something if the watch is connected to something over BLE (bluetooth_state == 3).
+     * This does the same thing as `ble_hid_send_media_key_report(uint8_t *report)`, except that you don't need to pass in
+     * a byte array.  Instead, you pass in a predefined `MediaKeyReport` that represens the key you want to press.
+     * This function takes care of releasing the key after pressing it, so you don't need to pass an empty report.
+     * @param report a report that represents the media key to press and release
+     */
+    void ble_hid_send_media_key_report(const MediaKeyReport report);
 
     /**
      * @brief enables the bluetooth subsystem.  this is kind of broken at the minute. 
