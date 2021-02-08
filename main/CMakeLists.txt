@@ -80,9 +80,9 @@ set(STATE_SRCS
     states/state_init.cpp
     states/state_ir_remote.cpp
     states/state_music_player.cpp
-    states/state_nes.cpp
+    #states/state_nes.cpp
     states/state_notepad.cpp
-    states/state_quiz.cpp
+    #states/state_quiz.cpp
     states/state_radio.cpp
     states/state_recorder.cpp
     states/state_sdtest.cpp

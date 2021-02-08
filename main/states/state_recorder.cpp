@@ -118,7 +118,7 @@ void state_func_recorder()
     if (dpad_left_active() && !is_recording)
     {
         graph.deleteSprite();
-        i2s_driver_uninstall(I2S_NUM_0);
+        watch2::uninstall_i2s_driver();
         watch2::switchState(2);
     }
 }

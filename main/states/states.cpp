@@ -21,13 +21,13 @@ namespace watch2
         stateMeta("Image Viewer", state_func_image_viewer, "image_viewer"),
         stateMeta("Weather", state_func_weather, "weather"),
         stateMeta("Wikipedia", state_func_wiki, "wikipedia"),
-        stateMeta("Quiz Thingy", state_func_quiz, "quiz"),
+        //stateMeta("Quiz Thingy", state_func_quiz, "quiz"),
         stateMeta("Music Player", state_func_music_player, "music_player"),
         stateMeta("Radio", state_func_radio, "radio"),
         stateMeta("Recorder", state_func_recorder),
         stateMeta("Bluetooth Remote", state_func_bt_remote, "ble_remote"),
-        stateMeta("Tetris", state_func_tetris, "ltris"),
-        stateMeta("NES", state_func_nes, "nes")
+        stateMeta("Tetris", state_func_tetris, "ltris")
+        //stateMeta("NES", state_func_nes, "nes")
 
     };
 

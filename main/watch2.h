@@ -1163,6 +1163,7 @@ namespace watch2
 
     void setup_audio_for_playback();
     void setup_audio_for_input();
+    void uninstall_i2s_driver();
 
     /**
      * @brief Play an audio file over I2S.

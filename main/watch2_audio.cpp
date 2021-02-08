@@ -20,6 +20,8 @@ namespace watch2 {
     std::string audio_filename = "";
     fs::FS *audio_fs = NULL;
     Audio audio;
+    bool is_driver_installed = false;
+    bool is_playing = false;
 
     void setup_audio_for_playback()
     {
@@ -39,6 +41,7 @@ namespace watch2 {
         };
         esp_err_t err = i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);
         if (err) Serial.printf("[recorder] error installing i2s driver: %s (%d)", esp_err_to_name(err), err);
+        is_driver_installed = (err == 0);
 
 
         // set I2S parameters
@@ -64,6 +67,7 @@ namespace watch2 {
         };
         esp_err_t err = i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);
         if (err) Serial.printf("[recorder] error installing i2s driver: %s (%d)", esp_err_to_name(err), err);
+        is_driver_installed = (err == 0);
 
         i2s_pin_config_t pins = {
             .bck_io_num = I2S_BCLK,
@@ -75,6 +79,15 @@ namespace watch2 {
 
         REG_SET_BIT(  I2S_TIMING_REG(I2S_NUM_0),BIT(9));   /*  #include "soc/i2s_reg.h"   I2S_NUM -> 0 or 1*/
         REG_SET_BIT( I2S_CONF_REG(I2S_NUM_0), I2S_RX_MSB_SHIFT);
+
+        is_playing = true;
+    }
+
+    void uninstall_i2s_driver()
+    {
+        i2s_driver_uninstall(I2S_NUM_0);
+        is_driver_installed = false;
+        is_playing = false;
     }
 
     bool play_music(const char *filename, bool repeat, fs::FS *fs)
@@ -85,6 +98,7 @@ namespace watch2 {
         audio_fs = fs;
 
         bool success = false;
+        is_playing = true;
 
         setup_audio_for_playback();
 
@@ -111,7 +125,7 @@ namespace watch2 {
         audio_filename = "";
         audio_repeat = false;
         audio_fs = NULL;
-        //i2s_driver_uninstall(I2S_NUM_0);
+        is_playing = false;
     }
 
     void audio_task(void *pvParameters)
@@ -124,6 +138,7 @@ namespace watch2 {
             {
                 if (audio_repeat) play_music(audio_filename.c_str(), true, audio_fs);
                 else vTaskDelay(500);
+                if (!is_playing && is_driver_installed) uninstall_i2s_driver();
             }
             
         }
