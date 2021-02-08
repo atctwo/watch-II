@@ -1,4 +1,4 @@
-#include "../watch2.h"
+#include "states.h"
 
 void getLatLong(double &latitude, double &longitude)
 {

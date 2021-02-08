@@ -1,4 +1,4 @@
-#include "../watch2.h"
+#include "states.h"
 
 void state_func_image_viewer()
 {

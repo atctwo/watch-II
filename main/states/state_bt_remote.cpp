@@ -1,5 +1,5 @@
 
-#include "../watch2.h"
+#include "states.h"
 #include <HIDKeyboardTypes.h>
 
 void state_func_bt_remote()

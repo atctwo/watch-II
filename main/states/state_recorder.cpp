@@ -1,4 +1,4 @@
-#include "../watch2.h"
+#include "states.h"
 #include <tinywav.h>
 
 void state_func_recorder()
