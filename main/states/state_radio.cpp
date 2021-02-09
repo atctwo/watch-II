@@ -24,9 +24,7 @@ void state_func_radio()
             {
                 station_names.clear();
                 station_urls.clear();
-
-                watch2::setup_audio_for_playback();
-
+                
                 // get stations from file
                 fs::File radio_file = SD.open(RADIO_FILENAME);
                 while(radio_file.available())

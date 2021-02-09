@@ -25,10 +25,12 @@ namespace watch2 {
 
     void setup_audio_for_playback()
     {
+        Serial.println("[audio] setting up I2S for playback");
+
         // set up I2S driver
         i2s_driver_uninstall(I2S_NUM_0);
         const i2s_config_t i2s_config = {
-            .mode = i2s_mode_t(I2S_MODE_MASTER | I2S_MODE_TX | I2S_MODE_RX), // Receive, not transfer
+            .mode = i2s_mode_t(I2S_MODE_MASTER | I2S_MODE_TX), // transmit audio
             .sample_rate = 16000,                         // 16KHz
             .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT, // could only get it to work with 32bits
             .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT, // use right channel
@@ -37,6 +39,7 @@ namespace watch2 {
             .dma_buf_count = 8,                           // number of buffers
             .dma_buf_len = 1024,                          // 1024 samples per buffer (minimum)
             .use_apll = true,
+            .tx_desc_auto_clear = true,
             .fixed_mclk = I2S_PIN_NO_CHANGE
         };
         esp_err_t err = i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);
@@ -47,16 +50,17 @@ namespace watch2 {
         // set I2S parameters
         audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT, I2S_DIN);
         audio.setVolume(speaker_volume);
-        i2s_set_clk(I2S_NUM_0, 16000, I2S_BITS_PER_SAMPLE_16BIT, I2S_CHANNEL_STEREO);
     }
 
     void setup_audio_for_input()
     {
+        Serial.println("[audio] setting up I2S for input");
+
         // set up i2s for audio input
         i2s_driver_uninstall(I2S_NUM_0);
 
         const i2s_config_t i2s_config = {
-            .mode = i2s_mode_t(I2S_MODE_MASTER | I2S_MODE_TX | I2S_MODE_RX), // Receive, not transfer
+            .mode = i2s_mode_t(I2S_MODE_MASTER | I2S_MODE_RX), // Receive, not transfer
             .sample_rate = 16000,                         // 16KHz
             .bits_per_sample = I2S_BITS_PER_SAMPLE_32BIT, // could only get it to work with 32bits
             .channel_format = I2S_CHANNEL_FMT_ONLY_RIGHT, // use right channel
@@ -85,6 +89,7 @@ namespace watch2 {
 
     void uninstall_i2s_driver()
     {
+        Serial.println("[audio] uninstalling i2s");
         i2s_driver_uninstall(I2S_NUM_0);
         is_driver_installed = false;
         is_playing = false;
