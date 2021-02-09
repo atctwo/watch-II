@@ -8,9 +8,9 @@
 
 void state_func_radio()
 {
-    static std::vector<std::string> station_names;
-    static std::vector<std::string> station_urls;
-    static uint8_t selected_station = 0;
+    EXT_RAM_ATTR static std::vector<std::string> station_names;
+    EXT_RAM_ATTR static std::vector<std::string> station_urls;
+    EXT_RAM_ATTR static uint8_t selected_station = 0;
     
     // station selection
     if (watch2::states[watch2::state].variant == 0)

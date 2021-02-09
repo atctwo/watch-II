@@ -14,11 +14,11 @@
 namespace watch2 {
 
     // files
-    int sd_state = 0;
-    bool spiffs_state = 0;
-    int file_select_status = 0;
-    std::string file_path = "/";
-    bool file_select_dir_list_init = false;
+    EXT_RAM_ATTR int sd_state = 0;
+    EXT_RAM_ATTR bool spiffs_state = 0;
+    EXT_RAM_ATTR int file_select_status = 0;
+    EXT_RAM_ATTR std::string file_path = "/";
+    EXT_RAM_ATTR bool file_select_dir_list_init = false;
     
     //SdFat sdcard(&*vspi);
     //Adafruit_ImageReader reader(SD);

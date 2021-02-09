@@ -14,7 +14,7 @@
 namespace watch2 {
 
     // dialogues
-    bool showingControlCentre = false;
+    EXT_RAM_ATTR bool showingControlCentre = false;
 
     std::string textFieldDialogue(std::string prompt, const char *default_input, const char mask, bool clear_screen)
     {

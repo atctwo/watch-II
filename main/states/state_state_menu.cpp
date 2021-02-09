@@ -5,8 +5,8 @@ void state_func_state_menu()
     static int columns = 4;
     static int icon_size = 47;
     static int icon_spacing = 10;
-    static int no_icons = 0;
-    static std::vector<int> menu_positions;
+    EXT_RAM_ATTR static int no_icons = 0;
+    EXT_RAM_ATTR static std::vector<int> menu_positions;
 
     int icon_xpos = icon_spacing;
     int icon_ypos = 0;//icon_spacing;

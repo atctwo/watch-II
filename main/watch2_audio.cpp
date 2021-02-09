@@ -15,13 +15,13 @@ namespace watch2 {
 
     // audio
     uint8_t speaker_volume = 5;
-    TaskHandle_t audio_task_handle;
-    bool audio_repeat = false;
+    EXT_RAM_ATTR TaskHandle_t audio_task_handle;
+    EXT_RAM_ATTR bool audio_repeat = false;
     std::string audio_filename = "";
-    fs::FS *audio_fs = NULL;
+    EXT_RAM_ATTR fs::FS *audio_fs = NULL;
     Audio audio;
-    bool is_driver_installed = false;
-    bool is_playing = false;
+    EXT_RAM_ATTR bool is_driver_installed = false;
+    EXT_RAM_ATTR bool is_playing = false;
 
     void setup_audio_for_playback()
     {

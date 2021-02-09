@@ -14,7 +14,7 @@
 namespace watch2 {
 
     // util
-    int8_t timezone = 0;
+    EXT_RAM_ATTR int8_t timezone = 0;
     String weather_location = "";
 
     std::string getApiKey(const char *service, const char *field)

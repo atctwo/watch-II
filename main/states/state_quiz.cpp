@@ -7,7 +7,7 @@ extern "C"
 
 cJSON *getQuestion(uint8_t category, uint8_t difficulty)
 {
-    static HTTPClient http;
+    EXT_RAM_ATTR static HTTPClient http;
 
     Serial.println("[Quiz] getting new question");
 

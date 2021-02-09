@@ -15,18 +15,18 @@ namespace watch2 {
 
     // drawing
     uint8_t top_thing_height = oled.fontHeight() + 20;
-    bool forceRedraw = false;
-    bool forceRedrawLooped = false;
-    uint16_t trans_mode = 0;
-    bool animate_watch_face = false;
+    EXT_RAM_ATTR bool forceRedraw = false;
+    EXT_RAM_ATTR bool forceRedrawLooped = false;
+    EXT_RAM_ATTR uint16_t trans_mode = 0;
+    EXT_RAM_ATTR bool animate_watch_face = false;
     int themecolour = BLUE;
 
     TFT_eSPI oled = TFT_eSPI();
     TFT_eSprite top_thing = TFT_eSprite(&oled);
     TFT_eSprite framebuffer = TFT_eSprite(&oled);
 
-    std::map<std::string, imageData> *icons;
-    std::map<std::string, std::vector<unsigned char>> *small_icons;
+    EXT_RAM_ATTR std::map<std::string, imageData> *icons;
+    EXT_RAM_ATTR std::map<std::string, std::vector<unsigned char>> *small_icons;
 
     // fs icon maps
     std::unordered_map<std::string, fs_icon> fs_icon_ext_map;

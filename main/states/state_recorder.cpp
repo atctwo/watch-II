@@ -3,8 +3,8 @@
 
 void state_func_recorder()
 {
-    static TFT_eSprite graph = TFT_eSprite(&watch2::oled);
-    static std::vector<int32_t> points;
+    EXT_RAM_ATTR static TFT_eSprite graph = TFT_eSprite(&watch2::oled);
+    EXT_RAM_ATTR static std::vector<int32_t> points;
     static uint8_t no_y_points = 240;
     static uint8_t points_pitch = SCREEN_WIDTH / no_y_points;
 
@@ -16,8 +16,8 @@ void state_func_recorder()
 
     static int32_t graph_y_scale = max_raw_sample / 100;
 
-    static bool is_recording = false;
-    static TinyWav tw;
+    EXT_RAM_ATTR static bool is_recording = false;
+    EXT_RAM_ATTR static TinyWav tw;
 
     if (!watch2::state_init)
     {

@@ -25,15 +25,15 @@ namespace watch2 {
     
 
     // bluetooth
-    uint8_t bluetooth_state = 0;
-    bool ble_set_up = false;
+    EXT_RAM_ATTR uint8_t bluetooth_state = 0;
+    EXT_RAM_ATTR bool ble_set_up = false;
     //BleKeyboard ble_keyboard("watch2", "atctwo");
 
-    BLEServer *pServer;
-    BLEHIDDevice *ble_hid;
-    BLECharacteristic *input_keyboard;
-    BLECharacteristic *output_keyboard;
-    BLECharacteristic *input_media_keys;
+    EXT_RAM_ATTR BLEServer *pServer;
+    EXT_RAM_ATTR BLEHIDDevice *ble_hid;
+    EXT_RAM_ATTR BLECharacteristic *input_keyboard;
+    EXT_RAM_ATTR BLECharacteristic *output_keyboard;
+    EXT_RAM_ATTR BLECharacteristic *input_media_keys;
 
     // Report IDs:
     #define KEYBOARD_ID 0x01

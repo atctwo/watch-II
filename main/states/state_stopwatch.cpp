@@ -21,11 +21,11 @@ void state_func_stopwatch()
     uint32_t stopwatch_min = 0, stopwatch_last_min = 0;
     uint32_t stopwatch_hour = 0, stopwatch_last_hour = 0;
     */
-    static char text_aaaa[150];
-    static int16_t x1, y1;
-    static uint16_t w=0, h=0;
-    static uint16_t text_height = 0;
-    static uint16_t width_two_digits = 0, width_two_digits_colon = 0, width_three_digits_colon = 0;
+    EXT_RAM_ATTR static char text_aaaa[150];
+    EXT_RAM_ATTR static int16_t x1, y1;
+    EXT_RAM_ATTR static uint16_t w=0, h=0;
+    EXT_RAM_ATTR static uint16_t text_height = 0;
+    EXT_RAM_ATTR static uint16_t width_two_digits = 0, width_two_digits_colon = 0, width_three_digits_colon = 0;
     static uint16_t stopwatch_y = watch2::top_thing_height + ((SCREEN_HEIGHT - watch2::top_thing_height) / 3);
     static uint16_t status_y = watch2::top_thing_height + ((SCREEN_HEIGHT - watch2::top_thing_height) / 2);
 

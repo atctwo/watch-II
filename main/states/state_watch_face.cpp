@@ -6,10 +6,10 @@ void state_func_watch_face()
     static int last_minute = -1;
     static int last_second = -1;
     static int last_day = -1;
-    static TFT_eSprite time_sprite = TFT_eSprite(&watch2::oled);
-    static TFT_eSprite second_sprite = TFT_eSprite(&watch2::oled);
-    static TFT_eSprite day_sprite = TFT_eSprite(&watch2::oled);
-    static char buffer[20];
+    EXT_RAM_ATTR static TFT_eSprite time_sprite = TFT_eSprite(&watch2::oled);
+    EXT_RAM_ATTR static TFT_eSprite second_sprite = TFT_eSprite(&watch2::oled);
+    EXT_RAM_ATTR static TFT_eSprite day_sprite = TFT_eSprite(&watch2::oled);
+    EXT_RAM_ATTR static char buffer[20];
     uint16_t row_colours[SCREEN_WIDTH];
     uint16_t row_colour = CYAN;
     float r = 0, g = 0, b = 0;
