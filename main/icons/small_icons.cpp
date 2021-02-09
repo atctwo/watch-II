@@ -1,6 +1,7 @@
 // these icons were adapted to C-friendly format (source code) using http://javl.github.io/image2cpp/
 
 #include "../watch2.h"
+#include "small_icons.h"
 
 void registerSmallIcons()
 {

@@ -56,6 +56,7 @@ set(LIB_ARDUINO_SRCS
     libraries/Adafruit_BusIO/Adafruit_I2CDevice.cpp
     libraries/Adafruit_BusIO/Adafruit_SPIDevice.cpp
     libraries/Adafruit-MCP23008-library/Adafruit_MCP23008.cpp
+    icons/small_icons.cpp
 )
 
 set(WATCH_SRCS

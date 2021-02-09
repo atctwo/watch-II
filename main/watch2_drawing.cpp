@@ -22,8 +22,8 @@ namespace watch2 {
     int themecolour = BLUE;
 
     TFT_eSPI oled = TFT_eSPI();
-    TFT_eSprite top_thing = TFT_eSprite(&oled);
-    TFT_eSprite framebuffer = TFT_eSprite(&oled);
+    EXT_RAM_ATTR TFT_eSprite top_thing = TFT_eSprite(&oled);
+    EXT_RAM_ATTR TFT_eSprite framebuffer = TFT_eSprite(&oled);
 
     EXT_RAM_ATTR std::map<std::string, imageData> *icons;
     EXT_RAM_ATTR std::map<std::string, std::vector<unsigned char>> *small_icons;
