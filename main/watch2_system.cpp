@@ -14,21 +14,21 @@
 namespace watch2 {
 
     // system
-    int state = 0;
-    int state_init = 0;
+    EXT_RAM_ATTR int state = 0;
+    EXT_RAM_ATTR int state_init = 0;
     RTC_DATA_ATTR int selected_menu_icon;
     RTC_DATA_ATTR int boot_count = 0;
     std::string wfs = "\x0\x0\x0\x0";
 
-    bool dpad_lock[5] = {false};
-    bool dpad_pressed[5] = {false};
+    EXT_RAM_ATTR bool dpad_lock[5] = {false};
+    EXT_RAM_ATTR bool dpad_pressed[5] = {false};
 
     int short_timeout = 5000;
     int long_timeout = 30000;
     bool timeout = true;
 
-    std::vector<timerData> timers;
-    std::vector<alarmData> alarms;
+    EXT_RAM_ATTR std::vector<timerData> timers;
+    EXT_RAM_ATTR std::vector<alarmData> alarms;
     int timer_trigger_status = 0;
     int timer_trigger_id = 255;
     int alarm_trigger_status = 0;
@@ -50,17 +50,17 @@ namespace watch2 {
     uint32_t stopwatch_min = 0, stopwatch_last_min = 0;
     uint32_t stopwatch_hour = 0, stopwatch_last_hour = 0;
 
-    SPIClass *vspi = new SPIClass(VSPI);
-    Preferences preferences;
-    Adafruit_MCP23008 mcp;
+    EXT_RAM_ATTR SPIClass *vspi = new SPIClass(VSPI);
+    EXT_RAM_ATTR Preferences preferences;
+    EXT_RAM_ATTR Adafruit_MCP23008 mcp;
 
     //button objects
-    Button btn_dpad_up(dpad_up, 25, false, false);
-    Button btn_dpad_down(dpad_down, 25, false, false);
-    Button btn_dpad_left(dpad_left, 25, false, false);
-    Button btn_dpad_right(dpad_right, 25, false, false);
-    Button btn_dpad_enter(dpad_enter, 25, false, false);
-    Button btn_zero(0);
+    EXT_RAM_ATTR Button btn_dpad_up(dpad_up, 25, false, false);
+    EXT_RAM_ATTR Button btn_dpad_down(dpad_down, 25, false, false);
+    EXT_RAM_ATTR Button btn_dpad_left(dpad_left, 25, false, false);
+    EXT_RAM_ATTR Button btn_dpad_right(dpad_right, 25, false, false);
+    EXT_RAM_ATTR Button btn_dpad_enter(dpad_enter, 25, false, false);
+    EXT_RAM_ATTR Button btn_zero(0);
 
     void startLoop()
     {
@@ -516,5 +516,7 @@ namespace watch2 {
         if (next_alarm_time > -1) switchState(0, 0, 0, 0, true);
         else switchState(0);
     }
+
+    
 
 }

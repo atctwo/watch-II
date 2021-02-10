@@ -1,5 +1,5 @@
 
-#include "../watch2.h"
+#include "states.h"
 
 #include <FS.h>
 #include <SD.h>
@@ -8,9 +8,9 @@
 
 void state_func_radio()
 {
-    static std::vector<std::string> station_names;
-    static std::vector<std::string> station_urls;
-    static uint8_t selected_station = 0;
+    EXT_RAM_ATTR static std::vector<std::string> station_names;
+    EXT_RAM_ATTR static std::vector<std::string> station_urls;
+    EXT_RAM_ATTR static uint8_t selected_station = 0;
     
     // station selection
     if (watch2::states[watch2::state].variant == 0)
@@ -24,9 +24,7 @@ void state_func_radio()
             {
                 station_names.clear();
                 station_urls.clear();
-
-                watch2::setup_audio_for_playback();
-
+                
                 // get stations from file
                 fs::File radio_file = SD.open(RADIO_FILENAME);
                 while(radio_file.available())

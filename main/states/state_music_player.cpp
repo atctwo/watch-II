@@ -1,4 +1,4 @@
-#include "../watch2.h"
+#include "states.h"
 #include <FS.h>
 #include <SD.h>
 
@@ -7,9 +7,9 @@
 
 void state_func_music_player()
 {
-    static std::string filename;
-    static unsigned long last_draw_time = 0;
-    static bool cancelled = false;
+    EXT_RAM_ATTR static std::string filename;
+    EXT_RAM_ATTR static unsigned long last_draw_time = 0;
+    EXT_RAM_ATTR static bool cancelled = false;
 
     if (!watch2::state_init) 
     {

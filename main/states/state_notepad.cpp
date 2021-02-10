@@ -1,11 +1,11 @@
-#include "../watch2.h"
+#include "states.h"
 
 void state_func_notepad()
 {
-    static int read = 0;                    //whether or not the selected file has been copied into memory
-    static int yoffset = 0;                 //the offset to draw the file contents at
-    static std::vector<int> filedata;       //a vector to store the file data
-    static std::string filename;            //the name of the file to read
+    EXT_RAM_ATTR static int read = 0;                    //whether or not the selected file has been copied into memory
+    EXT_RAM_ATTR static int yoffset = 0;                 //the offset to draw the file contents at
+    EXT_RAM_ATTR static std::vector<int> filedata;       //a vector to store the file data
+    EXT_RAM_ATTR static std::string filename;            //the name of the file to read
     
     if (!watch2::state_init) 
     {

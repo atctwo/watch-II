@@ -15,18 +15,22 @@ namespace watch2 {
 
     // audio
     uint8_t speaker_volume = 5;
-    TaskHandle_t audio_task_handle;
-    bool audio_repeat = false;
+    EXT_RAM_ATTR TaskHandle_t audio_task_handle;
+    EXT_RAM_ATTR bool audio_repeat = false;
     std::string audio_filename = "";
-    fs::FS *audio_fs = NULL;
+    EXT_RAM_ATTR fs::FS *audio_fs = NULL;
     Audio audio;
+    EXT_RAM_ATTR bool is_driver_installed = false;
+    EXT_RAM_ATTR bool is_playing = false;
 
     void setup_audio_for_playback()
     {
+        Serial.println("[audio] setting up I2S for playback");
+
         // set up I2S driver
         i2s_driver_uninstall(I2S_NUM_0);
         const i2s_config_t i2s_config = {
-            .mode = i2s_mode_t(I2S_MODE_MASTER | I2S_MODE_TX | I2S_MODE_RX), // Receive, not transfer
+            .mode = i2s_mode_t(I2S_MODE_MASTER | I2S_MODE_TX), // transmit audio
             .sample_rate = 16000,                         // 16KHz
             .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT, // could only get it to work with 32bits
             .channel_format = I2S_CHANNEL_FMT_RIGHT_LEFT, // use right channel
@@ -35,25 +39,28 @@ namespace watch2 {
             .dma_buf_count = 8,                           // number of buffers
             .dma_buf_len = 1024,                          // 1024 samples per buffer (minimum)
             .use_apll = true,
+            .tx_desc_auto_clear = true,
             .fixed_mclk = I2S_PIN_NO_CHANGE
         };
         esp_err_t err = i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);
         if (err) Serial.printf("[recorder] error installing i2s driver: %s (%d)", esp_err_to_name(err), err);
+        is_driver_installed = (err == 0);
 
 
         // set I2S parameters
         audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT, I2S_DIN);
         audio.setVolume(speaker_volume);
-        i2s_set_clk(I2S_NUM_0, 16000, I2S_BITS_PER_SAMPLE_16BIT, I2S_CHANNEL_STEREO);
     }
 
     void setup_audio_for_input()
     {
+        Serial.println("[audio] setting up I2S for input");
+
         // set up i2s for audio input
         i2s_driver_uninstall(I2S_NUM_0);
 
         const i2s_config_t i2s_config = {
-            .mode = i2s_mode_t(I2S_MODE_MASTER | I2S_MODE_TX | I2S_MODE_RX), // Receive, not transfer
+            .mode = i2s_mode_t(I2S_MODE_MASTER | I2S_MODE_RX), // Receive, not transfer
             .sample_rate = 16000,                         // 16KHz
             .bits_per_sample = I2S_BITS_PER_SAMPLE_32BIT, // could only get it to work with 32bits
             .channel_format = I2S_CHANNEL_FMT_ONLY_RIGHT, // use right channel
@@ -64,6 +71,7 @@ namespace watch2 {
         };
         esp_err_t err = i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);
         if (err) Serial.printf("[recorder] error installing i2s driver: %s (%d)", esp_err_to_name(err), err);
+        is_driver_installed = (err == 0);
 
         i2s_pin_config_t pins = {
             .bck_io_num = I2S_BCLK,
@@ -75,6 +83,16 @@ namespace watch2 {
 
         REG_SET_BIT(  I2S_TIMING_REG(I2S_NUM_0),BIT(9));   /*  #include "soc/i2s_reg.h"   I2S_NUM -> 0 or 1*/
         REG_SET_BIT( I2S_CONF_REG(I2S_NUM_0), I2S_RX_MSB_SHIFT);
+
+        is_playing = true;
+    }
+
+    void uninstall_i2s_driver()
+    {
+        Serial.println("[audio] uninstalling i2s");
+        i2s_driver_uninstall(I2S_NUM_0);
+        is_driver_installed = false;
+        is_playing = false;
     }
 
     bool play_music(const char *filename, bool repeat, fs::FS *fs)
@@ -85,6 +103,7 @@ namespace watch2 {
         audio_fs = fs;
 
         bool success = false;
+        is_playing = true;
 
         setup_audio_for_playback();
 
@@ -111,7 +130,7 @@ namespace watch2 {
         audio_filename = "";
         audio_repeat = false;
         audio_fs = NULL;
-        //i2s_driver_uninstall(I2S_NUM_0);
+        is_playing = false;
     }
 
     void audio_task(void *pvParameters)
@@ -124,6 +143,7 @@ namespace watch2 {
             {
                 if (audio_repeat) play_music(audio_filename.c_str(), true, audio_fs);
                 else vTaskDelay(500);
+                if (!is_playing && is_driver_installed) uninstall_i2s_driver();
             }
             
         }

@@ -1,8 +1,8 @@
-#include "../watch2.h"
+#include "states.h"
 
 void state_func_SDtest()
 {
-    static std::string filename;
+    EXT_RAM_ATTR static std::string filename;
 
     static uint8_t action_padding = 4;
     static uint16_t action_w = (SCREEN_WIDTH / 2) - (action_padding * 3);

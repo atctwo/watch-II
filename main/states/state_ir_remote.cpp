@@ -1,4 +1,4 @@
-#include "../watch2.h"
+#include "states.h"
 #include "../libraries/css-color-parser-cpp/csscolorparser.hpp"
 #include <IRremote.h>
 
@@ -11,7 +11,7 @@ void state_func_ir_remote()
 
     // profile selection menu
     static std::vector<std::string> profile_names;
-    static uint8_t selected_profile = 0;
+    EXT_RAM_ATTR static uint8_t selected_profile = 0;
     static std::string selected_profile_filename = "";
 
     // ir receiver
@@ -20,21 +20,21 @@ void state_func_ir_remote()
     static bool ir_enabled = false;
 
     // ir remote
-    static IRsend irsend;
-    static cJSON *profile;
-    static cJSON *codes;
-    static char *json_contents;
-    static std::unordered_map<int, std::unordered_map<int, std::unordered_map<int, int>>> code_indices;
+    EXT_RAM_ATTR static IRsend irsend;
+    EXT_RAM_ATTR static cJSON *profile;
+    EXT_RAM_ATTR static cJSON *codes;
+    EXT_RAM_ATTR static char *json_contents;
+    EXT_RAM_ATTR static std::unordered_map<int, std::unordered_map<int, std::unordered_map<int, int>>> code_indices;
     static uint8_t columns = 5;
     static uint8_t rows = 5;
     static uint8_t pages = 2;
     static uint8_t icon_spacing = 6;
     static uint8_t radius = 4;
     static uint8_t no_icons = 0;
-    static uint8_t selected_row = 0;
-    static uint8_t selected_col = 0;
+    EXT_RAM_ATTR static uint8_t selected_row = 0;
+    EXT_RAM_ATTR static uint8_t selected_col = 0;
     static uint8_t last_page_number = 255;
-    static uint8_t this_page_number = 0;
+    EXT_RAM_ATTR static uint8_t this_page_number = 0;
 
     static uint8_t icon_width = ( SCREEN_WIDTH - ( ( columns + 1 ) * icon_spacing ) ) / columns;
     static uint8_t icon_height = (2 * icon_spacing) + watch2::oled.fontHeight();

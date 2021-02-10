@@ -1,4 +1,4 @@
-#include "../watch2.h"
+#include "states.h"
 
 void state_func_alarms()
 {
@@ -10,10 +10,10 @@ void state_func_alarms()
     //2 - seconds
     //3 - play / pause (or back if on timer -1)
     //4 - delete (or add if on timer -1)
-    static char text_aaaa[150];
-    static int16_t x1, y1;
-    static uint16_t w=0, h=0;
-    static uint16_t width_two_digits = 0, width_two_digits_colon = 0, width_three_digits_colon = 0;
+    EXT_RAM_ATTR static char text_aaaa[150];
+    EXT_RAM_ATTR static int16_t x1, y1;
+    EXT_RAM_ATTR static uint16_t w=0, h=0;
+    EXT_RAM_ATTR static uint16_t width_two_digits = 0, width_two_digits_colon = 0, width_three_digits_colon = 0;
 
     if (!watch2::state_init)
     {

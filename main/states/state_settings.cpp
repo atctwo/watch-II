@@ -1,4 +1,4 @@
-#include "../watch2.h"
+#include "states.h"
 
 void state_func_settings()
 {
@@ -20,27 +20,27 @@ void state_func_settings()
         | 23        | wifi profile editor                    |
         | 24        | wfs state select                       |
     */             
-    static int selected_panel = 0;
-    static int last_selected_time = 0;
+    EXT_RAM_ATTR static int selected_panel = 0;
+    EXT_RAM_ATTR static int last_selected_time = 0;
 
-    static bool selecting_state = false;
-    static int16_t selected_wfs_state = 0;
-    static uint8_t wfs_direction = 0;
+    EXT_RAM_ATTR static bool selecting_state = false;
+    EXT_RAM_ATTR static int16_t selected_wfs_state = 0;
+    EXT_RAM_ATTR static uint8_t wfs_direction = 0;
 
-    static int temp_time[6] = {0};
-    static int selected_time = 0;
+    EXT_RAM_ATTR static int temp_time[6] = {0};
+    EXT_RAM_ATTR static int selected_time = 0;
     static int time_limits[6] = {23, 59, 59, 30, 12, 2106};
     const  int time_lower[6]  = {0,  0,  0,  1,  1,  1970};
     static int days_in_each_month[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-    static cJSON *profiles;
-    static cJSON *profile_array;
-    static cJSON *profile_list;
-    static uint16_t edit_profile_index = 0;
+    EXT_RAM_ATTR static cJSON *profiles;
+    EXT_RAM_ATTR static cJSON *profile_array;
+    EXT_RAM_ATTR static cJSON *profile_list;
+    EXT_RAM_ATTR static uint16_t edit_profile_index = 0;
 
-    static int16_t x1, y1;
-    static uint16_t w=0, h=0;
-    static char text_aaaa[6];
+    EXT_RAM_ATTR static int16_t x1, y1;
+    EXT_RAM_ATTR static uint16_t w=0, h=0;
+    EXT_RAM_ATTR static char text_aaaa[6];
     static int time_element_padding = 1;
     static int radius = 4;
 

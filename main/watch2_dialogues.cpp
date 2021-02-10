@@ -14,7 +14,7 @@
 namespace watch2 {
 
     // dialogues
-    bool showingControlCentre = false;
+    EXT_RAM_ATTR bool showingControlCentre = false;
 
     std::string textFieldDialogue(std::string prompt, const char *default_input, const char mask, bool clear_screen)
     {
@@ -548,26 +548,9 @@ namespace watch2 {
         // if the control centre is already being shown, don't do anything
         if (showingControlCentre) return;
 
-        // print memory info
-        Serial.printf("[memory] used internal memory (heap):  %d (%s) (%0.2f%%)\n", 
-            ESP.getHeapSize() - ESP.getFreeHeap(), watch2::humanSize(ESP.getHeapSize() - ESP.getFreeHeap()), 
-            ((float)(ESP.getHeapSize() - ESP.getFreeHeap()) / ESP.getHeapSize()) * 100
-        );
-        Serial.printf("[memory] free internal memory (heap):  %d (%s)\n", ESP.getFreeHeap(), watch2::humanSize(ESP.getFreeHeap()));
-        Serial.printf("[memory] total internal memory (heap): %d (%s)\n", ESP.getHeapSize(), watch2::humanSize(ESP.getHeapSize()));
-
-        Serial.printf("[memory] used external memory (heap):  %d (%s) (%0.2%%)\n", 
-            ESP.getPsramSize() - ESP.getFreePsram(), watch2::humanSize(ESP.getPsramSize() - ESP.getFreePsram()), 
-            ((float)(ESP.getPsramSize() - ESP.getFreePsram()) / ESP.getPsramSize()) * 100
-        );
-        Serial.printf("[memory] free external memory (heap):  %d (%s)\n", ESP.getFreePsram(), watch2::humanSize(ESP.getFreePsram()));
-        Serial.printf("[memory] total external memory (heap): %d (%s)\n", ESP.getPsramSize(), watch2::humanSize(ESP.getPsramSize()));
-
-        // print task info
-        char pcWriteBuffer[40 * (uxTaskGetNumberOfTasks() + 1)];
-        vTaskList(pcWriteBuffer);
-        Serial.println("Task Info:");
-        Serial.print(pcWriteBuffer);
+        // print memory and task info
+        watch2::print_memory_details();
+        watch2::print_task_details();
 
         int selected_widget = 3;
         int last_button_widget = 3;

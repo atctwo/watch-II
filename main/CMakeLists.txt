@@ -56,6 +56,7 @@ set(LIB_ARDUINO_SRCS
     libraries/Adafruit_BusIO/Adafruit_I2CDevice.cpp
     libraries/Adafruit_BusIO/Adafruit_SPIDevice.cpp
     libraries/Adafruit-MCP23008-library/Adafruit_MCP23008.cpp
+    icons/small_icons.cpp
 )
 
 set(WATCH_SRCS
@@ -74,17 +75,25 @@ set(WATCH_SRCS
 
 set(STATE_SRCS 
     states/state_alarms.cpp
+    states/state_bt_remote.cpp
     states/state_calc.cpp
     states/state_image_viewer.cpp
     states/state_init.cpp
     states/state_ir_remote.cpp
+    states/state_music_player.cpp
+    #states/state_nes.cpp
     states/state_notepad.cpp
+    #states/state_quiz.cpp
+    states/state_radio.cpp
+    states/state_recorder.cpp
     states/state_sdtest.cpp
     states/state_settings.cpp
     states/state_state_menu.cpp
     states/state_stopwatch.cpp
+    states/state_tetris.cpp
     states/state_timer.cpp
     states/state_watch_face.cpp
+    states/state_weather.cpp
     states/state_wiki.cpp
     states/states.cpp
 )

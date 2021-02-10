@@ -4,8 +4,7 @@
 #include "freertos/task.h"
 #include "esp_task_wdt.h"
 #include "watch2.h"
-// #include "icons/app_icons.cpp"
-#include "icons/small_icons.cpp"
+#include "icons/small_icons.h"
 
 ////////////////////////////////////////
 // setup function
@@ -237,6 +236,11 @@ void setup() {
     Serial.print("micropython test: ");
     Serial.println("done!");
 
+    // setup i2s sort of
+    Serial.print("setting up i2s: ");
+    watch2::uninstall_i2s_driver();
+    Serial.println("done!");
+
     // set up fs icons
     Serial.print("setting up fs icon maps: ");
     watch2::setupFsIcons();
@@ -373,7 +377,7 @@ void loop() {
         static uint16_t button_w = 60;
         static uint16_t button_h = 60;
         static uint16_t button_r = 7;
-        static TFT_eSprite time_sprite = TFT_eSprite(&watch2::oled);
+        EXT_RAM_ATTR static TFT_eSprite time_sprite = TFT_eSprite(&watch2::oled);
         static bool pause = false;
         //static GFXcanvas1 *canvas_time = new GFXcanvas1(SCREEN_WIDTH, 20);
         //0 - dismiss

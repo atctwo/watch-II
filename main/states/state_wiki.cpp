@@ -8,7 +8,7 @@
 
 */
 
-#include "../watch2.h"
+#include "states.h"
 #include "../libraries/gumbo-parser/src/gumbo.h"
 
 struct article_lines{
@@ -19,7 +19,7 @@ struct article_lines{
 };
 
 // adapted from function below
-void buildPageLines(GumboNode *node, std::vector<const char*> tags={})
+void buildPageLines(GumboNode *node, std::vector<const char*> tags)
 {
     if (node->type == GUMBO_NODE_TEXT)
     {

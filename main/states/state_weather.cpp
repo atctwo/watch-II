@@ -1,9 +1,9 @@
-#include "../watch2.h"
+#include "states.h"
 
 void getLatLong(double &latitude, double &longitude)
 {
-    latitude = 0;
-    longitude = 0;
+    EXT_RAM_ATTR latitude = 0;
+    EXT_RAM_ATTR longitude = 0;
 
     if (watch2::wifi_state != 3) // wifi not connected
     {

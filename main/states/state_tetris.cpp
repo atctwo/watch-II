@@ -1,4 +1,4 @@
-#include "../watch2.h"
+#include "states.h"
 #include "../libraries/libtris/src/libtris.h"
 
 void state_func_tetris()
