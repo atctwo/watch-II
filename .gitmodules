@@ -40,3 +40,6 @@
 [submodule "main/libraries/tinywav"]
 	path = main/libraries/tinywav
 	url = https://github.com/mhroth/tinywav.git
+[submodule "components/esp_littlefs"]
+	path = components/esp_littlefs
+	url = https://github.com/joltwallet/esp_littlefs.git
