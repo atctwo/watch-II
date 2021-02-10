@@ -643,6 +643,18 @@ namespace watch2
      */
     const char *humanSize(uint64_t bytes);
 
+    /**
+     * @brief prints details about each currently running task
+     * @param output the Print object to print the details to
+     */
+    void print_task_details(Print &output=Serial);
+
+    /**
+     * @brief prints details about current memory usage
+     * @param output the Print object to print the details to
+     */
+    void print_memory_details(Print &output=Serial);
+
 
 
 
