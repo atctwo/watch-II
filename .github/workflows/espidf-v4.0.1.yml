@@ -17,7 +17,7 @@ jobs:
           cd ~/esp
           git clone --recursive https://github.com/espressif/esp-idf.git
           cd esp-idf
-          git checkout v4.0.1
+          git checkout v4.3-beta1
           git submodule update --recursive --init
 
       - name: Setup ESP-IDF Tools
