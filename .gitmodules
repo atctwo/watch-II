@@ -16,8 +16,8 @@
 [submodule "main/libraries/TFT_eSPI"]
 	path = main/libraries/TFT_eSPI
 	url = https://github.com/Bodmer/TFT_eSPI.git
-[submodule "components/arduino-esp32"]
-	path = components/arduino-esp32
+[submodule "components/arduino"]
+	path = components/arduino
 	url = https://github.com/espressif/arduino-esp32.git
 [submodule "main/libraries/ESP32-BLE-Keyboard"]
 	path = main/libraries/ESP32-BLE-Keyboard
@@ -43,3 +43,6 @@
 [submodule "components/esp_littlefs"]
 	path = components/esp_littlefs
 	url = https://github.com/joltwallet/esp_littlefs.git
+[submodule "components/esp-nimble-cpp"]
+	path = components/esp-nimble-cpp
+	url = https://github.com/h2zero/esp-nimble-cpp.git

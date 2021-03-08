@@ -3,6 +3,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_task_wdt.h"
+#include "esp_bt.h"
 #include "watch2.h"
 #include "icons/small_icons.h"
 
@@ -188,6 +189,7 @@ void setup() {
     //watch2::setFont(MAIN_FONT, watch2::framebuffer);
 
     // set up wifi
+    Serial.print("setting up wifi...");
     if (watch2::wifi_enabled)
     {
         watch2::enable_wifi(false);
@@ -196,6 +198,14 @@ void setup() {
             watch2::enable_wifi();
         }
     }
+    Serial.println("done!");
+
+    // set up bluetooth
+    Serial.print("setting up bluetooth...");
+    esp_bt_mem_release(ESP_BT_MODE_CLASSIC_BT);     // disable classic bluetooth
+    Serial.println("done!");
+
+
 
     //set up time
     Serial.print("setting up time: ");
@@ -207,8 +217,6 @@ void setup() {
     if (watch2::boot_count == 0)
     {
         setTime(23, 58, 00, 28, 6, 2019);
-        WiFi.mode(WIFI_OFF);
-        btStop();
 
     }
     Serial.println("done");
@@ -238,7 +246,7 @@ void setup() {
 
     // setup i2s sort of
     Serial.print("setting up i2s: ");
-    watch2::uninstall_i2s_driver();
+    //watch2::uninstall_i2s_driver();
     Serial.println("done!");
 
     // set up fs icons
@@ -249,7 +257,7 @@ void setup() {
     // set up audio task
     Serial.print("setting up audio task: ");
     int x = 10;
-    xTaskCreatePinnedToCore(watch2::audio_task, "audio", 8192, (void*)x, ESP_TASK_PRIO_MAX - 2, &watch2::audio_task_handle, 1);
+    xTaskCreatePinnedToCore(watch2::audio_task, "audio", 20000, (void*)x, ESP_TASK_PRIO_MAX - 1, &watch2::audio_task_handle, 1);
     Serial.println("done");
 
     Serial.print("setting up watch face shortcuts: ");

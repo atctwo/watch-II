@@ -200,18 +200,6 @@ namespace watch2 {
 
     void print_memory_details(Print &output)
     {
-        // print task info
-        // table header taken from http://exploreembedded.com/wiki/Read_Task_Info_%3A_vTaskList()
-
-        char pcWriteBuffer[40 * (uxTaskGetNumberOfTasks() + 1)];
-        vTaskList(pcWriteBuffer);
-        output.println("Task Info:");
-        output.println("Task  State   Prio    Stack    Num");
-        output.print(pcWriteBuffer);
-    }
-
-    void print_task_details(Print &output)
-    {
         // print memory info
         output.printf("[memory] used internal memory (heap):  %d (%s) (%0.2f%%)\n", 
             ESP.getHeapSize() - ESP.getFreeHeap(), watch2::humanSize(ESP.getHeapSize() - ESP.getFreeHeap()), 
@@ -226,6 +214,18 @@ namespace watch2 {
         );
         output.printf("[memory] free external memory (heap):  %d (%s)\n", ESP.getFreePsram(), watch2::humanSize(ESP.getFreePsram()));
         output.printf("[memory] total external memory (heap): %d (%s)\n", ESP.getPsramSize(), watch2::humanSize(ESP.getPsramSize()));
+    }
+
+    void print_task_details(Print &output)
+    {
+        // print task info
+        // table header taken from http://exploreembedded.com/wiki/Read_Task_Info_%3A_vTaskList()
+
+        char pcWriteBuffer[40 * (uxTaskGetNumberOfTasks() + 1)];
+        vTaskList(pcWriteBuffer);
+        output.println("Task Info:");
+        output.println("Task  State   Prio    Stack    Num");
+        output.print(pcWriteBuffer);
     }
 
     // https://github.com/G6EJD/ESP32-ADC-Accuracy-Improvement-function

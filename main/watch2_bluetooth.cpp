@@ -29,11 +29,11 @@ namespace watch2 {
     EXT_RAM_ATTR bool ble_set_up = false;
     //BleKeyboard ble_keyboard("watch2", "atctwo");
 
-    EXT_RAM_ATTR BLEServer *pServer;
-    EXT_RAM_ATTR BLEHIDDevice *ble_hid;
-    EXT_RAM_ATTR BLECharacteristic *input_keyboard;
-    EXT_RAM_ATTR BLECharacteristic *output_keyboard;
-    EXT_RAM_ATTR BLECharacteristic *input_media_keys;
+    EXT_RAM_ATTR NimBLEServer *pServer;
+    EXT_RAM_ATTR NimBLEHIDDevice *ble_hid;
+    EXT_RAM_ATTR NimBLECharacteristic *input_keyboard;
+    EXT_RAM_ATTR NimBLECharacteristic *output_keyboard;
+    EXT_RAM_ATTR NimBLECharacteristic *input_media_keys;
 
     // Report IDs:
     #define KEYBOARD_ID 0x01
@@ -103,25 +103,25 @@ namespace watch2 {
         END_COLLECTION(0)                  // END_COLLECTION
     };
 
-    class watch2_ble_server_callbacks : public BLEServerCallbacks {
-        void onConnect(BLEServer* pServer){
+    class watch2_ble_server_callbacks : public NimBLEServerCallbacks {
+        void onConnect(NimBLEServer* pServer){
             bluetooth_state = 3;
-            BLE2902* desc = (BLE2902*)input_keyboard->getDescriptorByUUID(BLEUUID((uint16_t)0x2902));
-            desc->setNotifications(true);
+            // NimBLE2902* desc = (NimBLE2902*)input_keyboard->getDescriptorByUUID(BLEUUID((uint16_t)0x2902));
+            // desc->setNotifications(true);
 
-            desc = (BLE2902*)input_media_keys->getDescriptorByUUID(BLEUUID((uint16_t)0x2902));
-            desc->setNotifications(true);
+            // desc = (NimBLE2902*)input_media_keys->getDescriptorByUUID(BLEUUID((uint16_t)0x2902));
+            // desc->setNotifications(true);
 
             Serial.println("[bluetooth] connected to device");
         }
 
-        void onDisconnect(BLEServer* pServer){
+        void onDisconnect(NimBLEServer* pServer){
             bluetooth_state = 2;
-            BLE2902* desc = (BLE2902*)input_keyboard->getDescriptorByUUID(BLEUUID((uint16_t)0x2902));
-            desc->setNotifications(false);
+            // NimBLE2902* desc = (NimBLE2902*)input_keyboard->getDescriptorByUUID(BLEUUID((uint16_t)0x2902));
+            // desc->setNotifications(false);
 
-            desc = (BLE2902*)input_media_keys->getDescriptorByUUID(BLEUUID((uint16_t)0x2902));
-            desc->setNotifications(false);
+            // desc = (NimBLE2902*)input_media_keys->getDescriptorByUUID(BLEUUID((uint16_t)0x2902));
+            // desc->setNotifications(false);
 
             Serial.println("[bluetooth] disconnected from device");
         }
@@ -130,23 +130,23 @@ namespace watch2 {
     void ble_server_task()
     {
         // set up test server
-        BLEDevice::init("watch2");
-        pServer = BLEDevice::createServer();
+        NimBLEDevice::init("watch2");
+        pServer = NimBLEDevice::createServer();
         pServer->setCallbacks(new watch2_ble_server_callbacks());
 
         // set up example service
-        BLEService *pService = pServer->createService(SERVICE_UUID);
-        BLECharacteristic *pCharacteristic = pService->createCharacteristic(
+        NimBLEService *pService = pServer->createService(SERVICE_UUID);
+        NimBLECharacteristic *pCharacteristic = pService->createCharacteristic(
                                                 CHARACTERISTIC_UUID,
-                                                BLECharacteristic::PROPERTY_READ |
-                                                BLECharacteristic::PROPERTY_WRITE
+                                                NIMBLE_PROPERTY::READ |
+                                                NIMBLE_PROPERTY::WRITE
                                             );
 
         pCharacteristic->setValue("Hello World says Neil");
         pService->start();
 
         // set up ble hid
-        ble_hid = new BLEHIDDevice(pServer);
+        ble_hid = new NimBLEHIDDevice(pServer);
         ble_hid->manufacturer()->setValue("atctwo");
         ble_hid->pnp(0x02, 0xe502, 0xa111, 0x0210);
         ble_hid->hidInfo(0x00, 0x01);
@@ -160,15 +160,15 @@ namespace watch2 {
 
 
         // set up ble security
-        BLESecurity *pSecurity = new BLESecurity();
+        NimBLESecurity *pSecurity = new NimBLESecurity();
         pSecurity->setAuthenticationMode(ESP_LE_AUTH_BOND);
 
 
         // set up advertising
-        BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
+        NimBLEAdvertising *pAdvertising = NimBLEDevice::getAdvertising();
         pAdvertising->addServiceUUID(SERVICE_UUID);
         pAdvertising->addServiceUUID(ble_hid->hidService()->getUUID());
-        pAdvertising->setAppearance(ESP_BLE_APPEARANCE_GENERIC_WATCH);
+        pAdvertising->setAppearance(0x00c0); // set appearance to generic watch
         pAdvertising->setScanResponse(true);
         pAdvertising->setMinPreferred(0x06);  // functions that help with iPhone connections issue
         pAdvertising->setMinPreferred(0x12);
@@ -224,7 +224,7 @@ namespace watch2 {
         }
         else
         {
-            xTaskCreate((TaskFunction_t) ble_server_task, "ble-server", 20000, NULL, 5, NULL);
+            xTaskCreate((TaskFunction_t) ble_server_task, "ble-server", 8192, NULL, 5, NULL);
             ble_set_up = true;
         }
 
@@ -245,13 +245,13 @@ namespace watch2 {
         //ble_keyboard.end();
 
         Serial.println("[BLE] stopping advertising");
-        BLEDevice::stopAdvertising();
+        NimBLEDevice::stopAdvertising();
 
         Serial.println("[BLE] de-init ble device");
-        BLEDevice::deinit(false);
+        NimBLEDevice::deinit(false);
 
         btStop();
-        delete pServer;
+        //delete pServer;
 
         Serial.println("[Bluetooth] finished disabling bluetooth");
         bluetooth_state = 0;

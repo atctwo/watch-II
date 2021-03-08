@@ -23,4 +23,9 @@ sed -i '/<User_Setup.h>/s/^/\/\//g' main/libraries/TFT_eSPI/User_Setup_Select.h
 # include watch2 setup
 sed -i '/Default setup is root library folder/a #include <User_Setups/Setup_watch2.h>' main/libraries/TFT_eSPI/User_Setup_Select.h
 
+echo "--- Modifying ESP32-audioI2S"
+
+# comment out i2s secure client insecure mode
+sed -i '/clientsecure.setInsecure/s/^/\/\//g' main/libraries/ESP32-audioI2S/src/Audio.cpp
+
 echo "--- Finished Installing Libraries :) ---"

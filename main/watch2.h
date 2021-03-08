@@ -41,10 +41,10 @@
 #include <Wire.h>
 #include <Adafruit_MCP23008.h>
 
-#include <BLEDevice.h>
-#include <BLEUtils.h>
-#include <BLEServer.h>
-#include <BLEHIDDevice.h>
+#include <NimBLEDevice.h>
+#include <NimBLEUtils.h>
+#include <NimBLEServer.h>
+#include <NimBLEHIDDevice.h>
 #include <HIDKeyboardTypes.h>
 
 #include <sys/cdefs.h>
@@ -394,8 +394,8 @@ namespace watch2
     extern std::unordered_map<fs_icon, std::string> fs_icon_name_map;                           //!< a map of fs icon identifiers to icon names
 
     // ble characteristics and services
-    extern BLEService *batteryService;
-    extern BLEHIDDevice *ble_hid;
+    extern NimBLEService *batteryService;
+    extern NimBLEHIDDevice *ble_hid;
 
     // global variables
     extern int state;                                                                           //!< currently selected state

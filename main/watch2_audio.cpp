@@ -105,7 +105,9 @@ namespace watch2 {
         bool success = false;
         is_playing = true;
 
-        setup_audio_for_playback();
+        //setup_audio_for_playback();
+        audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT, I2S_DIN);
+        audio.setVolume(speaker_volume);
 
         // if a filesystem has been passed, load the file from the filesystem
         if (fs) success = audio.connecttoFS(*fs, filename);
@@ -143,7 +145,7 @@ namespace watch2 {
             {
                 if (audio_repeat) play_music(audio_filename.c_str(), true, audio_fs);
                 else vTaskDelay(500);
-                if (!is_playing && is_driver_installed) uninstall_i2s_driver();
+                //if (!is_playing && is_driver_installed) uninstall_i2s_driver();
             }
             
         }
