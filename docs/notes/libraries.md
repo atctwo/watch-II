@@ -1,4 +1,4 @@
-# watch2 Arduino libraries
+# watch2 libraries
 
 watch 2 depends on lots of different code libraries.  Most of them are Arduino or C/C++ libraries that are included as Git Submodules, although some of them are built into the Arduino ESP32 core (which is included as an ESP-IDF component).  While most libraries will work fine without any modification, some libraries have to be tweaked a bit for watch 2 to be able to work with them.  This page lists each of the libraries that watch2 depends on, and what modifications have to be made.
 
@@ -63,6 +63,8 @@ The system uses a fork of [IRremote](https://github.com/ExploreEmbedded/Arduino-
 ## Modifications
 
 These are the modifications you need to make to some of the libraries to get watch2 to work with them.  The system will still compile if you don't perform these modifications, but you will need to modify them to match with the exact hardware that you are using.  The modifications listed below are specific to the watch 2 hardware that the system is being developed for, so if you are trying to get watch 2 running on a different board, you should see the documentation for the config files, and configure them to work with the hardware you are using.
+
+Most of these modifications are made automatically by `install_libraries.sh`
 
 ### Time
 
