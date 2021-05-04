@@ -26,8 +26,8 @@ namespace watch2
         stateMeta("Radio", state_func_radio, "radio"),
         //stateMeta("Recorder", state_func_recorder),
         stateMeta("Bluetooth Remote", state_func_bt_remote, "ble_remote"),
-        stateMeta("Tetris", state_func_tetris, "ltris")
-        //stateMeta("NES", state_func_nes, "nes")
+        stateMeta("Tetris", state_func_tetris, "ltris"),
+        stateMeta("NES", state_func_nes, "nes")
 
     };
 
