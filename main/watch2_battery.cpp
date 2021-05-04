@@ -19,9 +19,12 @@
 
 namespace watch2 {
 
+    bool is_fuel_gauge_present = false;
     
     unsigned int vcellMAX17043()
     {
+        if (!is_fuel_gauge_present) return 0.0;
+
         unsigned int vcell;
 
         vcell = i2cRead16(0x02);
@@ -32,6 +35,9 @@ namespace watch2 {
 
     float percentMAX17043()
     {
+        Serial.println("kill me");
+        if (!is_fuel_gauge_present) return 0.0;
+
         unsigned int soc;
         float percent;
 
@@ -42,8 +48,18 @@ namespace watch2 {
         return percent;
     }
 
-    void configMAX17043(byte percent)
+    bool configMAX17043(byte percent)
     {
+        // check if the device is present
+        Wire.beginTransmission(I2C_ADDRESS_MAX17043);
+        uint8_t error = Wire.endTransmission();
+        if (error != 0) {
+            is_fuel_gauge_present = false;
+            return false;
+        }
+
+
+        // set the alert percentage
         if ((percent >= 32)||(percent == 0))  // Anything 32 or greater will set to 32%
             i2cWrite16(0x9700, 0x0C);
         else
@@ -51,6 +67,9 @@ namespace watch2 {
             byte percentBits = 32 - percent;
             i2cWrite16((0x9700 | percentBits), 0x0C);
         }
+
+        is_fuel_gauge_present = true;
+        return true;
     }
 
     void qsMAX17043()
