@@ -24,7 +24,7 @@ The system is built on an ESP32, and uses software written using the ESP-IDF (wi
 
 These are some rough instructions for installing and flashing the software on to an ESP32 board.  These steps are mainly aimed for Linux systems.
 
-1. make sure ESP-IDF v4.3-beta1 is installed and setup
+1. make sure ESP-IDF v4.3-beta3 is installed and setup
 2. `git clone` this repository somewhere - `git clone https://github.com/atctwo/watch-II.git`
 3. `cd` into the project directory
     - then run these commands:
