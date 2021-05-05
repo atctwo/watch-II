@@ -45,20 +45,26 @@ void setup() {
     Wire.begin(I2C_SDA, I2C_SCL);
     ESP_LOGD(TAG_INIT, "done");
 
-    ESP_LOGD(TAG_INIT, "\tMCP23008: ");
-    watch2::mcp.begin(I2C_ADDRESS_MCP23008);
-
-    for (uint8_t i = 0; i < 7; i++) // set channels 0 to 6 as inputs with no pull up
+    Serial.print("\tMCP23008: ");
+    if (watch2::mcp.begin(I2C_ADDRESS_MCP23008))
     {
-        watch2::mcp.pinMode(i, INPUT);
-        watch2::mcp.pullUp(i, LOW);
+
+        for (uint8_t i = 0; i < 7; i++) // set channels 0 to 6 as inputs with no pull up
+        {
+            watch2::mcp.pinMode(i, INPUT);
+            watch2::mcp.pullUp(i, LOW);
+        }
+
+        watch2::mcp.pinMode(SHUTDOWN_PIN, OUTPUT); // set shutdown pin as an output w/ pull up
+        watch2::mcp.pullUp(SHUTDOWN_PIN, LOW);
+        watch2::mcp.digitalWrite(SHUTDOWN_PIN, 1);
+
+        ESP_LOGD(TAG_INIT, "done");
     }
-
-    watch2::mcp.pinMode(SHUTDOWN_PIN, OUTPUT); // set shutdown pin as an output w/ pull up
-    watch2::mcp.pullUp(SHUTDOWN_PIN, LOW);
-    watch2::mcp.digitalWrite(SHUTDOWN_PIN, 1);
-
-    ESP_LOGD(TAG_INIT, "done");
+    else 
+    {
+        ESP_LOGD(TAG_INIT, "failed :(");
+    }
 
     ESP_LOGD(TAG_INIT, "\tMAX17043: ");
     watch2::configMAX17043(15);

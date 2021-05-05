@@ -134,6 +134,7 @@
 #define REALLY_REALLY_BIG_FONT  "HelvetiHand90"
 
 // i2c addresses
+#define I2C_ADDRESS_MCP9098     0x18    // temperature sensor
 #define I2C_ADDRESS_MCP23008    0x20    // io expander
 #define I2C_ADDRESS_MAX17043    0x36    // lipo fuel gauge
 
@@ -407,7 +408,7 @@ namespace watch2
                                                                                                 //!< boot count is used to keep track of what state was selected in the menu before
                                                                                                 //!< entering deep sleep.  This variable is only used when going in to or waking up
                                                                                                 //!< from sleep.  During active mode operation, selected_menu_icon is used,
-
+    extern bool is_fuel_gauge_present;
     extern uint8_t top_thing_height;                                                            //!< the height of the top thing (plus a small buffer) in pixels
     extern bool forceRedraw;
     extern bool forceRedrawLooped;
@@ -1237,8 +1238,9 @@ namespace watch2
     @brief configMAX17043(byte percent) configures the config register of the MAX170143, specifically the alert threshold therein. 
      * Pass a value between 1 and 32 to set the alert threshold to a value between 1 and 32%. Any other values will set 
      * the threshold to 32%.
+     * @return true if the device was configured correctly, false if no device was found
     */
-    void configMAX17043(byte percent);
+    bool configMAX17043(byte percent);
 
     /**
     @brief qsMAX17043() issues a quick-start command to the MAX17043.
