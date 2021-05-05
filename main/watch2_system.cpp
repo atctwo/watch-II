@@ -53,6 +53,7 @@ namespace watch2 {
     EXT_RAM_ATTR SPIClass *vspi = new SPIClass(VSPI);
     EXT_RAM_ATTR Preferences preferences;
     EXT_RAM_ATTR Adafruit_MCP23008 mcp;
+    EXT_RAM_ATTR Adafruit_MCP9808 temperature;
 
     //button objects
     EXT_RAM_ATTR Button btn_dpad_up(dpad_up, 25, false, false);
@@ -410,6 +411,9 @@ namespace watch2 {
 
         settimeofday(&tv, NULL);
 
+        // shutdown temperature sensor
+        temperature.shutdown();
+
         //deep sleep setup
         esp_sleep_enable_ext0_wakeup(GPIO_NUM_36, 1); //1 = High, 0 = Low
 
@@ -511,6 +515,9 @@ namespace watch2 {
 
         // time??? what is it really?
         if (watch2::ntp_wakeup_connect) watch2::ntp_boot_connected = false;
+
+        // wakeup temperature sensor
+        temperature.wake();
 
         //rtc_gpio_deinit(GPIO_NUM_26);
         if (next_alarm_time > -1) switchState(0, 0, 0, 0, true);
