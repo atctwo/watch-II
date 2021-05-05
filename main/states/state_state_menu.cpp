@@ -105,7 +105,7 @@ void state_func_state_menu()
 
 
     draw(dpad_any_active(), {
-        Serial.println("[state menu] drawing state menu");
+        ESP_LOGD(WATCH2_TAG, "[state menu] drawing state menu");
         icon_ypos += watch2::top_thing_height;                 //add space for top bar thing
 
         //determine row of selected icon by means of an overengineered 2d-ish linear search
@@ -154,7 +154,7 @@ void state_func_state_menu()
                 //draw app icon
                 if ((watch2::selected_menu_icon == i) || (icon_yoffset != last_yoffset) || (!watch2::state_init) || watch2::forceRedraw)
                 {
-                    //Serial.printf("drawing icon for state \"%s\", icon is \"%s\" (%d elements)\n", stateinfo.stateName.c_str(), stateinfo.stateIcon.c_str(), sizeof((*watch2::icons)[stateinfo.stateIcon]));
+                    //ESP_LOGD(WATCH2_TAG, "drawing icon for state \"%s\", icon is \"%s\" (%d elements)", stateinfo.stateName.c_str(), stateinfo.stateIcon.c_str(), sizeof((*watch2::icons)[stateinfo.stateIcon]));
                     watch2::drawImage((*watch2::icons)[stateinfo.stateIcon], icon_xpos, icon_ypos - icon_yoffset);
                 }
 

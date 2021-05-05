@@ -38,8 +38,9 @@
 #include <Preferences.h>            // for storing settings in nvs (allowing for persistance over power cycles)
 #include <tinyexpr.h>               // expression evaluator for calculator
 #include <cJSON.h>                  // JSON parser
-#include <Wire.h>
-#include <Adafruit_MCP23008.h>
+#include <esp_log.h>                // ESP-IDF logging
+#include <Wire.h>                   // Arduino I2C library
+#include <Adafruit_MCP23008.h>      // MCP23008 library
 
 #include <NimBLEDevice.h>
 #include <NimBLEUtils.h>
@@ -152,6 +153,7 @@
 #define WIFI_PROFILES_FILENAME  "/wifi_profiles.json"   //!< the name of the file that stores wifi profiles
 #define API_KEYS_FILENAME       "/api_keys.json"        //!< the name of the file that is used to store API keys for lots of REST APIs
 #define RADIO_FILENAME          "/radio.txt"            //!< the name of the file that contains radio HTTP streams
+#define WATCH2_TAG              "watch2"                // esp-idf logging tag
 
 //Calculator definitions
 #define CALC_CELL_WIDTH   25//27 for 4 chrs

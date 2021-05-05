@@ -25,7 +25,7 @@ namespace watch2 {
 
     void setup_audio_for_playback()
     {
-        Serial.println("[audio] setting up I2S for playback");
+        ESP_LOGD(WATCH2_TAG, "[audio] setting up I2S for playback");
 
         // set up I2S driver
         i2s_driver_uninstall(I2S_NUM_0);
@@ -43,7 +43,7 @@ namespace watch2 {
             .fixed_mclk = I2S_PIN_NO_CHANGE
         };
         esp_err_t err = i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);
-        if (err) Serial.printf("[recorder] error installing i2s driver: %s (%d)", esp_err_to_name(err), err);
+        if (err) ESP_LOGD(WATCH2_TAG, "[recorder] error installing i2s driver: %s (%d)", esp_err_to_name(err), err);
         is_driver_installed = (err == 0);
 
 
@@ -54,7 +54,7 @@ namespace watch2 {
 
     void setup_audio_for_input()
     {
-        Serial.println("[audio] setting up I2S for input");
+        ESP_LOGD(WATCH2_TAG, "[audio] setting up I2S for input");
 
         // set up i2s for audio input
         i2s_driver_uninstall(I2S_NUM_0);
@@ -70,7 +70,7 @@ namespace watch2 {
             .dma_buf_len = 8                              // 8 samples per buffer (minimum)
         };
         esp_err_t err = i2s_driver_install(I2S_NUM_0, &i2s_config, 0, NULL);
-        if (err) Serial.printf("[recorder] error installing i2s driver: %s (%d)", esp_err_to_name(err), err);
+        if (err) ESP_LOGD(WATCH2_TAG, "[recorder] error installing i2s driver: %s (%d)", esp_err_to_name(err), err);
         is_driver_installed = (err == 0);
 
         i2s_pin_config_t pins = {
@@ -89,7 +89,7 @@ namespace watch2 {
 
     void uninstall_i2s_driver()
     {
-        Serial.println("[audio] uninstalling i2s");
+        ESP_LOGD(WATCH2_TAG, "[audio] uninstalling i2s");
         i2s_driver_uninstall(I2S_NUM_0);
         is_driver_installed = false;
         is_playing = false;
@@ -97,7 +97,7 @@ namespace watch2 {
 
     bool play_music(const char *filename, bool repeat, fs::FS *fs)
     {
-        Serial.printf("[music player] now playing %s\n", filename);
+        ESP_LOGD(WATCH2_TAG, "[music player] now playing %s", filename);
         audio_filename = filename;
         audio_repeat = repeat;
         audio_fs = fs;
@@ -137,7 +137,7 @@ namespace watch2 {
 
     void audio_task(void *pvParameters)
     {
-        Serial.println("[music player] starting audio");
+        ESP_LOGD(WATCH2_TAG, "[music player] starting audio");
         while(true)
         {
             if (audio.isRunning()) audio.loop();
@@ -149,7 +149,7 @@ namespace watch2 {
             }
             
         }
-        Serial.println("[music player] audio task loop ended");
+        ESP_LOGD(WATCH2_TAG, "[music player] audio task loop ended");
     }
 
 }

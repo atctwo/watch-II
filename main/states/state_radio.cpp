@@ -19,7 +19,7 @@ void state_func_radio()
         if (!watch2::state_init)
         {
             watch2::initSD();
-            Serial.printf("wifi %d, sd %d\n", watch2::wifi_state, watch2::sd_state);
+            ESP_LOGD(WATCH2_TAG, "wifi %d, sd %d", watch2::wifi_state, watch2::sd_state);
             if (watch2::wifi_state == 3 && watch2::sd_state == 1)
             {
                 station_names.clear();
@@ -48,10 +48,10 @@ void state_func_radio()
                 }
 
                 // print stations
-                Serial.println("read stations: ");
+                ESP_LOGD(WATCH2_TAG, "read stations: ");
                 for (uint8_t i = 0; i < station_names.size(); i++)
                 {
-                    Serial.printf("%s: %s\n", station_names[i].c_str(), station_urls[i].c_str());
+                    ESP_LOGD(WATCH2_TAG, "%s: %s", station_names[i].c_str(), station_urls[i].c_str());
                 }
 
                 // close file

@@ -7,27 +7,27 @@ void getLatLong(double &latitude, double &longitude)
 
     if (watch2::wifi_state != 3) // wifi not connected
     {
-        Serial.println("[weather] not connected to wifi");
+        ESP_LOGD(WATCH2_TAG, "[weather] not connected to wifi");
     }
     else // wifi is connected
     {
-        Serial.println("[weather] getting current weather");
+        ESP_LOGD(WATCH2_TAG, "[weather] getting current weather");
 
         HTTPClient *http = new HTTPClient();
         char server[150];
         std::string api_key = watch2::getApiKey("openweather");
-        Serial.printf("[weather] key: %s\n", api_key.c_str());
+        ESP_LOGD(WATCH2_TAG, "[weather] key: %s", api_key.c_str());
         sprintf(server, "http://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s", watch2::weather_location.c_str(), api_key.c_str());
-        Serial.printf("[weather] server request: %s\n", server);
+        ESP_LOGD(WATCH2_TAG, "[weather] server request: %s", server);
 
         // connect to server
-        Serial.println("[weather] connecting to server");
+        ESP_LOGD(WATCH2_TAG, "[weather] connecting to server");
         http->begin(watch2::wifi_client, server);
         int http_code = http->GET();
         if (http_code)
         {
-            Serial.println("[weather] connected to server");
-            Serial.printf("[weather] http code: %d (%s)\n", http_code, http->errorToString(http_code));
+            ESP_LOGD(WATCH2_TAG, "[weather] connected to server");
+            ESP_LOGD(WATCH2_TAG, "[weather] http code: %d (%s)", http_code, http->errorToString(http_code));
 
             if (http_code > 0)
             {
@@ -35,8 +35,8 @@ void getLatLong(double &latitude, double &longitude)
                 {
                     // get server response
                     String res = http->getString();
-                    Serial.println("[weather] response:");
-                    Serial.println(res);
+                    ESP_LOGD(WATCH2_TAG, "[weather] response:");
+                    ESP_LOGD(WATCH2_TAG, "%s", res.c_str());
 
                     // parse returned json
                     cJSON *weather_data = cJSON_Parse(res.c_str());
@@ -52,28 +52,28 @@ void getLatLong(double &latitude, double &longitude)
                         }
                         else
                         {
-                            Serial.println("[weather] failed to get coord object");
+                            ESP_LOGD(WATCH2_TAG, "[weather] failed to get coord object");
                         }                        
                     }
                     else
                     {
-                        Serial.println("[weather] failed to parse response");
+                        ESP_LOGD(WATCH2_TAG, "[weather] failed to parse response");
                     }
                     
                     // free memory used by parsed json
                     cJSON_Delete(weather_data);
                 }
             }
-            else Serial.println("[weather] ???");
+            else ESP_LOGD(WATCH2_TAG, "[weather] ???");
             
         }
         else
         {
-            Serial.println("[weather] failed to connect");
+            ESP_LOGD(WATCH2_TAG, "[weather] failed to connect");
         }
 
         delete http;
-        Serial.println("[weather] finished");
+        ESP_LOGD(WATCH2_TAG, "[weather] finished");
     }
     
 }
@@ -84,27 +84,27 @@ cJSON *getForecast(double latitude, double longitude)
 
     if (watch2::wifi_state != 3) // wifi not connected
     {
-        Serial.println("[weather] not connected to wifi");
+        ESP_LOGD(WATCH2_TAG, "[weather] not connected to wifi");
     }
     else // wifi is connected
     {
-        Serial.println("[weather] getting current weather");
+        ESP_LOGD(WATCH2_TAG, "[weather] getting current weather");
 
         HTTPClient *http = new HTTPClient();
         char server[175];
         std::string api_key = watch2::getApiKey("openweather");
-        Serial.printf("[weather] key: %s\n", api_key.c_str());
+        ESP_LOGD(WATCH2_TAG, "[weather] key: %s", api_key.c_str());
         sprintf(server, "http://api.openweathermap.org/data/2.5/onecall?lat=%f&lon=%f&exclude=minutely,current,hourly&appid=%s", latitude, longitude, api_key.c_str());
-        Serial.printf("[weather] server request: %s\n", server);
+        ESP_LOGD(WATCH2_TAG, "[weather] server request: %s", server);
 
         // connect to server
-        Serial.println("[weather] connecting to server");
+        ESP_LOGD(WATCH2_TAG, "[weather] connecting to server");
         http->begin(watch2::wifi_client, server);
         int http_code = http->GET();
         if (http_code)
         {
-            Serial.println("[weather] connected to server");
-            Serial.printf("[weather] http code: %d (%s)\n", http_code, http->errorToString(http_code));
+            ESP_LOGD(WATCH2_TAG, "[weather] connected to server");
+            ESP_LOGD(WATCH2_TAG, "[weather] http code: %d (%s)", http_code, http->errorToString(http_code));
 
             if (http_code > 0)
             {
@@ -112,35 +112,35 @@ cJSON *getForecast(double latitude, double longitude)
                 {
                     // get server response
                     String res = http->getString();
-                    Serial.println("[weather] response:");
-                    Serial.println(res);
+                    ESP_LOGD(WATCH2_TAG, "[weather] response:");
+                    ESP_LOGD(WATCH2_TAG, "%s", res.c_str());
 
                     // parse returned json
                     forecast = cJSON_Parse(res.c_str());
                     if (forecast)
                     {
-                        Serial.println("[weather] parsed response successfully");                      
+                        ESP_LOGD(WATCH2_TAG, "[weather] parsed response successfully");                      
                     }
                     else
                     {
-                        Serial.println("[weather] failed to parse response");
+                        ESP_LOGD(WATCH2_TAG, "[weather] failed to parse response");
                     }
                 }
             }
-            else Serial.println("[weather] ???");
+            else ESP_LOGD(WATCH2_TAG, "[weather] ???");
             
         }
         else
         {
-            Serial.println("[weather] failed to connect");
+            ESP_LOGD(WATCH2_TAG, "[weather] failed to connect");
         }
 
         delete http;
-        Serial.println("hi");
+        ESP_LOGD(WATCH2_TAG, "hi");
     }
 
-    Serial.println("[weather] finished");
-    Serial.println("aaa");
+    ESP_LOGD(WATCH2_TAG, "[weather] finished");
+    ESP_LOGD(WATCH2_TAG, "aaa");
     return forecast;
     
 }
@@ -152,11 +152,11 @@ cJSON *getDailyArray(cJSON *forecast)
     if (forecast)
     {
         daily_array = cJSON_GetObjectItem(forecast, "daily");
-        if (!daily_array) Serial.println("[weather] couldn't get daily array");
+        if (!daily_array) ESP_LOGD(WATCH2_TAG, "[weather] couldn't get daily array");
     }
     else
     {
-        Serial.println("[weather] forecast is null");
+        ESP_LOGD(WATCH2_TAG, "[weather] forecast is null");
     }
 
     return daily_array;
@@ -187,13 +187,13 @@ void state_func_weather()
         {
             if (watch2::weather_location.isEmpty()) // if no weather location has been set
             {
-                Serial.println("[weather] location has not been set");
+                ESP_LOGD(WATCH2_TAG, "[weather] location has not been set");
             }
             else
             {
                 // get latitude and longitude
                 getLatLong(latitude, longitude);
-                Serial.printf("[weather] latitude: %f, longitude: %f\n", latitude, longitude);
+                ESP_LOGD(WATCH2_TAG, "[weather] latitude: %f, longitude: %f", latitude, longitude);
 
                 // get forecast
                 forecast = getForecast(latitude, longitude);
@@ -357,9 +357,9 @@ void state_func_weather()
                                     break;
                             }
                         }
-                        else Serial.println("[weather] failed to get weather array");
+                        else ESP_LOGD(WATCH2_TAG, "[weather] failed to get weather array");
                     }
-                    else Serial.printf("[weather] couldn't get information for day %d\n", i);
+                    else ESP_LOGD(WATCH2_TAG, "[weather] couldn't get information for day %d", i);
 
                     
                 }
@@ -434,7 +434,7 @@ void state_func_weather()
                                 break;
                         }
                     }
-                    else Serial.println("[weather] failed to get weather array");
+                    else ESP_LOGD(WATCH2_TAG, "[weather] failed to get weather array");
 
                     if (day_page == 0)
                     {
@@ -553,13 +553,13 @@ void state_func_weather()
                 }
                 else 
                 {
-                    Serial.printf("[weather] couldn't get day from array (selected_day: %d)\n", selected_day);
+                    ESP_LOGD(WATCH2_TAG, "[weather] couldn't get day from array (selected_day: %d)", selected_day);
                     watch2::oled.printf("error: couldn't get \nday from array \n(selected_day: %d)\n", selected_day);
                 }
             }
             else 
             {
-                Serial.println("[weather] invalid daily array");
+                ESP_LOGD(WATCH2_TAG, "[weather] invalid daily array");
                 watch2::oled.println("error: invalid daily \narray");
             }
 

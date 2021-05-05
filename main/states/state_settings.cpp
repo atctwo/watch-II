@@ -83,7 +83,7 @@ void state_func_settings()
 
         case 20: // manually set time and date
 
-            Serial.printf("0: %d\n", selected_time);
+            ESP_LOGD(WATCH2_TAG, "0: %d", selected_time);
             if (!watch2::state_init)
             {
                 temp_time[0] = hour();
@@ -93,7 +93,7 @@ void state_func_settings()
                 temp_time[4] = month();
                 temp_time[5] = year();
             }
-            //Serial.printf("1: %d\n", selected_time);
+            //ESP_LOGD(WATCH2_TAG, "1: %d", selected_time);
             //watch2::oled.setFreeFont(&SourceSansPro_Light12pt7b);
             
             if (dpad_left_active())
@@ -102,14 +102,14 @@ void state_func_settings()
                 selected_time--;
                 if (selected_time < 0) selected_time = 5;
             }
-            //Serial.printf("2: %d\n", selected_time);
+            //ESP_LOGD(WATCH2_TAG, "2: %d", selected_time);
             if (dpad_right_active())
             {
                 // increment element selection
                 selected_time++;
                 if (selected_time > 5) selected_time = 0;
             }
-            //Serial.printf("3: %d\n", selected_time);
+            //ESP_LOGD(WATCH2_TAG, "3: %d", selected_time);
 
             if (dpad_up_active())
             {
@@ -121,7 +121,7 @@ void state_func_settings()
                 if (temp_time[selected_time] > time_limits[selected_time]) temp_time[selected_time] = time_lower[selected_time];    // if value is above limit, loop
                 if (selected_time == 4 || selected_time == 5) temp_time[3] = std::min( temp_time[3], days_in_each_month[temp_time[4]-1] ); // limit current day value by month or year
             }
-            //Serial.printf("4: %d\n", selected_time);
+            //ESP_LOGD(WATCH2_TAG, "4: %d", selected_time);
             if (dpad_down_active())
             {
                 // increment selected element
@@ -132,7 +132,7 @@ void state_func_settings()
                 if (temp_time[selected_time] < time_lower[selected_time]) temp_time[selected_time] = time_limits[selected_time];    // if value is below limit, loop
                 if (selected_time == 4 || selected_time == 4) temp_time[3] = std::min( temp_time[3], days_in_each_month[temp_time[4]-1] ); // limit current day value by month or year
             }
-            //Serial.printf("5: %d\n", selected_time);
+            //ESP_LOGD(WATCH2_TAG, "5: %d", selected_time);
 
             draw(dpad_any_active(), {
 
@@ -164,7 +164,7 @@ void state_func_settings()
                 setTime(temp_time[0], temp_time[1], temp_time[2], temp_time[3], temp_time[4], temp_time[5]);
                 watch2::switchState(watch2::state, 1);
             }
-            //Serial.printf("7: %d\n", selected_time);
+            //ESP_LOGD(WATCH2_TAG, "7: %d", selected_time);
             //watch2::oled.setFreeFont(&SourceSansPro_Light8pt7b); // reset font
             break;
 
@@ -430,7 +430,7 @@ void state_func_settings()
                 // aaaaaaaaaaaaaaaaaaaaaaaaa
                 if (selecting_state)
                 {
-                    //Serial.printf("%d, %d\n", selected_wfs_state, wfs_direction);
+                    //ESP_LOGD(WATCH2_TAG, "%d, %d", selected_wfs_state, wfs_direction);
                     if (selected_wfs_state == -1) selected_wfs_state = 0;
                     if (selected_wfs_state >= 0 && selected_wfs_state < watch2::states.size())
                     {
@@ -937,7 +937,7 @@ void state_func_settings()
                     {
                         profile = cJSON_GetArrayItem(profile_array, i);
                         const char* ssid = cJSON_GetObjectItem(profile, "ssid")->valuestring;
-                        Serial.printf("checking ssid %s\n", ssid);
+                        ESP_LOGD(WATCH2_TAG, "checking ssid %s", ssid);
                         if (strcmp(ssid, WiFi.SSID(selected_ssid-2).c_str()) == 0) // if profile ssid matches ap ssid
                         {
                             help = true;
@@ -947,7 +947,7 @@ void state_func_settings()
 
                     if (help) // the ap does have a profile
                     {
-                        Serial.println("connecting using stored profile");
+                        ESP_LOGD(WATCH2_TAG, "connecting using stored profile");
                         watch2::wifi_encryption = (wifi_auth_mode_t) cJSON_GetObjectItem(profile, "encryption")->valueint;
                         watch2::connectToWifiAP(
                             cJSON_GetObjectItem(profile, "ssid")->valuestring,
@@ -957,7 +957,7 @@ void state_func_settings()
                     else // the ap doesn't have a profile
                     {
                         // connect to selected ssid
-                        Serial.println("no profile was found, so connecting based on user input");
+                        ESP_LOGD(WATCH2_TAG, "no profile was found, so connecting based on user input");
                         wifi_auth_mode_t ap_encryption = WiFi.encryptionType(selected_ssid - 2);
                         std::string password = "none";
 
@@ -1117,7 +1117,7 @@ void state_func_settings()
                         // save settings
                         if (edit_profile)
                         {
-                            Serial.println("updating AP profile");
+                            ESP_LOGD(WATCH2_TAG, "updating AP profile");
                             cJSON_ReplaceItemInObject(edit_profile, "ssid", cJSON_CreateString(ssid.c_str()));
                             cJSON_ReplaceItemInObject(edit_profile, "password", cJSON_CreateString(password.c_str()));
                             cJSON_ReplaceItemInObject(edit_profile, "encryption", cJSON_CreateNumber(encryption));
@@ -1149,7 +1149,7 @@ void state_func_settings()
 
                         if (edit_profile)
                         {
-                            Serial.println("deleting AP profile");
+                            ESP_LOGD(WATCH2_TAG, "deleting AP profile");
 
                             // delete profile
                             cJSON_DeleteItemFromArray(profile_array, edit_profile_index);

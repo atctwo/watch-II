@@ -81,8 +81,8 @@ namespace watch2 {
 
     void endLoop()
     {
-        // Serial.printf("internal RAM: %2.4f%%\n", ((float)(ESP.getHeapSize() - ESP.getFreeHeap()) / ESP.getHeapSize()) * 100);
-        // Serial.printf("external RAM: %2.4f%%\n", ((float)(ESP.getPsramSize() - ESP.getFreePsram()) / ESP.getPsramSize()) * 100);
+        // ESP_LOGD(WATCH2_TAG, "internal RAM: %2.4f%%", ((float)(ESP.getHeapSize() - ESP.getFreeHeap()) / ESP.getHeapSize()) * 100);
+        // ESP_LOGD(WATCH2_TAG, "external RAM: %2.4f%%", ((float)(ESP.getPsramSize() - ESP.getFreePsram()) / ESP.getPsramSize()) * 100);
 
         //wip screenshot tool
         //this doesn't work yet
@@ -96,10 +96,10 @@ namespace watch2 {
         //         {
         //             uint16_t colour[1];
         //             oled.readRect(x, y, 1, 1, colour);
-        //             Serial.printf("%d ", colour[0]);
-        //             //Serial.printf("%3d %3d\n", x, y);
+        //             ESP_LOGD(WATCH2_TAG, "%d ", colour[0]);
+        //             //ESP_LOGD(WATCH2_TAG, "%3d %3d", x, y);
         //         }
-        //         Serial.println();
+        //         ESP_LOGD(WATCH2_TAG, "%*", );
         //     }
             
         // }
@@ -109,29 +109,29 @@ namespace watch2 {
             watch2::controlCentreDialogue();
         }
 
-        //for (uint i = 0; i < 8; i++) Serial.printf("btn %d: %d;\t", i, mcp.digitalRead(i));
-        //Serial.println("");
-        //Serial.printf("dpad right: %d;\n", mcp.digitalRead(dpad_right));
+        //for (uint i = 0; i < 8; i++) ESP_LOGD(WATCH2_TAG, "btn %d: %d;\t", i, mcp.digitalRead(i));
+        //ESP_LOGD(WATCH2_TAG, "");
+        //ESP_LOGD(WATCH2_TAG, "dpad right: %d;", mcp.digitalRead(dpad_right));
 
         for (uint8_t i = 0; i < 5; i++)
         {
             // reset button active state
             if (dpad_pressed[i]) {
-                //Serial.printf("[button locks] set button %d to not pressed and locked\n", i);
+                //ESP_LOGD(WATCH2_TAG, "[button locks] set button %d to not pressed and locked", i);
                 dpad_pressed[i] = false;
                 dpad_lock[i] = true;
             }
 
             // set button active state
             if (!dpad_lock[i] && mcp.digitalRead(i)) {
-                //Serial.printf("[button locks] set button %d to pressed\n", i);
+                //ESP_LOGD(WATCH2_TAG, "[button locks] set button %d to pressed", i);
                 dpad_pressed[i] = true;
             }
 
             //reset button lock state
             if (dpad_lock[i] && !mcp.digitalRead(i)) 
             {
-                //Serial.printf("[button locks] set button %d to unlocked\n", i);
+                //ESP_LOGD(WATCH2_TAG, "[button locks] set button %d to unlocked", i);
                 dpad_lock[i] = false;
             }
         }
@@ -176,9 +176,9 @@ namespace watch2 {
             // wifi connection timeout
             if ((millis() - wifi_connect_timeout_start) > wifi_connect_timeout)
             {
-                Serial.println("[Wifi] connection timed out");
+                ESP_LOGW(WATCH2_TAG, "[Wifi] connection timed out");
                 WiFi._setStatus(WL_CONNECT_FAILED);
-                Serial.println(millis());
+                ESP_LOGD(WATCH2_TAG, "%lu", millis());
             }
 
             if (WiFi.status() == WL_CONNECTED)
@@ -188,8 +188,8 @@ namespace watch2 {
                 cJSON *profiles = getWifiProfiles();
                 if (profiles)
                 {
-                    // Serial.println("profile list before adding new profile");
-                    // Serial.println(cJSON_Print(profiles));
+                    // ESP_LOGD(WATCH2_TAG, "profile list before adding new profile");
+                    // ESP_LOGD(WATCH2_TAG, "%*", cJSON_Print(profiles));
 
                     // is ssid in profile list?
                     bool help = false;
@@ -215,15 +215,15 @@ namespace watch2 {
                         cJSON_AddStringToObject(profile, "password", WiFi.psk().c_str());
                         cJSON_AddNumberToObject(profile, "encryption", wifi_encryption);
 
-                        // Serial.println("new profile");
-                        // Serial.println(cJSON_Print(profile));
+                        // ESP_LOGD(WATCH2_TAG, "new profile");
+                        // ESP_LOGD(WATCH2_TAG, "%*", cJSON_Print(profile));
 
                         // add profile to profile list
                         cJSON_AddItemToArray(profile_array, profile);
                     }
 
-                    // Serial.println("profile list after adding new profile");
-                    // Serial.println(cJSON_Print(profiles));
+                    // ESP_LOGD(WATCH2_TAG, "profile list after adding new profile");
+                    // ESP_LOGD(WATCH2_TAG, "%*", cJSON_Print(profiles));
 
                     // update access index
                     cJSON *access_index = cJSON_GetObjectItem(profiles, "access_index");
@@ -251,23 +251,23 @@ namespace watch2 {
                         // push ssid to start of list
                         cJSON_InsertItemInArray(access_index, 0, cJSON_CreateString(WiFi.SSID().c_str()));
                     }
-                    else Serial.println("could not access access index");
+                    else ESP_LOGW(WATCH2_TAG, "could not access access index");
 
-                    // Serial.println("profile list after updating access index");
-                    // Serial.println(cJSON_Print(profiles));
+                    // ESP_LOGD(WATCH2_TAG, "profile list after updating access index");
+                    // ESP_LOGD(WATCH2_TAG, "%*", cJSON_Print(profiles));
 
                     // write update profile list to file
                     setWifiProfiles(profiles);
 
                     // clear up memory
-                    Serial.println("[Wifi] freeing memory for profiles");
+                    ESP_LOGD(WATCH2_TAG, "[Wifi] freeing memory for profiles");
                     cJSON_Delete(profiles);
                 }
-                else Serial.println("[Wifi] couldn't access profile list");
+                else ESP_LOGW(WATCH2_TAG, "[Wifi] couldn't access profile list");
 
                 // set wifi state
                 wifi_state = 3;
-                Serial.printf("[Wifi] connected to %s\n", WiFi.SSID().c_str());
+                ESP_LOGD(WATCH2_TAG, "[Wifi] connected to %s", WiFi.SSID().c_str());
             }
             
             if (WiFi.status() == WL_CONNECT_FAILED || WiFi.status() == WL_CONNECTION_LOST || WiFi.status() == WL_NO_SSID_AVAIL)
@@ -276,12 +276,12 @@ namespace watch2 {
                 {
                     WiFi.disconnect();
                     wifi_state = 1;
-                    Serial.println("[WiFi] could not connect to AP");
+                    ESP_LOGW(WATCH2_TAG, "[WiFi] could not connect to AP");
                 }
                 else
                 {
                     wifi_reconnect_attempts--;
-                    Serial.printf("[Wifi] failed to connect to AP, %d attempts remaining\n", wifi_reconnect_attempts);
+                    ESP_LOGW(WATCH2_TAG, "[Wifi] failed to connect to AP, %d attempts remaining", wifi_reconnect_attempts);
                     connectToWifiAP();
                 }
             }
@@ -300,7 +300,7 @@ namespace watch2 {
             if (WiFi.status() == WL_DISCONNECTED || WiFi.status() == WL_CONNECT_FAILED || WiFi.status() == WL_CONNECTION_LOST || WiFi.status() == WL_NO_SSID_AVAIL)
             {
                 wifi_state = 1;
-                Serial.println("[WiFi] disconnected from AP");
+                ESP_LOGD(WATCH2_TAG, "[WiFi] disconnected from AP");
             }
         }
 
@@ -309,12 +309,12 @@ namespace watch2 {
         {
             // if (ble_keyboard.isConnected())
             // {
-            //     //Serial.println("[Bluetooth] connected");
+            //     //ESP_LOGD(WATCH2_TAG, "[Bluetooth] connected");
             //     bluetooth_state = 3;
             // }
             // else
             // {
-            //     //Serial.println("[Bluetooth] disconnected");
+            //     //ESP_LOGD(WATCH2_TAG, "[Bluetooth] disconnected");
             //     bluetooth_state = 2;
             // }
         }
@@ -322,20 +322,20 @@ namespace watch2 {
         // redraw stuff
         // if (forceRedraw)
         // {
-        //     Serial.print("[endLoop] forceRedraw loop check: ");
+        //     ESP_LOGD(WATCH2_TAG, "[endLoop] forceRedraw loop check: ");
         //     if (forceRedrawLooped)
         //     {
-        //         Serial.println("finished");
+        //         ESP_LOGD(WATCH2_TAG, "finished");
         //         forceRedraw = false;
         //         forceRedrawLooped = false;
         //     }
         //     else
         //     {
-        //         Serial.println("looped once");
+        //         ESP_LOGD(WATCH2_TAG, "looped once");
         //         forceRedrawLooped = true;
         //     }
         // }
-        if (forceRedraw) Serial.println("[endLoop] force redraw");
+        if (forceRedraw) ESP_LOGD(WATCH2_TAG, "[endLoop] force redraw");
 
         // if the current state uses a framebuffer, draw it to the tft
         if (states[state].framebuffer) framebuffer.pushSprite(0, 0);
@@ -343,7 +343,7 @@ namespace watch2 {
 
     void switchState(int newState, int variant, int dim_pause_thing, int bright_pause_thing, bool dont_draw_first_frame)
     {
-        Serial.printf("switching to new state: %d (%s)\n", newState, watch2::states[newState].stateName.c_str());
+        ESP_LOGD(WATCH2_TAG, "switching to new state: %d (%s)", newState, watch2::states[newState].stateName.c_str());
 
         if (dim_pause_thing > 0)
         dimScreen(0, dim_pause_thing);              //dim the screen
@@ -352,7 +352,7 @@ namespace watch2 {
         // lock dpad
         for (uint16_t i = 0; i < 5; i++) 
         {
-            //Serial.printf("[button locks] set button %d to locked and not pressed\n", i);
+            //ESP_LOGD(WATCH2_TAG, "[button locks] set button %d to locked and not pressed", i);
             dpad_lock[i] = true;
             dpad_pressed[i] = false;
         }
@@ -424,11 +424,11 @@ namespace watch2 {
             if (timers[i].alarm_id != 255)
             {
                 time_t time_left = ( timers[i].time_started + Alarm.read(timers[i].alarm_id ) ) - now();
-                Serial.printf("[sleep] timer %d: %d seconds left\n", i, time_left);
+                ESP_LOGD(WATCH2_TAG, "[sleep] timer %d: %d seconds left", i, time_left);
                 if (time_left < next_alarm_time || next_alarm_time == -1) 
                 {
                     next_alarm_time = time_left;
-                    Serial.printf("\tset next alarm\n");
+                    ESP_LOGD(WATCH2_TAG, "\tset next alarm");
                 }
             }
         }
@@ -452,23 +452,23 @@ namespace watch2 {
                 //(which now represents the actual unix time when the alarm will go off), giving the
                 //time until the alarm goes off in seconds
                 time_t time_left = ( Alarm.read(alarms[i].alarm_id) + makeTime(current_unix_time_without_the_time) ) - now();
-                Serial.printf("[sleep] alarm %d: %d seconds left\n", i, time_left);
+                ESP_LOGD(WATCH2_TAG, "[sleep] alarm %d: %d seconds left", i, time_left);
                 if (time_left < next_alarm_time || next_alarm_time == -1) 
                 {
                     next_alarm_time = time_left;
-                    Serial.printf("\tset next alarm\n");
+                    ESP_LOGD(WATCH2_TAG, "\tset next alarm");
                 }
             }
         }
 
-        Serial.printf("[sleep] sleep wakeup timer: %d\n", next_alarm_time);
+        ESP_LOGD(WATCH2_TAG, "[sleep] sleep wakeup timer: %d", next_alarm_time);
 
         //if an timer or an alarm has been set, set the device to wake up just before the alarm triggers
         if (next_alarm_time > -1)
         {
             esp_sleep_enable_timer_wakeup((((uint64_t)next_alarm_time) * 1000 * 1000) - 500);
-            Serial.printf("[sleep] timer in us (d): %d\n", next_alarm_time * 1000 * 1000 - 500);
-            Serial.printf("[sleep] timer in us (u): %u\n", next_alarm_time * 1000 * 1000 - 500);
+            ESP_LOGD(WATCH2_TAG, "[sleep] timer in us (d): %d", next_alarm_time * 1000 * 1000 - 500);
+            ESP_LOGD(WATCH2_TAG, "[sleep] timer in us (u): %u", next_alarm_time * 1000 * 1000 - 500);
         }
         else //if no alarm or timer has been set, then disable the timer wake up source
         {
@@ -476,7 +476,7 @@ namespace watch2 {
         }
 
         //begin sleep
-        Serial.println("[sleep] entering sleep mode");
+        ESP_LOGI(WATCH2_TAG, "[sleep] entering sleep mode");
         Serial.flush();
         esp_light_sleep_start();
 
@@ -486,7 +486,7 @@ namespace watch2 {
 
 
 
-        Serial.println("awake");
+        ESP_LOGI(WATCH2_TAG, "awake");
         oled.writecommand(0x11); // wake up screen
 
         //set up buttons
@@ -506,7 +506,7 @@ namespace watch2 {
         }
 
         // set bluetooth state
-        Serial.println(bluetooth_state);
+        ESP_LOGD(WATCH2_TAG, "%d", bluetooth_state);
         if (bluetooth_state == 3) bluetooth_state = 2;
 
         // time??? what is it really?

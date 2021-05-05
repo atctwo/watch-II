@@ -20,13 +20,13 @@ void state_func_init()
 
         if (watch2::mcp.digitalRead(dpad_down))
         {
-            Serial.println("[init] switching to clear settings menu");
+            ESP_LOGD(WATCH2_TAG, "[init] switching to clear settings menu");
             watch2::switchState(watch2::state, 1);
         }
         else
         {
             //switch state
-            Serial.println("[init] switching to watch face");
+            ESP_LOGD(WATCH2_TAG, "[init] switching to watch face");
             watch2::switchState(1, 0);
         }
     }
@@ -38,7 +38,7 @@ void state_func_init()
         //settings clear mode
         if (!watch2::state_init)
         {
-            Serial.println("[init] entered settings clear menu");
+            ESP_LOGD(WATCH2_TAG, "[init] entered settings clear menu");
             watch2::oled.setTextColor(WHITE, BLACK);
             watch2::oled.setTextDatum(TC_DATUM);
             watch2::oled.drawString("Do you want to clear\nall saved settings?", SCREEN_WIDTH / 2,watch2::top_thing_height + 5);
@@ -58,13 +58,13 @@ void state_func_init()
         {
             if (selected_option == 1) 
             {
-                Serial.println("[init] clearing settings");
+                ESP_LOGD(WATCH2_TAG, "[init] clearing settings");
                 watch2::preferences.begin("watch2");
                 watch2::preferences.clear();
                 watch2::preferences.end();
             }
 
-            Serial.println("[init] switching to watch face");
+            ESP_LOGD(WATCH2_TAG, "[init] switching to watch face");
             watch2::switchState(1);
         }
     }

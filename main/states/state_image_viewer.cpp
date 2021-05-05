@@ -7,7 +7,7 @@ void state_func_image_viewer()
 
     if (!watch2::state_init)
     {
-        Serial.println("a");
+        ESP_LOGD(WATCH2_TAG, "a");
         filename = watch2::beginFileSelect();
         if (filename == "canceled")
         {
@@ -31,13 +31,13 @@ void state_func_image_viewer()
                 {
                     if (data.width > SCREEN_WIDTH) scaling = (float)data.width / SCREEN_WIDTH;
                     else scaling = 1.0;
-                    Serial.printf("[image viewer] image is wider, scaling factor is %f\n", scaling);
+                    ESP_LOGD(WATCH2_TAG, "[image viewer] image is wider, scaling factor is %f", scaling);
                 }
                 else // image is taller than it is wide
                 {
                     if (data.height > SCREEN_HEIGHT) scaling = (float)data.height / SCREEN_HEIGHT;
                     else scaling = 1.0;
-                    Serial.printf("[image viewer] image is taller, scaling factor is %f\n", scaling);
+                    ESP_LOGD(WATCH2_TAG, "[image viewer] image is taller, scaling factor is %f", scaling);
                 }
 
                 // draw image
@@ -56,7 +56,7 @@ void state_func_image_viewer()
         // free image data
         if (data.data) 
         {
-            Serial.println("[image viewer] freeing original image data");
+            ESP_LOGD(WATCH2_TAG, "[image viewer] freeing original image data");
             watch2::freeImageData(data.data);
         }
 

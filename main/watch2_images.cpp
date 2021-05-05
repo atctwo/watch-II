@@ -99,7 +99,7 @@ namespace watch2 {
 
     if (!bmpFS)
     {
-        Serial.print("File not found");
+        ESP_LOGW(WATCH2_TAG, "[drawBmp] File not found");
         return;
     }
 
@@ -149,10 +149,10 @@ namespace watch2 {
             oled.pushImage(x, y--, w, 1, (uint16_t*)lineBuffer);
         }
         oled.setSwapBytes(oldSwapBytes);
-        Serial.print("Loaded in "); Serial.print(millis() - startTime);
-        Serial.println(" ms");
+        ESP_LOGD(WATCH2_TAG, "Loaded in "); Serial.print(millis() - startTime);
+        ESP_LOGD(WATCH2_TAG, " ms");
         }
-        else Serial.println("BMP format not recognized.");
+        else ESP_LOGW(WATCH2_TAG, "BMP format not recognized.");
     }
     bmpFS.close();
     }
@@ -169,11 +169,11 @@ namespace watch2 {
         icon_name.erase(icon_name.begin());     // remove '/' at start of name
         size_t pos = icon_name.rfind(".");      // find where the extension starts
         icon_name.erase(pos, icon_name.npos);   // remove extension
-        Serial.printf("[loadBmp] using icon name %s\n", icon_name.c_str());
+        ESP_LOGD(WATCH2_TAG, "[loadBmp] using icon name %s", icon_name.c_str());
 
         if (!bmpFS)
         {
-            Serial.print("[loadBmp] File not found");
+            ESP_LOGW(WATCH2_TAG, "[loadBmp] File not found");
             return;
         }
 
@@ -193,7 +193,7 @@ namespace watch2 {
             h = read32(bmpFS);
             uint16_t y = h;
 
-            Serial.printf("w: %d, h: %d\n", w, h);
+            ESP_LOGD(WATCH2_TAG, "w: %d, h: %d", w, h);
 
             //   planes                  bits per pixel           compression
             if ((read16(bmpFS) == 1) && (read16(bmpFS) == 24) && (read32(bmpFS) == 0))
@@ -219,15 +219,15 @@ namespace watch2 {
 
                     // Push the pixel row to screen, pushImage will crop the line if needed
                     // y is decremented as the BMP image is drawn bottom up
-                    Serial.printf("%d ", row);
+                    ESP_LOGD(WATCH2_TAG, "%d ", row);
                     memcpy(imageBuffer + (row * w), lineBuffer,  w/2);
                 }
 
                 //registerIcon(icon_name, imageBuffer); 
-                Serial.print("[loadBmp] Loaded in "); Serial.print(millis() - startTime);
-                Serial.println(" ms");
+                ESP_LOGD(WATCH2_TAG, "[loadBmp] Loaded in "); Serial.print(millis() - startTime);
+                ESP_LOGD(WATCH2_TAG, " ms");
             }
-            else Serial.println("[loadBmp] BMP format not recognized.");
+            else ESP_LOGW(WATCH2_TAG, "[loadBmp] BMP format not recognized.");
         }
         bmpFS.close();
     }
@@ -246,7 +246,7 @@ namespace watch2 {
 
         // open file
         fs::File f = SD.open(filename);
-        Serial.println(f.name());
+        ESP_LOGD(WATCH2_TAG, "%s", f.name());
 
         // read image
         int img_w, img_h, img_n, x, y;
@@ -281,7 +281,7 @@ namespace watch2 {
 
         // open file
         fs::File f = SPIFFS.open(filename);
-        // Serial.println(f.name());
+        // ESP_LOGD(WATCH2_TAG, "%*", f.name());
 
         // read image
         int img_w, img_h, img_n, x, y;
@@ -326,7 +326,7 @@ namespace watch2 {
 
             if (scaling != 1)
             {
-                Serial.printf("[drawImage] scaling image, f=%d\n", scaling);
+                ESP_LOGD(WATCH2_TAG, "[drawImage] scaling image, f=%d", scaling);
                 img_width = data.width/scaling;
                 img_height = data.height/scaling;
                 stbir_resize_uint8(
@@ -343,7 +343,7 @@ namespace watch2 {
 
             // allocate memory for dma buffer
             dma_buffer = (uint16_t*) heap_caps_malloc(img_width * sizeof(uint16_t), MALLOC_CAP_DMA);
-            if (!dma_buffer) Serial.println("\0[31m[drawImage] failed to allocate memory for dma buffer\0[0m");
+            if (!dma_buffer) ESP_LOGW(WATCH2_TAG, "\0[31m[drawImage] failed to allocate memory for dma buffer\0[0m");
 
             // set up tft
             tft.startWrite();
@@ -371,7 +371,7 @@ namespace watch2 {
 
             // if (actual_data) 
             // {
-            //     Serial.println("[drawImage] freeing scaled image data");
+            //     ESP_LOGD(WATCH2_TAG, "[drawImage] freeing scaled image data");
             //     stbi_image_free(actual_data);
             // }
 

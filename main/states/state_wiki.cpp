@@ -23,9 +23,9 @@ void buildPageLines(GumboNode *node, std::vector<const char*> tags)
 {
     if (node->type == GUMBO_NODE_TEXT)
     {
-        Serial.printf("text: %s\n", node->v.text.text);
-        if (!tags.empty()) for (const char* tag : tags) Serial.printf("tags: %s, ", tag);
-        Serial.println("\n");
+        ESP_LOGD(WATCH2_TAG, "text: %s", node->v.text.text);
+        if (!tags.empty()) for (const char* tag : tags) ESP_LOGD(WATCH2_TAG, "tags: %s, ", tag);
+        ESP_LOGD(WATCH2_TAG, "\n");
     }
     else if (node->type == GUMBO_NODE_ELEMENT && node->v.element.tag != GUMBO_TAG_SCRIPT && node->v.element.tag != GUMBO_TAG_STYLE)
     {
@@ -82,11 +82,11 @@ void state_func_wiki()
 
             if (!watch2::state_init && !connected_to_wikipeda)
             {
-                // Serial.println("[Wiki] connecting to wikipedia");
+                // ESP_LOGD(WATCH2_TAG, "[Wiki] connecting to wikipedia");
                 // watch2::wifi_client_secure.setCACert(root_ca_wikipedia);
                 // if (!watch2::wifi_client_secure.connect("en.wikipedia.org", PORT_HTTPS))
                 // {
-                //     Serial.println("[Wiki] couldn't connect");
+                //     ESP_LOGD(WATCH2_TAG, "[Wiki] couldn't connect");
                 // }
                 // else connected_to_wikipeda = true;
                 connected_to_wikipeda = true;
@@ -177,20 +177,20 @@ void state_func_wiki()
                     wiki_search_options.clear();
                     wiki_search_options.push_back("Back");
 
-                    Serial.print("[Wiki] sending search for ");
-                    Serial.println(search_query.c_str());
+                    ESP_LOGD(WATCH2_TAG, "[Wiki] sending search for ");
+                    ESP_LOGD(WATCH2_TAG, "%s", search_query.c_str());
 
                     //https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" + String(search_query.c_str()) + "&format=json
                     watch2::wifi_client_secure.setCACert(root_ca_wikipedia);
                     if(http.begin(watch2::wifi_client_secure, "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" + String(search_query.c_str()) + "&format=json"))
                     {
-                        Serial.println("[Wiki] connected to wikipedia");
+                        ESP_LOGD(WATCH2_TAG, "[Wiki] connected to wikipedia");
                         int http_code= http.GET();
 
                         if (http_code > 0)
                         {
-                            Serial.println("[Wiki] got response");
-                            Serial.printf ("       response code: %d\n", http_code);
+                            ESP_LOGD(WATCH2_TAG, "[Wiki] got response");
+                            ESP_LOGD(WATCH2_TAG, "       response code: %d", http_code);
                             if (http_code == HTTP_CODE_OK)
                             {
                                 search_response = cJSON_Parse(http.getString().c_str());
@@ -206,12 +206,12 @@ void state_func_wiki()
 
                             }
                         }
-                        else Serial.printf("[Wiki] GET failed, error: %s\n", http.errorToString(http_code).c_str());
+                        else ESP_LOGD(WATCH2_TAG, "[Wiki] GET failed, error: %s", http.errorToString(http_code).c_str());
 
                         request_status = http_code;
                         http.end();
                     }
-                    else Serial.printf("[Wiki] unable to connect to wikipedia\n");
+                    else ESP_LOGW(WATCH2_TAG, "[Wiki] unable to connect to wikipedia");
                 }
             }
 
@@ -315,29 +315,29 @@ void state_func_wiki()
                 line_offset = 0;
 
                 // actually get the page
-                Serial.print("[Wiki] getting page with id ");
-                Serial.println(pageid);
+                ESP_LOGD(WATCH2_TAG, "[Wiki] getting page with id ");
+                ESP_LOGD(WATCH2_TAG, "%lu", pageid);
 
                 //https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=" + String(search_query.c_str()) + "&format=json
                 watch2::wifi_client_secure.setCACert(root_ca_wikipedia);
                 String url = "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts&formatversion=2&explaintext=1&pageids=" + String(pageid);
-                Serial.print("[Wiki] request url: ");
-                Serial.println(url);
+                ESP_LOGD(WATCH2_TAG, "[Wiki] request url: ");
+                ESP_LOGD(WATCH2_TAG, "%s", url.c_str());
                 if(http.begin(watch2::wifi_client_secure, url))
                 {
-                    Serial.println("[Wiki] connected to wikipedia");
+                    ESP_LOGD(WATCH2_TAG, "[Wiki] connected to wikipedia");
                     int http_code= http.GET();
 
                     if (http_code > 0)
                     {
-                        Serial.println("[Wiki] got response");
-                        Serial.printf ("       response code: %d\n", http_code);
+                        ESP_LOGD(WATCH2_TAG, "[Wiki] got response");
+                        ESP_LOGD(WATCH2_TAG, "       response code: %d", http_code);
                         if (http_code == HTTP_CODE_OK)
                         {
                             // get article contents
                             String page_response_json = http.getString();
-                            Serial.println("[Wiki] json response: ");
-                            Serial.println(page_response_json);
+                            ESP_LOGD(WATCH2_TAG, "[Wiki] json response: ");
+                            ESP_LOGD(WATCH2_TAG, "%s", page_response_json.c_str());
 
                             page_response = cJSON_Parse(page_response_json.c_str());
                             page_query = cJSON_GetObjectItem(page_response, "query");
@@ -348,9 +348,9 @@ void state_func_wiki()
                             {
                                 // parse article
                                 char *article_text = cJSON_GetObjectItem(page_object, "extract")->valuestring;
-                                // Serial.println("[Wiki] successful response:\n");
-                                // Serial.println(article_text);
-                                // Serial.println();
+                                // ESP_LOGD(WATCH2_TAG, "[Wiki] successful response:\n");
+                                // ESP_LOGD(WATCH2_TAG, "%*", article_text);
+                                // ESP_LOGD(WATCH2_TAG, "%*", );
                                 
                                 // split article into lines
                                 lines.clear();
@@ -395,14 +395,14 @@ void state_func_wiki()
                             }
                             else
                             {
-                                Serial.printf("[Wiki] error parsing response\n");
+                                ESP_LOGD(WATCH2_TAG, "[Wiki] error parsing response");
                                 lines.clear();
                                 lines.push_back((article_lines){"error parsing response", {}});
                             }
                         }
                         else
                         {
-                            Serial.printf("[Wiki] Request not ok, error: %s\n", http.errorToString(http_code).c_str());
+                            ESP_LOGD(WATCH2_TAG, "[Wiki] Request not ok, error: %s", http.errorToString(http_code).c_str());
                             lines.clear();
                             lines.push_back((article_lines){"Request not ok, error:", {}});
                             lines.push_back((article_lines){http.errorToString(http_code).c_str(), {}});
@@ -410,7 +410,7 @@ void state_func_wiki()
                     }
                     else 
                     {
-                        Serial.printf("[Wiki] GET failed, error: %s\n", http.errorToString(http_code).c_str());
+                        ESP_LOGD(WATCH2_TAG, "[Wiki] GET failed, error: %s", http.errorToString(http_code).c_str());
                         lines.clear();
                         lines.push_back((article_lines){"GET failed, error:", {}});
                         lines.push_back((article_lines){http.errorToString(http_code).c_str(), {}});
@@ -421,7 +421,7 @@ void state_func_wiki()
                 }
                 else 
                 {
-                    Serial.printf("[Wiki] unable to connect to wikipedia\n");
+                    ESP_LOGW(WATCH2_TAG, "[Wiki] unable to connect to wikipedia");
                     lines.clear();
                     lines.push_back((article_lines){"unable to connect to wikipedia", {}});
                 }

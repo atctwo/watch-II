@@ -44,7 +44,7 @@ void state_func_recorder()
     if (bytes_read > 0) 
     {
         // save data to array for graph
-        //Serial.println(data - min_raw_sample);
+        //ESP_LOGD(WATCH2_TAG, "%*", data - min_raw_sample);
         if (points.size() == no_y_points) points.erase(points.begin());
         points.push_back(data);
 
@@ -53,11 +53,11 @@ void state_func_recorder()
         {
             // normalise sample from 0 to 1
             float sample = (float)-(data - min_raw_sample) / max_scaled_sample;
-            //Serial.println(sample);
+            //ESP_LOGD(WATCH2_TAG, "%*", sample);
 
             // write sample
             int bytes_written = tinywav_write_f(&tw, &sample, 1);
-            //Serial.printf("bytes written: %d\n", bytes_written);
+            //ESP_LOGD(WATCH2_TAG, "bytes written: %d", bytes_written);
         }
     }
 
@@ -87,7 +87,7 @@ void state_func_recorder()
         if (is_recording)
         {
             // stop recording
-            Serial.println("[recorder] stopping recording");
+            ESP_LOGD(WATCH2_TAG, "[recorder] stopping recording");
 
             tinywav_close_write(&tw);
 
@@ -96,7 +96,7 @@ void state_func_recorder()
         else
         {
             // start recording
-            Serial.println("[recorder] starting recording");
+            ESP_LOGD(WATCH2_TAG, "[recorder] starting recording");
 
             int err = tinywav_open_write(
                 &tw,                    // tinywav header
@@ -109,7 +109,7 @@ void state_func_recorder()
 
             if (err)
             {
-                Serial.printf("[recorder] error starting recording: %d\n", err);
+                ESP_LOGW(WATCH2_TAG, "[recorder] error starting recording: %d", err);
             }
             else is_recording = true;
         }

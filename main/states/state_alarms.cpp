@@ -119,16 +119,16 @@ void state_func_alarms()
             else if (selected_button == 2)
             {
                 // change timer music
-                Serial.println("[alarms] changing music");
+                ESP_LOGD(WATCH2_TAG, "[alarms] changing music");
                 std::string new_music = watch2::beginFileSelect();
-                Serial.printf("[alarms] new music to %s\n", new_music.c_str());
+                ESP_LOGD(WATCH2_TAG, "[alarms] new music to %s", new_music.c_str());
                 watch2::alarm_music = String(new_music.c_str());
-                Serial.printf("[alarms] changed music to %s\n", watch2::alarm_music.c_str());
+                ESP_LOGD(WATCH2_TAG, "[alarms] changed music to %s", watch2::alarm_music.c_str());
 
                 watch2::preferences.begin("watch2");
                 watch2::preferences.putString("alarm_music", watch2::alarm_music);
                 watch2::preferences.end();
-                Serial.printf("[alarms] updated preferences store");
+                ESP_LOGD(WATCH2_TAG, "[alarms] updated preferences store");
             }
         }
         else
@@ -244,13 +244,13 @@ void state_func_alarms()
 
         if (watch2::alarms.size() == 1)
         {
-            Serial.println("a");
+            ESP_LOGD(WATCH2_TAG, "a");
             watch2::oled.fillRect(alarm_x, alarm_y + watch2::oled.fontHeight() + 2, alarm_w, (watch2::oled.fontHeight() * 2) + 4, BLACK);
         }
 
         for (int i = 0; i < watch2::alarms.size(); i++)
         {
-            Serial.printf("alarm %d\n", i);
+            ESP_LOGD(WATCH2_TAG, "alarm %d", i);
             alarm_y += watch2::oled.fontHeight() + (icon_spacing * 2);
 
             time_t alarm_time = Alarm.read(watch2::alarms[i].alarm_id);

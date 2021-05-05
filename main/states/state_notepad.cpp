@@ -24,7 +24,7 @@ void state_func_notepad()
         if (read == 0)
         {
 
-            Serial.printf("reading file %s...\n", watch2::file_path.c_str());
+            ESP_LOGD(WATCH2_TAG, "reading file %s...", watch2::file_path.c_str());
 
             filedata.clear();
             yoffset = 0;
@@ -40,7 +40,7 @@ void state_func_notepad()
             f.seek(0);
             f.close();
 
-            Serial.println("\nfinished");
+            ESP_LOGD(WATCH2_TAG, "\nfinished");
 
         }
 
