@@ -62,6 +62,7 @@ void state_func_init()
                 watch2::preferences.begin("watch2");
                 watch2::preferences.clear();
                 watch2::preferences.end();
+                esp_restart();
             }
 
             ESP_LOGD(WATCH2_TAG, "[init] switching to watch face");

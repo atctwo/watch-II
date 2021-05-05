@@ -138,7 +138,7 @@ void setup() {
     watch2::themecolour = watch2::preferences.getInt("themecolour", BLUE);
     watch2::trans_mode = watch2::preferences.getUInt("trans_mode", 0);
     watch2::animate_watch_face = watch2::preferences.getBool("animate_time", true);
-    watch2::screen_brightness = watch2::preferences.getUInt("brightness", 2^tftbl_resolution);
+    watch2::screen_brightness = watch2::preferences.getUInt("brightness", (2^tftbl_resolution) / 2);
     watch2::timezone = watch2::preferences.getUInt("timezone", 0);
     watch2::ntp_wakeup_connect = watch2::preferences.getBool("ntp_wakeup", true);
     watch2::ntp_boot_connect = watch2::preferences.getBool("ntp_boot", true);

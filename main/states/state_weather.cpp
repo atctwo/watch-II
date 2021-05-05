@@ -185,9 +185,36 @@ void state_func_weather()
     {
         if (!watch2::state_init)
         {
+            if (watch2::wifi_state != 3) // not connected to wifi
+            {
+                watch2::dimScreen(true, 250);
+                if (watch2::messageBox("Not connected to\nWifi :(") == 0) 
+                {
+                    watch2::switchState(2);
+                    return;
+                }
+            }
+
             if (watch2::weather_location.isEmpty()) // if no weather location has been set
             {
                 ESP_LOGD(WATCH2_TAG, "[weather] location has not been set");
+
+                watch2::dimScreen(true, 250);
+                if (watch2::messageBox("Location isn't set.\nDo you want to\nset it?", {"Yes", "No"}) == 0) 
+                {
+                    std::string location = watch2::textFieldDialogue("Location", watch2::weather_location.c_str());
+                    if (location.empty())
+                    {
+                        // do nothing
+                    }
+                    else
+                    {
+                        watch2::weather_location = String(location.c_str());
+                        watch2::preferences.begin("watch2");
+                        watch2::preferences.putString("weather_city", watch2::weather_location); 
+                        watch2::preferences.end();
+                    }
+                }
             }
             else
             {
