@@ -66,6 +66,14 @@ void setup() {
         ESP_LOGD(TAG_INIT, "failed :(");
     }
 
+    ESP_LOGD(TAG_INIT, "\tMCP9808: ");
+    if (!watch2::temperature.begin(I2C_ADDRESS_MCP9098)) ESP_LOGW(TAG_INIT, "mcp9808 init failed");
+    else 
+    {
+        watch2::temperature.setResolution(1);  // 0.25°C
+        ESP_LOGD(TAG_INIT, "done");
+    }
+
     ESP_LOGD(TAG_INIT, "\tMAX17043: ");
     watch2::configMAX17043(15);
     watch2::qsMAX17043();

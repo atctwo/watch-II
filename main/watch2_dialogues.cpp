@@ -559,6 +559,8 @@ namespace watch2 {
         uint8_t last_wifi_state = watch2::wifi_state;
         int last_minute = 0;
         bool init = false;
+        uint32_t last_temp_reading = 0;
+        char temp_string[8];
 
         uint8_t dialogue_radius = 7;
         uint16_t dialogue_width = SCREEN_WIDTH * 0.9;
@@ -571,6 +573,11 @@ namespace watch2 {
         uint16_t weather = 0;
         time_t sunrise = 0, sunset = 0;
         getCurrentWeather(weather, sunrise, sunset);
+
+        // print temperature
+        watch2::temperature.wake();
+        sprintf(temp_string, "%0.0f°", watch2::temperature.readTempC());
+        ESP_LOGD(WATCH2_TAG, "current temperature: %s", temp_string);
 
         while(1)
         {
@@ -690,6 +697,22 @@ namespace watch2 {
             // draw stuff
             //------------------------
 
+            // print temperature
+            if (millis() - last_temp_reading > 500)
+            {
+                char temp_string[8];
+                sprintf(temp_string, "%0.0f°", watch2::temperature.readTempC());
+                ESP_LOGD(WATCH2_TAG, "current temperature: %s", temp_string);
+
+                uint16_t temperature_x = (dialogue_x + dialogue_width) - 50 - watch2::oled.textWidth(temp_string);
+
+                setFont(SLIGHTLY_BIGGER_FONT);
+                watch2::oled.drawString(temp_string, temperature_x, dialogue_y + 2);
+                setFont(MAIN_FONT);
+
+                last_temp_reading = millis();
+            }
+
             if(!init || dpad_any_active() || (watch2::wifi_state != last_wifi_state) || (watch2::bluetooth_state != last_bt_state) || (minute() != last_minute) || forceRedraw) {
                 
                 setFont(SLIGHTLY_BIGGER_FONT);
@@ -717,55 +740,55 @@ namespace watch2 {
                 oled.setTextColor(WHITE, BLACK);
                 oled.fillRect(button_x, time_y, (dialogue_width / 2), oled.fontHeight(), BLACK);  // hacky
                 oled.printf("%02d:%02d", hour(), minute());
-                setFont(MAIN_FONT);
                 last_minute = minute();
+                setFont(MAIN_FONT);
 
                 // draw weather
                 uint16_t weather_x = (dialogue_x + dialogue_width) - weather_icon_size - spacing;
                 switch(weather / 100)
                 {
                     case 2: // thunder
-                        drawImage((*watch2::icons)["thunder"], weather_x, time_y);
+                        drawImage((*watch2::icons)["thunder"], weather_x, dialogue_y);
                         break;
                         
                     case 3: // drizzle
                         if (now() < sunrise || now() > sunset) /* night */
-                            drawImage((*watch2::icons)["moon_rain"], weather_x, time_y);
+                            drawImage((*watch2::icons)["moon_rain"], weather_x, dialogue_y);
                         else                                   /* day */
-                            drawImage((*watch2::icons)["sun_rain"], weather_x, time_y);
+                            drawImage((*watch2::icons)["sun_rain"], weather_x, dialogue_y);
                         break;
 
                     case 5: // rain
-                        drawImage((*watch2::icons)["rain"], weather_x, time_y);
+                        drawImage((*watch2::icons)["rain"], weather_x, dialogue_y);
                         break;
 
                     case 6: // snow
-                        drawImage((*watch2::icons)["snow"], weather_x, time_y);
+                        drawImage((*watch2::icons)["snow"], weather_x, dialogue_y);
                         break;
 
                     case 7: // atmosphere
-                        drawImage((*watch2::icons)["wind"], weather_x, time_y);
+                        drawImage((*watch2::icons)["wind"], weather_x, dialogue_y);
                         break;
 
                     case 8: // clear / clouds
                         if (weather == 800) // clear
                         {
                             if (now() < sunrise || now() > sunset) /* night */
-                                drawImage((*watch2::icons)["moon"], weather_x, time_y);
+                                drawImage((*watch2::icons)["moon"], weather_x, dialogue_y);
                             else                                   /* day */
-                                drawImage((*watch2::icons)["sun"], weather_x, time_y);
+                                drawImage((*watch2::icons)["sun"], weather_x, dialogue_y);
                         }
                         else
                         {
                             if (now() < sunrise || now() > sunset) /* night */
-                                drawImage((*watch2::icons)["moon_cloud"], weather_x, time_y);
+                                drawImage((*watch2::icons)["moon_cloud"], weather_x, dialogue_y);
                             else                                   /* day */
-                                drawImage((*watch2::icons)["sun_cloud"], weather_x, time_y);
+                                drawImage((*watch2::icons)["sun_cloud"], weather_x, dialogue_y);
                         }
                         break;
 
                     default:
-                        drawImage((*watch2::icons)["weather_unknown"], weather_x, time_y);
+                        drawImage((*watch2::icons)["weather_unknown"], weather_x, dialogue_y);
                         break;
                 }
 

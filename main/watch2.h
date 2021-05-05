@@ -41,6 +41,7 @@
 #include <esp_log.h>                // ESP-IDF logging
 #include <Wire.h>                   // Arduino I2C library
 #include <Adafruit_MCP23008.h>      // MCP23008 library
+#include <Adafruit_MCP9808.h>
 
 #include <NimBLEDevice.h>
 #include <NimBLEUtils.h>
@@ -377,6 +378,7 @@ namespace watch2
     //extern BleKeyboard ble_keyboard;                                                            //!< a thing that handles BLE HID Keyboard stuff
     extern Audio audio;                                                                         //!< audio playback!
     extern Adafruit_MCP23008 mcp;                                                               //!< MCP23008 IO expander for user input
+    extern Adafruit_MCP9808 temperature;                                                        //!< MCP9808 temperature sensor
 
     //button objects
     extern Button btn_dpad_up;                                                         //!< the object that handles the dpad up button
