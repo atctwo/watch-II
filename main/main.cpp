@@ -7,6 +7,10 @@
 #include "watch2.h"
 #include "icons/small_icons.h"
 
+// esp-idf logging tags
+#define TAG_INIT        "watch2-init"
+#define TAG_LOOP        "watch2-loop"
+
 ////////////////////////////////////////
 // setup function
 ////////////////////////////////////////
@@ -15,6 +19,9 @@ void setup() {
 
     //set cpu Frequency
     //setCpuFrequencyMhz(80);
+
+    // time for cpu to start up
+    vTaskDelay(500);
 
     // configure gpio data direction registers
     pinMode(12, OUTPUT);
@@ -29,16 +36,16 @@ void setup() {
 
     //begin serial
     Serial.begin(115200);
-    Serial.print("\n\n");
+    ESP_LOGI(TAG_INIT, "\n\nwatch2 version %d\n", WATCH_VER);
 
     // set up i2c
-    Serial.println("setting up i2c devices: ");
+    ESP_LOGD(TAG_INIT, "setting up i2c devices: ");
 
-    Serial.print("\tWire object: ");
+    ESP_LOGD(TAG_INIT, "\tWire object: ");
     Wire.begin(I2C_SDA, I2C_SCL);
-    Serial.println("done");
+    ESP_LOGD(TAG_INIT, "done");
 
-    Serial.print("\tMCP23008: ");
+    ESP_LOGD(TAG_INIT, "\tMCP23008: ");
     watch2::mcp.begin(I2C_ADDRESS_MCP23008);
 
     for (uint8_t i = 0; i < 7; i++) // set channels 0 to 6 as inputs with no pull up
@@ -51,30 +58,30 @@ void setup() {
     watch2::mcp.pullUp(SHUTDOWN_PIN, LOW);
     watch2::mcp.digitalWrite(SHUTDOWN_PIN, 1);
 
-    Serial.println("done");
+    ESP_LOGD(TAG_INIT, "done");
 
-    Serial.print("\tMAX17043: ");
+    ESP_LOGD(TAG_INIT, "\tMAX17043: ");
     watch2::configMAX17043(15);
     watch2::qsMAX17043();
-    Serial.println("done");
+    ESP_LOGD(TAG_INIT, "done");
 
-    Serial.println("done setting up i2c");
+    ESP_LOGD(TAG_INIT, "done setting up i2c");
 
     //set up spiffs
-    Serial.print("setting up spiffs: ");
+    ESP_LOGD(TAG_INIT, "setting up spiffs: ");
     if (!SPIFFS.begin())
     {
-        Serial.println("spiffs init failed");
+        ESP_LOGD(TAG_INIT, "spiffs init failed");
         watch2::spiffs_state = -1;
     }
     else
     {
-        Serial.println("initalised spiffs successfully");
+        ESP_LOGD(TAG_INIT, "initalised spiffs successfully");
         watch2::spiffs_state = 1;
     }
     
     //set up oled
-    Serial.print("setting up display: ");
+    ESP_LOGD(TAG_INIT, "setting up display: ");
     digitalWrite(cs, LOW);
     watch2::oled.setAttribute(PSRAM_ENABLE, true);
     watch2::oled.begin();
@@ -82,10 +89,10 @@ void setup() {
     watch2::setFont(MAIN_FONT);
     watch2::oled.writecommand(0x11); // sleep out
     watch2::oled.initDMA();
-    Serial.println("done");
+    ESP_LOGD(TAG_INIT, "done");
 
     //set up SD card
-    Serial.print("setting up sd card: ");
+    ESP_LOGD(TAG_INIT, "setting up sd card: ");
     digitalWrite(cs, HIGH);
     digitalWrite(sdcs, LOW);
     
@@ -93,9 +100,10 @@ void setup() {
 
     digitalWrite(cs, LOW);
     digitalWrite(sdcs, HIGH);
+    ESP_LOGD(TAG_INIT, "done");
     
     //set up preferences
-    Serial.print("setting up preferences: ");
+    ESP_LOGD(TAG_INIT, "setting up preferences: ");
     watch2::preferences.begin("watch2", false);      //open watch II preferences in RW mode
     watch2::timeout = watch2::preferences.getBool("timeout", false);
     watch2::short_timeout = watch2::preferences.getInt("short_timeout", 5000);
@@ -115,41 +123,39 @@ void setup() {
     watch2::alarm_music = watch2::preferences.getString("alarm_music", "/music/alarms/Meander.mp3");
     watch2::wfs = watch2::preferences.getString("wfs", "\x0\x0\x0\x0").c_str();
     watch2::preferences.end();
-    Serial.print("done");
+    ESP_LOGD(TAG_INIT, "done");
 
     //set up buttons
-    Serial.print("setting up buttons: ");
+    ESP_LOGD(TAG_INIT, "setting up buttons: ");
     watch2::btn_dpad_up.begin();
     watch2::btn_dpad_down.begin();
     watch2::btn_dpad_left.begin();
     watch2::btn_dpad_right.begin();
     watch2::btn_dpad_enter.begin();
-    Serial.println("done");
+    ESP_LOGD(TAG_INIT, "done");
 
     //set up torch
-    Serial.print("setting up torch: ");
+    ESP_LOGD(TAG_INIT, "setting up torch: ");
     ledcAttachPin(TORCH_PIN, TORCH_PWM_CHANNEL);
     ledcSetup(TORCH_PWM_CHANNEL, 4000, 8);
     ledcWrite(TORCH_PWM_CHANNEL, 0);
-    Serial.println("done");
+    ESP_LOGD(TAG_INIT, "done");
 
     //set up tft backlight
-    Serial.print("setting up backlight: ");
+    ESP_LOGD(TAG_INIT, "setting up backlight: ");
     ledcAttachPin(tftbl, TFTBL_PWM_CHANNEL);
     ledcSetup(TFTBL_PWM_CHANNEL, 4000, tftbl_resolution);
     ledcWrite(TFTBL_PWM_CHANNEL, 2^tftbl_resolution);
-    Serial.println("done");
+    ESP_LOGD(TAG_INIT, "done");
 
     //set up top thing
-    Serial.print("setting up top thing: ");
-    Serial.println("a");
+    ESP_LOGD(TAG_INIT, "setting up top thing: ");
     watch2::top_thing.createSprite(SCREEN_WIDTH, watch2::oled.fontHeight() + 2);
-    Serial.println("b");
     watch2::setFont(MAIN_FONT, watch2::top_thing);
-    Serial.println("done");
+    ESP_LOGD(TAG_INIT, "done");
 
     // set up icons
-    Serial.print("setting up icons: \n");
+    ESP_LOGD(TAG_INIT, "setting up icons: ");
 
     // the icon maps are dynamically allocated using malloc() and "placement new"s.
 
@@ -157,9 +163,9 @@ void setup() {
     watch2::icons = (std::map<std::string, watch2::imageData>*) heap_caps_malloc(sizeof(std::map<std::string, watch2::imageData>), MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
     watch2::small_icons = (std::map<std::string, std::vector<unsigned char>>*) heap_caps_malloc(sizeof(std::map<std::string, std::vector<unsigned char>>), MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
 
-    Serial.printf("spiram %s\n", (psramFound() ? "found" : "not found"));
-    if (!watch2::icons) Serial.println("failed to allocate memory for icons!");
-    if (!watch2::small_icons) Serial.println("failed to allocate memory for small icons!");
+    //ESP_LOGD(WATCH2_TAG, "spiram %s", (psramFound() ? "found" : "not found"));
+    if (!watch2::icons) ESP_LOGW(TAG_INIT, "failed to allocate memory for icons!");
+    if (!watch2::small_icons) ESP_LOGW(TAG_INIT, "failed to allocate memory for small icons!");
 
     // use placement new to construct objects
     new(watch2::icons) std::map<std::string, watch2::imageData>();
@@ -172,9 +178,9 @@ void setup() {
     {
         if ((watch2::file_ext(spi_file.name()).compare("bmp") == 0) || (watch2::file_ext(spi_file.name()).compare("png") == 0)) // the file extension is bmp
         {
-            Serial.printf("loading \"%s\" as \"%s\"\n", spi_file.name(), watch2::file_name(spi_file.name(), false).c_str());
+            ESP_LOGD(TAG_INIT, "loading \"%s\" as \"%s\"", spi_file.name(), watch2::file_name(spi_file.name(), false).c_str());
             watch2::imageData loaded_icon = watch2::getImageDataSPIFFS(spi_file.name());
-            if (loaded_icon.error) Serial.printf("\tload error: %s\n", loaded_icon.error);
+            if (loaded_icon.error) ESP_LOGW(TAG_INIT, "\tload error: %s", loaded_icon.error);
             watch2::registerIcon(watch2::file_name(spi_file.name(), false).c_str(), loaded_icon);
         }
 
@@ -182,14 +188,14 @@ void setup() {
     }
     registerSmallIcons();
 
-    Serial.println("done");
+    ESP_LOGD(TAG_INIT, "done");
 
     //set up framebuffer
     //watch2::framebuffer.createSprite(100, 100);
     //watch2::setFont(MAIN_FONT, watch2::framebuffer);
 
     // set up wifi
-    Serial.print("setting up wifi...");
+    ESP_LOGD(TAG_INIT, "setting up wifi...");
     if (watch2::wifi_enabled)
     {
         watch2::enable_wifi(false);
@@ -198,17 +204,17 @@ void setup() {
             watch2::enable_wifi();
         }
     }
-    Serial.println("done!");
+    ESP_LOGD(TAG_INIT, "done!");
 
     // set up bluetooth
-    Serial.print("setting up bluetooth...");
+    ESP_LOGD(TAG_INIT, "setting up bluetooth...");
     esp_bt_mem_release(ESP_BT_MODE_CLASSIC_BT);     // disable classic bluetooth
-    Serial.println("done!");
+    ESP_LOGD(TAG_INIT, "done!");
 
 
 
     //set up time
-    Serial.print("setting up time: ");
+    ESP_LOGD(TAG_INIT, "setting up time: ");
     if (watch2::ntp_boot_connect) watch2::ntp_boot_connected = false;
     timeval tv;
     gettimeofday(&tv, NULL);
@@ -219,10 +225,10 @@ void setup() {
         setTime(23, 58, 00, 28, 6, 2019);
 
     }
-    Serial.println("done");
+    ESP_LOGD(TAG_INIT, "done");
 
     // set up state menu
-    Serial.print("setting up state menu: ");
+    ESP_LOGD(TAG_INIT, "setting up state menu: ");
     if (watch2::boot_count == 0)
     {
         //set selected menu icon to first non-hidden state
@@ -238,47 +244,43 @@ void setup() {
         }
     }
     //else selected_menu_icon = states.find(selected_state);
-    Serial.println("done");
-
-    // micropython test
-    Serial.print("micropython test: ");
-    Serial.println("done!");
+    ESP_LOGD(TAG_INIT, "done");
 
     // setup i2s sort of
-    Serial.print("setting up i2s: ");
-    //watch2::uninstall_i2s_driver();
-    Serial.println("done!");
+    // ESP_LOGD(WATCH2_TAG, "setting up i2s: ");
+    // watch2::uninstall_i2s_driver();
+    // ESP_LOGD(WATCH2_TAG, "done!");
 
     // set up fs icons
-    Serial.print("setting up fs icon maps: ");
+    ESP_LOGD(TAG_INIT, "setting up fs icon maps: ");
     watch2::setupFsIcons();
-    Serial.println("done");
+    ESP_LOGD(TAG_INIT, "done");
 
     // set up audio task
-    Serial.print("setting up audio task: ");
+    ESP_LOGD(TAG_INIT, "setting up audio task: ");
     int x = 10;
     xTaskCreatePinnedToCore(watch2::audio_task, "audio", 20000, (void*)x, ESP_TASK_PRIO_MAX - 1, &watch2::audio_task_handle, 1);
-    Serial.println("done");
+    ESP_LOGD(TAG_INIT, "done");
 
-    Serial.print("setting up watch face shortcuts: ");
+    ESP_LOGD(TAG_INIT, "setting up watch face shortcuts: ");
     for (uint8_t i = 0; i < watch2::states.size(); i++)
     {
         if (watch2::states[i].stateName == "State Menu") 
         {
-            Serial.print("state name, ");
+            ESP_LOGD(TAG_INIT, "state name, ");
             watch2::wfs[3] = i;
         }
         if (watch2::states[i].stateName == "Bluetooth Remote") 
         {
-            Serial.print(" ble remote, ");
+            ESP_LOGD(TAG_INIT, " ble remote, ");
             watch2::wfs[1] = i;
         }
     }
-    Serial.println("done");
+    ESP_LOGD(TAG_INIT, "done");
 
     //finish up
     watch2::boot_count++;
-    Serial.println("setup finished!");
+    ESP_LOGI(TAG_INIT, "setup finished!");
 
 }
 
@@ -290,7 +292,7 @@ void loop() {
 
     watch2::startLoop();
 
-    //Serial.printf("capacitive touch on gpio 0: %d\n", touchRead(0));
+    //ESP_LOGD(WATCH2_TAG, "capacitive touch on gpio 0: %d", touchRead(0));
 
     //---------------------------------------
     // run current state
@@ -450,7 +452,7 @@ void loop() {
 
         if (dpad_left_active())
         {
-            Serial.print("i wanna be a girl and i can't type");
+            ESP_LOGD(TAG_LOOP, "i wanna be a girl and i can't type");
             Alarm.write(watch2::alarms[watch2::alarm_trigger_id].alarm_id, watch2::alarms[watch2::alarm_trigger_id].initial_time);
         }
         if (dpad_right_active())

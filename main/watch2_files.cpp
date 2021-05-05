@@ -28,7 +28,7 @@ namespace watch2 {
         if (sd_state == 1)
         {
             // sd card is already initalised
-            Serial.println("[initSD] sd is already mounted");
+            ESP_LOGW(WATCH2_TAG, "[initSD] sd is already mounted");
             return 1;
         }
 
@@ -43,11 +43,11 @@ namespace watch2 {
         if(!SD.begin(sdcs, *watch2::vspi, 4000000U)){
 
             //card couldn't mount
-            Serial.println("[initSD] Couldn't mount SD card");
-            // Serial.print("\tError code: ");
-            // Serial.printf("0x%x\n", sdcard.cardErrorCode());
-            // Serial.print("\tError data: ");
-            // Serial.printf("0x%x\n", sdcard.cardErrorData());
+            ESP_LOGW(WATCH2_TAG, "[initSD] Couldn't mount SD card");
+            // ESP_LOGD(WATCH2_TAG, "\tError code: ");
+            // ESP_LOGD(WATCH2_TAG, "0x%x", sdcard.cardErrorCode());
+            // ESP_LOGD(WATCH2_TAG, "\tError data: ");
+            // ESP_LOGD(WATCH2_TAG, "0x%x", sdcard.cardErrorData());
             no = 0;
 
         }
@@ -55,8 +55,8 @@ namespace watch2 {
         {
 
             //card mounted successfully
-            Serial.println("[initSD] Successfully mounted SD card");
-            Serial.printf("Card size: %u\n", SD.cardSize());
+            ESP_LOGD(WATCH2_TAG, "[initSD] Successfully mounted SD card");
+            ESP_LOGD(WATCH2_TAG, "Card size: %u", SD.cardSize());
             //sdcard.ls(LS_R | LS_DATE | LS_SIZE);
             no = 1;
 
@@ -87,7 +87,7 @@ namespace watch2 {
         if( initSD(false) == 0 ){
             
             //sd could not be accessed
-            Serial.println("getDirFiles failed because no");
+            ESP_LOGW(WATCH2_TAG, "getDirFiles failed because no");
             return files;
 
         }
@@ -104,7 +104,7 @@ namespace watch2 {
             if (!SD.exists(path.c_str()))
             {
                 //file path is invalid
-                Serial.printf("[getDirFiles] file path %s is invalid\n", path.c_str());
+                ESP_LOGD(WATCH2_TAG, "[getDirFiles] file path %s is invalid", path.c_str());
                 return files;
             }
 
@@ -112,13 +112,13 @@ namespace watch2 {
             if (!root.isDirectory())
             {
                 //path is not a directory
-                Serial.printf("[getDirFiles] file path isn't a directory\n");
+                ESP_LOGW(WATCH2_TAG, "[getDirFiles] file path isn't a directory");
                 return files;
             }
 
             while(true)
             {
-                //Serial.print("f");
+                //ESP_LOGD(WATCH2_TAG, "f");
 
                 //open next file in dir
                 fs::File f;
@@ -128,7 +128,7 @@ namespace watch2 {
                 //if there are no more files, break
                 if (!f) 
                 {
-                    Serial.printf("[getDirFiles] no more files\n");
+                    ESP_LOGD(WATCH2_TAG, "[getDirFiles] no more files");
                     break;
                 }
 
@@ -148,7 +148,7 @@ namespace watch2 {
                     else icon = fs_icon_ext_map[ext];
                     icons->push_back(icon);
 
-                    //Serial.printf("[getDirFiles] %s: %d\n", filename, icon);
+                    //ESP_LOGD(WATCH2_TAG, "[getDirFiles] %s: %d", filename, icon);
                 }
 
                 f.close();
@@ -156,7 +156,7 @@ namespace watch2 {
 
             root.close();
 
-            Serial.println();
+            ESP_LOGD(WATCH2_TAG, "");
 
         }
 
@@ -175,7 +175,7 @@ namespace watch2 {
         // lock dpad
         for (uint16_t i = 0; i < 5; i++) 
         {
-            //Serial.printf("[button locks] set button %d to locked and not pressed\n", i);
+            //ESP_LOGD(WATCH2_TAG, "[button locks] set button %d to locked and not pressed", i);
             dpad_lock[i] = true;
             dpad_pressed[i] = false;
         }
@@ -255,10 +255,10 @@ namespace watch2 {
                 }
                 else
                 {
-                    Serial.print("selected file or folder: ");
-                    Serial.print(file_path.c_str());
-                    Serial.print(" ");
-                    Serial.println(files2[selected_icon].c_str());
+                    ESP_LOGD(WATCH2_TAG, "selected file or folder: ");
+                    ESP_LOGD(WATCH2_TAG, "%s", file_path.c_str());
+                    ESP_LOGD(WATCH2_TAG, " ");
+                    ESP_LOGD(WATCH2_TAG, "%s", files2[selected_icon].c_str());
 
                     //determine whether selected path is a directory
                     fs::File selected_file;
@@ -270,19 +270,19 @@ namespace watch2 {
                     //if the path points to a directory
                     if (selected_file.isDirectory())
                     {
-                        Serial.println("selected folder");
+                        ESP_LOGD(WATCH2_TAG, "selected folder");
                         if(file_path == "/") file_path += files2[selected_icon];
                         else file_path += "/" + files2[selected_icon];
                         file_select_dir_list_init = false;
                         selected_icon_stack.push(selected_icon);
                         selected_icon = 0; //reset selected icon
-                        Serial.printf("new file path: %s\n", file_path.c_str());
+                        ESP_LOGD(WATCH2_TAG, "new file path: %s", file_path.c_str());
                         selected_file.close();
 
                     }
                     else //otherwise, assume the path points to a file
                     {
-                        Serial.println("selected file");
+                        ESP_LOGD(WATCH2_TAG, "selected file");
                         //set the file path
                         if(file_path == "/") file_path += files2[selected_icon];
                         else file_path += "/" + files2[selected_icon];
@@ -296,7 +296,7 @@ namespace watch2 {
                         //stop the file select menu being active
                         file_select_status = false;
 
-                        Serial.printf("new file path: %s\n", file_path.c_str());
+                        ESP_LOGD(WATCH2_TAG, "new file path: %s", file_path.c_str());
 
                         //dim the screen and return to the calling state
                         selected_file.close();
@@ -311,8 +311,8 @@ namespace watch2 {
             //if the file select list hasn't been initalised
             if (!file_select_dir_list_init)
             {
-                Serial.print("[beginFileSelect] opening file dialogue for ");
-                Serial.println(file_path.c_str());
+                ESP_LOGD(WATCH2_TAG, "[beginFileSelect] opening file dialogue for ");
+                ESP_LOGD(WATCH2_TAG, "%s", file_path.c_str());
 
                 //dim screen
                 dimScreen(0, top_thing_height);
@@ -358,7 +358,7 @@ namespace watch2 {
                 if (sd_state == 1 && files2.size() > 0) 
                 {
                     menu_icons = icons;
-                    //Serial.println("[beginFileSelect] using icon vector");
+                    //ESP_LOGD(WATCH2_TAG, "[beginFileSelect] using icon vector");
                 }
 
                 drawMenu(2, top_thing_height, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 12, files2, selected_icon, menu_icons, themecolour);

@@ -129,7 +129,7 @@ void state_func_ir_remote()
         if (!watch2::state_init)
         {
             // print stuff
-            Serial.print("loading ir profile: ");
+            ESP_LOGD(WATCH2_TAG, "loading ir profile: ");
 
             // get a handle (???) to the selected file
             fs::File json = SD.open(selected_profile_filename.c_str());
@@ -147,12 +147,12 @@ void state_func_ir_remote()
             profile = cJSON_Parse(json_contents);
 
             // print the json tree
-            //Serial.println(cJSON_Print(profile));
+            //ESP_LOGD(WATCH2_TAG, "%*", cJSON_Print(profile));
 
             // print the profile name
             cJSON *twist = cJSON_GetObjectItem(profile, "name");
-            if (twist) Serial.println(twist->valuestring);
-            else Serial.println("profile not named");
+            if (twist) ESP_LOGD(WATCH2_TAG, "%s", twist->valuestring);
+            else ESP_LOGD(WATCH2_TAG, "profile not named");
 
             // determine the number of pages
             cJSON *p = cJSON_GetObjectItem(profile, "pages");
@@ -167,7 +167,7 @@ void state_func_ir_remote()
             uint8_t code_index = 0;
             cJSON_ArrayForEach(code, codes)
             {
-                Serial.println(cJSON_Print(code));
+                ESP_LOGD(WATCH2_TAG, "%s", cJSON_Print(code));
 
                 uint8_t page = cJSON_GetObjectItem(code, "page")->valueint;
                 uint8_t row  = cJSON_GetObjectItem(code, "row")->valueint;
@@ -190,7 +190,7 @@ void state_func_ir_remote()
             last_page_number = 255;
 
             // print icon width + height
-            Serial.printf("icon width:  %d\nicon height: %d\n", icon_width, icon_height);
+            ESP_LOGD(WATCH2_TAG, "icon width:  %d\nicon height: %d", icon_width, icon_height);
         }
 
         watch2::drawTopThing();
@@ -250,7 +250,7 @@ void state_func_ir_remote()
             //draw state icons
             for (int i = no_icons_separate_from_the_other_no_icons * this_page_number; i < no_icons_separate_from_the_other_no_icons * (this_page_number + 1); i++)
             {
-                // Serial.printf("button %d\n", i);
+                // ESP_LOGD(WATCH2_TAG, "button %d", i);
 
                 // get grid position
                 uint8_t relative_index = i - (this_page_number * rows * columns);
@@ -258,10 +258,10 @@ void state_func_ir_remote()
                 uint8_t col = relative_index % columns;
                 int code_index = code_indices[this_page_number][row][col];
 
-                // Serial.printf("\tpage: %d\n", this_page_number);
-                // Serial.printf("\trow:  %d\n", row);
-                // Serial.printf("\tcol:  %d\n", col);
-                // Serial.printf("\tcode index: %d\n", code_index - 1);
+                // ESP_LOGD(WATCH2_TAG, "\tpage: %d", this_page_number);
+                // ESP_LOGD(WATCH2_TAG, "\trow:  %d", row);
+                // ESP_LOGD(WATCH2_TAG, "\tcol:  %d", col);
+                // ESP_LOGD(WATCH2_TAG, "\tcode index: %d", code_index - 1);
 
                 //get button data
                 if (code_index > 0)
@@ -270,14 +270,14 @@ void state_func_ir_remote()
                     if (btn)
                     {
 
-                        Serial.println("\tfound button entry in json file");
+                        ESP_LOGD(WATCH2_TAG, "\tfound button entry in json file");
 
                         // check if the button has an icon
                         cJSON *btn_icon_object = cJSON_GetObjectItem(btn, "icon");
                         if (btn_icon_object)
                         {
                             // get image data
-                            // Serial.println(btn_icon_object->valuestring);
+                            // ESP_LOGD(WATCH2_TAG, "%*", btn_icon_object->valuestring);
                             watch2::imageData data = watch2::getImageData(btn_icon_object->valuestring);
 
                             // if image loaded successfully
@@ -287,8 +287,8 @@ void state_func_ir_remote()
                             }
                             else 
                             {
-                                // Serial.print("\t");
-                                // Serial.println(data.error);
+                                // ESP_LOGD(WATCH2_TAG, "\t");
+                                // ESP_LOGD(WATCH2_TAG, "%*", data.error);
                             }
                         }
                         // no icon was found, so use text
@@ -306,7 +306,7 @@ void state_func_ir_remote()
                                 {
                                     CSSColorParser::optional<CSSColorParser::Color> btn_colour_css = CSSColorParser::parse(btn_colour_object->valuestring);
                                     if (btn_colour_css) btn_colour = watch2::oled.color565(btn_colour_css->r, btn_colour_css->g, btn_colour_css->b);
-                                    // Serial.printf("\tcolour: %s (0x%x)\n", btn_colour_object->valuestring, btn_colour);
+                                    // ESP_LOGD(WATCH2_TAG, "\tcolour: %s (0x%x)", btn_colour_object->valuestring, btn_colour);
                                 }
                                 //free(btn_colour_object);
 
@@ -314,15 +314,15 @@ void state_func_ir_remote()
                                 watch2::oled.setTextDatum(MC_DATUM);
                                 watch2::oled.setTextColor(btn_colour, BLACK);
                                 watch2::oled.drawString(btn_text_object->valuestring, icon_xpos + (icon_width / 2), icon_ypos + (icon_height / 2));
-                                // Serial.printf("\tbutton text: %s\n", btn_text_object->valuestring);
+                                // ESP_LOGD(WATCH2_TAG, "\tbutton text: %s", btn_text_object->valuestring);
                             }
                             //free(btn_text_object);
 
                         }
                     }
-                    // else Serial.println("\tcode index doesn't point to a button");
+                    // else ESP_LOGD(WATCH2_TAG, "\tcode index doesn't point to a button");
                 }
-                // else Serial.println("\tbutton doesn't have any IR data");
+                // else ESP_LOGD(WATCH2_TAG, "\tbutton doesn't have any IR data");
                 //free(btn);
                 
 
@@ -393,7 +393,7 @@ void state_func_ir_remote()
             else
             {
 
-                Serial.println("sending ir code: ");
+                ESP_LOGD(WATCH2_TAG, "sending ir code: ");
 
                 // get code object
                 int code_index = code_indices[this_page_number][selected_row][selected_col];
@@ -418,10 +418,10 @@ void state_func_ir_remote()
                         // get code as a value
                         unsigned long ir_code = strtoul(ir_code_object->valuestring, NULL, 0);
 
-                        Serial.printf("\tprotocol: %s\n", protocol);
-                        Serial.printf("\tcode:     %x\n", ir_code);
-                        Serial.printf("\tstr code: %s\n", ir_code_object->valuestring);
-                        Serial.printf("\tsize:     %d\n", ir_code_size->valueint);
+                        ESP_LOGD(WATCH2_TAG, "\tprotocol: %s", protocol);
+                        ESP_LOGD(WATCH2_TAG, "\tcode:     %x", ir_code);
+                        ESP_LOGD(WATCH2_TAG, "\tstr code: %s", ir_code_object->valuestring);
+                        ESP_LOGD(WATCH2_TAG, "\tsize:     %d", ir_code_size->valueint);
 
                         //send ir code
                         if (strcmp(protocol, "rc5") == 0)                irsend.sendRC5(ir_code, ir_code_size->valueint);
@@ -447,9 +447,9 @@ void state_func_ir_remote()
                     }
                     else
                     {
-                        if (!protocol_object) Serial.println("invalid protocol");
-                        if (!ir_code_object) Serial.println("invalid ir code");
-                        if (!ir_code_size) Serial.println("invalid ir code size");
+                        if (!protocol_object) ESP_LOGD(WATCH2_TAG, "invalid protocol");
+                        if (!ir_code_object) ESP_LOGD(WATCH2_TAG, "invalid ir code");
+                        if (!ir_code_size) ESP_LOGD(WATCH2_TAG, "invalid ir code size");
                     }
                     
                 }
@@ -616,7 +616,7 @@ void state_func_ir_remote()
         if (Serial.available())
         {
 
-            //Serial.printf("received data: 0x%x\n", Serial.read());
+            //ESP_LOGD(WATCH2_TAG, "received data: 0x%x", Serial.read());
             
             const char *protocol;
             uint32_t code;
@@ -626,7 +626,7 @@ void state_func_ir_remote()
             // get thing from serial
             char thing[50];// = "cmd;nec;0xfe50af;32";
             Serial.readBytesUntil(0x0A, thing, 50); // terminator is line feed
-            Serial.printf("received string: %s\n", thing);
+            ESP_LOGD(WATCH2_TAG, "received string: %s", thing);
 
             if (thing[0] == 'c' && thing[1] == 'm' && thing[2] == 'd')
             {
@@ -637,17 +637,17 @@ void state_func_ir_remote()
                 pch = strtok(NULL, ";"); // skip "cmd" header
 
                 protocol = strdup(pch); // store protocol
-                Serial.printf("protocol: %s\n", protocol);
+                ESP_LOGD(WATCH2_TAG, "protocol: %s", protocol);
                 pch = strtok(NULL, ";");
 
                 code = strtoul(pch, NULL, 0); // store code
-                Serial.printf("code: 0x%x\n", code);
-                Serial.printf("raw code: %s\n", pch);
+                ESP_LOGD(WATCH2_TAG, "code: 0x%x", code);
+                ESP_LOGD(WATCH2_TAG, "raw code: %s", pch);
                 pch = strtok(NULL, ";");
 
                 size = strtol(pch, NULL, 0); // store size
-                Serial.printf("size: %d bits\n", size);
-                Serial.printf("raw size: %s\n", pch);
+                ESP_LOGD(WATCH2_TAG, "size: %d bits", size);
+                ESP_LOGD(WATCH2_TAG, "raw size: %s", pch);
 
                 // print details
                 uint16_t code_info_y = watch2::top_thing_height + watch2::oled.fontHeight();

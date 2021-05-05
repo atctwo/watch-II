@@ -111,16 +111,16 @@ void state_func_timer()
             else if (selected_button == 2)
             {
                 // change timer music
-                Serial.println("[timers] changing music");
+                ESP_LOGD(WATCH2_TAG, "[timers] changing music");
                 std::string new_music = watch2::beginFileSelect();
-                Serial.printf("[timers] new music to %s\n", new_music.c_str());
+                ESP_LOGD(WATCH2_TAG, "[timers] new music to %s", new_music.c_str());
                 watch2::timer_music = String(new_music.c_str());
-                Serial.printf("[timers] changed music to %s\n", watch2::timer_music.c_str());
+                ESP_LOGD(WATCH2_TAG, "[timers] changed music to %s", watch2::timer_music.c_str());
 
                 watch2::preferences.begin("watch2");
                 watch2::preferences.putString("timer_music", watch2::timer_music);
                 watch2::preferences.end();
-                Serial.printf("[timers] updated preferences store");
+                ESP_LOGD(WATCH2_TAG, "[timers] updated preferences store");
             }
         }
         else

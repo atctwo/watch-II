@@ -112,7 +112,7 @@ namespace watch2 {
             // desc = (NimBLE2902*)input_media_keys->getDescriptorByUUID(BLEUUID((uint16_t)0x2902));
             // desc->setNotifications(true);
 
-            Serial.println("[bluetooth] connected to device");
+            ESP_LOGD(WATCH2_TAG, "[bluetooth] connected to device");
         }
 
         void onDisconnect(NimBLEServer* pServer){
@@ -123,7 +123,7 @@ namespace watch2 {
             // desc = (NimBLE2902*)input_media_keys->getDescriptorByUUID(BLEUUID((uint16_t)0x2902));
             // desc->setNotifications(false);
 
-            Serial.println("[bluetooth] disconnected from device");
+            ESP_LOGD(WATCH2_TAG, "[bluetooth] disconnected from device");
         }
     };
 
@@ -174,16 +174,16 @@ namespace watch2 {
         pAdvertising->setMinPreferred(0x12);
         pAdvertising->start();
 
-        Serial.println("[bluetooth] started BLE server task");
+        ESP_LOGD(WATCH2_TAG, "[bluetooth] started BLE server task");
         vTaskDelay(portMAX_DELAY);
     
     }
 
     void ble_hid_send_keyboard_report(uint8_t* report)
     {
-        Serial.print("[bluetooth] sending hid report: ");
-        for (int i = 0; i < sizeof(report); i++) Serial.printf("0x%2x, ", report[i]);
-        Serial.println("");
+        ESP_LOGD(WATCH2_TAG, "[bluetooth] sending hid report: ");
+        for (int i = 0; i < sizeof(report); i++) ESP_LOGD(WATCH2_TAG, "0x%2x, ", report[i]);
+        ESP_LOGD(WATCH2_TAG, "");
 
         input_keyboard->setValue(report, sizeof(report));
         input_keyboard->notify();
@@ -191,9 +191,9 @@ namespace watch2 {
 
     void ble_hid_send_media_key_report(uint8_t* report)
     {
-        Serial.print("[bluetooth] sending hid report: ");
-        for (int i = 0; i < sizeof(report); i++) Serial.printf("0x%2x, ", report[i]);
-        Serial.println("");
+        ESP_LOGD(WATCH2_TAG, "[bluetooth] sending hid report: ");
+        for (int i = 0; i < sizeof(report); i++) ESP_LOGD(WATCH2_TAG, "0x%2x, ", report[i]);
+        ESP_LOGD(WATCH2_TAG, "");
 
         input_media_keys->setValue(report, sizeof(report));
         input_media_keys->notify();
@@ -208,19 +208,19 @@ namespace watch2 {
 
     void enable_bluetooth()
     {
-        Serial.println("[Bluetooth] enabling bluetooth");
+        ESP_LOGD(WATCH2_TAG, "[Bluetooth] enabling bluetooth");
         bluetooth_state = 1; // enabling
 
         // enable ble keyboard
-        //Serial.println("[Bluetooth] starting BLE keyboard");
+        //ESP_LOGD(WATCH2_TAG, "[Bluetooth] starting BLE keyboard");
         //ble_keyboard.begin();
 
-        // Serial.println("[BLE] ble device init");
+        // ESP_LOGD(WATCH2_TAG, "[BLE] ble device init");
         // BLEDevice::init("watch2");
 
         if (ble_set_up)
         {
-            Serial.println("[BLE] ble already set up, restarting bt");
+            ESP_LOGD(WATCH2_TAG, "[BLE] ble already set up, restarting bt");
         }
         else
         {
@@ -228,32 +228,32 @@ namespace watch2 {
             ble_set_up = true;
         }
 
-        //Serial.println("[bluetooth] starting advertising");
+        //ESP_LOGD(WATCH2_TAG, "[bluetooth] starting advertising");
         //BLEDevice::startAdvertising();
         
 
-        Serial.println("[Bluetooth] finished enabling bluetooth");
+        ESP_LOGD(WATCH2_TAG, "[Bluetooth] finished enabling bluetooth");
         bluetooth_state = 3;
     }
 
     void disable_bluetooth()
     {
-        Serial.println("[Bluetooth] disabling bluetooth");
+        ESP_LOGD(WATCH2_TAG, "[Bluetooth] disabling bluetooth");
 
         // disable ble keyboard
-        //Serial.println("[Bluetooth] ending BLE keyboard");
+        //ESP_LOGD(WATCH2_TAG, "[Bluetooth] ending BLE keyboard");
         //ble_keyboard.end();
 
-        Serial.println("[BLE] stopping advertising");
+        ESP_LOGD(WATCH2_TAG, "[BLE] stopping advertising");
         NimBLEDevice::stopAdvertising();
 
-        Serial.println("[BLE] de-init ble device");
+        ESP_LOGD(WATCH2_TAG, "[BLE] de-init ble device");
         NimBLEDevice::deinit(false);
 
         btStop();
         //delete pServer;
 
-        Serial.println("[Bluetooth] finished disabling bluetooth");
+        ESP_LOGD(WATCH2_TAG, "[Bluetooth] finished disabling bluetooth");
         bluetooth_state = 0;
     }
 

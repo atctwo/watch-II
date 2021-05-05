@@ -21,7 +21,7 @@ namespace watch2 {
         // lock dpad
         for (uint16_t i = 0; i < 5; i++) 
         {
-            //Serial.printf("[button locks] set button %d to locked and not pressed\n", i);
+            //ESP_LOGD(WATCH2_TAG, "[button locks] set button %d to locked and not pressed", i);
             dpad_lock[i] = true;
             dpad_pressed[i] = false;
         }
@@ -344,12 +344,12 @@ namespace watch2 {
 
     uint8_t messageBox(const char* msg, std::vector<const char*> btns, bool clear_screen, uint16_t colour)
     {
-        Serial.printf("showing message box: %s\n", msg);
+        ESP_LOGD(WATCH2_TAG, "showing message box: %s", msg);
 
         // lock dpad
         for (uint16_t i = 0; i < 5; i++) 
         {
-            //Serial.printf("[button locks] set button %d to locked and not pressed\n", i);
+            //ESP_LOGD(WATCH2_TAG, "[button locks] set button %d to locked and not pressed", i);
             dpad_lock[i] = true;
             dpad_pressed[i] = false;
         }
@@ -373,7 +373,7 @@ namespace watch2 {
 
         uint16_t text_x = dialogue_x + (dialogue_width / 2);
         uint16_t text_y = dialogue_y + padding;
-        Serial.printf("x: %d\ny: %d", text_x, text_y);
+        ESP_LOGD(WATCH2_TAG, "x: %d\ny: %d", text_x, text_y);
 
         uint16_t btn_widths[btns.size()];
         uint16_t total_btn_width = 0;
@@ -478,7 +478,7 @@ namespace watch2 {
         // lock dpad
         for (uint16_t i = 0; i < 5; i++) 
         {
-            //Serial.printf("[button locks] set button %d to locked and not pressed\n", i);
+            //ESP_LOGD(WATCH2_TAG, "[button locks] set button %d to locked and not pressed", i);
             dpad_lock[i] = true;
             dpad_pressed[i] = false;
         }
@@ -575,7 +575,7 @@ namespace watch2 {
         while(1)
         {
             startLoop();
-            //Serial.println("aaaaaaaaaaaaaaaaaaaaa");
+            //ESP_LOGD(WATCH2_TAG, "aaaaaaaaaaaaaaaaaaaaa");
 
             //------------------------
             // handle value updating

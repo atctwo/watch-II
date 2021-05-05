@@ -19,7 +19,7 @@ namespace watch2 {
 
     std::string getApiKey(const char *service, const char *field)
     {
-        Serial.printf("[api keys] getting api key: %s:%s\n", service, field);
+        ESP_LOGD(WATCH2_TAG, "[api keys] getting api key: %s:%s", service, field);
         std::string api_key = "";
 
         if (SPIFFS.exists(API_KEYS_FILENAME))
@@ -37,7 +37,7 @@ namespace watch2 {
                 if (field_json)
                 {
                     const char *value = field_json->valuestring;
-                    Serial.printf("[api keys] value: %s\n", value);
+                    ESP_LOGD(WATCH2_TAG, "[api keys] value: %s", value);
                     uint8_t pos = 0;
                     while(1)
                     {
@@ -47,16 +47,16 @@ namespace watch2 {
                         if (value[pos] == '\0') break;
                     }
                 }
-                else Serial.println("[api keys] field doesn't exist");
+                else ESP_LOGD(WATCH2_TAG, "[api keys] field doesn't exist");
             }
-            else Serial.println("[api keys] service doesn't exist");
+            else ESP_LOGD(WATCH2_TAG, "[api keys] service doesn't exist");
 
             // free json memory
             cJSON_Delete(api_keys_json);
         }
         else
         {
-            Serial.println("[api keys] file doesn't exist");
+            ESP_LOGW(WATCH2_TAG, "[api keys] file doesn't exist");
         }
 
         return api_key;
@@ -70,27 +70,27 @@ namespace watch2 {
 
         if (wifi_state != 3) // wifi not connected
         {
-            Serial.println("[weather] not connected to wifi");
+            ESP_LOGD(WATCH2_TAG, "[weather] not connected to wifi");
         }
         else // wifi is connected
         {
-            Serial.println("[weather] getting current weather");
+            ESP_LOGD(WATCH2_TAG, "[weather] getting current weather");
 
             HTTPClient *http = new HTTPClient();
             char server[150];
             std::string api_key = getApiKey("openweather");
-            Serial.printf("[weather] key: %s\n", api_key.c_str());
+            ESP_LOGD(WATCH2_TAG, "[weather] key: %s", api_key.c_str());
             sprintf(server, "http://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s", weather_location.c_str(), api_key.c_str());
-            Serial.printf("[weather] server request: %s\n", server);
+            ESP_LOGD(WATCH2_TAG, "[weather] server request: %s", server);
 
             // connect to server
-            Serial.println("[weather] connecting to server");
+            ESP_LOGD(WATCH2_TAG, "[weather] connecting to server");
             http->begin(watch2::wifi_client, server);
             int http_code = http->GET();
             if (http_code)
             {
-                Serial.println("[weather] connected to server");
-                Serial.printf("[weather] http code: %d (%s)\n", http_code, http->errorToString(http_code));
+                ESP_LOGD(WATCH2_TAG, "[weather] connected to server");
+                ESP_LOGD(WATCH2_TAG, "[weather] http code: %d (%s)", http_code, http->errorToString(http_code));
 
                 if (http_code > 0)
                 {
@@ -98,8 +98,8 @@ namespace watch2 {
                     {
                         // get server response
                         String res = http->getString();
-                        Serial.println("[weather] response:");
-                        Serial.println(res);
+                        ESP_LOGD(WATCH2_TAG, "[weather] response:");
+                        ESP_LOGD(WATCH2_TAG, "%s", res.c_str());
 
                         // parse returned json
                         cJSON *weather_data = cJSON_Parse(res.c_str());
@@ -115,16 +115,16 @@ namespace watch2 {
                                 {
                                     // get the weather code
                                     weather = cJSON_GetObjectItem(weather_status, "id")->valueint;
-                                    Serial.printf("[weather] got primary weather code: %d\n", weather);
+                                    ESP_LOGD(WATCH2_TAG, "[weather] got primary weather code: %d", weather);
                                 }
                                 else
                                 {
-                                    Serial.println("[weather] failed to get primary weather condition");
+                                    ESP_LOGD(WATCH2_TAG, "[weather] failed to get primary weather condition");
                                 }
                             }
                             else
                             {
-                                Serial.println("[weather] failed to get weather array");
+                                ESP_LOGD(WATCH2_TAG, "[weather] failed to get weather array");
                             }
 
                             // get time info
@@ -133,49 +133,49 @@ namespace watch2 {
                             {
                                 // get sunrise
                                 sunrise = cJSON_GetObjectItem(time_info, "sunrise")->valueint;
-                                Serial.printf("[weather] got sunrise time: %d\n", sunrise);
+                                ESP_LOGD(WATCH2_TAG, "[weather] got sunrise time: %d", sunrise);
 
                                 // get sunset
                                 sunset = cJSON_GetObjectItem(time_info, "sunset")->valueint;
-                                Serial.printf("[weather] got sunset time: %d\n", sunset);
+                                ESP_LOGD(WATCH2_TAG, "[weather] got sunset time: %d", sunset);
                             }
                             else
                             {
-                                Serial.println("[weather] failed to get time info");
+                                ESP_LOGD(WATCH2_TAG, "[weather] failed to get time info");
                             }
                             
                         }
                         else
                         {
-                            Serial.println("[weather] failed to parse response");
+                            ESP_LOGD(WATCH2_TAG, "[weather] failed to parse response");
                         }
                         
                         // free memory used by parsed json
                         cJSON_Delete(weather_data);
                     }
                 }
-                else Serial.println("[weather] ???");
+                else ESP_LOGD(WATCH2_TAG, "[weather] ???");
                 
             }
             else
             {
-                Serial.println("[weather] failed to connect");
+                ESP_LOGD(WATCH2_TAG, "[weather] failed to connect");
             }
 
             delete http;
-            Serial.println("[weather] finished");
+            ESP_LOGD(WATCH2_TAG, "[weather] finished");
         }
         
     }
 
     void getTimeFromNTP()
     {
-        Serial.println("[NTP] setting time using ntp");
+        ESP_LOGI(WATCH2_TAG, "[NTP] setting time using ntp");
         configTime(watch2::timezone * 60 * 60, 0, NTP_SERVER);
 
         struct tm timeinfo;
         getLocalTime(&timeinfo);
-        Serial.println(&timeinfo, "[NTP] retrieved time: %A, %B %d %Y %H:%M:%S");
+        ESP_LOGD(WATCH2_TAG, "[NTP] retrieved time: %s", asctime(&timeinfo));
         setTime(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec, timeinfo.tm_mday, timeinfo.tm_mon+1, timeinfo.tm_year + 1900);
     }
 

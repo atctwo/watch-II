@@ -9,7 +9,7 @@ cJSON *getQuestion(uint8_t category, uint8_t difficulty)
 {
     EXT_RAM_ATTR static HTTPClient http;
 
-    Serial.println("[Quiz] getting new question");
+    ESP_LOGD(WATCH2_TAG, "[Quiz] getting new question");
 
     // set up url
     char server[100];
@@ -41,33 +41,33 @@ cJSON *getQuestion(uint8_t category, uint8_t difficulty)
 
     sprintf(server, "https://opentdb.com/api.php?amount=1%s%s&type=multiple", category_string, difficulty_string);
     
-    Serial.println("[Quiz] connecting to server");
+    ESP_LOGD(WATCH2_TAG, "[Quiz] connecting to server");
     watch2::wifi_client_secure.setCACert(root_ca_open_trivia_db);
     if (http.begin(watch2::wifi_client_secure, server))
     {
-        Serial.print("[Quiz] connected to server");
+        ESP_LOGD(WATCH2_TAG, "[Quiz] connected to server");
         int http_code = http.GET();
-        Serial.printf("[Quiz] http code: %d (%s)\n", http_code, http.errorToString(http_code));
+        ESP_LOGD(WATCH2_TAG, "[Quiz] http code: %d (%s)", http_code, http.errorToString(http_code));
 
         if (http_code > 0)
         {
             if (http_code == HTTP_CODE_OK)
             {
                 String res = http.getString();
-                Serial.println("[Quiz] response:");
-                Serial.println(res);
+                ESP_LOGD(WATCH2_TAG, "[Quiz] response:");
+                ESP_LOGD(WATCH2_TAG, "%s", res.c_str());
                 return cJSON_Parse(res.c_str());
             }
         }
-        else Serial.println("[Quiz] ???");
+        else ESP_LOGD(WATCH2_TAG, "[Quiz] ???");
         
     }
     else
     {
-        Serial.println("[Quiz] failed to connect");
+        ESP_LOGW(WATCH2_TAG, "[Quiz] failed to connect");
     }
 
-    Serial.println("[Quiz] finished");
+    ESP_LOGD(WATCH2_TAG, "[Quiz] finished");
     return NULL;
 }
 
@@ -75,15 +75,15 @@ void getCategories(std::vector<std::string> &category_names, std::vector<uint8_t
 {
     static HTTPClient http;
 
-    Serial.println("[Quiz] getting categories");
+    ESP_LOGD(WATCH2_TAG, "[Quiz] getting categories");
     watch2::wifi_client_secure.setCACert(root_ca_open_trivia_db);
     
-    Serial.println("[Quiz] connecting to server");
+    ESP_LOGD(WATCH2_TAG, "[Quiz] connecting to server");
     if (http.begin(watch2::wifi_client_secure, "https://opentdb.com/api_category.php"))
     {
-        Serial.print("[Quiz] connected to server");
+        ESP_LOGD(WATCH2_TAG, "[Quiz] connected to server");
         int http_code = http.GET();
-        Serial.printf("[Quiz] http code: %d (%s)\n", http_code, http.errorToString(http_code));
+        ESP_LOGD(WATCH2_TAG, "[Quiz] http code: %d (%s)", http_code, http.errorToString(http_code));
 
         if (http_code > 0)
         {
@@ -91,8 +91,8 @@ void getCategories(std::vector<std::string> &category_names, std::vector<uint8_t
             {
                 // get and print response
                 String res = http.getString();
-                Serial.println("[Quiz] response:");
-                Serial.println(res);
+                ESP_LOGD(WATCH2_TAG, "[Quiz] response:");
+                ESP_LOGD(WATCH2_TAG, "%s", res.c_str());
                 
                 // parse response
                 cJSON *response_object = cJSON_Parse(res.c_str());
@@ -112,30 +112,30 @@ void getCategories(std::vector<std::string> &category_names, std::vector<uint8_t
                                 int id = cJSON_GetObjectItem(category_object, "id")->valueint;
                                 category_names.push_back(name);
                                 category_ids.push_back(id);
-                                Serial.printf("[Quiz] added category %s (id %d) at array pos %d\n", 
+                                ESP_LOGD(WATCH2_TAG, "[Quiz] added category %s (id %d) at array pos %d", 
                                     category_names[category_names.size()-1].c_str(), category_ids[category_ids.size()-1], i
                                 );
                             }
-                            else Serial.printf("[Quiz] couldn't get category %d\n", i);
+                            else ESP_LOGD(WATCH2_TAG, "[Quiz] couldn't get category %d", i);
                         }
                     }
-                    else Serial.println("[Quiz] failed to get categories array");
+                    else ESP_LOGD(WATCH2_TAG, "[Quiz] failed to get categories array");
                 }
-                else Serial.println("[Quiz] failed to parse categories json");
+                else ESP_LOGD(WATCH2_TAG, "[Quiz] failed to parse categories json");
 
                 // free memory used by response
                 cJSON_Delete(response_object);
             }
         }
-        else Serial.println("[Quiz] ???");
+        else ESP_LOGD(WATCH2_TAG, "[Quiz] ???");
         
     }
     else
     {
-        Serial.println("[Quiz] failed to connect");
+        ESP_LOGW(WATCH2_TAG, "[Quiz] failed to connect");
     }
 
-    Serial.println("[Quiz] finished");
+    ESP_LOGD(WATCH2_TAG, "[Quiz] finished");
 }
 
 void state_func_quiz()
@@ -285,15 +285,15 @@ void state_func_quiz()
             // handle changes to selected things
             if (dpad_up_active())
             {
-                Serial.printf("[Quiz] selected thing: %d\n", *selection);
-                Serial.printf("[Quiz] number of things: %d\n", parameter_options->size());
+                ESP_LOGD(WATCH2_TAG, "[Quiz] selected thing: %d", *selection);
+                ESP_LOGD(WATCH2_TAG, "[Quiz] number of things: %d", parameter_options->size());
                 if (*selection == 0) *selection = parameter_options->size() - 1;
                 else (*selection)--;
             }
             if (dpad_down_active())
             {
-                Serial.printf("[Quiz] selected thing: %d\n", *selection);
-                Serial.printf("[Quiz] number of things: %d\n", parameter_options->size());
+                ESP_LOGD(WATCH2_TAG, "[Quiz] selected thing: %d", *selection);
+                ESP_LOGD(WATCH2_TAG, "[Quiz] number of things: %d", parameter_options->size());
                 if (*selection == parameter_options->size() - 1) *selection = 0;
                 else (*selection)++;
             }
@@ -340,7 +340,7 @@ void state_func_quiz()
                             cJSON *question_object = cJSON_GetArrayItem(results_object, 0);
                             if (question_object)
                             {
-                                Serial.println("[Quiz] got question object");
+                                ESP_LOGD(WATCH2_TAG, "[Quiz] got question object");
 
                                 // get actual question
                                 //current_question = cJSON_GetObjectItem(question_object, "question")->valuestring;
@@ -359,7 +359,7 @@ void state_func_quiz()
                                         answers[i+1] = temp_text;
                                     }
                                 }
-                                else Serial.println("[Quiz] couldn't get incorrect answers");
+                                else ESP_LOGD(WATCH2_TAG, "[Quiz] couldn't get incorrect answers");
 
                                 // store correct answer
                                 decode_html_entities_utf8(temp_text, cJSON_GetObjectItem(question_object, "correct_answer")->valuestring);
@@ -369,42 +369,42 @@ void state_func_quiz()
                                 std::random_shuffle(answers.begin(), answers.end());
 
                             }
-                            else Serial.println("[Quiz] couldn't get question");
+                            else ESP_LOGD(WATCH2_TAG, "[Quiz] couldn't get question");
                         }
-                        else Serial.println("[Quiz] couldn't get results object");
+                        else ESP_LOGD(WATCH2_TAG, "[Quiz] couldn't get results object");
 
                     }
                     else if (response_code == 1) // no results
                     {
-                        Serial.println("[Quiz] no results were returned");
+                        ESP_LOGD(WATCH2_TAG, "[Quiz] no results were returned");
                         watch2::oled.setCursor(2, watch2::top_thing_height);
                         watch2::oled.setTextColor(WHITE, BLACK);
                         watch2::oled.println("Error 1\nno results were returned");
                     }
                     else if (response_code == 2) // invalid parameter
                     {
-                        Serial.println("[Quiz] invalid parameter");
+                        ESP_LOGD(WATCH2_TAG, "[Quiz] invalid parameter");
                         watch2::oled.setCursor(2, watch2::top_thing_height);
                         watch2::oled.setTextColor(WHITE, BLACK);
                         watch2::oled.println("Error 2\ninvalid parameter");
                     }
                     else if (response_code == 3) // token not found
                     {
-                        Serial.println("[Quiz] session token doesn't exist");
+                        ESP_LOGD(WATCH2_TAG, "[Quiz] session token doesn't exist");
                         watch2::oled.setCursor(2, watch2::top_thing_height);
                         watch2::oled.setTextColor(WHITE, BLACK);
                         watch2::oled.println("Error 3\ntoken not found");
                     }
                     else if (response_code == 4) // token empty
                     {
-                        Serial.println("[Quiz] session token has returned all possible questions for the query");
+                        ESP_LOGD(WATCH2_TAG, "[Quiz] session token has returned all possible questions for the query");
                         watch2::oled.setCursor(2, watch2::top_thing_height);
                         watch2::oled.setTextColor(WHITE, BLACK);
                         watch2::oled.println("Error 4\ntoken empty");
                     }   
                     
                 }
-                else Serial.println("[Quiz] failed to get response");
+                else ESP_LOGD(WATCH2_TAG, "[Quiz] failed to get response");
 
                 // free the space used by the question
                 cJSON_Delete(response_object);

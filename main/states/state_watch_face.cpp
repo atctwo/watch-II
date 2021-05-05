@@ -174,13 +174,13 @@ void state_func_watch_face()
 
         if (dpad_enter_active())
         {
-            Serial.println("[watch face] deep sleep");
+            ESP_LOGD(WATCH2_TAG, "[watch face] deep sleep");
             watch2::deepSleep(31);
         }
 
         if (dpad_right_active())
         {
-            Serial.println("[watch face] switching to state menu");
+            ESP_LOGD(WATCH2_TAG, "[watch face] switching to state menu");
             if (watch2::wfs[3]) watch2::switchState(watch2::wfs[3]);
         }
 

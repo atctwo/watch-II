@@ -104,7 +104,7 @@ namespace watch2 {
                 {
                     std::string icon_name = fs_icon_name_map[icons[fridgebuzz]];
 
-                    //Serial.printf("%s: icon \"%s\" (item no %d, icon no %d)\n", item.c_str(), icon_name.c_str(), fridgebuzz, icons[fridgebuzz]);
+                    //ESP_LOGD(WATCH2_TAG, "%s: icon \"%s\" (item no %d, icon no %d)", item.c_str(), icon_name.c_str(), fridgebuzz, icons[fridgebuzz]);
 
                     if (!icon_name.empty())
                     {
@@ -425,7 +425,7 @@ namespace watch2 {
         }
         else 
         {
-            Serial.println("[error] font " + String(font) + " doesn't exist");
+            ESP_LOGW(WATCH2_TAG, "[error] font %s doesn't exist", font);
             tft.setFreeFont(NULL);
         }
     }

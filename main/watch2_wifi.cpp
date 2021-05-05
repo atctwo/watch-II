@@ -32,7 +32,7 @@ namespace watch2 {
 
     void enable_wifi(bool connect)
     {
-        Serial.println("[Wifi] enabling wifi");
+        ESP_LOGD(WATCH2_TAG, "[Wifi] enabling wifi");
         wifi_state = 1; // enabled, disconnected
 
         // tell the system to enable wifi on boot
@@ -51,7 +51,7 @@ namespace watch2 {
 
     void disable_wifi()
     {
-        Serial.println("[Wifi] disconnecting from wifi");
+        ESP_LOGD(WATCH2_TAG, "[Wifi] disconnecting from wifi");
         WiFi.disconnect();
         //WiFi.mode(WIFI_OFF);
 
@@ -64,7 +64,7 @@ namespace watch2 {
 
     void connectToWifiAP(const char *ssid, const char *password)
     {
-        Serial.println("[WiFi] connecting to AP");
+        ESP_LOGD(WATCH2_TAG, "[WiFi] connecting to AP");
         WiFi.enableSTA(true);
         //WiFi.mode(WIFI_STA);
         WiFi.setSleep(true);
@@ -86,7 +86,7 @@ namespace watch2 {
                 
                 if (profiles)
                 {
-                    Serial.println("[Wifi] got profiles object");
+                    ESP_LOGD(WATCH2_TAG, "[Wifi] got profiles object");
                     cJSON *profile_array = cJSON_GetObjectItem(profiles, "profiles");
                     cJSON *access_index = cJSON_GetObjectItem(profiles, "access_index");
 
@@ -95,15 +95,15 @@ namespace watch2 {
                     {
                         if (access_index)
                         {
-                            Serial.printf("[Wifi] found %d profiles\n", cJSON_GetArraySize(profile_array));
-                            Serial.printf("[Wifi] found %d profiles in access index\n", cJSON_GetArraySize(access_index));
+                            ESP_LOGD(WATCH2_TAG, "[Wifi] found %d profiles", cJSON_GetArraySize(profile_array));
+                            ESP_LOGD(WATCH2_TAG, "[Wifi] found %d profiles in access index", cJSON_GetArraySize(access_index));
 
                             // if the profile index refers to a profile that doesn't exist
                             // (if the profile index is greater than the number of elements in the access index - 1)
                             if (profile_index > cJSON_GetArraySize(access_index) - 1)
                             {
                                 // the profile list has been exhausted
-                                Serial.println("[Wifi] tried to access a profile that doesn't exist");
+                                ESP_LOGD(WATCH2_TAG, "[Wifi] tried to access a profile that doesn't exist");
                                 WiFi.disconnect();
                                 wifi_state = 1;
                                 wifi_reconnect_attempts = 0;
@@ -111,7 +111,7 @@ namespace watch2 {
                             else
                             {
                                 // the profile index refers to an access index element that does exist, so get the information for that profile
-                                Serial.printf("[Wifi] access index %d points to an existing profile\n", profile_index);
+                                ESP_LOGD(WATCH2_TAG, "[Wifi] access index %d points to an existing profile", profile_index);
                                 const char *ssid = cJSON_GetArrayItem(access_index, profile_index)->valuestring;
                                 cJSON *profile;
                                 bool help = false;
@@ -119,7 +119,7 @@ namespace watch2 {
                                 {
                                     profile = cJSON_GetArrayItem(profile_array, i);
                                     const char* profile_ssid = cJSON_GetObjectItem(profile, "ssid")->valuestring;
-                                    Serial.printf("checking ssid %s; profile ssid %s\n", ssid, profile_ssid);
+                                    ESP_LOGD(WATCH2_TAG, "checking ssid %s; profile ssid %s", ssid, profile_ssid);
                                     if (strcmp(ssid, profile_ssid) == 0) // if profile ssid matches ap ssid
                                     {
                                         help = true;
@@ -129,7 +129,7 @@ namespace watch2 {
 
                                 if (help) // the profile actually exists
                                 {
-                                    Serial.println("[Wifi] the profile's SSID matches the access index's SSID :), connecting...");
+                                    ESP_LOGD(WATCH2_TAG, "[Wifi] the profile's SSID matches the access index's SSID :), connecting...");
                                     //WiFi._setStatus(WL_DISCONNECTED);
                                     WiFi.begin(
                                         cJSON_GetObjectItem(profile, "ssid")->valuestring,
@@ -140,7 +140,7 @@ namespace watch2 {
                                 // otherwise, the AP name exists in the access index, but doesn't actually have a profile, so skip to the next AP
                                 else 
                                 {
-                                    Serial.println("[Wifi] ssid was found in access index, but no matching profile was found");
+                                    ESP_LOGD(WATCH2_TAG, "[Wifi] ssid was found in access index, but no matching profile was found");
                                     wifi_reconnect_attempts--;
                                 }
 
@@ -150,13 +150,13 @@ namespace watch2 {
                         }
                         else
                         {
-                            Serial.println("[Wifi] couldn't access access index");
+                            ESP_LOGD(WATCH2_TAG, "[Wifi] couldn't access access index");
                             wifi_reconnect_attempts = 0;
                         }
                     }
                     else 
                     {
-                        Serial.println("[Wifi] no profiles");
+                        ESP_LOGD(WATCH2_TAG, "[Wifi] no profiles");
                         wifi_reconnect_attempts = 0;
                         WiFi.disconnect();
                         WiFi._setStatus(WL_CONNECT_FAILED);
@@ -167,7 +167,7 @@ namespace watch2 {
                 }
                 else
                 {
-                    Serial.println("[Wifi] couldn't access profile list");
+                    ESP_LOGD(WATCH2_TAG, "[Wifi] couldn't access profile list");
                     wifi_reconnect_attempts = 0;
                 }
             }
@@ -186,7 +186,7 @@ namespace watch2 {
 
     cJSON *getWifiProfiles()
     {
-        Serial.println("[Wifi profiles] getting profiles");
+        ESP_LOGD(WATCH2_TAG, "[Wifi profiles] getting profiles");
         if (spiffs_state == 1) // if spiffs is initalised
         {
             cJSON *profiles;
@@ -194,7 +194,7 @@ namespace watch2 {
             // if profile file already exists
             if (SPIFFS.exists(WIFI_PROFILES_FILENAME))
             {
-                Serial.println("[Wifi profiles] profile exists");
+                ESP_LOGD(WATCH2_TAG, "[Wifi profiles] profile exists");
 
                 // get handle to profiles file
                 fs::File profiles_file = SPIFFS.open(WIFI_PROFILES_FILENAME);
@@ -207,11 +207,11 @@ namespace watch2 {
 
                 if (profiles)
                 {
-                    Serial.println("[Wifi profiles] valid profile");
+                    ESP_LOGD(WATCH2_TAG, "[Wifi profiles] valid profile");
                 }
                 else
                 {
-                    Serial.println("[Wifi profiles] invalid profile list, returning minimal profile object");
+                    ESP_LOGD(WATCH2_TAG, "[Wifi profiles] invalid profile list, returning minimal profile object");
 
                     // create profiles object
                     profiles = cJSON_CreateObject();
@@ -219,9 +219,9 @@ namespace watch2 {
                     cJSON *access_index = cJSON_AddArrayToObject(profiles, "access_index");
                 }
 
-                // Serial.println("help");
-                // Serial.println(profiles_list);
-                // Serial.println(cJSON_Print(profiles));
+                // ESP_LOGD(WATCH2_TAG, "help");
+                // ESP_LOGD(WATCH2_TAG, "%*", profiles_list);
+                // ESP_LOGD(WATCH2_TAG, "%*", cJSON_Print(profiles));
 
                 // close file
                 profiles_file.close();
@@ -232,7 +232,7 @@ namespace watch2 {
             //otherwise
             else
             {
-                Serial.println("[Wifi profiles] profile doesn't exist, creating");
+                ESP_LOGD(WATCH2_TAG, "[Wifi profiles] profile doesn't exist, creating");
 
                 // create profiles object
                 profiles = cJSON_CreateObject();
@@ -254,14 +254,14 @@ namespace watch2 {
         }
         else 
         {
-            Serial.printf("[Wifi profiles] can't access spiffs (state: %d)\n", spiffs_state);
+            ESP_LOGW(WATCH2_TAG, "[Wifi profiles] can't access spiffs (state: %d)", spiffs_state);
             return nullptr;
         }
     }
 
     void setWifiProfiles(cJSON *profiles)
     {
-        Serial.println("[Wifi profiles] setting profiles");
+        ESP_LOGD(WATCH2_TAG, "[Wifi profiles] setting profiles");
         if (spiffs_state == 1) // if spiffs has been initalised
         {
             // open profiles file.  if the file doesn't exist, it will be created, and if it does exist,

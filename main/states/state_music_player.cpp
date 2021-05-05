@@ -24,10 +24,10 @@ void state_func_music_player()
 
             watch2::oled.setCursor(2, 42);
             watch2::oled.setTextColor(WHITE, BLACK);
-            Serial.printf("[music player] file name: %s (%s)\n", filename.c_str(), watch2::file_name(filename.c_str()).c_str());
+            ESP_LOGD(WATCH2_TAG, "[music player] file name: %s (%s)", filename.c_str(), watch2::file_name(filename.c_str()).c_str());
             watch2::oled.println(filename.c_str());
             
-            Serial.printf("[music player] music path: %s\n", filename.c_str());
+            ESP_LOGD(WATCH2_TAG, "[music player] music path: %s", filename.c_str());
 
             SD.begin(sdcs, *watch2::vspi, 4000000U);
             vTaskDelay(20); // wait for tft draw to finish
@@ -42,7 +42,7 @@ void state_func_music_player()
     // update progress bar
     if (!cancelled && (millis() - last_draw_time > 1000))
     {
-        //Serial.println("update progress");
+        //ESP_LOGD(WATCH2_TAG, "update progress");
         uint32_t length         = watch2::audio.getAudioFileDuration();
         uint32_t current_time   = watch2::audio.getAudioCurrentTime();
 
@@ -79,42 +79,42 @@ void state_func_music_player()
 }
 
 // void audio_info(const char *info){
-//     Serial.print("info        "); Serial.println(info);
+//     ESP_LOGD(WATCH2_TAG, "info        "); ESP_LOGD(WATCH2_TAG, "%*", info);
 // }
 // void audio_id3data(const char *info){  //id3 metadata
-//     Serial.print("id3data     ");Serial.println(info);
+//     ESP_LOGD(WATCH2_TAG, "id3data     ");ESP_LOGD(WATCH2_TAG, "%*", info);
 //     std::string data = std::string(info);
 //     if      (data.find("Title") == 0) watch2::oled.println(info);
 //     else if (data.find("Artist") == 0) watch2::oled.println(info);
 //     else if (data.find("Album") == 0) watch2::oled.println(info);
 // }
 // void audio_id3image(fs::File& f, const int s){  //id3 metadata
-//     Serial.print("id3image     ");Serial.println(s);
+//     ESP_LOGD(WATCH2_TAG, "id3image     ");ESP_LOGD(WATCH2_TAG, "%*", s);
 // }
 // void audio_eof_mp3(const char *info){  //end of file
-//     Serial.print("eof_mp3     ");Serial.println(info);
+//     ESP_LOGD(WATCH2_TAG, "eof_mp3     ");ESP_LOGD(WATCH2_TAG, "%*", info);
 // }
 // void audio_showstation(const char *info){
-//     Serial.print("station     ");Serial.println(info);
+//     ESP_LOGD(WATCH2_TAG, "station     ");ESP_LOGD(WATCH2_TAG, "%*", info);
 // }
 // void audio_showstreaminfo(const char *info){
-//     Serial.print("streaminfo  ");Serial.println(info);
+//     ESP_LOGD(WATCH2_TAG, "streaminfo  ");ESP_LOGD(WATCH2_TAG, "%*", info);
 // }
 // void audio_showstreamtitle(const char *info){
-//     Serial.print("streamtitle ");Serial.println(info);
+//     ESP_LOGD(WATCH2_TAG, "streamtitle ");ESP_LOGD(WATCH2_TAG, "%*", info);
 // }
 // void audio_bitrate(const char *info){
-//     Serial.print("bitrate     ");Serial.println(info);
+//     ESP_LOGD(WATCH2_TAG, "bitrate     ");ESP_LOGD(WATCH2_TAG, "%*", info);
 // }
 // void audio_commercial(const char *info){  //duration in sec
-//     Serial.print("commercial  ");Serial.println(info);
+//     ESP_LOGD(WATCH2_TAG, "commercial  ");ESP_LOGD(WATCH2_TAG, "%*", info);
 // }
 // void audio_icyurl(const char *info){  //homepage
-//     Serial.print("icyurl      ");Serial.println(info);
+//     ESP_LOGD(WATCH2_TAG, "icyurl      ");ESP_LOGD(WATCH2_TAG, "%*", info);
 // }
 // void audio_lasthost(const char *info){  //stream URL played
-//     Serial.print("lasthost    ");Serial.println(info);
+//     ESP_LOGD(WATCH2_TAG, "lasthost    ");ESP_LOGD(WATCH2_TAG, "%*", info);
 // }
 // void audio_eof_speech(const char *info){
-//     Serial.print("eof_speech  ");Serial.println(info);
+//     ESP_LOGD(WATCH2_TAG, "eof_speech  ");ESP_LOGD(WATCH2_TAG, "%*", info);
 // }
