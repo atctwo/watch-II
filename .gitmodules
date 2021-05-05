@@ -46,3 +46,6 @@
 [submodule "components/esp-nimble-cpp"]
 	path = components/esp-nimble-cpp
 	url = https://github.com/h2zero/esp-nimble-cpp.git
+[submodule "main/libraries/Adafruit_MCP9808_Library"]
+	path = main/libraries/Adafruit_MCP9808_Library
+	url = https://github.com/adafruit/Adafruit_MCP9808_Library.git
