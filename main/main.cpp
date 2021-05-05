@@ -23,6 +23,33 @@ void setup() {
     // time for cpu to start up
     vTaskDelay(500);
 
+    //begin serial
+    Serial.begin(115200);
+    ESP_LOGI(TAG_INIT, "\n\nwatch2 version %d\n", WATCH_VER);
+
+    //set up oled
+    ESP_LOGD(TAG_INIT, "setting up display: ");
+    digitalWrite(cs, LOW);
+    watch2::oled.setAttribute(PSRAM_ENABLE, true);
+    watch2::oled.begin();
+    watch2::oled.fillScreen(0);
+    watch2::oled.writecommand(0x11); // sleep out
+    watch2::oled.initDMA();
+
+    watch2::oled.setTextDatum(MC_DATUM);
+
+    //watch2::setFont(MAIN_FONT);
+    watch2::oled.setTextSize(3);
+    watch2::oled.drawString("loading...", SCREEN_WIDTH/2, (SCREEN_HEIGHT/2) + ((8 * 5) / 2));
+
+    //watch2::setFont(REALLY_BIG_FONT);
+    watch2::oled.setTextSize(5);
+    watch2::oled.drawString("watch2", SCREEN_WIDTH/2, (SCREEN_HEIGHT/2) - ((8 * 5) / 2));
+
+    watch2::oled.setTextDatum(TL_DATUM);
+    watch2::oled.setTextSize(1);
+    ESP_LOGD(TAG_INIT, "done");
+
     // configure gpio data direction registers
     pinMode(12, OUTPUT);
     pinMode(cs, OUTPUT);
@@ -34,9 +61,19 @@ void setup() {
     digitalWrite(cs, LOW);
     digitalWrite(sdcs, HIGH);
 
-    //begin serial
-    Serial.begin(115200);
-    ESP_LOGI(TAG_INIT, "\n\nwatch2 version %d\n", WATCH_VER);
+    //set up spiffs
+    ESP_LOGD(TAG_INIT, "setting up spiffs: ");
+    if (!SPIFFS.begin())
+    {
+        ESP_LOGD(TAG_INIT, "spiffs init failed");
+        watch2::spiffs_state = -1;
+    }
+    else
+    {
+        ESP_LOGD(TAG_INIT, "initalised spiffs successfully");
+        watch2::spiffs_state = 1;
+    }
+    watch2::setFont(MAIN_FONT);
 
     // set up i2c
     ESP_LOGD(TAG_INIT, "setting up i2c devices: ");
@@ -80,30 +117,6 @@ void setup() {
     ESP_LOGD(TAG_INIT, "done");
 
     ESP_LOGD(TAG_INIT, "done setting up i2c");
-
-    //set up spiffs
-    ESP_LOGD(TAG_INIT, "setting up spiffs: ");
-    if (!SPIFFS.begin())
-    {
-        ESP_LOGD(TAG_INIT, "spiffs init failed");
-        watch2::spiffs_state = -1;
-    }
-    else
-    {
-        ESP_LOGD(TAG_INIT, "initalised spiffs successfully");
-        watch2::spiffs_state = 1;
-    }
-    
-    //set up oled
-    ESP_LOGD(TAG_INIT, "setting up display: ");
-    digitalWrite(cs, LOW);
-    watch2::oled.setAttribute(PSRAM_ENABLE, true);
-    watch2::oled.begin();
-    watch2::oled.fillScreen(0);
-    watch2::setFont(MAIN_FONT);
-    watch2::oled.writecommand(0x11); // sleep out
-    watch2::oled.initDMA();
-    ESP_LOGD(TAG_INIT, "done");
 
     //set up SD card
     ESP_LOGD(TAG_INIT, "setting up sd card: ");
