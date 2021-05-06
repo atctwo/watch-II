@@ -22,6 +22,9 @@ namespace watch2 {
 
     EXT_RAM_ATTR bool dpad_lock[5] = {false};
     EXT_RAM_ATTR bool dpad_pressed[5] = {false};
+    EXT_RAM_ATTR bool dpad_held[5] = {false};
+    EXT_RAM_ATTR uint32_t dpad_pressed_time[5] = {0};
+    EXT_RAM_ATTR uint32_t dpad_last_repeat[5] = {0};
 
     int short_timeout = 5000;
     int long_timeout = 30000;
@@ -114,6 +117,8 @@ namespace watch2 {
         //ESP_LOGD(WATCH2_TAG, "");
         //ESP_LOGD(WATCH2_TAG, "dpad right: %d;", mcp.digitalRead(dpad_right));
 
+        if (dpad_held[2]) Serial.printf("aaa\n");
+
         for (uint8_t i = 0; i < 5; i++)
         {
             // reset button active state
@@ -123,10 +128,24 @@ namespace watch2 {
                 dpad_lock[i] = true;
             }
 
+            // reset button held state
+            if (!mcp.digitalRead(i))
+            {
+                dpad_held[i] = false;
+            }
+
+            // save press time
+            if (!dpad_lock[i] && mcp.digitalRead(i) && !dpad_pressed[i])
+            {
+                Serial.printf("button %d pressed at %lu\n", i, millis());
+                dpad_pressed_time[i] = millis();
+            }
+
             // set button active state
             if (!dpad_lock[i] && mcp.digitalRead(i)) {
                 //ESP_LOGD(WATCH2_TAG, "[button locks] set button %d to pressed", i);
                 dpad_pressed[i] = true;
+                dpad_held[i] = true;
             }
 
             //reset button lock state
@@ -356,6 +375,7 @@ namespace watch2 {
             //ESP_LOGD(WATCH2_TAG, "[button locks] set button %d to locked and not pressed", i);
             dpad_lock[i] = true;
             dpad_pressed[i] = false;
+            dpad_held[i] = false;
         }
 
         state_init = 0;                             //reset first execution flag
@@ -522,6 +542,32 @@ namespace watch2 {
         //rtc_gpio_deinit(GPIO_NUM_26);
         if (next_alarm_time > -1) switchState(0, 0, 0, 0, true);
         else switchState(0);
+    }
+
+
+
+
+
+
+    bool dpad_active(int key) {
+    
+        if (millis() - watch2::dpad_pressed_time[key] < KEY_REPEAT_DELAY) return (!watch2::dpad_lock[key] && watch2::dpad_pressed[key]);
+        else
+        {
+            if (dpad_held[key]) 
+            {
+                // if (millis() - dpad_last_repeat[key] > KEY_REPEAT_PERIOD)
+                // {
+                //     dpad_last_repeat[key] = millis();
+                //     return true;
+                // }
+                return true;
+            }
+            
+        }
+
+        return false;
+
     }
 
     

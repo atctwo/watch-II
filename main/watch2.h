@@ -99,11 +99,11 @@
 #define KEY_REPEAT_DELAY    550     //time for key repeat to start, in ms [DAS]
 #define KEY_REPEAT_PERIOD   24      //time between key repeats, in ms     [ARR]
 
-#define dpad_up_active()    (!watch2::dpad_lock[dpad_up] && watch2::dpad_pressed[dpad_up])
-#define dpad_down_active()  (!watch2::dpad_lock[dpad_down] && watch2::dpad_pressed[dpad_down])
-#define dpad_left_active()  (!watch2::dpad_lock[dpad_left] && watch2::dpad_pressed[dpad_left])
-#define dpad_right_active() (!watch2::dpad_lock[dpad_right] && watch2::dpad_pressed[dpad_right])
-#define dpad_enter_active() (!watch2::dpad_lock[dpad_enter] && watch2::dpad_pressed[dpad_enter])
+#define dpad_up_active()    watch2::dpad_active(dpad_up)
+#define dpad_down_active()  watch2::dpad_active(dpad_down)
+#define dpad_left_active()  watch2::dpad_active(dpad_left)
+#define dpad_right_active() watch2::dpad_active(dpad_right)
+#define dpad_enter_active() watch2::dpad_active(dpad_enter)
 #define dpad_any_active()   ( dpad_up_active() || dpad_down_active() || dpad_left_active() || dpad_right_active() || dpad_enter_active() )
 
 #define draw(conditions, ...)                                       \      
@@ -513,8 +513,11 @@ namespace watch2
     // these variables stop button presses affecting new states when switching from a previous state.  when a user presses a button to go from the watch face 
     // to the menu, if the button is held down for long enough, the button press can affect the next state. these lock variables are set to true when switching 
     // states, then set to false when each button is released.
-    extern bool dpad_lock[5];
-    extern bool dpad_pressed[5];
+    extern bool dpad_lock[5];                   // whether or not a button is locked
+    extern bool dpad_pressed[5];                // whether or not a button was pressed (once a button is pressed, this will only be true for one main loop iteration)
+    extern bool dpad_held[5];                   // whether or not a button is being held down
+    extern uint32_t dpad_pressed_time[5];       // the time of the most recent button press
+    extern uint32_t dpad_last_repeat[5];        // if the button is repeating, the time since the last repeat
 
 
 
@@ -568,7 +571,7 @@ namespace watch2
     void    deepSleep(int pause_thing=10);
 
 
-
+    bool dpad_active(int key);
 
 
 
