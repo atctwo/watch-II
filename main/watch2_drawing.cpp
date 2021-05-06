@@ -38,6 +38,7 @@ namespace watch2 {
         static uint16_t w=0, w2=0, h=0, h2=0;
         static int padding = 4;
         static int radius = 4;
+        int original_y = y;
         
         //clear screen where menu will be drawn
         oled.fillRect(x, y, width, height, BLACK);
@@ -79,7 +80,19 @@ namespace watch2 {
             int item_ypos = y - y_offset;
 
             //if item is within the area in which the menu is to be drawn
-            if (item_ypos >= ( y - ht) || item_ypos < (y + height + ht))
+
+            // Serial.println(item.c_str());
+            // Serial.printf("\ty:                 %d\n", y);
+            // Serial.printf("\ty_offset:          %d\n", y_offset);
+            // Serial.printf("\titem_ypos:         %d\n", item_ypos);
+            // Serial.printf("\tcheck 1 value:     %d\n", original_y - ht);
+            // Serial.printf("\tcheck 1 outcome:   %d\n", item_ypos >= ( original_y - ht));
+            // Serial.printf("\tcheck 2 value:     %d\n", (original_y + height + ht));
+            // Serial.printf("\tcheck 2 outcome:   %d\n", item_ypos < (original_y + height + ht));
+            // Serial.printf("\tdraw?              %d\n", item_ypos >= ( original_y - ht) && item_ypos < (original_y + height + ht));
+            // Serial.println("");
+
+            if (item_ypos >= ( original_y - ht) && item_ypos < (original_y + height + ht))
             {
 
                 //draw the item rounded rectangle
@@ -183,11 +196,10 @@ namespace watch2 {
                     oled.print(itemtext);
                 }
 
-                y += ht;
-
-                fridgebuzz++;
-
             }
+
+            y += ht;
+            fridgebuzz++;
         }
     }
 
