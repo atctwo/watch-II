@@ -172,6 +172,16 @@ namespace watch2 {
     {
         //i was watching tiktoks while writing this, so it might be pretty awful
 
+        // if path ends in a '/', remove the last character,
+        // except if path == "/", because that's ok
+        if (path != "/")
+        {
+            if (path[path.size() - 1] == '/') path.pop_back();
+        }
+
+        // accept "" as a valid path
+        if (path == "") path = "/";
+
         // lock dpad
         for (uint16_t i = 0; i < 5; i++) 
         {
@@ -311,8 +321,8 @@ namespace watch2 {
             //if the file select list hasn't been initalised
             if (!file_select_dir_list_init)
             {
-                ESP_LOGD(WATCH2_TAG, "[beginFileSelect] opening file dialogue for ");
-                ESP_LOGD(WATCH2_TAG, "%s", file_path.c_str());
+                ESP_LOGI(WATCH2_TAG, "[beginFileSelect] opening file dialogue for ");
+                ESP_LOGI(WATCH2_TAG, "%s", file_path.c_str());
 
                 //dim screen
                 dimScreen(0, top_thing_height);

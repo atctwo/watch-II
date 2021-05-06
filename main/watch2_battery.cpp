@@ -35,7 +35,6 @@ namespace watch2 {
 
     float percentMAX17043()
     {
-        Serial.println("kill me");
         if (!is_fuel_gauge_present) return 0.0;
 
         unsigned int soc;
