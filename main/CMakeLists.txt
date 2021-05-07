@@ -47,6 +47,7 @@ set(LIB_ARDUINO_SRCS
     libraries/gumbo-parser/src/vector.c
     libraries/ESP32-audioI2S/src/aac_decoder/aac_decoder.cpp
     libraries/ESP32-audioI2S/src/mp3_decoder/mp3_decoder.cpp
+    libraries/ESP32-audioI2S/src/flac_decoder/flac_decoder.cpp
     libraries/ESP32-audioI2S/src/Audio.cpp
     libraries/css-color-parser-cpp/csscolorparser.cpp
     libraries/tinyexpr/tinyexpr.c

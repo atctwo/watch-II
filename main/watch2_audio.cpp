@@ -143,6 +143,7 @@ namespace watch2 {
         // if repeat is enabled, set it to the success value
         // if playback failed, repeat will be set to false, so it won't repeat forever
         if (repeat) audio_repeat = success;
+        audio.setFileLoop(repeat);
 
         return success;
     }
@@ -161,12 +162,13 @@ namespace watch2 {
         ESP_LOGD(WATCH2_TAG, "[music player] starting audio");
         while(true)
         {
-            if (audio.isRunning()) audio.loop();
+            if (is_playing && audio.isRunning()) audio.loop();
             else 
             {
-                if (audio_repeat) play_music(audio_filename.c_str(), true, audio_fs);
-                else vTaskDelay(500);
+                // if (audio_repeat) play_music(audio_filename.c_str(), true, audio_fs);
+                // else vTaskDelay(500);
                 //if (!is_playing && is_driver_installed) uninstall_i2s_driver();
+                vTaskDelay(500);
             }
             
         }
