@@ -233,6 +233,7 @@ namespace watch2 {
 
                     //return to the calling state
                     switchState(state, states[state].variant, 10, 10, true);
+                    forceRedraw = true;
                     return file_path;
                 }
                 else if (files2[selected_icon] == "..") //if parent directory was selected
@@ -311,6 +312,7 @@ namespace watch2 {
                         //dim the screen and return to the calling state
                         selected_file.close();
                         switchState(state, states[state].variant, 10, 10, true);
+                        forceRedraw = true;
                         return file_path;
 
                     }
@@ -372,6 +374,7 @@ namespace watch2 {
                 }
 
                 drawMenu(2, top_thing_height, SCREEN_WIDTH - 4, SCREEN_HEIGHT - 12, files2, selected_icon, menu_icons, themecolour);
+                forceRedraw = false;
             };
 
             //finish file select list initilisation
@@ -381,6 +384,8 @@ namespace watch2 {
             endLoop();
 
         }
+
+        forceRedraw = true;
     }
 
     std::string file_name(const char* filepath, bool extension)

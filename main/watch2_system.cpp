@@ -108,6 +108,24 @@ namespace watch2 {
             
         // }
 
+        // redraw stuff
+        // if (forceRedraw)
+        // {
+        //     ESP_LOGD(WATCH2_TAG, "[endLoop] forceRedraw loop check: ");
+        //     if (forceRedrawLooped)
+        //     {
+        //         ESP_LOGD(WATCH2_TAG, "finished");
+        //         forceRedraw = false;
+        //         forceRedrawLooped = false;
+        //     }
+        //     else
+        //     {
+        //         ESP_LOGD(WATCH2_TAG, "looped once");
+        //         forceRedrawLooped = true;
+        //     }
+        // }
+        if (forceRedraw) ESP_LOGD(WATCH2_TAG, "[endLoop] force redraw");
+
         if (btn_zero.wasPressed())
         {
             watch2::controlCentreDialogue();
@@ -335,24 +353,6 @@ namespace watch2 {
             //     bluetooth_state = 2;
             // }
         }
-
-        // redraw stuff
-        // if (forceRedraw)
-        // {
-        //     ESP_LOGD(WATCH2_TAG, "[endLoop] forceRedraw loop check: ");
-        //     if (forceRedrawLooped)
-        //     {
-        //         ESP_LOGD(WATCH2_TAG, "finished");
-        //         forceRedraw = false;
-        //         forceRedrawLooped = false;
-        //     }
-        //     else
-        //     {
-        //         ESP_LOGD(WATCH2_TAG, "looped once");
-        //         forceRedrawLooped = true;
-        //     }
-        // }
-        if (forceRedraw) ESP_LOGD(WATCH2_TAG, "[endLoop] force redraw");
 
         // if the current state uses a framebuffer, draw it to the tft
         if (states[state].framebuffer) framebuffer.pushSprite(0, 0);
