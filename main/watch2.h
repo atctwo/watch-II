@@ -509,6 +509,13 @@ namespace watch2
     extern std::string audio_filename;                                                          //!< the filename of the currently playing audio file
     extern fs::FS *audio_fs;                                                                    //!< the FS from which the currently playing audio is playing
     extern std::string wfs;
+    extern bool updated_track_info;                                                             //!< true if any track info has just been updated; pls clear this after processing new metadata
+
+    extern std::string track_name;                                                              //!< name of the track (from id3 tags)
+    extern std::string track_album;                                                             //!< name of the album (from id3 tags)
+    extern std::string track_artist;                                                            //!< name of the artist (from id3 tags)
+    extern std::string track_station;                                                           //!< name of the radio station
+    extern std::string track_streamtitle;                                                       //!< title of the currently playing track (from a radio station)
 
     // these variables stop button presses affecting new states when switching from a previous state.  when a user presses a button to go from the watch face 
     // to the menu, if the button is held down for long enough, the button press can affect the next state. these lock variables are set to true when switching 

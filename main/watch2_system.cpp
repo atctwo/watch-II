@@ -117,8 +117,6 @@ namespace watch2 {
         //ESP_LOGD(WATCH2_TAG, "");
         //ESP_LOGD(WATCH2_TAG, "dpad right: %d;", mcp.digitalRead(dpad_right));
 
-        if (dpad_held[2]) Serial.printf("aaa\n");
-
         for (uint8_t i = 0; i < 5; i++)
         {
             // reset button active state
@@ -137,7 +135,6 @@ namespace watch2 {
             // save press time
             if (!dpad_lock[i] && mcp.digitalRead(i) && !dpad_pressed[i])
             {
-                Serial.printf("button %d pressed at %lu\n", i, millis());
                 dpad_pressed_time[i] = millis();
             }
 

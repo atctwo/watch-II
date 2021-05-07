@@ -10,6 +10,12 @@
  */
 
 #include "watch2.h"
+#include <regex>
+
+std::cmatch cm;
+std::regex regex_title("(Title: )(.*)");
+std::regex regex_album("(Album: )(.*)");
+std::regex regex_artist("(Artist: )(.*)");
 
 namespace watch2 {
 
@@ -22,6 +28,13 @@ namespace watch2 {
     Audio audio;
     EXT_RAM_ATTR bool is_driver_installed = false;
     EXT_RAM_ATTR bool is_playing = false;
+    EXT_RAM_ATTR bool updated_track_info = false;
+
+    std::string track_name = "";
+    std::string track_album = "";
+    std::string track_artist = "";
+    std::string track_station = "";
+    std::string track_streamtitle = "";
 
     void setup_audio_for_playback()
     {
@@ -109,6 +122,14 @@ namespace watch2 {
         audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT, I2S_DIN);
         audio.setVolume(speaker_volume);
 
+        // clear track metadata
+        updated_track_info = false;
+        track_name = "";
+        track_album = "";
+        track_artist = "";
+        track_station = "";
+        track_streamtitle = "";
+
         // if a filesystem has been passed, load the file from the filesystem
         if (fs) success = audio.connecttoFS(*fs, filename);
 
@@ -151,5 +172,91 @@ namespace watch2 {
         }
         ESP_LOGD(WATCH2_TAG, "[music player] audio task loop ended");
     }
+
+}
+
+
+// Audio library events
+
+// general audio library info
+void audio_info(const char *info){
+    Serial.print("info        "); Serial.println(info);
+}
+
+// id3 tag metadata
+void audio_id3data(const char *info){
+    Serial.print("id3data     ");Serial.println(info);
+
+    // check track title
+    if (std::regex_match(info, cm, regex_title))
+    {
+        watch2::track_name = cm[2];
+        watch2::updated_track_info = true;
+        return;
+    }
+
+    // check track album
+    if (std::regex_match(info, cm, regex_album))
+    {
+        watch2::track_album = cm[2];
+        watch2::updated_track_info = true;
+        return;
+    }
+
+    // check track artist
+    if (std::regex_match(info, cm, regex_artist))
+    {
+        watch2::track_artist = cm[2];
+        watch2::updated_track_info = true;
+        return;
+    }
+}
+
+// end of file reached
+void audio_eof_mp3(const char *info){
+    Serial.print("eof_mp3     ");Serial.println(info);
+}
+
+// name of radio station
+void audio_showstation(const char *info){
+    Serial.print("station     ");Serial.println(info);
+    watch2::track_station = info;
+    watch2::updated_track_info = true;
+}
+
+// title of song being played on radio
+void audio_showstreamtitle(const char *info){
+    Serial.print("streamtitle ");Serial.println(info);
+    watch2::track_streamtitle = info;
+    watch2::updated_track_info = true;
+}
+
+// current bitrate
+void audio_bitrate(const char *info){
+    Serial.print("bitrate     ");Serial.println(info);
+}
+
+// commercial duration in seconds
+void audio_commercial(const char *info){
+    Serial.print("commercial  ");Serial.println(info);
+}
+
+// radio station url
+void audio_icyurl(const char *info){
+    Serial.print("icyurl      ");Serial.println(info);
+}
+
+// actual of radio station stream (after all the redirects)
+void audio_lasthost(const char *info){
+    Serial.print("lasthost    ");Serial.println(info);
+}
+
+// end of text-to-speech
+void audio_eof_speech(const char *info){
+    Serial.print("eof_speech  ");Serial.println(info);
+}
+
+// album art from id3 tags
+void audio_id3image(File& file, const size_t pos, const size_t size){
 
 }

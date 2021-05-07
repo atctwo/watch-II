@@ -23,10 +23,10 @@ void state_func_music_player()
             cancelled = false;
             char sfn[25];
 
-            watch2::oled.setCursor(2, 42);
-            watch2::oled.setTextColor(WHITE, BLACK);
+            //watch2::oled.setCursor(2, 42);
+            //watch2::oled.setTextColor(WHITE, BLACK);
             ESP_LOGD(WATCH2_TAG, "[music player] file name: %s (%s)", filename.c_str(), watch2::file_name(filename.c_str()).c_str());
-            watch2::oled.println(filename.c_str());
+            //watch2::oled.println(filename.c_str());
             
             ESP_LOGD(WATCH2_TAG, "[music player] music path: %s", filename.c_str());
 
@@ -34,10 +34,43 @@ void state_func_music_player()
             vTaskDelay(20); // wait for tft draw to finish
             
             watch2::play_music(filename.c_str());
+            watch2::updated_track_info = true;
         }
     }
 
-    watch2::drawTopThing();
+    // if track info updates, redraw track info
+    if (!watch2::state_init || watch2::updated_track_info)
+    {
+        Serial.println("updated track info");
+
+        // clear screen
+        watch2::oled.fillScreen(0);
+
+        watch2::oled.setCursor(0, watch2::top_thing_height);
+        watch2::oled.setTextColor(WHITE, BLACK);
+
+        // print track title (if no title is specified in the id3 tags, use the filename)
+        watch2::setFont(SLIGHTLY_BIGGER_FONT);
+        watch2::oled.setTextColor(watch2::themecolour, BLACK);
+        if (watch2::track_name.length() > 0) watch2::oled.println(watch2::track_name.c_str());
+        else watch2::oled.println(watch2::file_name(filename.c_str()).c_str());
+        watch2::setFont(MAIN_FONT);
+        watch2::oled.setTextColor(WHITE, BLACK);
+
+        // print track artist
+        if (!watch2::track_artist.empty()) watch2::oled.println(watch2::track_artist.c_str());
+
+        // print track album
+        if (!watch2::track_album.empty()) watch2::oled.println(watch2::track_album.c_str());
+
+        // reset updated track info flag
+        watch2::updated_track_info = false;
+    }
+
+    // if the updated track info code above runs at all, drawing the top thing causes audio to stutter
+    // i really don't know why
+
+    //watch2::drawTopThing();
     //if (watch2::audio.isRunning()) watch2::audio.loop();
 
     // update progress bar

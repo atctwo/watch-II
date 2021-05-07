@@ -112,11 +112,31 @@ void state_func_radio()
     {
         if (!watch2::state_init)
         {
+            watch2::play_music(station_urls[selected_station].c_str(), false, NULL);
+        }
+
+        // if track info updates, redraw track info
+        if (!watch2::state_init || watch2::updated_track_info)
+        {
+            // clear screen
+            watch2::oled.fillScreen(0);
+
             watch2::oled.setCursor(0, watch2::top_thing_height);
             watch2::oled.setTextColor(WHITE, BLACK);
-            watch2::oled.println(station_names[selected_station].c_str());
-        
-            watch2::play_music(station_urls[selected_station].c_str(), false, NULL);
+
+            // print station name (if station name isn't provided, use name from radio.txt)
+            watch2::setFont(SLIGHTLY_BIGGER_FONT);
+            watch2::oled.setTextColor(watch2::themecolour, BLACK);
+            if (watch2::track_station.empty()) watch2::oled.println(station_names[selected_station].c_str());
+            else watch2::oled.println(watch2::track_station.c_str());
+            watch2::setFont(MAIN_FONT);
+            watch2::oled.setTextColor(WHITE, BLACK);
+
+            // print track title
+            if (!watch2::track_streamtitle.empty()) watch2::oled.println(watch2::track_streamtitle.c_str());
+
+            // reset updated track info flag
+            watch2::updated_track_info = false;
         }
 
         if (dpad_enter_active())
