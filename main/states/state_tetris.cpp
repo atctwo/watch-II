@@ -103,9 +103,9 @@ void state_func_tetris()
 
         frame_start = millis();
 
-        tetris.setMovingLeft(digitalRead(dpad_left));
-        tetris.setMovingRight(digitalRead(dpad_right));
-        tetris.setMovingDown(digitalRead(dpad_down));
+        tetris.setMovingLeft(watch2::mcp.digitalRead(dpad_left));
+        tetris.setMovingRight(watch2::mcp.digitalRead(dpad_right));
+        tetris.setMovingDown(watch2::mcp.digitalRead(dpad_down));
         if (dpad_enter_active()) tetris.hardDrop();
         if (dpad_up_active()) tetris.rotateClockwise();
 
@@ -123,8 +123,8 @@ void state_func_tetris()
                 );
 
                 // outline
-                watch2::oled.drawFastVLine(matrix_x + (x * block_size), matrix_y + (y * block_size), block_size, WHITE);
-                watch2::oled.drawFastHLine(matrix_x + (x * block_size), matrix_y + (y * block_size), block_size, WHITE);
+                watch2::oled.drawFastVLine(matrix_x + (x * block_size), matrix_y + (y * block_size), block_size, 0xd6ba);
+                watch2::oled.drawFastHLine(matrix_x + (x * block_size), matrix_y + (y * block_size), block_size, 0xd6ba);
                 if (y == tetris.getVisibleMatrixHeight() - 1) watch2::oled.drawFastHLine(matrix_x + (x * block_size), matrix_y + (y * block_size) + block_size, block_size, WHITE);
                 if (x == tetris.getMatrixWidth() - 1)         watch2::oled.drawFastVLine(matrix_x + (x * block_size) + block_size, matrix_y + (y * block_size), block_size, WHITE);
             }
