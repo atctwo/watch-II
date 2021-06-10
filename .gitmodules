@@ -49,3 +49,6 @@
 [submodule "main/libraries/Adafruit_MCP9808_Library"]
 	path = main/libraries/Adafruit_MCP9808_Library
 	url = https://github.com/adafruit/Adafruit_MCP9808_Library.git
+[submodule "main/libraries/Arduino-IRremote"]
+	path = main/libraries/Arduino-IRremote
+	url = https://github.com/Arduino-IRremote/Arduino-IRremote.git
