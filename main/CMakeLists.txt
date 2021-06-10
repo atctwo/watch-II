@@ -1,31 +1,78 @@
 # set up source files
 
 set(LIB_ARDUINO_IRREMOTE_SRCS
-    libraries/Arduino-IRremote/ir_Aiwa.cpp
-    #libraries/Arduino-IRremote/ir_BoseWave.cpp
-    libraries/Arduino-IRremote/ir_Denon.cpp
-    libraries/Arduino-IRremote/ir_Dish.cpp
-    libraries/Arduino-IRremote/ir_JVC.cpp
-    libraries/Arduino-IRremote/ir_Lego_PF.cpp
-    libraries/Arduino-IRremote/ir_LG.cpp
-    #libraries/Arduino-IRremote/ir_MagiQuest.cpp
-    libraries/Arduino-IRremote/ir_Mitsubishi.cpp
-    libraries/Arduino-IRremote/ir_NEC.cpp
-    libraries/Arduino-IRremote/ir_Panasonic.cpp
-    libraries/Arduino-IRremote/ir_RC5_RC6.cpp
-    libraries/Arduino-IRremote/ir_Samsung.cpp
-    libraries/Arduino-IRremote/ir_Sanyo.cpp
-    libraries/Arduino-IRremote/ir_Sharp.cpp
-    #libraries/Arduino-IRremote/ir_Sharp_alt.cpp
-    libraries/Arduino-IRremote/ir_Sony.cpp
-    libraries/Arduino-IRremote/ir_Template.cpp
-    libraries/Arduino-IRremote/ir_Whynter.cpp
-    libraries/Arduino-IRremote/irPronto.cpp
-    libraries/Arduino-IRremote/irRecv.cpp
-    libraries/Arduino-IRremote/IRremote.cpp
-    libraries/Arduino-IRremote/irSend.cpp
-    #libraries/Arduino-IRremote/src/sam.cpp
-    #libraries/Arduino-IRremote/src/esp32.cpp
+    libraries/IRremoteESP8266/src/ir_Airwell.cpp
+    libraries/IRremoteESP8266/src/ir_Aiwa.cpp
+    libraries/IRremoteESP8266/src/ir_Amcor.cpp
+    libraries/IRremoteESP8266/src/ir_Argo.cpp
+    libraries/IRremoteESP8266/src/ir_Carrier.cpp
+    libraries/IRremoteESP8266/src/ir_Coolix.cpp
+    libraries/IRremoteESP8266/src/ir_Corona.cpp
+    libraries/IRremoteESP8266/src/ir_Daikin.cpp
+    libraries/IRremoteESP8266/src/ir_Delonghi.cpp
+    libraries/IRremoteESP8266/src/ir_Denon.cpp
+    libraries/IRremoteESP8266/src/ir_Dish.cpp
+    libraries/IRremoteESP8266/src/ir_Doshisha.cpp
+    libraries/IRremoteESP8266/src/ir_Ecoclim.cpp
+    libraries/IRremoteESP8266/src/ir_Electra.cpp
+    libraries/IRremoteESP8266/src/ir_EliteScreens.cpp
+    libraries/IRremoteESP8266/src/ir_Epson.cpp
+    libraries/IRremoteESP8266/src/ir_Fujitsu.cpp
+    libraries/IRremoteESP8266/src/ir_GICable.cpp
+    libraries/IRremoteESP8266/src/ir_GlobalCache.cpp
+    libraries/IRremoteESP8266/src/ir_Goodweather.cpp
+    libraries/IRremoteESP8266/src/ir_Gree.cpp
+    libraries/IRremoteESP8266/src/ir_Haier.cpp
+    libraries/IRremoteESP8266/src/ir_Hitachi.cpp
+    libraries/IRremoteESP8266/src/ir_Inax.cpp
+    libraries/IRremoteESP8266/src/ir_JVC.cpp
+    libraries/IRremoteESP8266/src/ir_Kelvinator.cpp
+    libraries/IRremoteESP8266/src/ir_Lasertag.cpp
+    libraries/IRremoteESP8266/src/ir_Lego.cpp
+    libraries/IRremoteESP8266/src/ir_LG.cpp
+    libraries/IRremoteESP8266/src/ir_Lutron.cpp
+    libraries/IRremoteESP8266/src/ir_Magiquest.cpp
+    libraries/IRremoteESP8266/src/ir_Metz.cpp
+    libraries/IRremoteESP8266/src/ir_Midea.cpp
+    libraries/IRremoteESP8266/src/ir_MilesTag2.cpp
+    libraries/IRremoteESP8266/src/ir_Mirage.cpp
+    libraries/IRremoteESP8266/src/ir_Mitsubishi.cpp
+    libraries/IRremoteESP8266/src/ir_MitsubishiHeavy.cpp
+    libraries/IRremoteESP8266/src/ir_Multibrackets.cpp
+    libraries/IRremoteESP8266/src/ir_MWM.cpp
+    libraries/IRremoteESP8266/src/ir_NEC.cpp
+    libraries/IRremoteESP8266/src/ir_Neoclima.cpp
+    libraries/IRremoteESP8266/src/ir_Nikai.cpp
+    libraries/IRremoteESP8266/src/ir_Panasonic.cpp
+    libraries/IRremoteESP8266/src/ir_Pioneer.cpp
+    libraries/IRremoteESP8266/src/ir_Pronto.cpp
+    libraries/IRremoteESP8266/src/ir_RC5_RC6.cpp
+    libraries/IRremoteESP8266/src/ir_RCMM.cpp
+    libraries/IRremoteESP8266/src/ir_Samsung.cpp
+    libraries/IRremoteESP8266/src/ir_Sanyo.cpp
+    libraries/IRremoteESP8266/src/ir_Sharp.cpp
+    libraries/IRremoteESP8266/src/ir_Sherwood.cpp
+    libraries/IRremoteESP8266/src/ir_Sony.cpp
+    libraries/IRremoteESP8266/src/ir_Symphony.cpp
+    libraries/IRremoteESP8266/src/ir_Tcl.cpp
+    libraries/IRremoteESP8266/src/ir_Technibel.cpp
+    libraries/IRremoteESP8266/src/ir_Teco.cpp
+    libraries/IRremoteESP8266/src/ir_Toshiba.cpp
+    libraries/IRremoteESP8266/src/ir_Transcold.cpp
+    libraries/IRremoteESP8266/src/ir_Trotec.cpp
+    libraries/IRremoteESP8266/src/ir_Truma.cpp
+    libraries/IRremoteESP8266/src/ir_Vestel.cpp
+    libraries/IRremoteESP8266/src/ir_Voltas.cpp
+    libraries/IRremoteESP8266/src/ir_Whirlpool.cpp
+    libraries/IRremoteESP8266/src/ir_Whynter.cpp
+    libraries/IRremoteESP8266/src/ir_Xmp.cpp
+    libraries/IRremoteESP8266/src/ir_Zepeal.cpp
+    libraries/IRremoteESP8266/src/IRac.cpp
+    libraries/IRremoteESP8266/src/IRrecv.cpp
+    libraries/IRremoteESP8266/src/IRsend.cpp
+    libraries/IRremoteESP8266/src/IRtext.cpp
+    libraries/IRremoteESP8266/src/IRtimer.cpp
+    libraries/IRremoteESP8266/src/IRutils.cpp
 )
 
 set(LIB_ARDUINO_SRCS
@@ -113,7 +160,7 @@ set(COMPONENT_SRCS
 
 set(COMPONENT_INCLUDEDIRS			
     libraries/JC_Button/src/
-    libraries/Arduino-IRremote/
+    libraries/IRremoteESP8266/src/
     libraries/TFT_eSPI/ 			
     libraries/Time/ 				
     libraries/TimeAlarms/ 			

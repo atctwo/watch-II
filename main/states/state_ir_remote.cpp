@@ -1,6 +1,9 @@
 #include "states.h"
 #include "../libraries/css-color-parser-cpp/csscolorparser.hpp"
-#include <IRremote.h>
+#include <IRremoteESP8266.h>
+#include <IRrecv.h>
+#include <IRsend.h>
+#include <IRutils.h>
 
 void state_func_ir_remote()
 {
@@ -15,12 +18,12 @@ void state_func_ir_remote()
     static std::string selected_profile_filename = "";
 
     // ir receiver
-    static IRAM_ATTR IRrecv irrecv(IR_REC_PIN);
-    static IRAM_ATTR decode_results ir_recv_results;
+    static IRrecv irrecv(IR_REC_PIN);
+    static decode_results ir_recv_results;
     static bool ir_enabled = false;
 
     // ir remote
-    EXT_RAM_ATTR static IRsend irsend;
+    EXT_RAM_ATTR static IRsend irsend(IR_SEND_PIN);
     EXT_RAM_ATTR static cJSON *profile;
     EXT_RAM_ATTR static cJSON *codes;
     EXT_RAM_ATTR static char *json_contents;
@@ -191,6 +194,10 @@ void state_func_ir_remote()
 
             // print icon width + height
             ESP_LOGD(WATCH2_TAG, "icon width:  %d\nicon height: %d", icon_width, icon_height);
+
+
+            // begin ir send
+            irsend.begin();
         }
 
         watch2::drawTopThing();
@@ -441,9 +448,10 @@ void state_func_ir_remote()
                         //if (strcmp(protocol, "sharp alt") == 0)          irsend.sendSharpAltRaw(ir_code, ir_code_size->valueint);
                         if (strcmp(protocol, "denon") == 0)              irsend.sendDenon(ir_code, ir_code_size->valueint);
                         //if (strcmp(protocol, "pronto") == 0)             irsend.sendPronto(ir_code_object->valuestring, false, false);
-                        if (strcmp(protocol, "lego pf") == 0)            irsend.sendLegoPowerFunctions(ir_code, false);
+                        //if (strcmp(protocol, "lego pf") == 0)            irsend.sendLegoPowerFunctions(ir_code, false);
                         //if (strcmp(protocol, "bose wave") == 0)          irsend.sendBoseWave(ir_code);
                         //if (strcmp(protocol, "magiquest") == 0)          irsend.sendMagiQuest()
+                        
                     }
                     else
                     {
@@ -687,7 +695,7 @@ void state_func_ir_remote()
                 //if (strcmp(protocol, "sharp alt") == 0)          irsend.sendSharpAltRaw(code, size);
                 if (strcmp(protocol, "denon") == 0)              irsend.sendDenon(code, size);
                 //if (strcmp(protocol, "pronto") == 0)             irsend.sendPronto(ir_code_object->valuestring, false, false);
-                if (strcmp(protocol, "lego pf") == 0)            irsend.sendLegoPowerFunctions(code, false);
+                //if (strcmp(protocol, "lego pf") == 0)            irsend.sendLegoPowerFunctions(code, false);
                 //if (strcmp(protocol, "bose wave") == 0)          irsend.sendBoseWave(code);
                 //if (strcmp(protocol, "magiquest") == 0)          irsend.sendMagiQuest(code, size);
 

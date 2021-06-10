@@ -80,7 +80,7 @@
 #define dpad_enter          2
 #define BATTERY_DIVIDER_PIN 34
 #define TORCH_PIN           14
-#define IR_PIN              4
+#define IR_SEND_PIN              4
 #define IR_REC_PIN          12
 #define I2S_DOUT            25
 #define I2S_DIN             35

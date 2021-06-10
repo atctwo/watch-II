@@ -56,7 +56,7 @@ void setup() {
     pinMode(sdcs, OUTPUT);
     pinMode(tftbl, OUTPUT);
     pinMode(BATTERY_DIVIDER_PIN, INPUT);
-    pinMode(IR_PIN, OUTPUT);
+    pinMode(IR_SEND_PIN, OUTPUT);
 
     digitalWrite(cs, LOW);
     digitalWrite(sdcs, HIGH);
