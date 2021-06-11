@@ -423,7 +423,7 @@ void state_func_ir_remote()
                         for (int i = 0; i < protocol_length; i++) protocol[i] = tolower(protocol[i]);
 
                         // get code as a value
-                        unsigned long ir_code = strtoul(ir_code_object->valuestring, NULL, 0);
+                        uint64_t ir_code = strtoull(ir_code_object->valuestring, NULL, 0);
 
                         ESP_LOGD(WATCH2_TAG, "\tprotocol: %s", protocol);
                         ESP_LOGD(WATCH2_TAG, "\tcode:     %x", ir_code);
@@ -431,33 +431,61 @@ void state_func_ir_remote()
                         ESP_LOGD(WATCH2_TAG, "\tsize:     %d", ir_code_size->valueint);
 
                         //send ir code
-                        if (strcmp(protocol, "rc5") == 0)                irsend.sendRC5(ir_code, ir_code_size->valueint);
-                        if (strcmp(protocol, "rc6") == 0)                irsend.sendRC6(ir_code, ir_code_size->valueint);
-                        if (strcmp(protocol, "nec") == 0)                irsend.sendNEC(ir_code, ir_code_size->valueint);
-                        if (strcmp(protocol, "sony") == 0)               irsend.sendSony(ir_code, ir_code_size->valueint);
-                        if (strcmp(protocol, "panasonic") == 0)          irsend.sendPanasonic(ir_code, ir_code_size->valueint);
-                        if (strcmp(protocol, "jvc") == 0)                irsend.sendJVC(ir_code, ir_code_size->valueint, false);
-                        if (strcmp(protocol, "samsung") == 0)            irsend.sendSAMSUNG(ir_code, ir_code_size->valueint);
-                        if (strcmp(protocol, "whynter") == 0)            irsend.sendWhynter(ir_code, ir_code_size->valueint);
-                        if (strcmp(protocol, "aiwa rc t501") == 0)       irsend.sendAiwaRCT501(ir_code);
-                        if (strcmp(protocol, "lg") == 0)                 irsend.sendLG(ir_code, ir_code_size->valueint);
-                        //if (strcmp(protocol, "sanyo") == 0)              irsend.sendSanyo(ir_code, ir_code_size->valueint);
-                        //if (strcmp(protocol, "mitsubishi") == 0)         irsend.sendMitsubishi(ir_code, ir_code_size->valueint);
-                        if (strcmp(protocol, "dish") == 0)               irsend.sendDISH(ir_code, ir_code_size->valueint);
-                        if (strcmp(protocol, "sharp") == 0)              irsend.sendSharpRaw(ir_code, ir_code_size->valueint);
-                        //if (strcmp(protocol, "sharp alt") == 0)          irsend.sendSharpAltRaw(ir_code, ir_code_size->valueint);
-                        if (strcmp(protocol, "denon") == 0)              irsend.sendDenon(ir_code, ir_code_size->valueint);
-                        //if (strcmp(protocol, "pronto") == 0)             irsend.sendPronto(ir_code_object->valuestring, false, false);
-                        //if (strcmp(protocol, "lego pf") == 0)            irsend.sendLegoPowerFunctions(ir_code, false);
-                        //if (strcmp(protocol, "bose wave") == 0)          irsend.sendBoseWave(ir_code);
-                        //if (strcmp(protocol, "magiquest") == 0)          irsend.sendMagiQuest()
-                        
+                        if (strcmp(protocol, "rc5") == 0)               irsend.sendRC5(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "rc6") == 0)               irsend.sendRC6(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "nec") == 0)               irsend.sendNEC(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "sony") == 0)              irsend.sendSony(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "panasonic") == 0)         irsend.sendPanasonic(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "panasonic64") == 0)       irsend.sendPanasonic64(ir_code, ir_code_size->valueint);
+                        //if (strcmp(protocol, "panasonic ac") == 0)      irsend.sendPanasonicAC(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "panasonic ac 32") == 0)   irsend.sendPanasonicAC32(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "jvc") == 0)               irsend.sendJVC(ir_code, ir_code_size->valueint, false);
+                        if (strcmp(protocol, "samsung") == 0)           irsend.sendSAMSUNG(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "whynter") == 0)           irsend.sendWhynter(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "aiwa") == 0)              irsend.sendAiwaRCT501(ir_code);
+                        if (strcmp(protocol, "lg") == 0)                irsend.sendLG(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "lg2") == 0)               irsend.sendLG2(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "dish") == 0)              irsend.sendDISH(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "sharp") == 0)             irsend.sendSharpRaw(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "denon") == 0)             irsend.sendDenon(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "doshisha") == 0)          irsend.sendDoshisha(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "elitescreens") == 0)      irsend.sendElitescreens(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "epson") == 0)             irsend.sendEpson(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "gicable") == 0)           irsend.sendGICable(ir_code, ir_code_size->valueint);
+                        //if (strcmp(protocol, "globalcache") == 0)       irsend.sendGC(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "goodweather") == 0)       irsend.sendGoodweather(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "lasertag") == 0)          irsend.sendLasertag(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "lego") == 0)              irsend.sendLegoPf(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "lutron") == 0)            irsend.sendLutron(ir_code, ir_code_size->valueint);
+                        //if (strcmp(protocol, "mwm") == 0)               irsend.sendMWM(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "magiquest") == 0)         irsend.sendMagiQuest(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "metz") == 0)              irsend.sendMetz(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "milestag2") == 0)         irsend.sendMilestag2(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "mitsubishi") == 0)        irsend.sendMitsubishi(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "mitsubishi2") == 0)       irsend.sendMitsubishi2(ir_code, ir_code_size->valueint);
+                        //if (strcmp(protocol, "mitsubishi112") == 0)     irsend.sendMitsubishi112(ir_code, ir_code_size->valueint);
+                        //if (strcmp(protocol, "mitsubishi136") == 0)     irsend.sendMitsubishi136(ir_code, ir_code_size->valueint);
+                        //if (strcmp(protocol, "mitsubishi ac") == 0)     irsend.sendMitsubishiAC(ir_code, ir_code_size->valueint);
+                        //if (strcmp(protocol, "mitsubishi heavy 88") == 0)irsend.sendMitsubishiHeavy88(ir_code, ir_code_size->valueint);
+                        //if (strcmp(protocol, "mitsubishi heavy 152") == 0)irsend.sendMitsubishiHeavy152(ir_code, ir_code_size->valueint);
+                        //if (strcmp(protocol, "mirage") == 0)            irsend.sendMirage(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "multibrackets") == 0)     irsend.sendMultibrackets(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "pioneer") == 0)           irsend.sendPioneer(ir_code, ir_code_size->valueint);
+                        //if (strcmp(protocol, "pronto") == 0)            irsend.sendPronto(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "rcmm") == 0)              irsend.sendRCMM(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "sanyo") == 0)             irsend.sendSanyoLC7461(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "sherwood") == 0)          irsend.sendSherwood(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "symphony") == 0)          irsend.sendSymphony(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "xmp") == 0)               irsend.sendXmp(ir_code, ir_code_size->valueint);
+                        if (strcmp(protocol, "zepeal") == 0)            irsend.sendZepeal(ir_code, ir_code_size->valueint);
+                        //if (strcmp(protocol, "sanyo ac") == 0)          irsend.sendSanyoAc(ir_code, ir_code_size->valueint);
+                        //if (strcmp(protocol, "fujistu ac") == 0)        irsend.sendFujitsuAC(ir_code, ir_code_size->valueint);
                     }
                     else
                     {
-                        if (!protocol_object) ESP_LOGD(WATCH2_TAG, "invalid protocol");
-                        if (!ir_code_object) ESP_LOGD(WATCH2_TAG, "invalid ir code");
-                        if (!ir_code_size) ESP_LOGD(WATCH2_TAG, "invalid ir code size");
+                        if (!protocol_object) ESP_LOGW(WATCH2_TAG, "invalid protocol");
+                        if (!ir_code_object) ESP_LOGW(WATCH2_TAG, "invalid ir code");
+                        if (!ir_code_size) ESP_LOGW(WATCH2_TAG, "invalid ir code size");
                     }
                     
                 }
@@ -528,28 +556,7 @@ void state_func_ir_remote()
             watch2::oled.setTextColor(watch2::themecolour, BLACK);
             watch2::oled.print("\nProtocol: ");
             watch2::oled.setTextColor(WHITE, BLACK);
-            switch(ir_recv_results.decode_type)
-            {
-                default: watch2::oled.printf("Unknown (%d)\n", ir_recv_results.decode_type); break;
-                case 0:  watch2::oled.println("Unused");               break;
-                case 1:  watch2::oled.println("RC5");                  break;
-                case 2:  watch2::oled.println("RC6");                  break;
-                case 3:  watch2::oled.println("NEC");                  break;
-                case 4:  watch2::oled.println("Sony");                 break;
-                case 5:  watch2::oled.println("Panasonic");            break;
-                case 6:  watch2::oled.println("JVC");                  break;
-                case 7:  watch2::oled.println("Samsung");              break;
-                case 8:  watch2::oled.println("Whynter");              break;
-                case 9:  watch2::oled.println("Aiwa RC T501");         break;
-                case 10: watch2::oled.println("LG");                   break;
-                case 11: watch2::oled.println("Sanyo");                break;
-                case 12: watch2::oled.println("Mitsubishi");           break;
-                case 13: watch2::oled.println("Dish");                 break;
-                case 14: watch2::oled.println("Sharp");                break;
-                case 15: watch2::oled.println("Denon");                break;
-                case 16: watch2::oled.println("Pronto");               break;
-                case 17: watch2::oled.println("LEGO Power Functions"); break;
-            }
+            watch2::oled.println(typeToString(ir_recv_results.decode_type));
 
             watch2::oled.setTextColor(watch2::themecolour, BLACK);
             watch2::oled.print("Value:    ");
@@ -570,6 +577,12 @@ void state_func_ir_remote()
                 watch2::oled.setTextColor(WHITE, BLACK);
                 watch2::oled.print("0x");
                 watch2::oled.println(ir_recv_results.address);
+
+                watch2::oled.setTextColor(watch2::themecolour, BLACK);
+                watch2::oled.print("Command:  ");
+                watch2::oled.setTextColor(WHITE, BLACK);
+                watch2::oled.print("0x");
+                watch2::oled.println(ir_recv_results.command);
             }
             // if (ir_recv_results.decode_type == MAGIQUEST)
             // {
@@ -678,26 +691,55 @@ void state_func_ir_remote()
 
                 // send code
                 delay(500);
-                if (strcmp(protocol, "rc5") == 0)                irsend.sendRC5(code, size);
-                if (strcmp(protocol, "rc6") == 0)                irsend.sendRC6(code, size);
-                if (strcmp(protocol, "nec") == 0)                irsend.sendNEC(0xfe50af, 24);
-                if (strcmp(protocol, "sony") == 0)               irsend.sendSony(code, size);
-                if (strcmp(protocol, "panasonic") == 0)          irsend.sendPanasonic(code, size);
-                if (strcmp(protocol, "jvc") == 0)                irsend.sendJVC(code, size, false);
-                if (strcmp(protocol, "samsung") == 0)            irsend.sendSAMSUNG(code, size);
-                if (strcmp(protocol, "whynter") == 0)            irsend.sendWhynter(code, size);
-                if (strcmp(protocol, "aiwa rc t501") == 0)       irsend.sendAiwaRCT501(code);
-                if (strcmp(protocol, "lg") == 0)                 irsend.sendLG(code, size);
-                //if (strcmp(protocol, "sanyo") == 0)              irsend.sendSanyo(code, size);
-                //if (strcmp(protocol, "mitsubishi") == 0)         irsend.sendMitsubishi(code, size);
-                if (strcmp(protocol, "dish") == 0)               irsend.sendDISH(code, size);
-                if (strcmp(protocol, "sharp") == 0)              irsend.sendSharpRaw(code, size);
-                //if (strcmp(protocol, "sharp alt") == 0)          irsend.sendSharpAltRaw(code, size);
-                if (strcmp(protocol, "denon") == 0)              irsend.sendDenon(code, size);
-                //if (strcmp(protocol, "pronto") == 0)             irsend.sendPronto(ir_code_object->valuestring, false, false);
-                //if (strcmp(protocol, "lego pf") == 0)            irsend.sendLegoPowerFunctions(code, false);
-                //if (strcmp(protocol, "bose wave") == 0)          irsend.sendBoseWave(code);
-                //if (strcmp(protocol, "magiquest") == 0)          irsend.sendMagiQuest(code, size);
+                if (strcmp(protocol, "rc5") == 0)               irsend.sendRC5(code, size);
+                        if (strcmp(protocol, "rc6") == 0)               irsend.sendRC6(code, size);
+                        if (strcmp(protocol, "nec") == 0)               irsend.sendNEC(code, size);
+                        if (strcmp(protocol, "sony") == 0)              irsend.sendSony(code, size);
+                        if (strcmp(protocol, "panasonic") == 0)         irsend.sendPanasonic(code, size);
+                        if (strcmp(protocol, "panasonic64") == 0)       irsend.sendPanasonic64(code, size);
+                        //if (strcmp(protocol, "panasonic ac") == 0)      irsend.sendPanasonicAC(code, size);
+                        if (strcmp(protocol, "panasonic ac 32") == 0)   irsend.sendPanasonicAC32(code, size);
+                        if (strcmp(protocol, "jvc") == 0)               irsend.sendJVC(code, size);
+                        if (strcmp(protocol, "samsung") == 0)           irsend.sendSAMSUNG(code, size);
+                        if (strcmp(protocol, "whynter") == 0)           irsend.sendWhynter(code, size);
+                        if (strcmp(protocol, "aiwa") == 0)              irsend.sendAiwaRCT501(code);
+                        if (strcmp(protocol, "lg") == 0)                irsend.sendLG(code, size);
+                        if (strcmp(protocol, "lg2") == 0)               irsend.sendLG2(code, size);
+                        if (strcmp(protocol, "dish") == 0)              irsend.sendDISH(code, size);
+                        if (strcmp(protocol, "sharp") == 0)             irsend.sendSharpRaw(code, size);
+                        if (strcmp(protocol, "denon") == 0)             irsend.sendDenon(code, size);
+                        if (strcmp(protocol, "doshisha") == 0)          irsend.sendDoshisha(code, size);
+                        if (strcmp(protocol, "elitescreens") == 0)      irsend.sendElitescreens(code, size);
+                        if (strcmp(protocol, "epson") == 0)             irsend.sendEpson(code, size);
+                        if (strcmp(protocol, "gicable") == 0)           irsend.sendGICable(code, size);
+                        //if (strcmp(protocol, "globalcache") == 0)       irsend.sendGC(code, size);
+                        if (strcmp(protocol, "goodweather") == 0)       irsend.sendGoodweather(code, size);
+                        if (strcmp(protocol, "lasertag") == 0)          irsend.sendLasertag(code, size);
+                        if (strcmp(protocol, "lego") == 0)              irsend.sendLegoPf(code, size);
+                        if (strcmp(protocol, "lutron") == 0)            irsend.sendLutron(code, size);
+                        //if (strcmp(protocol, "mwm") == 0)               irsend.sendMWM(code, size);
+                        if (strcmp(protocol, "magiquest") == 0)         irsend.sendMagiQuest(code, size);
+                        if (strcmp(protocol, "metz") == 0)              irsend.sendMetz(code, size);
+                        if (strcmp(protocol, "milestag2") == 0)         irsend.sendMilestag2(code, size);
+                        if (strcmp(protocol, "mitsubishi") == 0)        irsend.sendMitsubishi(code, size);
+                        if (strcmp(protocol, "mitsubishi2") == 0)       irsend.sendMitsubishi2(code, size);
+                        //if (strcmp(protocol, "mitsubishi112") == 0)     irsend.sendMitsubishi112(code, size);
+                        //if (strcmp(protocol, "mitsubishi136") == 0)     irsend.sendMitsubishi136(code, size);
+                        //if (strcmp(protocol, "mitsubishi ac") == 0)     irsend.sendMitsubishiAC(code, size);
+                        //if (strcmp(protocol, "mitsubishi heavy 88") == 0)irsend.sendMitsubishiHeavy88(code, size);
+                        //if (strcmp(protocol, "mitsubishi heavy 152") == 0)irsend.sendMitsubishiHeavy152(code, size);
+                        //if (strcmp(protocol, "mirage") == 0)            irsend.sendMirage(code, size);
+                        if (strcmp(protocol, "multibrackets") == 0)     irsend.sendMultibrackets(code, size);
+                        if (strcmp(protocol, "pioneer") == 0)           irsend.sendPioneer(code, size);
+                        //if (strcmp(protocol, "pronto") == 0)            irsend.sendPronto(code, size);
+                        if (strcmp(protocol, "rcmm") == 0)              irsend.sendRCMM(code, size);
+                        if (strcmp(protocol, "sanyo") == 0)             irsend.sendSanyoLC7461(code, size);
+                        if (strcmp(protocol, "sherwood") == 0)          irsend.sendSherwood(code, size);
+                        if (strcmp(protocol, "symphony") == 0)          irsend.sendSymphony(code, size);
+                        if (strcmp(protocol, "xmp") == 0)               irsend.sendXmp(code, size);
+                        if (strcmp(protocol, "zepeal") == 0)            irsend.sendZepeal(code, size);
+                        //if (strcmp(protocol, "sanyo ac") == 0)          irsend.sendSanyoAc(code, size);
+                        //if (strcmp(protocol, "fujistu ac") == 0)        irsend.sendFujitsuAC(code, size);
 
             }
         }
