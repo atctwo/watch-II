@@ -81,7 +81,7 @@
 #define dpad_enter          2
 #define BATTERY_DIVIDER_PIN 34
 #define TORCH_PIN           14
-#define IR_SEND_PIN              4
+#define IR_SEND_PIN         4
 #define IR_REC_PIN          12
 #define I2S_DOUT            25
 #define I2S_DIN             35
@@ -140,6 +140,7 @@
 #define I2C_ADDRESS_MCP23008    0x20    // io expander
 #define I2C_ADDRESS_MAX17043    0x36    // lipo fuel gauge (not used)
 #define I2C_ADDRESS_LC709203F   0x0B    // lipo fuel gauge
+#define I2C_ADDRESS_SHTC3       0x70    // temperature + humidity
 
 // device info
 #define SCREEN_WIDTH            240                     // the width of the screen in pixels

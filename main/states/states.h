@@ -54,6 +54,9 @@ void state_func_recorder();
 // state_sdtest
 void state_func_SDtest();
 
+// state_sensor
+void state_func_sensor();
+
 // state_settings
 void state_func_settings();
 

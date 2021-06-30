@@ -106,6 +106,8 @@ set(LIB_ARDUINO_SRCS
     libraries/Adafruit-MCP23008-library/Adafruit_MCP23008.cpp
     libraries/Adafruit_MCP9808_Library/Adafruit_MCP9808.cpp
     libraries/Adafruit_LC709203F/Adafruit_LC709203F.cpp
+    libraries/Adafruit_Sensor/Adafruit_Sensor.cpp
+    libraries/Adafruit_SHTC3/Adafruit_SHTC3.cpp
     icons/small_icons.cpp
 )
 
@@ -136,6 +138,7 @@ set(STATE_SRCS
     states/state_radio.cpp
     states/state_recorder.cpp
     states/state_sdtest.cpp
+    states/state_sensor.cpp
     states/state_settings.cpp
     states/state_state_menu.cpp
     states/state_stopwatch.cpp
@@ -172,6 +175,8 @@ set(COMPONENT_INCLUDEDIRS
     libraries/Adafruit-MCP23008-library/
     libraries/Adafruit_MCP9808_Library/
     libraries/Adafruit_LC709203F/
+    libraries/Adafruit_Sensor/
+    libraries/Adafruit_SHTC3/
     #libraries/micropython/
 )
 
