@@ -55,3 +55,9 @@
 [submodule "main/libraries/Adafruit_LC709203F"]
 	path = main/libraries/Adafruit_LC709203F
 	url = https://github.com/adafruit/Adafruit_LC709203F.git
+[submodule "main/libraries/Adafruit_Sensor"]
+	path = main/libraries/Adafruit_Sensor
+	url = https://github.com/adafruit/Adafruit_Sensor.git
+[submodule "main/libraries/Adafruit_SHTC3"]
+	path = main/libraries/Adafruit_SHTC3
+	url = https://github.com/adafruit/Adafruit_SHTC3.git
