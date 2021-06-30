@@ -123,10 +123,10 @@ void state_func_tetris()
                 );
 
                 // outline
-                watch2::oled.drawFastVLine(matrix_x + (x * block_size), matrix_y + (y * block_size), block_size, 0xd6ba);
-                watch2::oled.drawFastHLine(matrix_x + (x * block_size), matrix_y + (y * block_size), block_size, 0xd6ba);
-                if (y == tetris.getVisibleMatrixHeight() - 1) watch2::oled.drawFastHLine(matrix_x + (x * block_size), matrix_y + (y * block_size) + block_size, block_size, WHITE);
-                if (x == tetris.getMatrixWidth() - 1)         watch2::oled.drawFastVLine(matrix_x + (x * block_size) + block_size, matrix_y + (y * block_size), block_size, WHITE);
+                watch2::oled.drawFastVLine(matrix_x + (x * block_size), matrix_y + (y * block_size), block_size, TFT_DARKGREY);
+                watch2::oled.drawFastHLine(matrix_x + (x * block_size), matrix_y + (y * block_size), block_size, TFT_DARKGREY);
+                if (y == tetris.getVisibleMatrixHeight() - 1) watch2::oled.drawFastHLine(matrix_x + (x * block_size), matrix_y + (y * block_size) + block_size, block_size, TFT_DARKGREY);
+                if (x == tetris.getMatrixWidth() - 1)         watch2::oled.drawFastVLine(matrix_x + (x * block_size) + block_size, matrix_y + (y * block_size), block_size, TFT_DARKGREY);
             }
         }
 
@@ -151,13 +151,12 @@ void state_func_tetris()
                 );
 
                 // outline
-                watch2::oled.drawFastHLine(next_blocks_x + (x * block_size), (i * next_blocks_h) + (y * block_size), block_size, WHITE);
-                watch2::oled.drawFastVLine(next_blocks_x + (x * block_size), (i * next_blocks_h) + (y * block_size), block_size, WHITE);
-                if(x == 3) watch2::oled.drawFastVLine(next_blocks_x + (x * block_size) + block_size, (i * next_blocks_h) + (y * block_size), block_size, WHITE);
-                if(y == 1) watch2::oled.drawFastHLine(next_blocks_x + (x * block_size), (i * next_blocks_h) + (y * block_size) + block_size, block_size, WHITE);
+                watch2::oled.drawFastHLine(next_blocks_x + (x * block_size), (i * next_blocks_h) + (y * block_size), block_size, TFT_DARKGREY);
+                watch2::oled.drawFastVLine(next_blocks_x + (x * block_size), (i * next_blocks_h) + (y * block_size), block_size, TFT_DARKGREY);
+                if(x == 3) watch2::oled.drawFastVLine(next_blocks_x + (x * block_size) + block_size, (i * next_blocks_h) + (y * block_size), block_size, TFT_DARKGREY);
+                if(y == 1) watch2::oled.drawFastHLine(next_blocks_x + (x * block_size), (i * next_blocks_h) + (y * block_size) + block_size, block_size, TFT_DARKGREY);
             }
         }
-        free(next_blocks);
 
         draw(tetris.getScore() != last_score, {
             watch2::oled.setCursor(0, 0);
