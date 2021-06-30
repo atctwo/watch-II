@@ -10,6 +10,7 @@
  */
 
 #include "watch2.h"
+#include "esp_wifi.h"
 
 namespace watch2 {
 
@@ -57,6 +58,7 @@ namespace watch2 {
     EXT_RAM_ATTR Preferences preferences;
     EXT_RAM_ATTR Adafruit_MCP23008 mcp;
     EXT_RAM_ATTR Adafruit_MCP9808 temperature;
+    EXT_RAM_ATTR Adafruit_LC709203F fuel_gauge;
 
     //button objects
     EXT_RAM_ATTR Button btn_dpad_up(dpad_up, 25, false, false);
@@ -302,7 +304,7 @@ namespace watch2 {
 
                 // set wifi state
                 wifi_state = 3;
-                ESP_LOGD(WATCH2_TAG, "[Wifi] connected to %s", WiFi.SSID().c_str());
+                ESP_LOGI(WATCH2_TAG, "[Wifi] connected to %s", WiFi.SSID().c_str());
             }
             
             if (WiFi.status() == WL_CONNECT_FAILED || WiFi.status() == WL_CONNECTION_LOST || WiFi.status() == WL_NO_SSID_AVAIL)
@@ -335,7 +337,7 @@ namespace watch2 {
             if (WiFi.status() == WL_DISCONNECTED || WiFi.status() == WL_CONNECT_FAILED || WiFi.status() == WL_CONNECTION_LOST || WiFi.status() == WL_NO_SSID_AVAIL)
             {
                 wifi_state = 1;
-                ESP_LOGD(WATCH2_TAG, "[WiFi] disconnected from AP");
+                ESP_LOGI(WATCH2_TAG, "[WiFi] disconnected from AP");
             }
         }
 
@@ -519,6 +521,7 @@ namespace watch2 {
 
         //init SD card
         initSD();
+        delay(50);
 
         // reconnect to wifi
         if (wifi_state != 0 && wifi_wakeup_reconnect)

@@ -308,7 +308,7 @@ namespace watch2 {
                 //batteryVoltage = ( (ReadVoltage(BATTERY_DIVIDER_PIN) * 3.3 ) / 4095.0 ) * 2;
                 //batteryVoltage = ReadVoltage(BATTERY_DIVIDER_PIN) * BATTERY_VOLTAGE_SCALE;
                 //batteryPercentage = 69.0; ( batteryVoltage / BATTERY_VOLTAGE_MAX ) * 100.0;
-                batteryPercentage = percentMAX17043();
+                batteryPercentage = round(watch2::fuel_gauge.cellPercent());
 
                 // write the battery percentage to the ble battery level service
                 if (bluetooth_state == 2 || bluetooth_state == 3) ble_hid->setBatteryLevel(batteryPercentage);

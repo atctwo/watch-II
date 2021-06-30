@@ -105,6 +105,7 @@ set(LIB_ARDUINO_SRCS
     libraries/Adafruit_BusIO/Adafruit_SPIDevice.cpp
     libraries/Adafruit-MCP23008-library/Adafruit_MCP23008.cpp
     libraries/Adafruit_MCP9808_Library/Adafruit_MCP9808.cpp
+    libraries/Adafruit_LC709203F/Adafruit_LC709203F.cpp
     icons/small_icons.cpp
 )
 
@@ -119,7 +120,6 @@ set(WATCH_SRCS
     watch2_wifi.cpp
     watch2_bluetooth.cpp
     watch2_audio.cpp
-    watch2_battery.cpp
 )
 
 set(STATE_SRCS 
@@ -171,6 +171,7 @@ set(COMPONENT_INCLUDEDIRS
     libraries/Adafruit_BusIO/
     libraries/Adafruit-MCP23008-library/
     libraries/Adafruit_MCP9808_Library/
+    libraries/Adafruit_LC709203F/
     #libraries/micropython/
 )
 

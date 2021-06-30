@@ -40,8 +40,9 @@
 #include <cJSON.h>                  // JSON parser
 #include <esp_log.h>                // ESP-IDF logging
 #include <Wire.h>                   // Arduino I2C library
-#include <Adafruit_MCP23008.h>      // MCP23008 library
-#include <Adafruit_MCP9808.h>
+#include <Adafruit_MCP23008.h>      // MCP23008 I2C IO expander
+#include <Adafruit_MCP9808.h>       // MCP9808 I2C temperature sensor
+#include <Adafruit_LC709203F.h>     // LC709203F I2C fuel gauge
 
 #include <NimBLEDevice.h>
 #include <NimBLEUtils.h>
@@ -137,7 +138,8 @@
 // i2c addresses
 #define I2C_ADDRESS_MCP9098     0x18    // temperature sensor
 #define I2C_ADDRESS_MCP23008    0x20    // io expander
-#define I2C_ADDRESS_MAX17043    0x36    // lipo fuel gauge
+#define I2C_ADDRESS_MAX17043    0x36    // lipo fuel gauge (not used)
+#define I2C_ADDRESS_LC709203F   0x0B    // lipo fuel gauge
 
 // device info
 #define SCREEN_WIDTH            240                     // the width of the screen in pixels
@@ -379,6 +381,7 @@ namespace watch2
     extern Audio audio;                                                                         //!< audio playback!
     extern Adafruit_MCP23008 mcp;                                                               //!< MCP23008 IO expander for user input
     extern Adafruit_MCP9808 temperature;                                                        //!< MCP9808 temperature sensor
+    extern Adafruit_LC709203F fuel_gauge;                                                       //!< LC709203F fuel gauge
 
     //button objects
     extern Button btn_dpad_up;                                                         //!< the object that handles the dpad up button
@@ -1223,57 +1226,6 @@ namespace watch2
      * @param pvParameters 
      */
     void audio_task(void *pvParameters);
-
-    
-
-
-
-
-    //--------------------------------------
-    // battery function prototypes
-    //--------------------------------------
-
-    /**
-     * @brief vcellMAX17043() returns a 12-bit ADC reading of the battery voltage, as reported by the MAX17043's VCELL register.
-     * This does not return a voltage value. To convert this to a voltage, multiply by 5 and divide by 4096.
-     * @return unsigned int the voltage of the cell
-     */
-    unsigned int vcellMAX17043();
-
-    /**
-     * @brief percentMAX17043() returns a float value of the battery percentage reported from the SOC register of the MAX17043.
-     * @return the battery percentage
-    */
-    float percentMAX17043();
-
-    /**
-    @brief configMAX17043(byte percent) configures the config register of the MAX170143, specifically the alert threshold therein. 
-     * Pass a value between 1 and 32 to set the alert threshold to a value between 1 and 32%. Any other values will set 
-     * the threshold to 32%.
-     * @return true if the device was configured correctly, false if no device was found
-    */
-    bool configMAX17043(byte percent);
-
-    /**
-    @brief qsMAX17043() issues a quick-start command to the MAX17043.
-     * A quick start allows the MAX17043 to restart fuel-gauge calculations
-     * in the same manner as initial power-up of the IC. If an application's
-     * power-up sequence is very noisy, such that excess error is introduced
-     * into the IC's first guess of SOC, the Arduino can issue a quick-start
-     * to reduce the error.
-    */
-    void qsMAX17043();
-
-    /**
-    @brief i2cRead16(unsigned char address) reads a 16-bit value beginning at the 8-bit address, and continuing to the next address. 
-    @return A 16-bit value is returned.
-    */
-    unsigned int i2cRead16(unsigned char address);
-
-    /**
-    @brief i2cWrite16(unsigned int data, unsigned char address) writes 16 bits of data beginning at an 8-bit address, and continuing to the next.
-    */
-    void i2cWrite16(unsigned int data, unsigned char address);
 
 }
 

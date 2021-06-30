@@ -111,9 +111,12 @@ void setup() {
         ESP_LOGD(TAG_INIT, "done");
     }
 
-    ESP_LOGD(TAG_INIT, "\tMAX17043: ");
-    watch2::configMAX17043(15);
-    watch2::qsMAX17043();
+    ESP_LOGD(TAG_INIT, "\LC709203F: ");
+    if (!watch2::fuel_gauge.begin()) ESP_LOGW(TAG_INIT, "LC709203F not found :(");
+    else {
+        watch2::fuel_gauge.setPackSize(LC709203F_APA_500MAH);
+        watch2::fuel_gauge.setAlarmVoltage(3.4);
+    }
     ESP_LOGD(TAG_INIT, "done");
 
     ESP_LOGD(TAG_INIT, "done setting up i2c");
