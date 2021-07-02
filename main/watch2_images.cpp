@@ -360,7 +360,7 @@ namespace watch2 {
                     //tft.drawPixel(img_x + x, img_y + y, tft.color565(actual_data[pixel], actual_data[pixel+1], actual_data[pixel+2]));
                     dma_buffer[x] = tft.color565(actual_data[pixel], actual_data[pixel+1], actual_data[pixel+2]);
                 }
-                watch2::oled.pushPixelsDMA(dma_buffer, img_width - 1);
+                watch2::oled.pushPixels(dma_buffer, img_width - 1);
             }
 
             // also set up tft
