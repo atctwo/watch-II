@@ -61,3 +61,6 @@
 [submodule "main/libraries/Adafruit_SHTC3"]
 	path = main/libraries/Adafruit_SHTC3
 	url = https://github.com/adafruit/Adafruit_SHTC3.git
+[submodule "main/libraries/snake-game"]
+	path = main/libraries/snake-game
+	url = https://github.com/atctwo/snake-game.git

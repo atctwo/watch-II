@@ -28,6 +28,7 @@ namespace watch2
         stateMeta("Bluetooth Remote", state_func_bt_remote, "ble_remote"),
         stateMeta("Sensor Thing", state_func_sensor),
         stateMeta("Tetris", state_func_tetris, "ltris"),
+        stateMeta("Snek 2", state_func_snek),
         stateMeta("NES", state_func_nes, "nes")
 
     };

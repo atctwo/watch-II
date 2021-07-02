@@ -60,6 +60,9 @@ void state_func_sensor();
 // state_settings
 void state_func_settings();
 
+// state_snek
+void state_func_snek();
+
 // state_state_menu
 void state_func_state_menu();
 

@@ -108,6 +108,7 @@ set(LIB_ARDUINO_SRCS
     libraries/Adafruit_LC709203F/Adafruit_LC709203F.cpp
     libraries/Adafruit_Sensor/Adafruit_Sensor.cpp
     libraries/Adafruit_SHTC3/Adafruit_SHTC3.cpp
+    libraries/snake-game/snake.cpp
     icons/small_icons.cpp
 )
 
@@ -140,6 +141,7 @@ set(STATE_SRCS
     states/state_sdtest.cpp
     states/state_sensor.cpp
     states/state_settings.cpp
+    states/state_snek.cpp
     states/state_state_menu.cpp
     states/state_stopwatch.cpp
     states/state_tetris.cpp
@@ -177,6 +179,7 @@ set(COMPONENT_INCLUDEDIRS
     libraries/Adafruit_LC709203F/
     libraries/Adafruit_Sensor/
     libraries/Adafruit_SHTC3/
+    libraries/snake-game/
     #libraries/micropython/
 )
 
