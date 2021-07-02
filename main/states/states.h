@@ -15,6 +15,9 @@
 // state_alarms
 void state_func_alarms();
 
+// state_blackjack
+void state_func_blackjack();
+
 // state_bt_remote
 void state_func_bt_remote();
 

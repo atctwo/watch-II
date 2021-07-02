@@ -29,6 +29,7 @@ namespace watch2
         stateMeta("Sensor Thing", state_func_sensor, "sensors"),
         stateMeta("Tetris", state_func_tetris, "ltris"),
         stateMeta("Snek 2", state_func_snek, "snake"),
+        stateMeta("Blackjack", state_func_blackjack, "cards"),
         stateMeta("NES", state_func_nes, "nes")
 
     };

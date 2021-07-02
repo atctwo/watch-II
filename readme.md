@@ -56,3 +56,4 @@ These are some rough instructions for installing and flashing the software on to
 - The settings icon used in the IR Remote app is the one used by the Windows 10 Settings app.
 - The icon used for the internet time button is [time zone](https://thenounproject.com/term/time-zone/2406165/) by Delwar Hossain from the Noun Project.
 - The default font used is [HelvetiHand](https://www.dafont.com/helvetihand.font) by [Billy Snyder](https://www.dafont.com/billy-snyder.d4452).  It is modified slightly to add a ™ symbol.
+- [Playing Cards](http://byronknoll.blogspot.com/2011/03/vector-playing-cards.html) by byronknoll

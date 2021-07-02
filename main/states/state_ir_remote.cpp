@@ -297,6 +297,7 @@ void state_func_ir_remote()
                                 // ESP_LOGD(WATCH2_TAG, "\t");
                                 // ESP_LOGD(WATCH2_TAG, "%*", data.error);
                             }
+                            watch2::freeImageData(data.data);
                         }
                         // no icon was found, so use text
                         else

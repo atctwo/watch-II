@@ -127,6 +127,7 @@ set(WATCH_SRCS
 
 set(STATE_SRCS 
     states/state_alarms.cpp
+    states/state_blackjack.cpp
     states/state_bt_remote.cpp
     states/state_calc.cpp
     states/state_image_viewer.cpp
