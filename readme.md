@@ -9,7 +9,7 @@ The system is built on an ESP32, and uses software written using the ESP-IDF (wi
 | ![](extras/icons/timer.png) Timer                 | ![](extras/icons/alarms.png) Alarms               | ![](extras/icons/file_browser.png) File Browser   | ![](extras/icons/notepad.png) Notepad (read only) |
 | ![](extras/icons/ir_remote.png) IR Remote         | ![](extras/icons/image_viewer.png) Image Viewer   | ![](extras/icons/weather.png) Weather             | ![](extras/icons/wikipedia.png) Wikipedia         |
 | ![](extras/icons/quiz.png) Quiz                   | ![](extras/icons/music_player.png) Music Player   | ![](extras/icons/radio.png) Internet Radio        | ![](extras/icons/ble_remote.png) BLE Remote       |
-| ![](extras/icons/ltris.png) Tetris                |                                                   |                                                   |                                                   |
+| ![](spiffs/data/sensors.png) Sensor Thing         | ![](extras/icons/ltris.png) Tetris                | ![](spiffs/data/snake.png) Snek 2                 | ![](spiffs/data/nes.png) NES |                                                   
 
 # Project Structure
 
