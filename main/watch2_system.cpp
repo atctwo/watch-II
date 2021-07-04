@@ -313,7 +313,7 @@ namespace watch2 {
                 {
                     WiFi.disconnect();
                     wifi_state = 1;
-                    ESP_LOGW(WATCH2_TAG, "[WiFi] could not connect to AP");
+                    ESP_LOGW(WATCH2_TAG, "[WiFi] could not connect to AP (out of attempts)");
                 }
                 else
                 {

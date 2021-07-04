@@ -97,8 +97,8 @@
 #define IR_PWM_CHANNEL 0
 
 //button active macros
-#define KEY_REPEAT_DELAY    550     //time for key repeat to start, in ms [DAS]
-#define KEY_REPEAT_PERIOD   24      //time between key repeats, in ms     [ARR]
+#define KEY_REPEAT_DELAY    700     //time for key repeat to start, in ms [DAS]
+#define KEY_REPEAT_PERIOD   50      //time between key repeats, in ms     [ARR]
 
 #define dpad_up_active()    watch2::dpad_active(dpad_up)
 #define dpad_down_active()  watch2::dpad_active(dpad_down)

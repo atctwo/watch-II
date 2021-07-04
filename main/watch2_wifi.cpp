@@ -33,19 +33,23 @@ namespace watch2 {
     void enable_wifi(bool connect)
     {
         ESP_LOGI(WATCH2_TAG, "[Wifi] enabling wifi");
-        wifi_state = 1; // enabled, disconnected
-
-        // tell the system to enable wifi on boot
-        watch2::preferences.begin("watch2", false);
-        watch2::preferences.putBool("wifi_en", true);
-        watch2::preferences.end();
-
-        // connect to an access point
-        if (connect)
+        if (wifi_state != 3)
         {
-            watch2::wifi_state = 4;
-            watch2::initial_wifi_reconnect_attempts = 3;
-            watch2::wifi_reconnect_attempts = watch2::initial_wifi_reconnect_attempts;
+            wifi_state = 1; // enabled, disconnected
+
+            // tell the system to enable wifi on boot
+            watch2::preferences.begin("watch2", false);
+            watch2::preferences.putBool("wifi_en", true);
+            watch2::preferences.end();
+
+            // connect to an access point
+            if (connect)
+            {
+                watch2::wifi_state = 4;
+                watch2::initial_wifi_reconnect_attempts = 3;
+                watch2::wifi_reconnect_attempts = watch2::initial_wifi_reconnect_attempts;
+            }
+            
         }
     }
 
@@ -67,7 +71,8 @@ namespace watch2 {
         ESP_LOGI(WATCH2_TAG, "[WiFi] connecting to AP");
         WiFi.enableSTA(true);
         //WiFi.mode(WIFI_STA);
-        WiFi.setHostname("watch ii");
+        WiFi.setHostname("watch2");
+        WiFi.setSleep(true);
 
         if (strcmp(ssid, "") == 0)
         {
@@ -129,11 +134,11 @@ namespace watch2 {
                                 if (help) // the profile actually exists
                                 {
                                     ESP_LOGI(WATCH2_TAG, "[Wifi] the profile's SSID matches the access index's SSID :), connecting...");
-                                    //WiFi._setStatus(WL_DISCONNECTED);
                                     WiFi.begin(
                                         cJSON_GetObjectItem(profile, "ssid")->valuestring,
                                         cJSON_GetObjectItem(profile, "password")->valuestring
                                     );
+                                    WiFi._setStatus(WL_DISCONNECTED);
                                     wifi_connect_timeout_start = millis();
                                 }
                                 // otherwise, the AP name exists in the access index, but doesn't actually have a profile, so skip to the next AP
@@ -174,6 +179,7 @@ namespace watch2 {
         }
         else
         {
+            wifi_reconnect_attempts = 1;
             WiFi.begin(ssid, password);
             WiFi._setStatus(WL_DISCONNECTED);
             wifi_state = 2; // enabled, connecting
