@@ -689,7 +689,7 @@ namespace watch2 {
                 }
                 if (selected_widget == 6) // shutdown
                 {
-                    if (messageBox("Are you sure\nyou want to\nshutdown?", {"No", "Yes"})) mcp.digitalWrite(SHUTDOWN_PIN, 0);
+                    if (messageBox("Are you sure\nyou want to\restart?", {"No", "Yes"})) ESP.restart();
                 }
             }
 
@@ -920,7 +920,7 @@ namespace watch2 {
                         break;
 
                     case 6: // shutdown
-                        oled.print("Shutdown");
+                        oled.print("Restart");
                         break;
                 }
 

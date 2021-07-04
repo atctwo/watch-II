@@ -425,6 +425,7 @@ namespace watch2
     extern int short_timeout;                                                                   //!< timeout when looking at watch face
     extern int long_timeout;                                                                    //!< timeout (almost) everywhere else
     extern bool timeout;                                                                        //!< whether or not to go to sleep after timeout time has elapsed
+    extern uint32_t last_button_press;                                                          //!< the time of the most recent button press
     extern int themecolour;                                                                     //!< colour of the system accent
     extern time_t alarm_snooze_time;                                                            //!< time to add to alarm when snoozing
     extern uint16_t screen_brightness;                                                          //!< brightness of screen, ranges from 0 (backlight off) to 15 (full brightness)

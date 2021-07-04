@@ -279,7 +279,7 @@ namespace watch2 {
 
     void drawTopThing(bool light)
     {
-        static char text[4];
+        static char text[6];
         static double batteryVoltage = 4.2;
         static uint8_t batteryPercentage = 0;
         static int last_battery_reading = millis() - 1000;
@@ -303,54 +303,54 @@ namespace watch2 {
             //top_thing.setFreeFont(&SourceSansPro_Regular6pt7b);
             top_thing.printf("%02d:%02d", hour(), minute());
 
-            if ( millis() - last_battery_reading > 10000)
-            {
-                //batteryVoltage = ( (ReadVoltage(BATTERY_DIVIDER_PIN) * 3.3 ) / 4095.0 ) * 2;
-                //batteryVoltage = ReadVoltage(BATTERY_DIVIDER_PIN) * BATTERY_VOLTAGE_SCALE;
-                //batteryPercentage = 69.0; ( batteryVoltage / BATTERY_VOLTAGE_MAX ) * 100.0;
-                batteryPercentage = round(watch2::fuel_gauge.cellPercent());
-
-                // write the battery percentage to the ble battery level service
-                if (bluetooth_state == 2 || bluetooth_state == 3) ble_hid->setBatteryLevel(batteryPercentage);
-
-                last_battery_reading = millis();
-            }
-
-            // print battery
-            sprintf(text, "%.0d", batteryPercentage);
-            icon_xpos -= (watch2::oled.textWidth(text) + icon_padding);
-            top_thing.setCursor(icon_xpos,1);
-            top_thing.setTextColor(WHITE, BLACK);
-            top_thing.printf(text);
-
-            icon_xpos -= (icon_size + icon_padding);
-            top_thing.drawBitmap(
-                icon_xpos,
-                1,
-                (*small_icons)["small_battery"].data(),
-                icon_size,
-                icon_size,
-                WHITE
-            );
-            
-            // print ram usage
-            sprintf(text, "%2.0f", ((float)(ESP.getHeapSize() - ESP.getFreeHeap()) / ESP.getHeapSize()) * 100);
-            icon_xpos -= (watch2::oled.textWidth(text) + icon_padding);
-            top_thing.setCursor(icon_xpos,1);
-            top_thing.setTextColor(WHITE, BLACK);
-            top_thing.printf(text);
-
-            icon_xpos -= (icon_size + icon_padding);
-            top_thing.drawBitmap(
-                icon_xpos,
-                1,
-                (*small_icons)["small_ram"].data(),
-                icon_size,
-                icon_size,
-                WHITE
-            );
-
         }
+
+        if ( millis() - last_battery_reading > 10000)
+        {
+            //batteryVoltage = ( (ReadVoltage(BATTERY_DIVIDER_PIN) * 3.3 ) / 4095.0 ) * 2;
+            //batteryVoltage = ReadVoltage(BATTERY_DIVIDER_PIN) * BATTERY_VOLTAGE_SCALE;
+            //batteryPercentage = 69.0; ( batteryVoltage / BATTERY_VOLTAGE_MAX ) * 100.0;
+            batteryPercentage = round(watch2::fuel_gauge.cellPercent());
+
+            // write the battery percentage to the ble battery level service
+            if (bluetooth_state == 2 || bluetooth_state == 3) ble_hid->setBatteryLevel(batteryPercentage);
+
+            last_battery_reading = millis();
+        }
+
+        // print battery
+        sprintf(text, "%.0d%", batteryPercentage);
+        icon_xpos -= (watch2::oled.textWidth(text) + icon_padding);
+        top_thing.setCursor(icon_xpos,1);
+        top_thing.setTextColor(WHITE, BLACK);
+        top_thing.printf(text);
+
+        icon_xpos -= (icon_size + icon_padding);
+        top_thing.drawBitmap(
+            icon_xpos,
+            1,
+            (*small_icons)["small_battery"].data(),
+            icon_size,
+            icon_size,
+            WHITE
+        );
+            
+            // // print ram usage
+            // sprintf(text, "%2.0f", ((float)(ESP.getHeapSize() - ESP.getFreeHeap()) / ESP.getHeapSize()) * 100);
+            // icon_xpos -= (watch2::oled.textWidth(text) + icon_padding);
+            // top_thing.setCursor(icon_xpos,1);
+            // top_thing.setTextColor(WHITE, BLACK);
+            // top_thing.printf(text);
+
+            // icon_xpos -= (icon_size + icon_padding);
+            // top_thing.drawBitmap(
+            //     icon_xpos,
+            //     1,
+            //     (*small_icons)["small_ram"].data(),
+            //     icon_size,
+            //     icon_size,
+            //     WHITE
+            // );
 
         //draw sd card status
         int sd_colour = ORANGE;
@@ -424,6 +424,35 @@ namespace watch2 {
                     top_thing.drawBitmap(icon_xpos, 1, (*small_icons)["small_wifi_3"].data(), icon_size, icon_size, (WiFi.RSSI() >= -30) ? WHITE : 0x6B4D);
                     break;
             }
+        }
+
+        // draw bluetooth icon
+        if (bluetooth_state == 3) // enabled, connected
+        {
+            icon_xpos -= (icon_size + icon_padding);
+             
+            top_thing.drawBitmap(
+                icon_xpos,
+                1,
+                (*small_icons)["small_bluetooth"].data(),
+                icon_size,
+                icon_size,
+                0x041F
+            );
+
+        }
+        else if (bluetooth_state != 0) // enabled, connecting or disconnected
+        {
+            icon_xpos -= (icon_size + icon_padding);
+             
+            top_thing.drawBitmap(
+                icon_xpos,
+                1,
+                (*small_icons)["small_bluetooth"].data(),
+                icon_size,
+                icon_size,
+                0x6B4D
+            );
         }
 
         top_thing.pushSprite(0, 0);

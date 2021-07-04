@@ -143,7 +143,7 @@ void state_func_watch_face()
             second_sprite.drawString(buffer, 0, 0);
 
             second_sprite.setTextDatum(TR_DATUM);
-            second_sprite.drawString("pm ", second_sprite.width(), 0);
+            second_sprite.drawString(isPM() ? "pm " : "am ", second_sprite.width(), 0);
 
             second_sprite.pushSprite(0, watch2::top_thing_height + time_sprite.height());
             last_second = second();
@@ -153,7 +153,7 @@ void state_func_watch_face()
         draw(day() != last_day, {
             day_sprite.fillScreen(BLACK);
             day_sprite.setTextDatum(TC_DATUM);
-            sprintf(buffer, "%s %02d.%02d.%04d", dayShortStr(dayOfWeek(day())), day(), month(), year());
+            sprintf(buffer, "%s %02d.%02d.%04d", dayShortStr(weekday()), day(), month(), year());
             day_sprite.drawString(buffer, day_sprite.width() / 2, 0);
             uint16_t start_height = watch2::top_thing_height + time_sprite.height() + second_sprite.height();
             day_sprite.pushSprite(0, start_height + ((SCREEN_HEIGHT - start_height) / 2));

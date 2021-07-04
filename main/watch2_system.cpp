@@ -30,6 +30,7 @@ namespace watch2 {
     int short_timeout = 5000;
     int long_timeout = 30000;
     bool timeout = true;
+    uint32_t last_button_press = 0;
 
     EXT_RAM_ATTR std::vector<timerData> timers;
     EXT_RAM_ATTR std::vector<alarmData> alarms;
@@ -174,27 +175,18 @@ namespace watch2 {
         }
 
         //handle timeouts
-        // if (timeout && (state != 0))
-        // {
-        //     if (state == 1)
-        //     {
-        //         if (btn_dpad_up.releasedFor(short_timeout) &&
-        //             btn_dpad_down.releasedFor(short_timeout) &&
-        //             btn_dpad_left.releasedFor(short_timeout) &&
-        //             btn_dpad_right.releasedFor(short_timeout) &&
-        //             btn_dpad_enter.releasedFor(short_timeout))
-        //             deepSleep(31);
-        //     }
-        //     else
-        //     {
-        //         if (btn_dpad_up.releasedFor(long_timeout) &&
-        //             btn_dpad_down.releasedFor(long_timeout) &&
-        //             btn_dpad_left.releasedFor(long_timeout) &&
-        //             btn_dpad_right.releasedFor(long_timeout) &&
-        //             btn_dpad_enter.releasedFor(long_timeout))
-        //             deepSleep(31);
-        //     }
-        // }
+        if (dpad_any_active()) last_button_press = millis();
+        if (timeout && (state != 0))
+        {
+            if (state == 1)
+            {
+                if (millis() - last_button_press > short_timeout) deepSleep(31);
+            }
+            else
+            {
+                if (millis() - last_button_press > long_timeout) deepSleep(31);
+            }
+        }
 
         // wifi
         // check the wifi connection status
@@ -376,6 +368,7 @@ namespace watch2 {
             dpad_pressed[i] = false;
             dpad_held[i] = false;
         }
+        last_button_press = millis();
 
         state_init = 0;                             //reset first execution flag
         state = newState;                           //switch state variable
