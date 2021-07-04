@@ -498,6 +498,13 @@ namespace watch2 {
             esp_sleep_disable_wakeup_source(ESP_SLEEP_WAKEUP_TIMER);
         }
 
+        // stop wifi
+        WiFi.disconnect();
+        esp_wifi_disconnect();
+        esp_wifi_stop();
+        wifi_state = 1;
+        delay(1000);
+
         //begin sleep
         ESP_LOGI(WATCH2_TAG, "[sleep] entering sleep mode");
         Serial.flush();

@@ -10,6 +10,7 @@
  */
 
 #include "watch2.h"
+#include "esp_wifi.h"
 
 namespace watch2 {
 
@@ -69,15 +70,26 @@ namespace watch2 {
     void connectToWifiAP(const char *ssid, const char *password)
     {
         ESP_LOGI(WATCH2_TAG, "[WiFi] connecting to AP");
+
         WiFi.enableSTA(true);
+
+        esp_err_t ret;
+        // wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
+        // ret = esp_wifi_init(&cfg);
+        // if (ret) ESP_LOGW(WATCH2_TAG, "wifi init error: %s\n", esp_err_to_name(ret));
+        ret = esp_wifi_start();
+        if (ret) ESP_LOGW(WATCH2_TAG, "wifi start error: %s\n", esp_err_to_name(ret));
+
+        //WiFi.enableSTA(true);
         //WiFi.mode(WIFI_STA);
         WiFi.setHostname("watch2");
         WiFi.setSleep(true);
+        WiFi.disconnect();
 
         if (strcmp(ssid, "") == 0)
         {
             // automatically connect to internet
-            if (wifi_reconnect_attempts == 0)
+            if (wifi_reconnect_attempts == 0) // out of attempts
             {
                 WiFi.disconnect();
                 wifi_state = 1;
@@ -135,8 +147,8 @@ namespace watch2 {
                                 {
                                     ESP_LOGI(WATCH2_TAG, "[Wifi] the profile's SSID matches the access index's SSID :), connecting...");
                                     WiFi.begin(
-                                        cJSON_GetObjectItem(profile, "ssid")->valuestring,
-                                        cJSON_GetObjectItem(profile, "password")->valuestring
+                                        (const char*) cJSON_GetObjectItem(profile, "ssid")->valuestring,
+                                        (const char*) cJSON_GetObjectItem(profile, "password")->valuestring
                                     );
                                     WiFi._setStatus(WL_DISCONNECTED);
                                     wifi_connect_timeout_start = millis();
