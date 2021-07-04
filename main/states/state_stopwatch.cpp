@@ -111,7 +111,6 @@ void state_func_stopwatch()
 
     //draw hours
     draw((watch2::stopwatch_hour != watch2::stopwatch_last_hour), {
-        watch2::setFont(LARGE_FONT);
         watch2::oled.setCursor(2, stopwatch_y);
         sprintf(text_aaaa, "%02d", watch2::stopwatch_last_hour);
         watch2::getTextBounds(String(text_aaaa), 2, stopwatch_y, &x1, &y1, &w, &h);
@@ -122,7 +121,6 @@ void state_func_stopwatch()
 
     //draw minutes
     draw((watch2::stopwatch_min != watch2::stopwatch_last_min), {
-        watch2::setFont(LARGE_FONT);
         watch2::oled.setCursor(2 + (width_two_digits), stopwatch_y);
         sprintf(text_aaaa, ":%02d", watch2::stopwatch_last_min);
         watch2::getTextBounds(text_aaaa, 2 + (width_two_digits), stopwatch_y, &x1, &y1, &w, &h);
@@ -133,7 +131,6 @@ void state_func_stopwatch()
 
     //draw seconds
     draw((watch2::stopwatch_s != watch2::stopwatch_last_s), {
-        watch2::setFont(LARGE_FONT);
         watch2::oled.setCursor(2 + (2 * width_two_digits_colon), stopwatch_y);
         sprintf(text_aaaa, ":%02d", watch2::stopwatch_last_s);
         watch2::getTextBounds(text_aaaa, 2 + (2 * width_two_digits_colon), stopwatch_y, &x1, &y1, &w, &h);
@@ -144,8 +141,6 @@ void state_func_stopwatch()
 
     //draw milliseconds
     draw((watch2::stopwatch_ms != watch2::stopwatch_last_ms), {
-        watch2::setFont(LARGE_FONT);
-        watch2::setFont(MAIN_FONT);
         watch2::oled.setCursor(2 + (3 * width_two_digits_colon), stopwatch_y);
         sprintf(text_aaaa, ":%03d", watch2::stopwatch_last_ms);
         watch2::getTextBounds(text_aaaa, 2 + (3 * width_two_digits_colon), stopwatch_y, &x1, &y1, &w, &h);
