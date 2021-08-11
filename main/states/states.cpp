@@ -22,6 +22,7 @@ namespace watch2
         stateMeta("Weather", state_func_weather, "weather"),
         stateMeta("Wikipedia", state_func_wiki, "wikipedia"),
         stateMeta("Quiz Thingy", state_func_quiz, "quiz"),
+        stateMeta("Reddit", state_func_reddit),
         stateMeta("Music Player", state_func_music_player, "music_player"),
         stateMeta("Radio", state_func_radio, "radio"),
         //stateMeta("Recorder", state_func_recorder),
@@ -29,8 +30,8 @@ namespace watch2
         stateMeta("Sensor Thing", state_func_sensor, "sensors"),
         stateMeta("Tetris", state_func_tetris, "ltris"),
         stateMeta("Snek 2", state_func_snek, "snake"),
-        stateMeta("Blackjack", state_func_blackjack, "cards"),
-        stateMeta("NES", state_func_nes, "nes")
+        stateMeta("Blackjack", state_func_blackjack, "cards")
+        // //stateMeta("NES", state_func_nes, "nes")
 
     };
 

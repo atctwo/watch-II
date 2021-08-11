@@ -18,6 +18,8 @@
 #include "libraries/stb/stb_image.h"
 
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
+#define STBIR_MALLOC(sz, c)        ((void)(c), heap_caps_malloc(sz, MALLOC_CAP_SPIRAM))
+#define STBIR_FREE(p, c)           ((void)(c), free(p))
 #include "libraries/stb/stb_image_resize.h"
 
 namespace watch2 {
@@ -303,12 +305,42 @@ namespace watch2 {
         return response;
     }
 
+    imageData getImageDataMemory(const unsigned char *buffer, int len)
+    {
+
+        // this method currently uses stb_image for everything
+
+        // read image
+        int img_w, img_h, img_n, x, y;
+        unsigned char *data = stbi_load_from_memory(buffer, len, &img_w, &img_h, &img_n, 3);
+        Serial.println("loaded image!");
+
+        // set up response struct
+        const char *error;
+        if (data == NULL) error = stbi_failure_reason();
+        else error = NULL;
+        imageData response = {
+            data,
+            img_w,
+            img_h,
+            error
+        };
+
+        // return data
+        return response;
+    }
+
     void freeImageData(unsigned char *data)
     {
         if (data) stbi_image_free(data);
     }
 
-    const char* drawImage(imageData data, int16_t img_x, int16_t img_y, float scaling, int array_offset, TFT_eSPI &tft)
+    void freeImageData(imageData data)
+    {
+        if (data.data) stbi_image_free(data.data);
+    }
+
+    const char* drawImage(imageData data, int16_t img_x, int16_t img_y, float scaling, int array_offset, TFT_eSPI &tft, bool use_dma)
     {
         // numbers
         unsigned long pixels = data.width * data.height * 3;//sizeof(data) / sizeof(unsigned char);
@@ -342,38 +374,49 @@ namespace watch2 {
             }
 
             // allocate memory for dma buffer
-            dma_buffer = (uint16_t*) heap_caps_malloc(img_width * sizeof(uint16_t), MALLOC_CAP_DMA);
-            if (!dma_buffer) ESP_LOGW(WATCH2_TAG, "\0[31m[drawImage] failed to allocate memory for dma buffer\0[0m");
-
-            // set up tft
-            tft.startWrite();
-            tft.setSwapBytes(true);
-            tft.setAddrWindow(img_x, img_y, img_width - 1, img_height - 1);
-
-            // draw pixels
-            for (uint16_t y = 0; y < img_height; y+=1)
+            dma_buffer = (uint16_t*) heap_caps_malloc(img_width * sizeof(uint16_t), use_dma ? MALLOC_CAP_DMA : MALLOC_CAP_SPIRAM);
+            if (!dma_buffer) ESP_LOGW(WATCH2_TAG, "[drawImage] failed to allocate memory for dma buffer");
+            else
             {
-                for (uint16_t x = 0; x < img_width; x+=1)
+
+                ESP_LOGD(WATCH2_TAG, "about to draw image; x=%d, y=%d, original w=%d, h=%d, scaled w=%d, h=%d, scale factor = %f, sizeof original = %d, sizeof scaled = %d", 
+                    img_x, img_y, data.width, data.height, img_width, img_height, scaling, sizeof(data.data), sizeof(actual_data)
+                );
+
+                // set up tft
+                tft.startWrite();
+                tft.setSwapBytes(true);
+                tft.setAddrWindow(img_x, img_y, img_width - 1, img_height - 1);
+
+                // draw pixels
+                for (uint16_t y = 0; y < img_height; y+=1)
                 {
-                    uint32_t pixel = (( x + (img_width * y) ) * 3) + array_offset;
-                    //printf("%x %x %x\n", actual_data[pixel], actual_data[pixel+1], actual_data[pixel+2]);
-                    //tft.drawPixel(img_x + x, img_y + y, tft.color565(actual_data[pixel], actual_data[pixel+1], actual_data[pixel+2]));
-                    dma_buffer[x] = tft.color565(actual_data[pixel], actual_data[pixel+1], actual_data[pixel+2]);
+                    //Serial.printf("\tline %d: ", y);
+                    for (uint16_t x = 0; x < img_width; x+=1)
+                    {
+                        //Serial.printf("%d ", x);
+                        uint32_t pixel = (( x + (img_width * y) ) * 3) + array_offset;
+                        //printf("%x %x %x\n", actual_data[pixel], actual_data[pixel+1], actual_data[pixel+2]);
+                        //tft.drawPixel(img_x + x, img_y + y, tft.color565(actual_data[pixel], actual_data[pixel+1], actual_data[pixel+2]));
+                        dma_buffer[x] = tft.color565(actual_data[pixel], actual_data[pixel+1], actual_data[pixel+2]);
+                    }
+                    watch2::oled.pushPixels(dma_buffer, img_width - 1);
+                    //Serial.println("");
                 }
-                watch2::oled.pushPixels(dma_buffer, img_width - 1);
+
+                // also set up tft
+                tft.endWrite();
+                tft.setSwapBytes(false);
+
+                free(dma_buffer);
+
+                // if (actual_data) 
+                // {
+                //     ESP_LOGD(WATCH2_TAG, "[drawImage] freeing scaled image data");
+                //     stbi_image_free(actual_data);
+                // }
+
             }
-
-            // also set up tft
-            tft.endWrite();
-            tft.setSwapBytes(false);
-
-            free(dma_buffer);
-
-            // if (actual_data) 
-            // {
-            //     ESP_LOGD(WATCH2_TAG, "[drawImage] freeing scaled image data");
-            //     stbi_image_free(actual_data);
-            // }
 
             return NULL;
 

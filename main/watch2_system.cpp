@@ -17,6 +17,7 @@ namespace watch2 {
     // system
     EXT_RAM_ATTR int state = 0;
     EXT_RAM_ATTR int state_init = 0;
+    EXT_RAM_ATTR int last_variant = 0;
     RTC_DATA_ATTR int selected_menu_icon;
     RTC_DATA_ATTR int boot_count = 0;
     std::string wfs = "\x0\x0\x0\x0";
@@ -357,8 +358,8 @@ namespace watch2 {
         ESP_LOGD(WATCH2_TAG, "switching to new state: %d (%s)", newState, watch2::states[newState].stateName.c_str());
 
         if (dim_pause_thing > 0)
-        dimScreen(0, dim_pause_thing);              //dim the screen
-        oled.fillScreen(BLACK);                     //clear screen
+        dimScreen(0, dim_pause_thing);              // dim the screen
+        oled.fillScreen(BLACK);                     // clear screen
 
         // lock dpad
         for (uint16_t i = 0; i < 5; i++) 
@@ -370,16 +371,17 @@ namespace watch2 {
         }
         last_button_press = millis();
 
-        state_init = 0;                             //reset first execution flag
-        state = newState;                           //switch state variable
-        states[state].variant = variant;            //set state variant
+        state_init = 0;                             // reset first execution flag
+        state = newState;                           // switch state variable
+        last_variant = states[state].variant;       // save last variant
+        states[state].variant = variant;            // set state variant
 
         if (!dont_draw_first_frame)
-        states[state].stateFunc();                  //run the state function once
+        states[state].stateFunc();                  // run the state function once
 
-        state_init = 1;                             //set first execution flag
+        state_init = 1;                             // set first execution flag
         if (bright_pause_thing > 0)
-        dimScreen(1, bright_pause_thing);           //make the screen brighter
+        dimScreen(1, bright_pause_thing);           // make the screen brighter
 
     }
 

@@ -47,6 +47,8 @@ void state_func_watch_face()
             day_sprite.fillScreen(BLACK);
             watch2::setFont(SLIGHTLY_BIGGER_FONT, day_sprite);
             watch2::setFont(MAIN_FONT);
+
+            watch2::last_button_press = millis();
         }
 
         // set phase difference

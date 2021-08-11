@@ -27,6 +27,13 @@ void setup() {
     Serial.begin(115200);
     ESP_LOGI(TAG_INIT, "\n\nwatch2 version %d\n", WATCH_VER);
 
+    // set up psram
+    Serial.println("setting up psram");
+    psramInit();
+    if (psramFound()) Serial.println("initalised psram");
+    else Serial.println("failed to init psram");
+    Serial.println("done");
+
     //set up oled
     ESP_LOGD(TAG_INIT, "setting up display: ");
     digitalWrite(cs, LOW);
@@ -289,7 +296,7 @@ void setup() {
     // set up audio task
     ESP_LOGD(TAG_INIT, "setting up audio task: ");
     int x = 10;
-    xTaskCreatePinnedToCore(watch2::audio_task, "audio", 20000, (void*)x, ESP_TASK_PRIO_MAX - 1, &watch2::audio_task_handle, 1);
+    xTaskCreatePinnedToCore(watch2::audio_task, "audio", 10000, (void*)x, ESP_TASK_PRIO_MAX - 1, &watch2::audio_task_handle, 1);
     ESP_LOGD(TAG_INIT, "done");
 
     ESP_LOGD(TAG_INIT, "setting up watch face shortcuts: ");
@@ -535,7 +542,7 @@ extern "C" void app_main()
 {
     loopTaskWDTEnabled = false;
     initArduino();
-    xTaskCreateUniversal(loopTask, "loopTask", 10000, NULL, 1, &loopTaskHandle, CONFIG_ARDUINO_RUNNING_CORE);
+    xTaskCreateUniversal(loopTask, "loopTask", 20000, NULL, 1, &loopTaskHandle, CONFIG_ARDUINO_RUNNING_CORE);
 }
 
 

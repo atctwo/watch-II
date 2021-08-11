@@ -164,6 +164,7 @@
 #define CALC_CELL_HEIGHT  12
 
 // root ca certs
+extern const char *root_ca_reddit;
 extern const char *root_ca_wikipedia;
 extern const char *root_ca_jigsaw;
 extern const char *root_ca_open_trivia_db;
@@ -409,6 +410,7 @@ namespace watch2
     // global variables
     extern int state;                                                                           //!< currently selected state
     extern int state_init;                                                                      //!< 0 if the state is being executed for the first time (after swtiching from another state)
+    extern int last_variant;                                                                    //!< the variant before the most recent call to switchState()
     extern RTC_DATA_ATTR int selected_menu_icon;                                                //!< index of currently selected state
     extern RTC_DATA_ATTR int boot_count;                                                        //!< no of times watch has woken up (including initial boot)
                                                                                                 //!< boot count is used to keep track of what state was selected in the menu before
@@ -920,11 +922,13 @@ namespace watch2
      */
     imageData getImageData(const char *filename);
     imageData getImageDataSPIFFS(const char *filename);
+    imageData getImageDataMemory(const unsigned char *buffer, int len);
 
     /**
      * @brief frees the memory used by an image loaded using `getImageData()`.
      * @param data the image data to free.
      */
+    void freeImageData(imageData data);
     void freeImageData(unsigned char *data);
 
     /**
@@ -941,7 +945,7 @@ namespace watch2
      * @param scaling the scaling factor
      * @return const char* if the image couldn't be read, this will return a string describing the reason why
      */
-    const char* drawImage(imageData data, int16_t img_x, int16_t img_y, float scaling=1.0, int array_offset=0, TFT_eSPI &tft=oled);
+    const char* drawImage(imageData data, int16_t img_x, int16_t img_y, float scaling=1.0, int array_offset=0, TFT_eSPI &tft=oled, bool use_dma=true);
 
 
 

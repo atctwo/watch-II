@@ -7,7 +7,7 @@ extern "C"
 
 cJSON *getQuestion(uint8_t category, uint8_t difficulty)
 {
-    EXT_RAM_ATTR static HTTPClient http;
+    static HTTPClient http;
 
     ESP_LOGD(WATCH2_TAG, "[Quiz] getting new question");
 
@@ -42,12 +42,13 @@ cJSON *getQuestion(uint8_t category, uint8_t difficulty)
     sprintf(server, "https://opentdb.com/api.php?amount=1%s%s&type=multiple", category_string, difficulty_string);
     
     ESP_LOGD(WATCH2_TAG, "[Quiz] connecting to server");
+    ESP_LOGI(WATCH2_TAG, "[Quiz] URL: %s", server);
     watch2::wifi_client_secure.setCACert(root_ca_open_trivia_db);
     if (http.begin(watch2::wifi_client_secure, server))
     {
         ESP_LOGD(WATCH2_TAG, "[Quiz] connected to server");
         int http_code = http.GET();
-        ESP_LOGD(WATCH2_TAG, "[Quiz] http code: %d (%s)", http_code, http.errorToString(http_code));
+        ESP_LOGI(WATCH2_TAG, "[Quiz] http code: %d (%s)", http_code, http.errorToString(http_code));
 
         if (http_code > 0)
         {
@@ -83,7 +84,7 @@ void getCategories(std::vector<std::string> &category_names, std::vector<uint8_t
     {
         ESP_LOGD(WATCH2_TAG, "[Quiz] connected to server");
         int http_code = http.GET();
-        ESP_LOGD(WATCH2_TAG, "[Quiz] http code: %d (%s)", http_code, http.errorToString(http_code));
+        ESP_LOGI(WATCH2_TAG, "[Quiz] http code: %d (%s)", http_code, http.errorToString(http_code));
 
         if (http_code > 0)
         {
@@ -156,7 +157,8 @@ void state_func_quiz()
     static uint8_t *selection;
     static std::vector<std::string> *parameter_options;
 
-    static char temp_text[300] = "";
+    static char *temp_text;
+    static bool temp_text_allocated = false;
     static std::string current_question = "";
     static std::vector<std::string> answers = {"", "", "", ""};
     static uint8_t correct_answer = 0;
@@ -172,6 +174,11 @@ void state_func_quiz()
 
             if (!watch2::state_init)
             {
+                if (!temp_text_allocated) {
+                    temp_text = (char*)malloc(300 * sizeof(char));
+                    temp_text_allocated = true;
+                }
+
                 // draw title
                 watch2::oled.setTextColor(WHITE, BLACK);
                 watch2::setFont(LARGE_FONT);
@@ -242,7 +249,13 @@ void state_func_quiz()
                             parameter_selection = selected_menu_item;
                             watch2::switchState(watch2::state, 1);
                         }
-                        else watch2::switchState(2);
+                        else {
+                            watch2::switchState(2);
+                            if (temp_text_allocated) {
+                                free(temp_text);
+                                temp_text_allocated = false;
+                            }
+                        }
                         break;
 
                     case 2: // quiz
@@ -359,7 +372,7 @@ void state_func_quiz()
                                         answers[i+1] = temp_text;
                                     }
                                 }
-                                else ESP_LOGD(WATCH2_TAG, "[Quiz] couldn't get incorrect answers");
+                                else ESP_LOGW(WATCH2_TAG, "[Quiz] couldn't get incorrect answers");
 
                                 // store correct answer
                                 decode_html_entities_utf8(temp_text, cJSON_GetObjectItem(question_object, "correct_answer")->valuestring);
@@ -369,42 +382,42 @@ void state_func_quiz()
                                 std::random_shuffle(answers.begin(), answers.end());
 
                             }
-                            else ESP_LOGD(WATCH2_TAG, "[Quiz] couldn't get question");
+                            else ESP_LOGW(WATCH2_TAG, "[Quiz] couldn't get question");
                         }
-                        else ESP_LOGD(WATCH2_TAG, "[Quiz] couldn't get results object");
+                        else ESP_LOGW(WATCH2_TAG, "[Quiz] couldn't get results object");
 
                     }
                     else if (response_code == 1) // no results
                     {
-                        ESP_LOGD(WATCH2_TAG, "[Quiz] no results were returned");
+                        ESP_LOGW(WATCH2_TAG, "[Quiz] no results were returned");
                         watch2::oled.setCursor(2, watch2::top_thing_height);
                         watch2::oled.setTextColor(WHITE, BLACK);
                         watch2::oled.println("Error 1\nno results were returned");
                     }
                     else if (response_code == 2) // invalid parameter
                     {
-                        ESP_LOGD(WATCH2_TAG, "[Quiz] invalid parameter");
+                        ESP_LOGW(WATCH2_TAG, "[Quiz] invalid parameter");
                         watch2::oled.setCursor(2, watch2::top_thing_height);
                         watch2::oled.setTextColor(WHITE, BLACK);
                         watch2::oled.println("Error 2\ninvalid parameter");
                     }
                     else if (response_code == 3) // token not found
                     {
-                        ESP_LOGD(WATCH2_TAG, "[Quiz] session token doesn't exist");
+                        ESP_LOGW(WATCH2_TAG, "[Quiz] session token doesn't exist");
                         watch2::oled.setCursor(2, watch2::top_thing_height);
                         watch2::oled.setTextColor(WHITE, BLACK);
                         watch2::oled.println("Error 3\ntoken not found");
                     }
                     else if (response_code == 4) // token empty
                     {
-                        ESP_LOGD(WATCH2_TAG, "[Quiz] session token has returned all possible questions for the query");
+                        ESP_LOGW(WATCH2_TAG, "[Quiz] session token has returned all possible questions for the query");
                         watch2::oled.setCursor(2, watch2::top_thing_height);
                         watch2::oled.setTextColor(WHITE, BLACK);
                         watch2::oled.println("Error 4\ntoken empty");
                     }   
                     
                 }
-                else ESP_LOGD(WATCH2_TAG, "[Quiz] failed to get response");
+                else ESP_LOGW(WATCH2_TAG, "[Quiz] failed to get response");
 
                 // free the space used by the question
                 cJSON_Delete(response_object);

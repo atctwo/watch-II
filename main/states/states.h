@@ -54,6 +54,9 @@ void state_func_radio();
 // state_recorder
 void state_func_recorder();
 
+// state_reddit
+void state_func_reddit();
+
 // state_sdtest
 void state_func_SDtest();
 

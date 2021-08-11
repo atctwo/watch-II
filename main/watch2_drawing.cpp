@@ -282,7 +282,7 @@ namespace watch2 {
         static char text[6];
         static double batteryVoltage = 4.2;
         static uint8_t batteryPercentage = 0;
-        static int last_battery_reading = millis() - 1000;
+        static int last_battery_reading = 0;
         static uint16_t icon_size = 20;
         static uint16_t icon_padding = 5;
         uint16_t icon_xpos = SCREEN_WIDTH;
