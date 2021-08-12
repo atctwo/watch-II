@@ -176,7 +176,15 @@ namespace watch2 {
         struct tm timeinfo;
         getLocalTime(&timeinfo);
         ESP_LOGD(WATCH2_TAG, "[NTP] retrieved time: %s", asctime(&timeinfo));
+
+        // set system time
         setTime(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec, timeinfo.tm_mday, timeinfo.tm_mon+1, timeinfo.tm_year + 1900);
+
+        // set ds1337 time
+        struct ds1337_time_t time_thing;
+        make_time(&time_thing, timeinfo.tm_year - 100, timeinfo.tm_mon+1, timeinfo.tm_mday, timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+        if (ds1337_write_time(&time_thing)) ESP_LOGW(WATCH2_TAG, "error writing time to DS1337");
+        else ESP_LOGI(WATCH2_TAG, "wrote time to DS1337");
     }
 
     // stolen from https://gist.github.com/dgoguerra/7194777

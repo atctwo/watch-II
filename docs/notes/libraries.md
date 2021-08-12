@@ -44,10 +44,17 @@ You will have to install these libraries yourself, although they are included as
 - [ESP32-audioI2S](https://github.com/schreibfaul1/ESP32-audioI2S) by schreibfaul1
 - [Adafruit BusIO](https://github.com/adafruit/Adafruit_BusIO) by Adafruit
 - [Adafruit MCP23008](https://github.com/adafruit/Adafruit-MCP23008-library) by Adafruit
+- [Adafruit LC709203F](https://github.com/adafruit/Adafruit_LC709203F) by Adafruit
+- [Adafruit MCP9808](https://github.com/adafruit/Adafruit_MCP9808_Library) by Adafruit
+- [Adafruit Unified Sensor Driver](https://github.com/adafruit/Adafruit_Sensor) by Adafruit
+- [Adafruit SHTC3](https://github.com/adafruit/Adafruit_SHTC3) by Adafruit
+- [ds1337](https://github.com/richard-clark/ds1337) by Richard Clark
 - [csscolorparser](https://github.com/mapbox/css-color-parser-cpp) by Dean McNamee and Konstantin Käfer
 - [gumbo-parser](https://github.com/google/gumbo-parser) by Google
 - [tinyexpr](https://github.com/codeplea/tinyexpr) by codeplea
+- [tinywav](https://github.com/mhroth/tinywav) by mhroth
 - [libtris](https://github.com/atctwo/libtris) by atctwo
+- [snake-game](https://github.com/atctwo/snake-game) by atctwo
 
 ### included with the repository
 You won't have to manually install these libraries, because they are directly included with the repository.

@@ -108,6 +108,7 @@ set(LIB_ARDUINO_SRCS
     libraries/Adafruit_LC709203F/Adafruit_LC709203F.cpp
     libraries/Adafruit_Sensor/Adafruit_Sensor.cpp
     libraries/Adafruit_SHTC3/Adafruit_SHTC3.cpp
+    libraries/ds1337/DS1337.cpp
     libraries/snake-game/snake.cpp
     icons/small_icons.cpp
 )
@@ -181,6 +182,7 @@ set(COMPONENT_INCLUDEDIRS
     libraries/Adafruit_LC709203F/
     libraries/Adafruit_Sensor/
     libraries/Adafruit_SHTC3/
+    libraries/ds1337/
     libraries/snake-game/
     #libraries/micropython/
 )

@@ -43,6 +43,7 @@
 #include <Adafruit_MCP23008.h>      // MCP23008 I2C IO expander
 #include <Adafruit_MCP9808.h>       // MCP9808 I2C temperature sensor
 #include <Adafruit_LC709203F.h>     // LC709203F I2C fuel gauge
+#include <DS1337.h>                 // DS1337 I2C RTC
 
 #include <NimBLEDevice.h>
 #include <NimBLEUtils.h>
@@ -141,6 +142,7 @@
 #define I2C_ADDRESS_MAX17043    0x36    // lipo fuel gauge (not used)
 #define I2C_ADDRESS_LC709203F   0x0B    // lipo fuel gauge
 #define I2C_ADDRESS_SHTC3       0x70    // temperature + humidity
+#define I2C_ADDRESS_DS1337      0x68    // real time clock
 
 // device info
 #define SCREEN_WIDTH            240                     // the width of the screen in pixels

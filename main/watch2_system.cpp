@@ -525,6 +525,31 @@ namespace watch2 {
         initSD();
         delay(50);
 
+        // get time from RTC
+        uint8_t status;
+        struct ds1337_time_t time_thing;
+
+        if (!ds1337_get_status(&status))
+        {
+
+            if (status & DS1337_OSC_STOP_FLAG) {
+                // Oscillator has stopped; time is invalid
+                ESP_LOGW(WATCH2_TAG, "DS1337 oscillator stopped; time is invalid");
+                ds1337_clear_status();
+            } else {
+
+                if (ds1337_read_time(&time_thing)) ESP_LOGW(WATCH2_TAG, "unable to read time from DS1337");
+                else {
+
+                    ESP_LOGI(WATCH2_TAG, "setting time from DS1337: %02d:%02d:%02d %02d.%02d.%04d", time_thing.hour, time_thing.minute, time_thing.second, time_thing.day, time_thing.month, time_thing.year);
+                    setTime(time_thing.hour, time_thing.minute, time_thing.second, time_thing.day, time_thing.month, time_thing.year + 2000);
+
+                }
+
+            }
+
+        }
+
         // reconnect to wifi
         if (wifi_state != 0 && wifi_wakeup_reconnect)
         {

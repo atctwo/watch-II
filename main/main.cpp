@@ -66,7 +66,25 @@ void setup() {
     pinMode(IR_SEND_PIN, OUTPUT);
 
     digitalWrite(cs, LOW);
-    digitalWrite(sdcs, HIGH);
+   digitalWrite(sdcs, HIGH);
+
+
+
+    //set up time
+    ESP_LOGD(TAG_INIT, "setting up time: ");
+    if (watch2::ntp_boot_connect) watch2::ntp_boot_connected = false;
+    timeval tv;
+    gettimeofday(&tv, NULL);
+    setTime(tv.tv_sec);
+
+    if (watch2::boot_count == 0)
+    {
+        setTime(23, 58, 00, 28, 6, 2019);
+
+    }
+    ESP_LOGD(TAG_INIT, "done");
+
+
 
     //set up spiffs
     ESP_LOGD(TAG_INIT, "setting up spiffs: ");
@@ -118,13 +136,42 @@ void setup() {
         ESP_LOGD(TAG_INIT, "done");
     }
 
-    ESP_LOGD(TAG_INIT, "\LC709203F: ");
+    ESP_LOGD(TAG_INIT, "\tLC709203F: ");
     if (!watch2::fuel_gauge.begin()) ESP_LOGW(TAG_INIT, "LC709203F not found :(");
     else {
         watch2::fuel_gauge.setPackSize(LC709203F_APA_500MAH);
         watch2::fuel_gauge.setAlarmVoltage(3.4);
     }
     ESP_LOGD(TAG_INIT, "done");
+
+    ESP_LOGI(TAG_INIT, "\tDS1337: ");
+
+    // get time from RTC
+    uint8_t status;
+    struct ds1337_time_t time_thing;
+
+    if (!ds1337_get_status(&status))
+    {
+
+        if (status & DS1337_OSC_STOP_FLAG) {
+            // Oscillator has stopped; time is invalid
+            ESP_LOGW(TAG_INIT, "DS1337 oscillator stopped; time is invalid");
+            ds1337_clear_status();
+        } else {
+
+            if (ds1337_read_time(&time_thing)) ESP_LOGW(TAG_INIT, "unable to read time from DS1337");
+            else {
+
+                ESP_LOGI(TAG_INIT, "setting time from DS1337: %02d:%02d:%02d %02d.%02d.%04d", time_thing.hour, time_thing.minute, time_thing.second, time_thing.day, time_thing.month, time_thing.year);
+                setTime(time_thing.hour, time_thing.minute, time_thing.second, time_thing.day, time_thing.month, time_thing.year + 2000);
+
+            }
+
+        }
+
+    }
+
+    ESP_LOGI(TAG_INIT, "done");
 
     ESP_LOGD(TAG_INIT, "done setting up i2c");
 
@@ -249,20 +296,6 @@ void setup() {
     ESP_LOGD(TAG_INIT, "done!");
 
 
-
-    //set up time
-    ESP_LOGD(TAG_INIT, "setting up time: ");
-    if (watch2::ntp_boot_connect) watch2::ntp_boot_connected = false;
-    timeval tv;
-    gettimeofday(&tv, NULL);
-    setTime(tv.tv_sec);
-
-    if (watch2::boot_count == 0)
-    {
-        setTime(23, 58, 00, 28, 6, 2019);
-
-    }
-    ESP_LOGD(TAG_INIT, "done");
 
     // set up state menu
     ESP_LOGD(TAG_INIT, "setting up state menu: ");

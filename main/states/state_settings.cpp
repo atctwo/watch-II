@@ -163,6 +163,12 @@ void state_func_settings()
                 // save time
                 setTime(temp_time[0], temp_time[1], temp_time[2], temp_time[3], temp_time[4], temp_time[5]);
                 watch2::switchState(watch2::state, 1);
+
+                // set ds1337 time
+                struct ds1337_time_t time_thing;
+                make_time(&time_thing, temp_time[5] - 2000, temp_time[4], temp_time[3], temp_time[0], temp_time[1], temp_time[2]);
+                if (ds1337_write_time(&time_thing)) ESP_LOGW(WATCH2_TAG, "error writing time to DS1337");
+                else ESP_LOGI(WATCH2_TAG, "wrote time to DS1337");
             }
             //ESP_LOGD(WATCH2_TAG, "7: %d", selected_time);
             //watch2::oled.setFreeFont(&SourceSansPro_Light8pt7b); // reset font
