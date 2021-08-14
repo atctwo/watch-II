@@ -1,8 +1,12 @@
 # watch2
 
-Software and Hardware for my custom smartwatch
+<img src="extras/images/watch2_200.JPG" align="right" alt="a picture of the watch">
 
-The system is built on an ESP32, and uses software written using the ESP-IDF (with the ESP32 Arduino Core as a component).  The system contains a few pre-built "apps".
+This repository contains the software and design files for my custom smartwatch thing.  The system is built on an ESP32, and the software is written in C++, using ESP-IDF and Arduino.  The software includes a few "apps", which are shown below.
+
+The device uses a custom PCB that holds the ESP32, and all the other electronics that make the system work.  The PCB was designed in KiCad, and the enclosure for the device was made in OpenSCAD.
+
+The system isn't as powerful as existing smartwatches, but it was a really great way for me to learn a lot of electronics and programming concepts and tools.  This isn't supposed to be a marketable product, but a proof of concept thing, and a way for me to develop my skills.  This repository is here as a kind of archive to show the level my skills are at at time of writing, and hopefully as a thing to look back on and learn from.
 
 | ![](extras/icons/watch.png) Watch Face            | ![](extras/icons/settings.png) Settings           | ![](extras/icons/calculator.png) Calculator       |![](extras/icons/stopwatch.png) Stopwatch          |
 |---------------------------------------------------|---------------------------------------------------|---------------------------------------------------|---------------------------------------------------|
