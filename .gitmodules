@@ -64,3 +64,6 @@
 [submodule "main/libraries/snake-game"]
 	path = main/libraries/snake-game
 	url = https://github.com/atctwo/snake-game.git
+[submodule "design_files/watch2_case/NopSCADlib"]
+	path = design_files/watch2_case/NopSCADlib
+	url = https://github.com/nophead/NopSCADlib.git
