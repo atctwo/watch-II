@@ -138,7 +138,7 @@ void state_func_ir_remote()
             fs::File json = SD.open(selected_profile_filename.c_str());
 
             // allocate memory for the file's contents
-            json_contents = (char*) malloc(json.size());
+            json_contents = (char*) ps_malloc(json.size());
 
             // load the contents of the selected file into memory
             json.readBytes(json_contents, json.size());
@@ -194,7 +194,6 @@ void state_func_ir_remote()
 
             // print icon width + height
             ESP_LOGD(WATCH2_TAG, "icon width:  %d\nicon height: %d", icon_width, icon_height);
-
 
             // begin ir send
             irsend.begin();

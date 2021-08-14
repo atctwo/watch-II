@@ -69,6 +69,15 @@ void setup() {
    digitalWrite(sdcs, HIGH);
 
 
+    // set cJSON hooks
+    ESP_LOGD(TAG_INIT, "setting up cJSON hooks: ");
+    cJSON_Hooks memoryHook;
+
+	memoryHook.malloc_fn = ps_malloc;
+	memoryHook.free_fn = free;
+	cJSON_InitHooks(&memoryHook);
+    ESP_LOGD(TAG_INIT, "done");
+
 
     //set up time
     ESP_LOGD(TAG_INIT, "setting up time: ");
@@ -144,7 +153,7 @@ void setup() {
     }
     ESP_LOGD(TAG_INIT, "done");
 
-    ESP_LOGI(TAG_INIT, "\tDS1337: ");
+    ESP_LOGD(TAG_INIT, "\tDS1337: ");
 
     // get time from RTC
     uint8_t status;
@@ -171,7 +180,7 @@ void setup() {
 
     }
 
-    ESP_LOGI(TAG_INIT, "done");
+    ESP_LOGD(TAG_INIT, "done");
 
     ESP_LOGD(TAG_INIT, "done setting up i2c");
 
