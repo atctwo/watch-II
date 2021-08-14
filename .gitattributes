@@ -1,5 +1,0 @@
-
-# linguist settings
-docs/* linguist-documentation
-main/libraries/* linguist-vendored
-components/* linguist-vendored
