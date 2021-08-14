@@ -48,7 +48,6 @@ You will have to install these libraries yourself, although they are included as
 - [Adafruit MCP9808](https://github.com/adafruit/Adafruit_MCP9808_Library) by Adafruit
 - [Adafruit Unified Sensor Driver](https://github.com/adafruit/Adafruit_Sensor) by Adafruit
 - [Adafruit SHTC3](https://github.com/adafruit/Adafruit_SHTC3) by Adafruit
-- [ds1337](https://github.com/richard-clark/ds1337) by Richard Clark
 - [csscolorparser](https://github.com/mapbox/css-color-parser-cpp) by Dean McNamee and Konstantin Käfer
 - [gumbo-parser](https://github.com/google/gumbo-parser) by Google
 - [tinyexpr](https://github.com/codeplea/tinyexpr) by codeplea
@@ -66,6 +65,8 @@ HTML character decoding is performed by the [`entities` library](https://stackov
 The NES Emulator is built around [agnes](https://github.com/kgabis/agnes).
 
 The system uses a fork of [IRremote](https://github.com/ExploreEmbedded/Arduino-IRremote) that adds ESP32 send support that was never merged back into the original IRremote.  This fork has been modified to allow the IR receiver to be disabled.  The original IRremote has now added ESP32 send support, and IR receiver disable support, although I have yet to get ESP32 IR send working with the system.
+
+A modified version of [ds1337](https://github.com/richard-clark/ds1337) by Richard Clark is included with the repository.
 
 ## Modifications
 

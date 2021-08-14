@@ -64,6 +64,3 @@
 [submodule "main/libraries/snake-game"]
 	path = main/libraries/snake-game
 	url = https://github.com/atctwo/snake-game.git
-[submodule "main/libraries/ds1337"]
-	path = main/libraries/ds1337
-	url = https://github.com/richard-clark/ds1337.git
