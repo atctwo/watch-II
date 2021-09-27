@@ -14,6 +14,7 @@ void state_func_watch_face()
     uint16_t row_colour = CYAN;
     float r = 0, g = 0, b = 0;
     uint16_t phase_difference = 0;
+    static bool sprite_init = false;
 
     if (watch2::states[watch2::state].variant == 0) //actual watch face
     {
@@ -27,7 +28,7 @@ void state_func_watch_face()
         watch2::oled.print("The time right now is");
         */
 
-        if (!watch2::state_init)
+        if (!sprite_init)
         {
             // set up time sprite
             watch2::setFont(REALLY_REALLY_BIG_FONT);
@@ -49,45 +50,51 @@ void state_func_watch_face()
             watch2::setFont(MAIN_FONT);
 
             watch2::last_button_press = millis();
+            sprite_init = true;
         }
 
         // set phase difference
         if (watch2::animate_watch_face) phase_difference = ((millis() % 60000) * 6)/1000;
 
-        // set up time sprite colour things
-        for (int i = 0; i < SCREEN_WIDTH; i++)
-        {
-            switch(watch2::trans_mode)
-                {
-                    case 0: // random
-                        //todo
-
-                    case 1: // Gay™
-                        watch2::HSVtoRGB(&r, &g, &b, fmodf(((((float) i) * (360 / SCREEN_WIDTH)) + phase_difference), (float)360.0), 1.0, 1.0);
-                        row_colour = watch2::oled.color565(r * 255, g * 255, b * 255);
-                        break;
-
-                    case 2: // trans
-                        watch2::getHeatMapColor( fmod(((float)i/(float)SCREEN_WIDTH) + (phase_difference/360.0), (float)1.0) , &r, &g, &b, {
-                            {0.333, 0.804, 0.988},
-                            {0.969, 0.659, 0.722},
-                            {0.984, 0.976, 0.961},
-                            {0.969, 0.659, 0.722},
-                            {0.333, 0.804, 0.988}    
-                        });
-                        row_colour = watch2::oled.color565(r * 255, g * 255, b * 255);
-                        break;
-
-                    default:
-                        row_colour = CYAN;
-                        break;
-                }
-
-            row_colours[i] = row_colour;
-        }
-
         // draw time
-        draw(minute() != last_minute, {
+        draw(second() != last_second, {
+
+
+            // set up time sprite colour things
+            for (int i = 0; i < SCREEN_WIDTH; i++)
+            {
+                switch(watch2::trans_mode)
+                    {
+                        case 0: // random
+                            //todo
+
+                        case 1: // Gay™
+                            watch2::HSVtoRGB(&r, &g, &b, fmodf(((((float) i) * (360 / SCREEN_WIDTH)) + phase_difference), (float)360.0), 1.0, 1.0);
+                            row_colour = watch2::oled.color565(r * 255, g * 255, b * 255);
+                            break;
+
+                        case 2: // trans
+                            watch2::getHeatMapColor( fmod(((float)i/(float)SCREEN_WIDTH) + (phase_difference/360.0), (float)1.0) , &r, &g, &b, {
+                                {0.333, 0.804, 0.988},
+                                {0.969, 0.659, 0.722},
+                                {0.984, 0.976, 0.961},
+                                {0.969, 0.659, 0.722},
+                                {0.333, 0.804, 0.988}    
+                            });
+                            row_colour = watch2::oled.color565(r * 255, g * 255, b * 255);
+                            break;
+
+                        default:
+                            row_colour = CYAN;
+                            break;
+                    }
+
+                row_colours[i] = row_colour;
+            }
+
+
+        
+            // draw minute
             time_sprite.fillScreen(BLACK);
             time_sprite.setTextDatum(MC_DATUM);
             sprintf(buffer, "%02d:%02d", hour(), minute());
@@ -134,11 +141,7 @@ void state_func_watch_face()
                 watch2::oled.endWrite();
             }
 
-            last_minute = now();
-        });
-
-        //draw seconds
-        draw(second() != last_second, {
+            // draw second
             second_sprite.fillScreen(BLACK);
             second_sprite.setTextDatum(TL_DATUM);
             sprintf(buffer, " %02d", second());
@@ -169,9 +172,9 @@ void state_func_watch_face()
         if (dpad_enter_active() || dpad_right_active() || dpad_up_active())
         {
             // free up the memory used by the sprites
-            time_sprite.deleteSprite();
-            second_sprite.deleteSprite();
-            day_sprite.deleteSprite();
+            //time_sprite.deleteSprite();
+            //second_sprite.deleteSprite();
+            //day_sprite.deleteSprite();
         }
 
         if (dpad_enter_active())

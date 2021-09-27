@@ -66,7 +66,7 @@ void state_func_init()
             }
 
             ESP_LOGD(WATCH2_TAG, "[init] switching to watch face");
-            watch2::switchState(1);
+            watch2::switchState(1, 0, 0);
         }
     }
 }

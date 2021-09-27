@@ -567,8 +567,7 @@ namespace watch2 {
         temperature.wake();
 
         //rtc_gpio_deinit(GPIO_NUM_26);
-        if (next_alarm_time > -1) switchState(0, 0, 0, 0, true);
-        else switchState(0);
+        switchState(0, 0, 0, 0, true);
     }
 
 
