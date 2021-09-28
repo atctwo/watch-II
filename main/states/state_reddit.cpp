@@ -494,7 +494,7 @@ void state_func_reddit()
             else if (menu_selected_item == 2)
             {
                 std::vector<reddit_post>().swap(retrieved_posts);
-                watch2::switchState(2);
+                watch2::switchState(-1);
             }
         }
 

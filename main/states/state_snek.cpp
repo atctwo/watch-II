@@ -104,7 +104,7 @@ void state_func_snek()
 
             if (selected_setting == 4) // exit
             {
-                watch2::switchState(2);
+                watch2::switchState(-1);
             }
         }
 

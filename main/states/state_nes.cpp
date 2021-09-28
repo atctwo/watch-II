@@ -53,7 +53,7 @@ void state_func_nes()
     if (!watch2::state_init) 
     {
         filename = watch2::beginFileSelect("/");
-        if (filename.compare("canceled") == 0) watch2::switchState(2);
+        if (filename.compare("canceled") == 0) watch2::switchState(-1);
         else
         {
             ESP_LOGD(WATCH2_TAG, "1");
@@ -171,7 +171,7 @@ void state_func_nes()
         agnes_destroy(agnes);
         agnes_loaded = false;
         free(dma_buffer);
-        watch2::switchState(2);
+        watch2::switchState(-1);
     }
 
 

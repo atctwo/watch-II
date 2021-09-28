@@ -221,6 +221,6 @@ void state_func_calc()
     {
         //exit state
         watch2::oled.setTextDatum(TL_DATUM);
-        watch2::switchState(2);
+        watch2::switchState(-1);
     }
 }

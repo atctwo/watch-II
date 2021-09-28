@@ -18,6 +18,7 @@ namespace watch2 {
     EXT_RAM_ATTR int state = 0;
     EXT_RAM_ATTR int state_init = 0;
     EXT_RAM_ATTR int last_variant = 0;
+    EXT_RAM_ATTR std::stack<int> state_history;
     RTC_DATA_ATTR int selected_menu_icon;
     RTC_DATA_ATTR int boot_count = 0;
     std::string wfs = "\x0\x0\x0\x0";
@@ -360,6 +361,24 @@ namespace watch2 {
 
     void switchState(int newState, int variant, int dim_pause_thing, int bright_pause_thing, bool dont_draw_first_frame)
     {
+        // check if switching to previous state
+        if (newState == -1)
+        {
+            // if there is no state history, go to the app menu
+            if (state_history.empty()) newState = 2;
+
+            // otherwise, go to the previous state
+            else {
+                newState = state_history.top();
+                state_history.pop();
+            }
+        }
+        else // switching to a new state
+        {
+            // if switching to a different state, add current state to the state history
+            if (newState != state) state_history.push(state);
+        }
+
         ESP_LOGD(WATCH2_TAG, "switching to new state: %d (%s)", newState, watch2::states[newState].stateName.c_str());
 
         if (dim_pause_thing > 0)

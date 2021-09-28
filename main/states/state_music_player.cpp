@@ -15,7 +15,7 @@ void state_func_music_player()
     {
         filename = watch2::beginFileSelect(watch2::dir_name(filename));
         if (filename == "canceled") {
-            watch2::switchState(2);
+            watch2::switchState(-1);
             cancelled = true;
             filename = "";
         }

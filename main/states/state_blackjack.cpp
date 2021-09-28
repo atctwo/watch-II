@@ -132,7 +132,7 @@ void state_func_blackjack()
             game_state_init = true;
         }
 
-        if (dpad_up_active()) watch2::switchState(2);
+        if (dpad_up_active()) watch2::switchState(-1);
         if (dpad_down_active()) {
             switch_game_state(1);
             draw_card(player_deck[0]);
@@ -256,7 +256,7 @@ void state_func_blackjack()
             game_state_init = true;
         }
 
-        if (dpad_up_active()) watch2::switchState(2);
+        if (dpad_up_active()) watch2::switchState(-1);
         if (dpad_down_active()) {
             switch_game_state(0);
             watch2::switchState(watch2::state);

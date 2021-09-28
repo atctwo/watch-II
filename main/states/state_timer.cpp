@@ -323,7 +323,7 @@ void state_func_timer()
         if (selected_timer == -1)
         {
             //go back to state menu
-            if (selected_button < 4) watch2::switchState(2);
+            if (selected_button < 4) watch2::switchState(-1);
         }
     }
 

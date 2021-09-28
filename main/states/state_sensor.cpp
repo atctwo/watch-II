@@ -95,6 +95,6 @@ void state_func_sensor()
         any_sensor_present = false;
 
         // return to state menu
-        watch2::switchState(2);
+        watch2::switchState(-1);
     }
 }

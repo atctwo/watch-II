@@ -39,7 +39,7 @@ void state_func_bt_remote()
 
         if (dpad_left_active())
         {
-            watch2::switchState(2);
+            watch2::switchState(-1);
         }
     }
 
@@ -89,7 +89,7 @@ void state_func_bt_remote()
 
         if (watch2::btn_zero.wasPressed())
         {
-            watch2::switchState(2);
+            watch2::switchState(-1);
         }
     }
 

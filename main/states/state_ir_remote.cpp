@@ -99,7 +99,7 @@ void state_func_ir_remote()
             switch(selected_profile)
             {
                 case 0: // cancel button
-                    watch2::switchState(2);
+                    watch2::switchState(-1);
                     break;
 
                 case 1: // receiver

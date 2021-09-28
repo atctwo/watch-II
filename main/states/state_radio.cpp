@@ -102,7 +102,7 @@ void state_func_radio()
         {
             station_names.clear();
             station_urls.clear();
-            watch2::switchState(2);
+            watch2::switchState(-1);
         }
 
     }

@@ -413,6 +413,7 @@ namespace watch2
     extern int state;                                                                           //!< currently selected state
     extern int state_init;                                                                      //!< 0 if the state is being executed for the first time (after swtiching from another state)
     extern int last_variant;                                                                    //!< the variant before the most recent call to switchState()
+    extern std::stack<int> state_history;                                                       //!< the state history, with the previous state at the top, and the earliest state at the bottom
     extern RTC_DATA_ATTR int selected_menu_icon;                                                //!< index of currently selected state
     extern RTC_DATA_ATTR int boot_count;                                                        //!< no of times watch has woken up (including initial boot)
                                                                                                 //!< boot count is used to keep track of what state was selected in the menu before
@@ -561,6 +562,8 @@ namespace watch2
      * @brief switch to a different state or app.
      * 
      * this method lets you switch from running the current state, to another state (or the current state, but using a different variant).
+     * if newState is -1, the system will switch to the previous state (unless there is no previous state, in which case it will switch to
+     * the state menu).
      * 
      * @param newState the id of the state to switch to.  the state menu will always be state 2
      * @param variant the state variant to switch to

@@ -173,6 +173,6 @@ void state_func_stopwatch()
     {
         watch2::setFont(MAIN_FONT);
         watch2::oled.setTextDatum(TL_DATUM);   //set datum to top left
-        watch2::switchState(2);
+        watch2::switchState(-1);
     }
 }

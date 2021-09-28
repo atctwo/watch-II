@@ -61,7 +61,7 @@ void state_func_tetris()
 
         if (dpad_left_active())
         {
-            watch2::switchState(2);
+            watch2::switchState(-1);
         }
 
         if (dpad_enter_active())
@@ -77,7 +77,7 @@ void state_func_tetris()
                 //     break;
 
                 case 1: // exit
-                    watch2::switchState(2);
+                    watch2::switchState(-1);
                     break;
             }
         }

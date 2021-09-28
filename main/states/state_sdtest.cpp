@@ -17,7 +17,7 @@ void state_func_SDtest()
         filename = watch2::beginFileSelect();
 
         // if file select was cancelled, return to the state menu
-        if (filename.compare("canceled") == 0) watch2::switchState(2);
+        if (filename.compare("canceled") == 0) watch2::switchState(-1);
         else {
 
             flag_thing = true;

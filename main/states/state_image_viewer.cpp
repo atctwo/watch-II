@@ -11,7 +11,7 @@ void state_func_image_viewer()
         filename = watch2::beginFileSelect(watch2::dir_name(filename));
         if (filename == "canceled")
         {
-            watch2::switchState(2);
+            watch2::switchState(-1);
             filename = "";
         }
         else

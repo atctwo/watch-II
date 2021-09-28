@@ -190,7 +190,7 @@ void state_func_weather()
                 watch2::dimScreen(true, 250);
                 if (watch2::messageBox("Not connected to\nWifi :(") == 0) 
                 {
-                    watch2::switchState(2);
+                    watch2::switchState(-1);
                     return;
                 }
             }
@@ -277,7 +277,7 @@ void state_func_weather()
             else if (selected_x == 1 && selected_y == 0) // exit app
             {
                 if (forecast) cJSON_Delete(forecast);
-                watch2::switchState(2);
+                watch2::switchState(-1);
             }
 
             else {

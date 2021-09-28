@@ -15,7 +15,7 @@ void state_func_notepad()
 
     if (watch2::file_path == "canceled")
     {
-        watch2::switchState(2);
+        watch2::switchState(-1);
     }
     else
     {
@@ -59,7 +59,7 @@ void state_func_notepad()
         //if left is pressed, go back to the state selection screen
         if (dpad_left_active()) 
         {
-            watch2::switchState(2);
+            watch2::switchState(-1);
         }
 
         if (read == 0) read = 1;

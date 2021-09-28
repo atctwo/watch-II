@@ -126,7 +126,7 @@ void state_func_wiki()
                 if (wiki_selected_option == 1 || watch2::wifi_state != 3 || !connected_to_wikipeda) // exit
                 {
                     // go back to the state menu
-                    watch2::switchState(2);
+                    watch2::switchState(-1);
                 }
                 else if (wiki_selected_option == 0) // Search
                 {

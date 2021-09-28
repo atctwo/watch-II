@@ -119,6 +119,6 @@ void state_func_recorder()
     {
         graph.deleteSprite();
         watch2::uninstall_i2s_driver();
-        watch2::switchState(2);
+        watch2::switchState(-1);
     }
 }

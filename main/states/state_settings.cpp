@@ -77,7 +77,7 @@ void state_func_settings()
             {
                 // go back to the state menu
                 watch2::preferences.end();
-                watch2::switchState(2);
+                watch2::switchState(-1);
             }
             break;
 

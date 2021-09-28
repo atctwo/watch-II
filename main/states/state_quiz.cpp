@@ -250,7 +250,7 @@ void state_func_quiz()
                             watch2::switchState(watch2::state, 1);
                         }
                         else {
-                            watch2::switchState(2);
+                            watch2::switchState(-1);
                             if (temp_text_allocated) {
                                 free(temp_text);
                                 temp_text_allocated = false;
@@ -260,7 +260,7 @@ void state_func_quiz()
 
                     case 2: // quiz
                         if (watch2::wifi_state == 3) watch2::switchState(watch2::state, 2);
-                        else watch2::switchState(2);
+                        else watch2::switchState(-1);
                         break;
                 }
             }
@@ -268,7 +268,7 @@ void state_func_quiz()
             // return to state menu
             if (dpad_left_active())
             {
-                watch2::switchState(2);
+                watch2::switchState(-1);
             }
 
             break;
