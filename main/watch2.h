@@ -529,6 +529,7 @@ namespace watch2
     // these variables stop button presses affecting new states when switching from a previous state.  when a user presses a button to go from the watch face 
     // to the menu, if the button is held down for long enough, the button press can affect the next state. these lock variables are set to true when switching 
     // states, then set to false when each button is released.
+    extern bool btn0_lock;
     extern bool dpad_lock[5];                   // whether or not a button is locked
     extern bool dpad_pressed[5];                // whether or not a button was pressed (once a button is pressed, this will only be true for one main loop iteration)
     extern bool dpad_held[5];                   // whether or not a button is being held down

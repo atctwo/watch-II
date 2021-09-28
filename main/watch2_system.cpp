@@ -22,6 +22,7 @@ namespace watch2 {
     RTC_DATA_ATTR int boot_count = 0;
     std::string wfs = "\x0\x0\x0\x0";
 
+    EXT_RAM_ATTR bool btn0_lock = false;
     EXT_RAM_ATTR bool dpad_lock[5] = {false};
     EXT_RAM_ATTR bool dpad_pressed[5] = {false};
     EXT_RAM_ATTR bool dpad_held[5] = {false};
@@ -130,7 +131,7 @@ namespace watch2 {
         // }
         if (forceRedraw) ESP_LOGD(WATCH2_TAG, "[endLoop] force redraw");
 
-        if (btn_zero.wasPressed())
+        if (!btn0_lock && btn_zero.isPressed())
         {
             watch2::controlCentreDialogue();
         }
@@ -139,6 +140,8 @@ namespace watch2 {
         //ESP_LOGD(WATCH2_TAG, "");
         //ESP_LOGD(WATCH2_TAG, "dpad right: %d;", mcp.digitalRead(dpad_right));
 
+
+        // handle dpad and btn0 locks
         for (uint8_t i = 0; i < 5; i++)
         {
             // reset button active state
@@ -174,6 +177,8 @@ namespace watch2 {
                 dpad_lock[i] = false;
             }
         }
+
+        if (btn0_lock && !btn_zero.isPressed()) btn0_lock = false;
 
         //handle timeouts
         if (dpad_any_active()) last_button_press = millis();
@@ -369,6 +374,7 @@ namespace watch2 {
             dpad_pressed[i] = false;
             dpad_held[i] = false;
         }
+        btn0_lock = true;
         last_button_press = millis();
 
         state_init = 0;                             // reset first execution flag

@@ -189,6 +189,7 @@ namespace watch2 {
             dpad_lock[i] = true;
             dpad_pressed[i] = false;
         }
+        btn0_lock = true;
 
         static int selected_icon = 0; //currently selected file
         static char filename[255]; //buffer to hold filename

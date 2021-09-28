@@ -25,6 +25,7 @@ namespace watch2 {
             dpad_lock[i] = true;
             dpad_pressed[i] = false;
         }
+        btn0_lock = true;
 
         /*
         special keys (like caps lock, space, backspace, enter) are mapped to repurposed ASCII control codes.
@@ -353,6 +354,7 @@ namespace watch2 {
             dpad_lock[i] = true;
             dpad_pressed[i] = false;
         }
+        btn0_lock = true;
 
         watch2::setFont(MAIN_FONT);
 
@@ -482,6 +484,7 @@ namespace watch2 {
             dpad_lock[i] = true;
             dpad_pressed[i] = false;
         }
+        btn0_lock = true;
 
         uint16_t selected_item = 0;
         uint16_t padding = 4;
